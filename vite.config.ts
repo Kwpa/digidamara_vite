@@ -2,6 +2,10 @@ import { defineConfig } from 'vite';
 import replace from '@rollup/plugin-replace';
 
 export default defineConfig({
+  esbuild: {
+    jsxFactory: 'h',
+    jsxFragment: 'Fragment'
+  },
   build: {
     rollupOptions: {
       plugins: [

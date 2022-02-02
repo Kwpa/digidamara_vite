@@ -21,8 +21,7 @@
       "./node_modules/phaser/types",
       "./node_modules/@types"
     ],
-    "noImplicitAny": false,
-    "jsx":"react"
+    "noImplicitAny": false
   },
   "include": ["./src/**/*"]
 }

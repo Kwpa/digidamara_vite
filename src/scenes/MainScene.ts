@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import BaseWebsite from './BaseWebsite';
+import BaseWebsite from './elements/BaseWebsite';
 import {Client} from "@heroiclabs/nakama-js";
 
 export default class MainScene extends Phaser.Scene
@@ -15,6 +15,16 @@ export default class MainScene extends Phaser.Scene
 
   create() //to tackle - server code and setup for typescript!
   {
+
+    let { width, height } = this.sys.game.canvas
+    console.log(width)
+    console.log('load Main Scene')
+
+    const game = document.getElementsByTagName('canvas')[0]
+    game.style.setProperty('position', 'absolute');
+    const thing = this.add.dom(width/2,0, BaseWebsite() as HTMLElement);
+
+    /*
     var useSSL = false; // Enable if server is run with an SSL certificate.
     var client = new Client("defaultkey", "127.0.0.1", "7350", useSSL);
 
@@ -68,13 +78,7 @@ export default class MainScene extends Phaser.Scene
       console.log(response.payload);
     }
 
-    let { width, height } = this.sys.game.canvas
-    console.log(width)
-    console.log('load Main Scene')
-
-    const game = document.getElementsByTagName('canvas')[0]
-    game.style.setProperty('position', 'absolute');
-    const thing = this.add.dom(width/2,0, BaseWebsite() as HTMLElement);
+    */
   }
 
   update()
