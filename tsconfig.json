@@ -20,7 +20,9 @@
     "typeRoots": [
       "./node_modules/phaser/types",
       "./node_modules/@types"
-    ]
+    ],
+    "noImplicitAny": false,
+    "jsx":"react"
   },
   "include": ["./src/**/*"]
 }
