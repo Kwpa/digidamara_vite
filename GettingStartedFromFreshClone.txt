@@ -1,0 +1,33 @@
+Install Visual Studio Code
+Get VS Code extensions (C#, Javascript and Typescript, HTML and CSS, Yarn)
+Install Node.js
+Install Yarn
+Clone repo (e.g. https://github.com/geocine/phaser3-rollup-typescript/branches )
+Make new branch (e.g. develop) and push
+
+Add package.json dependancies for:   -latest versions as of Feb 2022
+  "dependencies": {
+    "@heroiclabs/nakama-js": "^3.1.0",  
+    "bulma": "^0.9.3",
+    "phaser3-rex-plugins": "^1.1.61",
+    "start-dom-jsx": "^1.0.0-beta.1"
+}
+
+Run yarn install on project directory (to get node_modules)
+
+Setup Typescript for Phaser: https://blog.ourcade.co/posts/2020/phaser-3-typescript/ (here I just added the missing elements in the tsconfig.json)
+
+If using Phaser UI: -------
+Setup Rex UI (https://phaser.discourse.group/t/how-to-use-plugins-in-phaser-with-typescript/10778/6, https://rexrainbow.github.io/phaser3-rex-notes/docs/site/ui-overview/#using-typescript-declaration-file) 
+Add the rexUI.d.ts definition file for phaser to get the plugin, containing:
+
+declare namespace Phaser.Scenes
+{
+  interface ScenePlugin
+  {
+    rexUI: any
+  }
+}
+---------
+
+Finally, in project directory, run yarn dev
