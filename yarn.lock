@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@creativebulma/bulma-badge@creativebulma/bulma-badge":
+  version "1.0.1"
+  resolved "https://codeload.github.com/creativebulma/bulma-badge/tar.gz/b341cf58292438004780ea793d2bba9eb2f5de88"
+
 "@heroiclabs/nakama-js@^3.1.0":
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/@heroiclabs/nakama-js/-/nakama-js-2.3.0.tgz#a5e8da5dc64f54159ad8a9a15fc5331b56fe538d"

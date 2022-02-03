@@ -11,7 +11,12 @@ export default class MainScene extends Phaser.Scene
   }
 
   preload() {
-    //this.load.image('button1', 'assets/button.jpg');
+    /* this.load.image('iconactionpoints', 'assets/iconactionpoints.png');
+    this.load.image('iconchat', 'assets/iconchat.png');
+    this.load.image('iconday', 'assets/iconday.png');
+    this.load.image('iconhelp', 'assets/iconhelp.png');
+    this.load.image('iconsparks', 'assets/iconsparks.png');
+    this.load.image('iconvote', 'assets/iconvote.png'); */
   }
 
   create() //to tackle - server code and setup for typescript!
