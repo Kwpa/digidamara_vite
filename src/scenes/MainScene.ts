@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import BaseWebsite from './elements/BaseWebsite';
+import Bulma from '../node_modules/bulma/css/bulma.css';
 import {Client} from "@heroiclabs/nakama-js";
 
 export default class MainScene extends Phaser.Scene
@@ -22,7 +23,8 @@ export default class MainScene extends Phaser.Scene
 
     const game = document.getElementsByTagName('canvas')[0]
     game.style.setProperty('position', 'absolute');
-    const thing = this.add.dom(width/2,0, BaseWebsite() as HTMLElement);
+    game.style.setProperty('z-index', '-1');
+    const thing = this.add.dom(width/2,height/2, BaseWebsite() as HTMLElement);
 
     /*
     var useSSL = false; // Enable if server is run with an SSL certificate.
