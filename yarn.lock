@@ -6,7 +6,7 @@
   version "1.0.1"
   resolved "https://codeload.github.com/creativebulma/bulma-badge/tar.gz/b341cf58292438004780ea793d2bba9eb2f5de88"
 
-"@heroiclabs/nakama-js@^3.1.0":
+"@heroiclabs/nakama-js@^2.3":
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/@heroiclabs/nakama-js/-/nakama-js-2.3.0.tgz#a5e8da5dc64f54159ad8a9a15fc5331b56fe538d"
   integrity sha512-SXRumw8ttVjXXowGR6WfxU66a0j44GwKfIk5O3YygAHGjScPkJjyh/Kl7fc61+zD8VsKObuQMni2gh6Y5h/u7A==
@@ -113,6 +113,18 @@ bulma@^0.9.3:
   version "0.9.3"
   resolved "https://registry.yarnpkg.com/bulma/-/bulma-0.9.3.tgz#ddccb7436ebe3e21bf47afe01d3c43a296b70243"
   integrity sha512-0d7GNW1PY4ud8TWxdNcP6Cc8Bu7MxcntD/RRLGWuiw/s0a9P+XlH/6QoOIrmbj6o8WWJzJYhytiu9nFjTszk1g==
+
+collect.js@^4.31.3:
+  version "4.31.3"
+  resolved "https://registry.yarnpkg.com/collect.js/-/collect.js-4.31.3.tgz#a13aec0b59051de93196e56e2da9ce36a8ee9a42"
+  integrity sha512-pHXhGzo5qftTTlEj88MCRXN8YuhARhmEnCOmc7wzBlI+5fVVC5VZ9Z/Z5KEDuM90Fgwv025Fc2Gk4VpFKMrzQA==
+
+collections@5.1.13:
+  version "5.1.13"
+  resolved "https://registry.yarnpkg.com/collections/-/collections-5.1.13.tgz#eee204a93b67473c8e74e00e934a997cc2817585"
+  integrity sha512-SCb6Qd+d3Z02corWQ7/mqXiXeeTdHvkP6TeFSYfGYdCFp1WrjSNZ3j6y8Y3T/7osGEe0iOcU2g1d346l99m4Lg==
+  dependencies:
+    weak-map "~1.0.x"
 
 colorette@^1.2.2:
   version "1.2.2"
@@ -487,6 +499,11 @@ vite@^2.0.0-beta.65:
     rollup "^2.38.5"
   optionalDependencies:
     fsevents "~2.3.1"
+
+weak-map@~1.0.x:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/weak-map/-/weak-map-1.0.5.tgz#79691584d98607f5070bd3b70a40e6bb22e401eb"
+  integrity sha1-eWkVhNmGB/UHC9O3CkDmuyLkAes=
 
 webfontloader@^1.6.28:
   version "1.6.28"

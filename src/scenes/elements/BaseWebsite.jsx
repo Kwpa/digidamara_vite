@@ -5,7 +5,7 @@ const BaseWebsite = () => {
     <div class="base">
       <div class="fixed-header">
         <div class='notification has-background-dark'>
-          <nav class="level is-mobile">
+          <nav class="level is-mobile icon-area">
             <div class="level-item has-text-centered">
               <span>
                 <h1 class="heading has-text-centered has-text-white">Round</h1>
@@ -33,12 +33,26 @@ const BaseWebsite = () => {
                 <h1 class="title is-size-2 has-text-white">101</h1>
               </span>
             </div>
+            <div class="level-item has-text-centered">
+              <span>
+                <h1 class="heading has-text-centered has-text-warning">Settings</h1>
+                <img class="hdrftr-icon" src="/assets/icon_cog.png"></img>
+              </span>
+            </div>
           </nav>
         </div>
       </div>
+      <div class="container">
+        <h1 id="rnd-update" class="has-text-primary">
+          HI
+        </h1>
+        <h1 id="chat-update" class="has-text-primary">
+          HI
+        </h1>
+      </div>
       <div class="fixed-footer">
         <div class="notification has-background-dark">
-          <nav class="level is-mobile">
+          <nav class="level is-mobile icon-area">
             <div class="level-item has-text-centered">
               <div class="badger has-background-dark" style="padding: 0px;">
                 <img class="hdrftr-icon" src="/assets/icon_chat.png"></img>
@@ -57,14 +71,14 @@ const BaseWebsite = () => {
               <div class="badger has-background-dark" style="padding: 0px;">
                 <img class="hdrftr-icon" src="/assets/icon_camera.png"></img>
                 <h1 title="Badge top right" class="badge is-top-left">8</h1>
-                <h1 class="heading has-text-centered has-text-white">hHelp</h1>
+                <h1 class="heading has-text-centered has-text-white">Video</h1>
               </div>
             </div>
             <div class="level-item has-text-centered">
               <div class="badger has-background-dark" style="padding: 0px;">
                 <img class="hdrftr-icon" src="/assets/icon_help.png"></img>
                 <h1 title="Badge top right" class="badge is-top-left">8</h1>
-                <h1 class="heading has-text-centered has-text-white">Settings</h1>
+                <h1 class="heading has-text-centered has-text-white">Help</h1>
               </div>
             </div>
           </nav>

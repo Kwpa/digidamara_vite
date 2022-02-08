@@ -1,0 +1,12 @@
+Download Docker for Desktop
+Create docker-compose.yml file
+Use docker compose up
+Enter "ServerPrototype.exe init" into command line to setup server (ignore quotations)
+Enter "ServerPrototype.exe run" into command line to run server (ignore quotations)
+
+If you need to reset use "ServerPrototype.exe reset" (ignore quotations)
+
+
+
+Bulma badges:
+https://github.com/CreativeBulma/bulma-badge/tree/master/dist/
