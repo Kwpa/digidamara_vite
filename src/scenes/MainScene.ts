@@ -2,29 +2,27 @@ import Phaser from 'phaser';
 import BaseWebsite from './elements/BaseWebsite';
 import ChatPage from './elements/ChatPage';
 import Bulma from '../node_modules/bulma/css/bulma.css';
-import { Client, Session, Socket, StorageObject, Users} from "@heroiclabs/nakama-js";
+import { Client, Session, Socket, StorageObject, Users } from "@heroiclabs/nakama-js";
 import collect from 'collect.js';
 
 
 export default class MainScene extends Phaser.Scene {
-  
+
   session!: Session;
   client!: Client;
-  textElement!: HTMLElement | null;
-  anotherTextElement!: HTMLElement | null;
-  chatSubmitButton!: HTMLElement | null;
-  messageForm!: HTMLElement | null;
-  messageInput!: Element | null;
-  
+  textElement!: HTMLElement;
+  anotherTextElement!: HTMLElement;
+  chatSubmitButton!: HTMLElement;
+  messageInput!: HTMLInputElement;
+
 
   constructor() {
     super('MainScene');
-    this.session
+/*     this.session
     this.client
     this.textElement
     this.anotherTextElement
-    this.messageForm
-    this.messageInput
+    this.messageInput */
   }
 
   preload() {
@@ -33,7 +31,7 @@ export default class MainScene extends Phaser.Scene {
 
   create() //to tackle - server code and setup for typescript!
   {
-    
+
 
     let { width, height } = this.sys.game.canvas;
     console.log(width);
@@ -45,21 +43,19 @@ export default class MainScene extends Phaser.Scene {
 
     const baseWebsite = this.add.dom(width / 2, height / 2, BaseWebsite() as HTMLElement);
     const chatPage = this.add.dom(width / 2, height / 2, ChatPage() as HTMLElement);
-    
-    this.textElement = document.getElementById('rnd-update');
-    this.anotherTextElement = document.getElementById('chat-update');
-    this.messageForm = document.getElementById('chat-form');
-    this.chatSubmitButton = document.getElementById('chat-submit-button');
-    this.messageInput = chatPage.getChildByID('chat-input');
-    
-    
+
+    this.textElement = document.getElementById('rnd-update') as HTMLElement;
+    this.anotherTextElement = document.getElementById('chat-update') as HTMLElement;
+    this.chatSubmitButton = document.getElementById('chat-submit-button') as HTMLElement;
+    this.messageInput = chatPage.getChildByID('chat-input') as HTMLInputElement;
+
+
     //-----------------------------
 
     this.StartClientConnection();
-    
+
   }
-  async StartClientConnection()
-  {
+  async StartClientConnection() {
     var email = "kaiuser_001@gmail.com";
     var password = "password";
     this.client = new Client("defaultkey", "127.0.0.1", "7350", false);
@@ -69,42 +65,32 @@ export default class MainScene extends Phaser.Scene {
     console.info("Successfully authenticated:", this.session);
     let id = this.session.user_id;
     console.info("Sesh id:", id);
-    
+
     const socket = this.client.createSocket();
-    await socket.connect(this.session, true);
+    await socket.connect(this.session, true); //ssl?
 
     //-----------------------------
-    
-    var roomname = "PublicChat"; 
+
+    var roomname = "PublicChat";
     this.initializeChat(socket, roomname);
 
     this.getRandomNumberDelay();
 
-    if(this.chatSubmitButton != null)
-    {
-      this.chatSubmitButton.onclick = () => {
-        var message = this.messageInput?.value; //works though
-        console.log("text " + message);
-        this.SendChatMessage(socket,"2..."+roomname,message);
-        this.messageInput.value = "";
-      }
+    this.chatSubmitButton.onclick = () => {
+      var message = this.messageInput.value;
+      console.log("text " + message);
+      this.SendChatMessage(socket, "2..." + roomname, message);
+      this.messageInput.value = ""; 
     }
   }
 
-  async initializeChat(socket: Socket, roomname: string) 
-  {
+  async initializeChat(socket: Socket, roomname: string) {
     //receive code is here
 
     socket.onchannelmessage = (message) => {
       console.log("Received a message on channel: %o", message.channel_id);
       console.log("Message content: %o", message.content);
-      var jsonString = JSON.stringify(message.content);
-      var jsonMessage = JSON.parse(jsonString).message;
-      
-      if(this.anotherTextElement != null)
-      {
-        this.anotherTextElement.innerHTML = jsonMessage;
-      }
+      this.anotherTextElement.innerHTML = message.content.message;
     };
 
     const persistence = true;
@@ -115,12 +101,11 @@ export default class MainScene extends Phaser.Scene {
     const response = await socket.joinChat(roomname, 1, persistence, hidden);
 
     console.log("Now connected to channel id:", response.id);
-    this.SendChatMessage(socket,response.id, this.session.username + " says: I think Red is the imposter!" );
+    this.SendChatMessage(socket, response.id, this.session.username + " says: I think Red is the imposter!");
   }
 
-  async SendChatMessage(socket: Socket, channelId: string, message:string)
-  {
-    var data = { "message": message};
+  async SendChatMessage(socket: Socket, channelId: string, message: string) {
+    var data = { "message": message };
     const messageAck = await socket.writeChatMessage(channelId, data);
     /* 
     var emoteData = {
@@ -130,9 +115,8 @@ export default class MainScene extends Phaser.Scene {
     const emoteMessageAck = await socket.writeChatMessage(channelId, emoteData);
     */
   }
-  
-  async getRandomNumberDelay()
-  {
+
+  async getRandomNumberDelay() {
     const users = await this.client.getUsers(this.session, ["17739cb2-6fc6-4143-b9e1-4a82bfe62eb5"]);
     var user = collect(users.users).first();
     //console.info("username: " + user.username);
@@ -147,24 +131,19 @@ export default class MainScene extends Phaser.Scene {
 
     //17739cb2-6fc6-4143-b9e1-4a82bfe62eb5
 
-    if(result.objects.length>0)
-    {
+    if (result.objects.length > 0) {
       var storageObject = collect(result.objects).first();
       var jsonString = JSON.stringify(storageObject.value);
       var number = JSON.parse(jsonString).number;
       //console.info("Number: ", number);
-      if(this.textElement != null)
-      { 
+      
         this.textElement.innerHTML = number;
-      }
-
     }
 
-    this.time.delayedCall(1000, this.getRandomNumberDelay,[], this);
+    this.time.delayedCall(1000, this.getRandomNumberDelay, [], this);
   }
 
-  update() 
-  {
+  update() {
 
   }
 }
