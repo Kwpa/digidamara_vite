@@ -10,8 +10,12 @@ export default class MainScene extends Phaser.Scene {
   
   session!: Session;
   client!: Client;
-  textElement: any;
-  anotherTextElement: any;
+  textElement!: HTMLElement | null;
+  anotherTextElement!: HTMLElement | null;
+  chatSubmitButton!: HTMLElement | null;
+  messageForm!: HTMLElement | null;
+  messageInput!: Element | null;
+  
 
   constructor() {
     super('MainScene');
@@ -19,6 +23,8 @@ export default class MainScene extends Phaser.Scene {
     this.client
     this.textElement
     this.anotherTextElement
+    this.messageForm
+    this.messageInput
   }
 
   preload() {
@@ -42,10 +48,20 @@ export default class MainScene extends Phaser.Scene {
     
     this.textElement = document.getElementById('rnd-update');
     this.anotherTextElement = document.getElementById('chat-update');
-    this.SignInAsUser("kaiuser_001@gmail.com", "password"); 
-  }
+    this.messageForm = document.getElementById('chat-form');
+    this.chatSubmitButton = document.getElementById('chat-submit-button');
+    this.messageInput = chatPage.getChildByID('chat-input');
+    
+    
+    //-----------------------------
 
-  async SignInAsUser(email, password) {
+    this.StartClientConnection();
+    
+  }
+  async StartClientConnection()
+  {
+    var email = "kaiuser_001@gmail.com";
+    var password = "password";
     this.client = new Client("defaultkey", "127.0.0.1", "7350", false);
     this.session = await this.client.authenticateEmail(email, password, true);
     this.session.username = "Kai";
@@ -57,13 +73,25 @@ export default class MainScene extends Phaser.Scene {
     const socket = this.client.createSocket();
     await socket.connect(this.session, true);
 
+    //-----------------------------
+    
     var roomname = "PublicChat"; 
-    this.initializeChat(socket);
+    this.initializeChat(socket, roomname);
 
     this.getRandomNumberDelay();
+
+    if(this.chatSubmitButton != null)
+    {
+      this.chatSubmitButton.onclick = () => {
+        var message = this.messageInput?.value; //works though
+        console.log("text " + message);
+        this.SendChatMessage(socket,"2..."+roomname,message);
+        this.messageInput.value = "";
+      }
+    }
   }
 
-  async initializeChat(socket: Socket) 
+  async initializeChat(socket: Socket, roomname: string) 
   {
     //receive code is here
 
@@ -72,10 +100,13 @@ export default class MainScene extends Phaser.Scene {
       console.log("Message content: %o", message.content);
       var jsonString = JSON.stringify(message.content);
       var jsonMessage = JSON.parse(jsonString).message;
-      this.anotherTextElement.innerHTML = jsonMessage;
+      
+      if(this.anotherTextElement != null)
+      {
+        this.anotherTextElement.innerHTML = jsonMessage;
+      }
     };
 
-    const roomname = "PublicChat";
     const persistence = true;
     const hidden = false;
 
@@ -84,13 +115,12 @@ export default class MainScene extends Phaser.Scene {
     const response = await socket.joinChat(roomname, 1, persistence, hidden);
 
     console.log("Now connected to channel id:", response.id);
-
-    this.SendChatMessage(socket,response.id);
+    this.SendChatMessage(socket,response.id, this.session.username + " says: I think Red is the imposter!" );
   }
 
-  async SendChatMessage(socket: Socket, channelId: string)
+  async SendChatMessage(socket: Socket, channelId: string, message:string)
   {
-    var data = { "message": this.session.username + " says: I think Red is the imposter!" };
+    var data = { "message": message};
     const messageAck = await socket.writeChatMessage(channelId, data);
     /* 
     var emoteData = {
@@ -123,7 +153,10 @@ export default class MainScene extends Phaser.Scene {
       var jsonString = JSON.stringify(storageObject.value);
       var number = JSON.parse(jsonString).number;
       //console.info("Number: ", number);
-      this.textElement.innerHTML = number;
+      if(this.textElement != null)
+      { 
+        this.textElement.innerHTML = number;
+      }
 
     }
 
