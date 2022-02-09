@@ -15,8 +15,7 @@ const ChatPage = () => {
             </div>
 
           </nav>
-          <div class="chat-container">
-
+          <div id="chat-container" class="chat-message-container scroller">
           </div>
           <div class="field is-grouped chat-input-footer">
             <p class="control chat-input">
