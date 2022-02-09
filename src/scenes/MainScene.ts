@@ -4,7 +4,7 @@ import ChatPage from './elements/ChatPage';
 import ChatMessageOtherUser from './elements/ChatMessageOtherUser';
 import ChatMessageCurrentUser from './elements/ChatMessageCurrentUser';
 import Bulma from '../node_modules/bulma/css/bulma.css';
-import { ChannelMessage, ChannelMessageList, Client, Session, Socket, StorageObject, Users } from "@heroiclabs/nakama-js";
+import { ChannelMessage, ChannelMessageList, Client, Session, Socket, StorageObject, Users, User } from "@heroiclabs/nakama-js";
 import collect from 'collect.js';
 
 
@@ -56,8 +56,16 @@ export default class MainScene extends Phaser.Scene {
     var rand = Math.floor(Math.random() * 10000);
     var email = "kaiuser_" + rand + "@gmail.com";
     var password = "password";
+    var url = "https://source.boringavatars.com/marble/50/" + rand;
     this.client = new Client("defaultkey", "127.0.0.1", "7350", false);
     this.session = await this.client.authenticateEmail(email, password, true);
+
+    await this.client.updateAccount(this.session, 
+      {
+        username: rand.toString(),
+        avatar_url: url
+      }
+    );
     //this.session.username = "Kai";
     //this.socket = this.client.createSocket(true, false);
     console.info("Successfully authenticated:", this.session);
@@ -85,21 +93,25 @@ export default class MainScene extends Phaser.Scene {
   async initializeChat(socket: Socket, roomname: string) {
     //receive code is here
 
-    socket.onchannelmessage = (message) => {
+    socket.onchannelmessage = async (message) => {
       console.log("Received a message on channel: %o", message.channel_id);
       console.log("Message content: %o", message.content);
       this.anotherTextElement.innerHTML = message.content.message;
 
+      var account = await this.client.getUsers(this.session, [message.sender_id]);
+      var users = account.users as User[];
+      var avatarUrl= users[0].avatar_url as string;
+      var username= users[0].username as string;
+
       if (message.sender_id == this.session.user_id) {
-        const messageElement = ChatMessageCurrentUser(message.content.message) as HTMLElement;
+        const messageElement = ChatMessageCurrentUser(username, message.content.message, avatarUrl) as HTMLElement;
         this.chatMessageContainer.append(messageElement);
-
-
       }
       else {
-        const messageElement = ChatMessageOtherUser(message.content.message) as HTMLElement;
+        const messageElement = ChatMessageOtherUser(username, message.content.message, avatarUrl) as HTMLElement;
         this.chatMessageContainer.append(messageElement);
       }
+      this.chatMessageContainer.scrollTop = this.chatMessageContainer.scrollHeight;
     };
 
     const persistence = true;
@@ -116,7 +128,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   async SendChatMessage(socket: Socket, channelId: string, message: string) {
-    var data = { "message": this.session.user_id + ": " + message };
+    var data = { "message": message };
     const messageAck = await socket.writeChatMessage(channelId, data);
     
     /*     var emoteData = {
@@ -130,21 +142,28 @@ export default class MainScene extends Phaser.Scene {
   async CreateChatMessages(client: Client, session: Session, channelId: string) {
     var forward = false;
     var result: ChannelMessageList = await client.listChannelMessages(session, channelId, 10, forward);
-    result.messages?.forEach((message) => {
+    result.messages?.forEach(async (message) => {
       console.log("Message has id %o and content %o", message.message_id, message.content);
       let getMessage: any = {};
       getMessage = message.content;
 
+      var account = await this.client.getUsers(this.session, [message.sender_id as string]);
+      var users = account.users as User[];
+      var avatarUrl= users[0].avatar_url as string;
+      var username= users[0].username as string;
+
       if (message.sender_id == this.session.user_id) {
-        const messageElement = ChatMessageCurrentUser(getMessage.message) as HTMLElement; // works! but can't find the message :/
+        const messageElement = ChatMessageCurrentUser(username, getMessage.message, avatarUrl) as HTMLElement; // works! but can't find the message :/
         this.chatMessageContainer.prepend(messageElement);
       }
       else
       {
-        const messageElement = ChatMessageOtherUser(getMessage.message) as HTMLElement; // works! but can't find the message :/
+        const messageElement = ChatMessageOtherUser(username, getMessage.message, avatarUrl) as HTMLElement; // works! but can't find the message :/
         this.chatMessageContainer.prepend(messageElement);
       }
     });
+  
+    this.chatMessageContainer.scrollTop = this.chatMessageContainer.scrollHeight+50;
   }
 
   async GetRandomNumberDelay() {
