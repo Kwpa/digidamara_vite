@@ -85,8 +85,11 @@ export default class MainScene extends Phaser.Scene {
     this.chatSubmitButton.onclick = () => {
       var message = this.messageInput.value;
       console.log("text " + message);
-      this.SendChatMessage(socket, "2..." + roomname, message);
-      this.messageInput.value = "";
+      if(message.length > 0)
+      {
+        this.SendChatMessage(socket, "2..." + roomname, message);
+        this.messageInput.value = "";
+      }
     }
   }
 
