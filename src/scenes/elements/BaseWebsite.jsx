@@ -49,26 +49,51 @@ const BaseWebsite = () => {
         <h1 id="chat-update" class="has-text-primary">
           HI
         </h1>
+        <div class="columns is-centered is-3">
+          <div class="column">
+            <div class="notification is-black">
+              <div class="avatar-col-container">
+                <img class="flip-image avatar" src="/assets/test_avatars/avatar_cushionimp.png"></img>
+                <img class="avatar" src="/assets/test_avatars/avatar_cushionimp.png"></img>
+              </div>
+              <h1 class="title avatar-col-container">
+                Team Cushion Imp!
+              </h1>
+            </div>
+          </div>
+          <div class="column">
+            <div class="notification is-black">
+              <div class="avatar-col-container">
+                <img class="avatar" src="/assets/test_avatars/avatar_springhand.png"></img>
+                <img class="flip-image avatar" src="/assets/test_avatars/avatar_springhand.png"></img>
+              </div>
+              <h1 class="title avatar-col-container">
+                Team Spring Hand!
+              </h1>
+            </div>
+          </div>
+        </div>
       </div>
+
       <div class="fixed-footer">
         <div class="notification has-background-dark">
           <nav class="level is-mobile icon-area">
             <div class="level-item has-text-centered">
-              <div class="badger has-background-dark" style="padding: 0px;">
+              <div id="chat-footer-button" class="badger has-background-dark" style="padding: 0px;">
                 <img class="hdrftr-icon" src="/assets/white_icons/icon_chat_white.png"></img>
                 <h1 title="Badge top right" class="badge is-top-left">8</h1>
                 <h1 class="heading has-text-centered has-text-white">Chat</h1>
               </div>
             </div>
             <div class="level-item has-text-centered">
-              <div class="badger has-background-dark" style="padding: 0px;">
+              <div id="vote-footer-button" class="badger has-background-dark" style="padding: 0px;">
                 <img class="hdrftr-icon" src="/assets/white_icons/icon_vote_white.png"></img>
                 <h1 title="Badge top right" class="badge is-top-left">8</h1>
                 <h1 class="heading has-text-centered has-text-white">Vote</h1>
               </div>
             </div>
             <div class="level-item has-text-centered">
-              <div class="badger has-background-dark" style="padding: 0px;">
+              <div id="video-footer-button" class="badger has-background-dark" style="padding: 0px;">
                 <img class="hdrftr-icon" src="/assets/white_icons/icon_camera_white.png"></img>
                 <h1 title="Badge top right" class="badge is-top-left">8</h1>
                 <h1 class="heading has-text-centered has-text-white">Video</h1>

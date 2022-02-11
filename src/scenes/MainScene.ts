@@ -1,8 +1,10 @@
 import Phaser from 'phaser';
 import BaseWebsite from './elements/BaseWebsite';
 import ChatPage from './elements/ChatPage';
+import VideoPage from './elements/VideoPage';
 import ChatMessageOtherUser from './elements/ChatMessageOtherUser';
 import ChatMessageCurrentUser from './elements/ChatMessageCurrentUser';
+import VideoTile from './elements/VideoTile';
 import Bulma from '../node_modules/bulma/css/bulma.css';
 import { ChannelMessage, ChannelMessageList, Client, Session, Socket, StorageObject, Users, User } from "@heroiclabs/nakama-js";
 import collect from 'collect.js';
@@ -14,11 +16,22 @@ export default class MainScene extends Phaser.Scene {
   client!: Client;
   textElement!: HTMLElement;
   anotherTextElement!: HTMLElement;
-  chatSubmitButton!: HTMLElement;
-  chatMessageContainer!: HTMLElement;
   messageInput!: HTMLInputElement;
+  danceFloor!: HTMLElement;
+  chatMessageContainer!: HTMLElement;
+  videoTileContainer!: HTMLElement;
 
-
+  chatSubmitButton!: HTMLElement;
+  settingsHeaderButton!: HTMLElement;
+  chatFooterButton!: HTMLElement;
+  voteFooterButton!: HTMLElement;
+  videoFooterButton!: HTMLElement;
+  helpFootButton!: HTMLElement;
+  closeSettingsPageButton!: HTMLElement;
+  closeChatPageButton!: HTMLElement;
+  closeVotePageButton!: HTMLElement;
+  closeVideoPageButton!: HTMLElement;
+  closeHelpPageButton!: HTMLElement;
 
   constructor() {
     super('MainScene');
@@ -40,18 +53,81 @@ export default class MainScene extends Phaser.Scene {
 
     const baseWebsite = this.add.dom(width / 2, height / 2, BaseWebsite() as HTMLElement);
     const chatPage = this.add.dom(width / 2, height / 2, ChatPage() as HTMLElement);
-
+    const videoPage = this.add.dom(width / 2, height / 2, VideoPage() as HTMLElement);
+    chatPage.setVisible(false);
+    
+    videoPage.setVisible(false);
+    
+    //debug
     this.textElement = document.getElementById('rnd-update') as HTMLElement;
     this.anotherTextElement = document.getElementById('chat-update') as HTMLElement;
+    this.textElement.hidden = true;
+    this.anotherTextElement.hidden = true;
+    
     this.chatSubmitButton = document.getElementById('chat-submit-button') as HTMLElement;
-    this.messageInput = chatPage.getChildByID('chat-input') as HTMLInputElement;
     this.chatMessageContainer = document.getElementById('chat-container') as HTMLElement;
-
+    this.messageInput = chatPage.getChildByID('chat-input') as HTMLInputElement;
+    this.chatFooterButton = document.getElementById('chat-footer-button') as HTMLElement;
+    this.videoFooterButton = document.getElementById('video-footer-button') as HTMLElement;
+    this.closeChatPageButton = chatPage.getChildByID('close-chat-page-button') as HTMLElement;
+    this.closeVideoPageButton = videoPage.getChildByID('close-video-page-button') as HTMLElement;
+    this.videoTileContainer = videoPage.getChildByID('video-container') as HTMLElement;
+    
+    this.chatFooterButton.onclick = () => {
+      chatPage.setVisible(true);
+    }
+    this.closeChatPageButton.onclick = () => {
+      chatPage.setVisible(false);
+    }
+    this.videoFooterButton.onclick = () => {
+      videoPage.setVisible(true);
+    }
+    this.closeVideoPageButton.onclick = () => {
+      videoPage.setVisible(false);
+    }
+    
+    this.SetVideoImages(this.videoTileContainer);
+    
     //-----------------------------
-
+    
     this.StartClientConnection();
 
   }
+
+  SetVideoImages(element: HTMLElement)
+  {
+    var videoJson = 
+    {
+      "object":
+      [
+        {
+          "videoTitle": "Video One",
+          "videoID": "D3Fcrq9WlOo",
+          "thumbnailURL": "https://i.ytimg.com/an_webp/D3Fcrq9WlOo/mqdefault_6s.webp?du=3000&sqp=CIahmZAG&rs=AOn4CLAmiDlOx5c8F_1KtwX7ZUTpXnol9Q"
+        },
+        {
+          "videoTitle": "Video Two",
+          "videoID": "3dgx7EU66fQ",
+          "thumbnailURL": "https://i.ytimg.com/an_webp/3dgx7EU66fQ/mqdefault_6s.webp?du=3000&sqp=CMCUmZAG&rs=AOn4CLD0NjzmuXxNm2cpbJF6PwPhC4JB3A"
+        },
+        {
+          "videoTitle": "Video Live",
+          "videoID": "gw6tsyftLRo",
+          "thumbnailURL": "https://i.ytimg.com/an_webp/C5T9lk6RB6k/mqdefault_6s.webp?du=3000&sqp=CP2amZAG&rs=AOn4CLBBg9vqnqQRqtVcsYcYi1Wjz6kAHw"
+        }
+      ]
+    }
+
+    videoJson.object.forEach(
+      (video) =>
+      {
+        const videoTile = VideoTile(video.videoTitle, video.thumbnailURL, video.videoID) as HTMLElement;
+        element.append(videoTile);
+        //const playVideo = videoTile
+      }
+    )
+  }
+
   async StartClientConnection() {
     var rand = Math.floor(Math.random() * 10000);
     var email = "kaiuser_" + rand + "@gmail.com";

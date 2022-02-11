@@ -6,14 +6,17 @@ const ChatPage = () => {
       <div class="container">
         <div class="chat-page notification">
           <nav class="level">
-
             <div class="level-left">
               <div class="level-item has-text-centered">
                 <h1 class="title has-text-black">Chat </h1>
                 <img class="hdrftr-icon" src="/assets/black_icons/icon_chat_black.png" style=""></img>
               </div>
             </div>
-
+            <div class="level-right">
+              <div class="level-item has-text-centered">
+                <img id="close-chat-page-button" class="hdrftr-icon" src="/assets/black_icons/icon_cross_black.png" style=""></img>
+              </div>
+            </div>
           </nav>
           <div id="chat-container" class="chat-message-container scroller">
           </div>
