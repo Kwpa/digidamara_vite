@@ -2,6 +2,7 @@ declare namespace Phaser.Scenes
 {
   interface ScenePlugin
   {
-    rexUI: any
+    rexUI: any,
+    rexPerspectiveImagePlugin: any
   }
 }

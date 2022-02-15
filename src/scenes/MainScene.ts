@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import Phaser, { Scene } from 'phaser';
 import BaseWebsite from './elements/BaseWebsite';
 import ChatPage from './elements/ChatPage';
 import VideoPage from './elements/VideoPage';
@@ -8,9 +8,11 @@ import VideoTile from './elements/VideoTile';
 import Bulma from '../node_modules/bulma/css/bulma.css';
 import { ChannelMessage, ChannelMessageList, Client, Session, Socket, StorageObject, Users, User } from "@heroiclabs/nakama-js";
 import collect from 'collect.js';
+import PerspectiveImagePlugin from 'phaser3-rex-plugins/plugins/perspectiveimage-plugin.js';
+import { PerspectiveCarousel }  from 'phaser3-rex-plugins/plugins/perspectiveimage.js';
 
 
-export default class MainScene extends Phaser.Scene {
+export default class MainScene extends Phaser.Scene  {
 
   session!: Session;
   client!: Client;
@@ -32,12 +34,18 @@ export default class MainScene extends Phaser.Scene {
   closeVotePageButton!: HTMLElement;
   closeVideoPageButton!: HTMLElement;
   closeHelpPageButton!: HTMLElement;
+  
 
   constructor() {
     super('MainScene');
   }
 
   preload() {
+    this.load.image('imp', '/assets/test_avatars/avatar_cushionimp.png');
+    this.load.image('imp-back', '/assets/test_avatars/avatar_cushionimp_flipped.png');
+
+    this.load.image('spring', '/assets/test_avatars/avatar_springhand.png');
+    this.load.image('spring-back', '/assets/test_avatars/avatar_springhand_flipped.png');
 
   }
 
@@ -51,19 +59,52 @@ export default class MainScene extends Phaser.Scene {
     game.style.setProperty('position', 'absolute');
     game.style.setProperty('z-index', '-1');
 
+    var CreateCard = function (scene, front, back) {
+      return scene.add.rexPerspectiveCard({
+        front: { key: front },
+        back: { key: back },
+        flip: false
+      })
+    };
+    const carousel = new PerspectiveCarousel(this,
+      {
+        x: width/2, y: height/2,
+        faces:
+          [
+            CreateCard(this, 'imp', 'imp-back'),
+            CreateCard(this, 'spring', 'spring-back'),
+            CreateCard(this, 'imp', 'imp-back'),
+            CreateCard(this, 'spring', 'spring-back'),
+            CreateCard(this, 'imp', 'imp-back')
+          ],
+        faceSpace: width
+      }
+    ) as PerspectiveCarousel;
+
+    this.add.existing(carousel);
+    carousel.setInteractive()
+            .on('pointerdown', function (pointer, localX, localY, event) {
+                if (localX <= (carousel.width / 2)) {
+                    carousel.roll?.toLeft();
+                } else {
+                    carousel.roll?.toRight();
+                }
+            });
+
     const baseWebsite = this.add.dom(width / 2, height / 2, BaseWebsite() as HTMLElement);
     const chatPage = this.add.dom(width / 2, height / 2, ChatPage() as HTMLElement);
     const videoPage = this.add.dom(width / 2, height / 2, VideoPage() as HTMLElement);
     chatPage.setVisible(false);
-    
+
     videoPage.setVisible(false);
-    
+    //baseWebsite.setVisible(false);
+
     //debug
     this.textElement = document.getElementById('rnd-update') as HTMLElement;
     this.anotherTextElement = document.getElementById('chat-update') as HTMLElement;
     this.textElement.hidden = true;
     this.anotherTextElement.hidden = true;
-    
+
     this.chatSubmitButton = document.getElementById('chat-submit-button') as HTMLElement;
     this.chatMessageContainer = document.getElementById('chat-container') as HTMLElement;
     this.messageInput = chatPage.getChildByID('chat-input') as HTMLInputElement;
@@ -72,7 +113,7 @@ export default class MainScene extends Phaser.Scene {
     this.closeChatPageButton = chatPage.getChildByID('close-chat-page-button') as HTMLElement;
     this.closeVideoPageButton = videoPage.getChildByID('close-video-page-button') as HTMLElement;
     this.videoTileContainer = videoPage.getChildByID('video-container') as HTMLElement;
-    
+
     this.chatFooterButton.onclick = () => {
       chatPage.setVisible(true);
     }
@@ -85,42 +126,40 @@ export default class MainScene extends Phaser.Scene {
     this.closeVideoPageButton.onclick = () => {
       videoPage.setVisible(false);
     }
-    
+
     this.SetVideoImages(this.videoTileContainer);
-    
+
     //-----------------------------
-    
+
     this.StartClientConnection();
 
   }
 
-  SetVideoImages(element: HTMLElement)
-  {
-    var videoJson = 
+  SetVideoImages(element: HTMLElement) {
+    var videoJson =
     {
       "object":
-      [
-        {
-          "videoTitle": "Video One",
-          "videoID": "D3Fcrq9WlOo",
-          "thumbnailURL": "https://i.ytimg.com/an_webp/D3Fcrq9WlOo/mqdefault_6s.webp?du=3000&sqp=CIahmZAG&rs=AOn4CLAmiDlOx5c8F_1KtwX7ZUTpXnol9Q"
-        },
-        {
-          "videoTitle": "Video Two",
-          "videoID": "3dgx7EU66fQ",
-          "thumbnailURL": "https://i.ytimg.com/an_webp/3dgx7EU66fQ/mqdefault_6s.webp?du=3000&sqp=CMCUmZAG&rs=AOn4CLD0NjzmuXxNm2cpbJF6PwPhC4JB3A"
-        },
-        {
-          "videoTitle": "Video Live",
-          "videoID": "gw6tsyftLRo",
-          "thumbnailURL": "https://i.ytimg.com/an_webp/C5T9lk6RB6k/mqdefault_6s.webp?du=3000&sqp=CP2amZAG&rs=AOn4CLBBg9vqnqQRqtVcsYcYi1Wjz6kAHw"
-        }
-      ]
+        [
+          {
+            "videoTitle": "Video One",
+            "videoID": "D3Fcrq9WlOo",
+            "thumbnailURL": "https://i.ytimg.com/an_webp/D3Fcrq9WlOo/mqdefault_6s.webp?du=3000&sqp=CIahmZAG&rs=AOn4CLAmiDlOx5c8F_1KtwX7ZUTpXnol9Q"
+          },
+          {
+            "videoTitle": "Video Two",
+            "videoID": "3dgx7EU66fQ",
+            "thumbnailURL": "https://i.ytimg.com/an_webp/3dgx7EU66fQ/mqdefault_6s.webp?du=3000&sqp=CMCUmZAG&rs=AOn4CLD0NjzmuXxNm2cpbJF6PwPhC4JB3A"
+          },
+          {
+            "videoTitle": "Video Live",
+            "videoID": "gw6tsyftLRo",
+            "thumbnailURL": "https://i.ytimg.com/an_webp/C5T9lk6RB6k/mqdefault_6s.webp?du=3000&sqp=CP2amZAG&rs=AOn4CLBBg9vqnqQRqtVcsYcYi1Wjz6kAHw"
+          }
+        ]
     }
 
     videoJson.object.forEach(
-      (video) =>
-      {
+      (video) => {
         const videoTile = VideoTile(video.videoTitle, video.thumbnailURL, video.videoID) as HTMLElement;
         element.append(videoTile);
         //const playVideo = videoTile
@@ -136,7 +175,7 @@ export default class MainScene extends Phaser.Scene {
     this.client = new Client("defaultkey", "127.0.0.1", "7350", false);
     this.session = await this.client.authenticateEmail(email, password, true);
 
-    await this.client.updateAccount(this.session, 
+    await this.client.updateAccount(this.session,
       {
         username: rand.toString(),
         avatar_url: url
@@ -161,8 +200,7 @@ export default class MainScene extends Phaser.Scene {
     this.chatSubmitButton.onclick = () => {
       var message = this.messageInput.value;
       console.log("text " + message);
-      if(message.length > 0)
-      {
+      if (message.length > 0) {
         this.SendChatMessage(socket, "2..." + roomname, message);
         this.messageInput.value = "";
       }
@@ -179,8 +217,8 @@ export default class MainScene extends Phaser.Scene {
 
       var account = await this.client.getUsers(this.session, [message.sender_id]);
       var users = account.users as User[];
-      var avatarUrl= users[0].avatar_url as string;
-      var username= users[0].username as string;
+      var avatarUrl = users[0].avatar_url as string;
+      var username = users[0].username as string;
 
       if (message.sender_id == this.session.user_id) {
         const messageElement = ChatMessageCurrentUser(username, message.content.message, avatarUrl) as HTMLElement;
@@ -202,14 +240,14 @@ export default class MainScene extends Phaser.Scene {
 
     console.log("Now connected to channel id:", response.id);
     this.CreateChatMessages(this.client, this.session, response.id);
-    
+
     //this.SendChatMessage(socket, response.id, this.session.username + " says: I think Red is the imposter!");
   }
 
   async SendChatMessage(socket: Socket, channelId: string, message: string) {
     var data = { "message": message };
     const messageAck = await socket.writeChatMessage(channelId, data);
-    
+
     /*     var emoteData = {
         "emote": "point"
         //,"emoteTarget": "<redPlayerUserId>"
@@ -228,21 +266,20 @@ export default class MainScene extends Phaser.Scene {
 
       var account = await this.client.getUsers(this.session, [message.sender_id as string]);
       var users = account.users as User[];
-      var avatarUrl= users[0].avatar_url as string;
-      var username= users[0].username as string;
+      var avatarUrl = users[0].avatar_url as string;
+      var username = users[0].username as string;
 
       if (message.sender_id == this.session.user_id) {
         const messageElement = ChatMessageCurrentUser(username, getMessage.message, avatarUrl) as HTMLElement; // works! but can't find the message :/
         this.chatMessageContainer.prepend(messageElement);
       }
-      else
-      {
+      else {
         const messageElement = ChatMessageOtherUser(username, getMessage.message, avatarUrl) as HTMLElement; // works! but can't find the message :/
         this.chatMessageContainer.prepend(messageElement);
       }
     });
-  
-    this.chatMessageContainer.scrollTop = this.chatMessageContainer.scrollHeight+50;
+
+    this.chatMessageContainer.scrollTop = this.chatMessageContainer.scrollHeight + 50;
   }
 
   async GetRandomNumberDelay() {

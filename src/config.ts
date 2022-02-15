@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import MainScene from "./scenes/MainScene";
 import UIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
+import PerspectiveImagePlugin from 'phaser3-rex-plugins/plugins/perspectiveimage-plugin';
 
 export default {
   type: Phaser.AUTO,
@@ -8,8 +9,8 @@ export default {
   dom: {
     createContainer: true
   },
-  //backgroundColor: '#FFFF00',
-  transparent: true,
+  backgroundColor: '#000000',
+  transparent: false,
   scale: {
     width: '100%',
     height: '100%',
@@ -19,6 +20,11 @@ export default {
   },
   scene: [MainScene],
   plugins: {
+    global: [{
+      key: 'rexPerspectiveImagePlugin',
+      plugin: PerspectiveImagePlugin,
+      start: true
+    }],
     scene: [
       {
         key: 'rexUI',

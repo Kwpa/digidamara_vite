@@ -3,7 +3,7 @@ import { h } from 'start-dom-jsx';
 const BaseWebsite = () => {
   return (
     <div class="base">
-      <div class="fixed-header">
+      <div class="fixed-header scroll-width">
         <div class='notification has-background-dark'>
           <nav class="level is-mobile icon-area">
             <div class="level-item has-text-centered">
@@ -49,30 +49,6 @@ const BaseWebsite = () => {
         <h1 id="chat-update" class="has-text-primary">
           HI
         </h1>
-        <div class="columns is-centered is-3">
-          <div class="column">
-            <div class="notification is-black">
-              <div class="avatar-col-container">
-                <img class="flip-image avatar" src="/assets/test_avatars/avatar_cushionimp.png"></img>
-                <img class="avatar" src="/assets/test_avatars/avatar_cushionimp.png"></img>
-              </div>
-              <h1 class="title avatar-col-container">
-                Team Cushion Imp!
-              </h1>
-            </div>
-          </div>
-          <div class="column">
-            <div class="notification is-black">
-              <div class="avatar-col-container">
-                <img class="avatar" src="/assets/test_avatars/avatar_springhand.png"></img>
-                <img class="flip-image avatar" src="/assets/test_avatars/avatar_springhand.png"></img>
-              </div>
-              <h1 class="title avatar-col-container">
-                Team Spring Hand!
-              </h1>
-            </div>
-          </div>
-        </div>
       </div>
 
       <div class="fixed-footer">
