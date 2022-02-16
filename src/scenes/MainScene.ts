@@ -6,7 +6,7 @@ import ChatMessageOtherUser from './elements/ChatMessageOtherUser';
 import ChatMessageCurrentUser from './elements/ChatMessageCurrentUser';
 import VideoTile from './elements/VideoTile';
 import Bulma from '../node_modules/bulma/css/bulma.css';
-import { ChannelMessage, ChannelMessageList, Client, Session, Socket, StorageObject, Users, User } from "@heroiclabs/nakama-js";
+import { ChannelMessage, ChannelMessageList, Client, Session, Socket, StorageObject, Users, User, Match, StorageObjects } from "@heroiclabs/nakama-js";
 import collect from 'collect.js';
 import PerspectiveImagePlugin from 'phaser3-rex-plugins/plugins/perspectiveimage-plugin.js';
 import { PerspectiveCarousel }  from 'phaser3-rex-plugins/plugins/perspectiveimage.js';
@@ -16,12 +16,14 @@ export default class MainScene extends Phaser.Scene  {
 
   session!: Session;
   client!: Client;
+  match!: Match;
   textElement!: HTMLElement;
   anotherTextElement!: HTMLElement;
   messageInput!: HTMLInputElement;
   danceFloor!: HTMLElement;
   chatMessageContainer!: HTMLElement;
   videoTileContainer!: HTMLElement;
+  storeMatchReferece!: StorageObjects;
 
   chatSubmitButton!: HTMLElement;
   settingsHeaderButton!: HTMLElement;
@@ -143,17 +145,17 @@ export default class MainScene extends Phaser.Scene  {
           {
             "videoTitle": "Video One",
             "videoID": "D3Fcrq9WlOo",
-            "thumbnailURL": "https://i.ytimg.com/an_webp/D3Fcrq9WlOo/mqdefault_6s.webp?du=3000&sqp=CIahmZAG&rs=AOn4CLAmiDlOx5c8F_1KtwX7ZUTpXnol9Q"
+            "thumbnailURL": "/assets/test_avatars/avatar_cushionimp.png"
           },
           {
             "videoTitle": "Video Two",
             "videoID": "3dgx7EU66fQ",
-            "thumbnailURL": "https://i.ytimg.com/an_webp/3dgx7EU66fQ/mqdefault_6s.webp?du=3000&sqp=CMCUmZAG&rs=AOn4CLD0NjzmuXxNm2cpbJF6PwPhC4JB3A"
+            "thumbnailURL": "/assets/test_avatars/avatar_cushionimp.png"
           },
           {
             "videoTitle": "Video Live",
             "videoID": "gw6tsyftLRo",
-            "thumbnailURL": "https://i.ytimg.com/an_webp/C5T9lk6RB6k/mqdefault_6s.webp?du=3000&sqp=CP2amZAG&rs=AOn4CLBBg9vqnqQRqtVcsYcYi1Wjz6kAHw"
+            "thumbnailURL": "/assets/test_avatars/avatar_cushionimp.png"
           }
         ]
     }
@@ -188,23 +190,39 @@ export default class MainScene extends Phaser.Scene  {
     console.info("Sesh id:", id);
 
     const socket = this.client.createSocket();
-    await socket.connect(this.session, true); //ssl?
-
-    //-----------------------------
-
+    await socket.connect(this.session, true);
+    await this.JoinMatch(socket);
+    
     var roomname = "PublicChat";
-    this.initializeChat(socket, roomname);
+    await this.initializeChat(socket, roomname);
 
-    this.GetRandomNumberDelay();
+    await this.GetRandomNumberDelay();
+    
 
-    this.chatSubmitButton.onclick = () => {
-      var message = this.messageInput.value;
-      console.log("text " + message);
-      if (message.length > 0) {
-        this.SendChatMessage(socket, "2..." + roomname, message);
-        this.messageInput.value = "";
-      }
+    
+    //-----------------------------
+  }
+
+  async JoinMatch(socket: Socket)
+  {
+    var list = await this.client.listMatches(this.session,1);
+    if(list.matches?.length == 1)
+    {
+      var match = list.matches[0];
+      this.match = await socket.joinMatch(match.match_id);
+      console.log("match_id" + this.match.match_id );   
     }
+    else
+    {
+      var createMatch = await socket.createMatch();
+      this.match = await socket.joinMatch(createMatch.match_id);
+      console.log("match_id" + this.match.match_id );    
+    }
+  }
+
+  async SendOppCode(socket: Socket)
+  {
+    //socket.sendMatchState(this.match.match_id, 0)
   }
 
   async initializeChat(socket: Socket, roomname: string) {
@@ -241,6 +259,14 @@ export default class MainScene extends Phaser.Scene  {
     console.log("Now connected to channel id:", response.id);
     this.CreateChatMessages(this.client, this.session, response.id);
 
+    this.chatSubmitButton.onclick = () => {
+      var message = this.messageInput.value;
+      console.log("text " + message);
+      if (message.length > 0) {
+        this.SendChatMessage(socket, "2..." + roomname, message);
+        this.messageInput.value = "";
+      }
+    }
     //this.SendChatMessage(socket, response.id, this.session.username + " says: I think Red is the imposter!");
   }
 
