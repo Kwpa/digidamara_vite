@@ -1,0 +1,14 @@
+{
+    "notifications": [
+        {
+            "id": "n_001",
+            "title": "Alert",
+            "content": "Notification text here"
+        },
+        {
+            "id": "n_002",
+            "title": "Warning",
+            "content": "Notification text here"
+        }
+    ]
+}

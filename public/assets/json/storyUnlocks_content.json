@@ -1,0 +1,18 @@
+{
+    "storyUnlocks": [
+        {
+            "round": 1,
+            "id": "s_001",
+            "title": "The Lost Element",
+            "content": "The people knew it was time to rise and take the Lost Element from their rulers.",
+            "encryptionLanguage": 0
+        },
+        {
+            "round": 2,
+            "id": "s_002",
+            "title": "The Big Cheese",
+            "content": "Landing on the planet, they were shocked to find that it was in fact made of cheese.",
+            "encryptionLanguage": 0
+        }
+    ]
+}

@@ -5,15 +5,19 @@ import VideoPage from './elements/VideoPage';
 import ChatMessageOtherUser from './elements/ChatMessageOtherUser';
 import ChatMessageCurrentUser from './elements/ChatMessageCurrentUser';
 import VideoTile from './elements/VideoTile';
+import AvatarOverlay from './elements/AvatarOverlay';
+import TeamProfile from './elements/TeamProfile';
 import Bulma from '../node_modules/bulma/css/bulma.css';
 import { ChannelMessage, ChannelMessageList, Client, Session, Socket, StorageObject, Users, User, Match, StorageObjects } from "@heroiclabs/nakama-js";
 import collect from 'collect.js';
 import PerspectiveImagePlugin from 'phaser3-rex-plugins/plugins/perspectiveimage-plugin.js';
-import { PerspectiveCarousel }  from 'phaser3-rex-plugins/plugins/perspectiveimage.js';
+import { PerspectiveCarousel } from 'phaser3-rex-plugins/plugins/perspectiveimage.js';
+import LocalGameState from './LocalGameState';
 
 
-export default class MainScene extends Phaser.Scene  {
+export default class MainScene extends Phaser.Scene {
 
+  localState!: LocalGameState;
   session!: Session;
   client!: Client;
   match!: Match;
@@ -36,7 +40,10 @@ export default class MainScene extends Phaser.Scene  {
   closeVotePageButton!: HTMLElement;
   closeVideoPageButton!: HTMLElement;
   closeHelpPageButton!: HTMLElement;
-  
+  avatarOverlayButton!: HTMLElement;
+
+  width!: number;
+  height!: number;
 
   constructor() {
     super('MainScene');
@@ -70,7 +77,7 @@ export default class MainScene extends Phaser.Scene  {
     };
     const carousel = new PerspectiveCarousel(this,
       {
-        x: width/2, y: height/2,
+        x: width / 2, y: height / 2,
         faces:
           [
             CreateCard(this, 'imp', 'imp-back'),
@@ -85,19 +92,20 @@ export default class MainScene extends Phaser.Scene  {
 
     this.add.existing(carousel);
     carousel.setInteractive()
-            .on('pointerdown', function (pointer, localX, localY, event) {
-                if (localX <= (carousel.width / 2)) {
-                    carousel.roll?.toLeft();
-                } else {
-                    carousel.roll?.toRight();
-                }
-            });
+      .on('pointerdown', function (pointer, localX, localY, event) {
+        if (localX <= (carousel.width / 2)) {
+          carousel.roll?.toLeft();
+        } else {
+          carousel.roll?.toRight();
+        }
+      });
 
     const baseWebsite = this.add.dom(width / 2, height / 2, BaseWebsite() as HTMLElement);
     const chatPage = this.add.dom(width / 2, height / 2, ChatPage() as HTMLElement);
     const videoPage = this.add.dom(width / 2, height / 2, VideoPage() as HTMLElement);
+    const avatarOverlay = this.add.dom(width / 2, height / 2, AvatarOverlay() as HTMLElement); 
+    
     chatPage.setVisible(false);
-
     videoPage.setVisible(false);
     //baseWebsite.setVisible(false);
 
@@ -115,6 +123,8 @@ export default class MainScene extends Phaser.Scene  {
     this.closeChatPageButton = chatPage.getChildByID('close-chat-page-button') as HTMLElement;
     this.closeVideoPageButton = videoPage.getChildByID('close-video-page-button') as HTMLElement;
     this.videoTileContainer = videoPage.getChildByID('video-container') as HTMLElement;
+    this.avatarOverlayButton = avatarOverlay.getChildByID('openProfile') as HTMLElement;
+    
 
     this.chatFooterButton.onclick = () => {
       chatPage.setVisible(true);
@@ -128,13 +138,30 @@ export default class MainScene extends Phaser.Scene  {
     this.closeVideoPageButton.onclick = () => {
       videoPage.setVisible(false);
     }
-
+    this.avatarOverlayButton.onclick = () => {
+      videoPage.setVisible(false);
+    }
     this.SetVideoImages(this.videoTileContainer);
 
     //-----------------------------
 
     this.StartClientConnection();
 
+    
+
+    this.GetLatestStaticData();
+    this.GetLatestDynamicData();
+    
+  }
+
+  async GetLatestStaticData()
+  {
+
+  }
+
+  async GetLatestDynamicData()
+  {
+    
   }
 
   SetVideoImages(element: HTMLElement) {
@@ -169,6 +196,30 @@ export default class MainScene extends Phaser.Scene  {
     )
   }
 
+  async SetupLocalState(userid: string)
+  {
+    //this.localState.Init(username, maxActionPoints);
+  }
+
+  async SetupTeamProfiles(socket: Socket)
+  {
+    let { width, height } = this.sys.game.canvas;
+    const data = {name: "milliton!"}
+
+    const teamProfile = this.add.dom(width / 2, height / 2, TeamProfile(data) as HTMLElement);
+    //teamProfile.setVisible(false); 
+    
+    var donateButton = teamProfile.getChildByID('donateButton') as HTMLElement;
+    donateButton.onclick = () => {
+      if(this.localState.SpendActionPoints(1))
+      {
+        this.localState.GainSparks(1);
+        this.DonateEnergyMatchState(socket, "team_1");
+        //update UI
+      }
+    }
+  }
+
   async StartClientConnection() {
     var rand = Math.floor(Math.random() * 10000);
     var email = "kaiuser_" + rand + "@gmail.com";
@@ -186,43 +237,59 @@ export default class MainScene extends Phaser.Scene  {
     //this.session.username = "Kai";
     //this.socket = this.client.createSocket(true, false);
     console.info("Successfully authenticated:", this.session);
-    let id = this.session.user_id;
+    let id: string = this.session.user_id as string;
     console.info("Sesh id:", id);
+
+    await this.SetupLocalState(id)
 
     const socket = this.client.createSocket();
     await socket.connect(this.session, true);
+
+    await this.SetupTeamProfiles(socket);
+
     await this.JoinMatch(socket);
-    
+    await this.ReceiveMatchState(socket);
+
     var roomname = "PublicChat";
     await this.initializeChat(socket, roomname);
 
     await this.GetRandomNumberDelay();
-    
 
-    
     //-----------------------------
   }
 
-  async JoinMatch(socket: Socket)
-  {
-    var list = await this.client.listMatches(this.session,1);
-    if(list.matches?.length == 1)
-    {
+  async JoinMatch(socket: Socket) {
+    var list = await this.client.listMatches(this.session, 1);
+    if (list.matches?.length == 1) {
       var match = list.matches[0];
       this.match = await socket.joinMatch(match.match_id);
-      console.log("match_id" + this.match.match_id );   
+      console.log("match_id" + this.match.match_id);
     }
-    else
-    {
+    else {
       var createMatch = await socket.createMatch();
       this.match = await socket.joinMatch(createMatch.match_id);
-      console.log("match_id" + this.match.match_id );    
+      console.log("match_id" + this.match.match_id);
     }
   }
 
-  async SendOppCode(socket: Socket)
-  {
-    //socket.sendMatchState(this.match.match_id, 0)
+  async DonateEnergyMatchState(socket: Socket, team_id: string) {
+    await socket.sendMatchState(this.match.match_id, 1, { "team_id": team_id });
+  }
+
+  async ReceiveMatchState(socket: Socket) {
+    socket.onmatchdata = (result) => {
+      var content = result.data;
+      switch (result.op_code) {
+        case 101:
+          console.log("A custom opcode.");
+          break;
+        case 1:
+          console.log("Team " + content + " donated Energy");
+          break;
+        default:
+          console.log("User %o sent %o", result.presences[0].user_id, content);
+      }
+    };
   }
 
   async initializeChat(socket: Socket, roomname: string) {

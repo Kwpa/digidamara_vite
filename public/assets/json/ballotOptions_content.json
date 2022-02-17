@@ -1,0 +1,32 @@
+{
+    "ballotOptions": [
+        {
+            "round": 1,
+            "id": "v_001",
+            "title": "Change the world",
+            "description": "Choosing this option will change everything",
+            "consequence": "Shit got crazy!"
+        },
+        {
+            "round": 1,
+            "id": "v_002",
+            "title": "Stay the same",
+            "description": "Just keep going",
+            "consequence": "Nothing lost, nothing gained"
+        },
+        {
+            "round": 2,
+            "id": "v_003",
+            "title": "Kick them out",
+            "description": "Sus",
+            "consequence": "They weren't the imposter"
+        },
+        {
+            "round": 2,
+            "id": "v_004",
+            "title": "Make them king",
+            "description": "Bow down to the best dancer",
+            "consequence": "Uh oh they turned out to be a dictator"
+        }
+    ]
+}
