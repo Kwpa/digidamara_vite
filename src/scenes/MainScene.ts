@@ -13,11 +13,21 @@ import collect from 'collect.js';
 import PerspectiveImagePlugin from 'phaser3-rex-plugins/plugins/perspectiveimage-plugin.js';
 import { PerspectiveCarousel } from 'phaser3-rex-plugins/plugins/perspectiveimage.js';
 import LocalGameState from './LocalGameState';
-
+import StaticData from './StaticData';
 
 export default class MainScene extends Phaser.Scene {
 
   localState!: LocalGameState;
+  staticData!: StaticData;
+  teams_data!: object;
+  ballots_data!: object;
+  items_data!: object;
+  notifications_data!: object;
+  story_data!: object;
+  labels_data!: object;
+
+
+
   session!: Session;
   client!: Client;
   match!: Match;
@@ -52,10 +62,21 @@ export default class MainScene extends Phaser.Scene {
   preload() {
     this.load.image('imp', '/assets/test_avatars/avatar_cushionimp.png');
     this.load.image('imp-back', '/assets/test_avatars/avatar_cushionimp_flipped.png');
-
     this.load.image('spring', '/assets/test_avatars/avatar_springhand.png');
     this.load.image('spring-back', '/assets/test_avatars/avatar_springhand_flipped.png');
+    this.load.atlas('images', '/assets/test_avatars/avatars_atlas/png', ' /assets/json/avatar_atlas.json');
 
+    this.load.json('teams_content', '/assets/json/teams_content.json');
+    this.load.json('ballotOptions_content', '/assets/json/ballotOptions_content.json');
+    this.load.json('items_content', '/assets/json/items_content.json');
+    this.load.json('notifications_content', '/assets/json/notifications_content.json');
+    this.load.json('storyUnlocks_content', '/assets/json/storyUnlocks_content.json');
+    this.load.json('appLabels_content', '/assets/json/appLabels_content.json');
+  }
+
+  LoadDancefloorAvatars()
+  {
+    
   }
 
   create() //to tackle - server code and setup for typescript!
@@ -64,47 +85,22 @@ export default class MainScene extends Phaser.Scene {
     console.log(width);
     console.log('load Main Scene');
 
+    this.teams_data = this.cache.json.get('teams_content') as object;
+    this.ballots_data = this.cache.json.get('ballotOptions_content');
+    this.items_data = this.cache.json.get('items_content');
+    this.notifications_data = this.cache.json.get('notifications_content');
+    this.story_data = this.cache.json.get('storyUnlocks_content');
+    this.labels_data = this.cache.json.get('appLabels_content');
+
     const game = document.getElementsByTagName('canvas')[0];
     game.style.setProperty('position', 'absolute');
     game.style.setProperty('z-index', '-1');
 
-    var CreateCard = function (scene, front, back) {
-      return scene.add.rexPerspectiveCard({
-        front: { key: front },
-        back: { key: back },
-        flip: false
-      })
-    };
-    const carousel = new PerspectiveCarousel(this,
-      {
-        x: width / 2, y: height / 2,
-        faces:
-          [
-            CreateCard(this, 'imp', 'imp-back'),
-            CreateCard(this, 'spring', 'spring-back'),
-            CreateCard(this, 'imp', 'imp-back'),
-            CreateCard(this, 'spring', 'spring-back'),
-            CreateCard(this, 'imp', 'imp-back')
-          ],
-        faceSpace: width
-      }
-    ) as PerspectiveCarousel;
-
-    this.add.existing(carousel);
-    carousel.setInteractive()
-      .on('pointerdown', function (pointer, localX, localY, event) {
-        if (localX <= (carousel.width / 2)) {
-          carousel.roll?.toLeft();
-        } else {
-          carousel.roll?.toRight();
-        }
-      });
-
     const baseWebsite = this.add.dom(width / 2, height / 2, BaseWebsite() as HTMLElement);
     const chatPage = this.add.dom(width / 2, height / 2, ChatPage() as HTMLElement);
     const videoPage = this.add.dom(width / 2, height / 2, VideoPage() as HTMLElement);
-    const avatarOverlay = this.add.dom(width / 2, height / 2, AvatarOverlay() as HTMLElement); 
-    
+    const avatarOverlay = this.add.dom(width / 2, height / 2, AvatarOverlay() as HTMLElement);
+
     chatPage.setVisible(false);
     videoPage.setVisible(false);
     //baseWebsite.setVisible(false);
@@ -124,7 +120,7 @@ export default class MainScene extends Phaser.Scene {
     this.closeVideoPageButton = videoPage.getChildByID('close-video-page-button') as HTMLElement;
     this.videoTileContainer = videoPage.getChildByID('video-container') as HTMLElement;
     this.avatarOverlayButton = avatarOverlay.getChildByID('openProfile') as HTMLElement;
-    
+
 
     this.chatFooterButton.onclick = () => {
       chatPage.setVisible(true);
@@ -145,23 +141,30 @@ export default class MainScene extends Phaser.Scene {
 
     //-----------------------------
 
+    this.GetLatestStaticData();
     this.StartClientConnection();
 
-    
 
-    this.GetLatestStaticData();
     this.GetLatestDynamicData();
-    
-  }
-
-  async GetLatestStaticData()
-  {
 
   }
 
-  async GetLatestDynamicData()
-  {
-    
+
+
+  async GetLatestStaticData() {
+    this.staticData = await new StaticData();
+    this.staticData.Init(
+      this.teams_data,
+      this.items_data,
+      this.story_data,
+      this.notifications_data,
+      this.ballots_data,
+      this.labels_data
+    );
+  }
+
+  async GetLatestDynamicData() {
+
   }
 
   SetVideoImages(element: HTMLElement) {
@@ -196,28 +199,79 @@ export default class MainScene extends Phaser.Scene {
     )
   }
 
-  async SetupLocalState(userid: string)
-  {
-    //this.localState.Init(username, maxActionPoints);
+  async SetupLocalState(user_id: string) {
+    var account = await this.client.getAccount(this.session);
+    this.localState = new LocalGameState();
+    var list: string[] = [];
+    this.staticData.teams.forEach((team) => {
+      list.push(team.id);
+    })
+    var username = account.user?.username as string;
+    this.localState.Init(username, 5, list);
   }
 
-  async SetupTeamProfiles(socket: Socket)
-  {
+  async SetupTeamProfiles(socket: Socket) {
     let { width, height } = this.sys.game.canvas;
-    const data = {name: "milliton!"}
 
-    const teamProfile = this.add.dom(width / 2, height / 2, TeamProfile(data) as HTMLElement);
-    //teamProfile.setVisible(false); 
-    
-    var donateButton = teamProfile.getChildByID('donateButton') as HTMLElement;
-    donateButton.onclick = () => {
-      if(this.localState.SpendActionPoints(1))
-      {
-        this.localState.GainSparks(1);
-        this.DonateEnergyMatchState(socket, "team_1");
-        //update UI
-      }
-    }
+    this.staticData.teams.forEach(
+      (team) => {
+        var title = team.id as string;
+        console.log("title: " + title);
+        const data = { name: team.title };
+        const teamProfile = this.add.dom(width / 2, height / 2, TeamProfile(data) as HTMLElement);
+
+        var donateButton = teamProfile.getChildByID('donateButton') as HTMLElement;
+        var closeButton = teamProfile.getChildByID('close-team-page-button') as HTMLElement;
+        donateButton.onclick = () => {
+          if (this.localState.SpendActionPoints(1)) {
+            this.localState.GainSparks(1);
+            this.DonateEnergyMatchState(socket, "team_1");
+            //update UI
+          }
+        }
+        closeButton.onclick = () => {
+          teamProfile.setVisible(false);
+        }
+      });
+  }
+
+  SetupTeamAvatars() {
+    let { width, height } = this.sys.game.canvas;
+
+    var CreateCard = function (scene, front, back) {
+      return scene.add.rexPerspectiveCard({
+        front: { key: front },
+        back: { key: back },
+        flip: false
+      })
+    };
+
+    var data = {
+      x: width / 2, y: height / 2,
+      faces:[],
+      faceSpace: width
+    } as PerspectiveCarousel.IConfig;
+
+    this.staticData.teams.forEach(
+      (team)=>{
+        data.faces?.push(CreateCard(this, 'imp', 'imp-back'));
+      })
+
+    const carousel = new PerspectiveCarousel(this, data) as PerspectiveCarousel;
+
+    this.add.existing(carousel);
+    carousel.setInteractive()
+      .on('pointerdown', (pointer, localX, localY, event) => {
+        if (localX <= (carousel.width / 2)) {
+          carousel.roll?.toLeft();
+          this.localState.RollCarousel(-1);
+          console.log("new team " + this.localState.currentTeamID);
+        } else {
+          carousel.roll?.toRight();
+          this.localState.RollCarousel(1);
+          console.log("new team " + this.localState.currentTeamID);
+        }
+      });
   }
 
   async StartClientConnection() {
@@ -234,13 +288,14 @@ export default class MainScene extends Phaser.Scene {
         avatar_url: url
       }
     );
+
     //this.session.username = "Kai";
     //this.socket = this.client.createSocket(true, false);
     console.info("Successfully authenticated:", this.session);
     let id: string = this.session.user_id as string;
     console.info("Sesh id:", id);
 
-    await this.SetupLocalState(id)
+    await this.SetupLocalState(id);
 
     const socket = this.client.createSocket();
     await socket.connect(this.session, true);

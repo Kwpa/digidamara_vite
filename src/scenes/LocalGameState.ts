@@ -14,7 +14,9 @@ export default class LocalGameState
         this.maxActionPoints = maxActionPoints;
         this.SetActionPointsToMax();
         this.carouselPosition = 0;
+        this.teamIDs = teamIDs;
         this.SetCurrentTeamID()
+        console.log("starting team " + this.currentTeamID);
     }
 
     SetCurrentTeamID()
