@@ -60,11 +60,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('imp', '/assets/test_avatars/avatar_cushionimp.png');
-    this.load.image('imp-back', '/assets/test_avatars/avatar_cushionimp_flipped.png');
-    this.load.image('spring', '/assets/test_avatars/avatar_springhand.png');
-    this.load.image('spring-back', '/assets/test_avatars/avatar_springhand_flipped.png');
-    this.load.atlas('images', '/assets/test_avatars/avatars_atlas/png', ' /assets/json/avatar_atlas.json');
+    this.load.atlas('atlas', '/assets/test_avatars/avatar_atlas.png', ' /assets/json/avatar_atlas.json');
 
     this.load.json('teams_content', '/assets/json/teams_content.json');
     this.load.json('ballotOptions_content', '/assets/json/ballotOptions_content.json');
@@ -72,11 +68,6 @@ export default class MainScene extends Phaser.Scene {
     this.load.json('notifications_content', '/assets/json/notifications_content.json');
     this.load.json('storyUnlocks_content', '/assets/json/storyUnlocks_content.json');
     this.load.json('appLabels_content', '/assets/json/appLabels_content.json');
-  }
-
-  LoadDancefloorAvatars()
-  {
-    
   }
 
   create() //to tackle - server code and setup for typescript!
@@ -148,8 +139,8 @@ export default class MainScene extends Phaser.Scene {
     this.GetLatestDynamicData();
 
   }
-
-
+  
+  
 
   async GetLatestStaticData() {
     this.staticData = await new StaticData();
@@ -162,9 +153,49 @@ export default class MainScene extends Phaser.Scene {
       this.labels_data
     );
   }
-
+  
   async GetLatestDynamicData() {
+    
+  }
+  
+  async StartClientConnection() {
+    var rand = Math.floor(Math.random() * 10000);
+    var email = "kaiuser_" + rand + "@gmail.com";
+    var password = "password";
+    var url = "https://source.boringavatars.com/marble/50/" + rand;
+    this.client = new Client("defaultkey", "127.0.0.1", "7350", false);
+    this.session = await this.client.authenticateEmail(email, password, true);
 
+    await this.client.updateAccount(this.session,
+      {
+        username: rand.toString(),
+        avatar_url: url
+      }
+    );
+
+    //this.session.username = "Kai";
+    //this.socket = this.client.createSocket(true, false);
+    console.info("Successfully authenticated:", this.session);
+    let id: string = this.session.user_id as string;
+    console.info("Sesh id:", id);
+
+    await this.SetupLocalState(id);
+
+    const socket = this.client.createSocket();
+    await socket.connect(this.session, true);
+
+    await this.SetupTeamProfiles(socket);
+    await this.SetupTeamAvatars();
+
+    await this.JoinMatch(socket);
+    await this.ReceiveMatchState(socket);
+
+    var roomname = "PublicChat";
+    await this.initializeChat(socket, roomname);
+
+    await this.GetRandomNumberDelay();
+
+    //-----------------------------
   }
 
   SetVideoImages(element: HTMLElement) {
@@ -219,7 +250,7 @@ export default class MainScene extends Phaser.Scene {
         console.log("title: " + title);
         const data = { name: team.title };
         const teamProfile = this.add.dom(width / 2, height / 2, TeamProfile(data) as HTMLElement);
-
+        teamProfile.setVisible(false);
         var donateButton = teamProfile.getChildByID('donateButton') as HTMLElement;
         var closeButton = teamProfile.getChildByID('close-team-page-button') as HTMLElement;
         donateButton.onclick = () => {
@@ -235,13 +266,20 @@ export default class MainScene extends Phaser.Scene {
       });
   }
 
-  SetupTeamAvatars() {
+  async SetupTeamAvatars() {
     let { width, height } = this.sys.game.canvas;
 
-    var CreateCard = function (scene, front, back) {
+    var atlasTexture = this.textures.get('atlas');
+    
+    var frames = atlasTexture.getFrameNames();
+    console.log("atlas frame name " + frames[0]);
+
+    //var sprite = this.add.image(width/2,height/2,'atlas', frames[0]);
+
+    var CreateCard = function (scene, front, frontFrame, back, backFrame) {
       return scene.add.rexPerspectiveCard({
-        front: { key: front },
-        back: { key: back },
+        front: { key: front, frame: frontFrame},
+        back: { key: back, frame: backFrame},
         flip: false
       })
     };
@@ -252,9 +290,13 @@ export default class MainScene extends Phaser.Scene {
       faceSpace: width
     } as PerspectiveCarousel.IConfig;
 
+
     this.staticData.teams.forEach(
       (team)=>{
-        data.faces?.push(CreateCard(this, 'imp', 'imp-back'));
+        var frontId = team.id + "_A";
+        var backId = team.id + "_A_flipped";
+        console.log("frontid " + frontId + " backid" + backId);
+        data.faces?.push(CreateCard(this, 'atlas', frontId, 'atlas', backId));
       })
 
     const carousel = new PerspectiveCarousel(this, data) as PerspectiveCarousel;
@@ -274,44 +316,6 @@ export default class MainScene extends Phaser.Scene {
       });
   }
 
-  async StartClientConnection() {
-    var rand = Math.floor(Math.random() * 10000);
-    var email = "kaiuser_" + rand + "@gmail.com";
-    var password = "password";
-    var url = "https://source.boringavatars.com/marble/50/" + rand;
-    this.client = new Client("defaultkey", "127.0.0.1", "7350", false);
-    this.session = await this.client.authenticateEmail(email, password, true);
-
-    await this.client.updateAccount(this.session,
-      {
-        username: rand.toString(),
-        avatar_url: url
-      }
-    );
-
-    //this.session.username = "Kai";
-    //this.socket = this.client.createSocket(true, false);
-    console.info("Successfully authenticated:", this.session);
-    let id: string = this.session.user_id as string;
-    console.info("Sesh id:", id);
-
-    await this.SetupLocalState(id);
-
-    const socket = this.client.createSocket();
-    await socket.connect(this.session, true);
-
-    await this.SetupTeamProfiles(socket);
-
-    await this.JoinMatch(socket);
-    await this.ReceiveMatchState(socket);
-
-    var roomname = "PublicChat";
-    await this.initializeChat(socket, roomname);
-
-    await this.GetRandomNumberDelay();
-
-    //-----------------------------
-  }
 
   async JoinMatch(socket: Socket) {
     var list = await this.client.listMatches(this.session, 1);
