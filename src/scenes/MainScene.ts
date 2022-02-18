@@ -14,6 +14,8 @@ import PerspectiveImagePlugin from 'phaser3-rex-plugins/plugins/perspectiveimage
 import { PerspectiveCarousel } from 'phaser3-rex-plugins/plugins/perspectiveimage.js';
 import LocalGameState from './LocalGameState';
 import StaticData from './StaticData';
+import RenderTexture from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/rendertexture/RenderTexture';
+import Sprite from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/sprite/Sprite';
 
 export default class MainScene extends Phaser.Scene {
 
@@ -57,13 +59,31 @@ export default class MainScene extends Phaser.Scene {
 
   carouselTapBool!: boolean;
 
+  //starfield
+  distance = 300;
+  speed = 1;
+  starSprite;
+  starFieldTexture;
+  max = 100;
+  listOfColours!: number[];
+  xx!: number[];
+  yy!: number[];
+  zz!: number[];
+
+  //avatarRenderTextures
+  avatarRenderTextures;
+  avatarSprites;
+
+
   constructor() {
     super('MainScene');
   }
 
   preload() {
     this.load.atlas('atlas', '/assets/test_avatars/avatar_atlas.png', ' /assets/json/avatar_atlas.json');
-
+    this.load.image('arrow', '/assets/ui/arrow.png');
+    this.load.image('star', '/assets/ui/star.png');
+    this.load.image('heart', '/assets/ui/heart.png');
     this.load.json('teams_content', '/assets/json/teams_content.json');
     this.load.json('ballotOptions_content', '/assets/json/ballotOptions_content.json');
     this.load.json('items_content', '/assets/json/items_content.json');
@@ -140,9 +160,10 @@ export default class MainScene extends Phaser.Scene {
 
     this.GetLatestDynamicData();
 
+    this.StarField();
   }
-  
-  
+
+
 
   async GetLatestStaticData() {
     this.staticData = await new StaticData();
@@ -155,11 +176,33 @@ export default class MainScene extends Phaser.Scene {
       this.labels_data
     );
   }
-  
+
   async GetLatestDynamicData() {
-    
+
   }
-  
+
+  StarField() {
+    let { width, height } = this.sys.game.canvas;
+    this.starSprite = this.add.sprite(0, 0, 'heart');
+    this.xx = [];
+    this.yy = [];
+    this.zz = [];
+    this.starFieldTexture = this.add.renderTexture(0, 0, width * 2, height * 2);
+
+    this.listOfColours = [];
+    for (var i = 0; i < this.max; i++) {
+      var colstring = "0x" + Math.floor(Math.random()*16777215).toString(16);
+      this.listOfColours.push(parseInt(colstring));
+    }
+
+    var squareDistance = Math.max(width,height);
+    for (var i = 0; i < this.max; i++) {
+      this.xx.push(Math.floor(Math.random() * squareDistance) - squareDistance/2);
+      this.yy.push(Math.floor(Math.random() * squareDistance) - squareDistance/2);
+      this.zz.push(Math.floor(Math.random() * 1700) - 100);
+    }
+  }
+
   async StartClientConnection() {
     var rand = Math.floor(Math.random() * 10000);
     var email = "kaiuser_" + rand + "@gmail.com";
@@ -252,13 +295,13 @@ export default class MainScene extends Phaser.Scene {
         console.log("title: " + title);
         const data = { name: team.title };
         const teamProfile = this.add.dom(width / 2, height / 2, TeamProfile(data) as HTMLElement);
-        teamProfile.setVisible(true);
+        teamProfile.setVisible(false);
         var donateButton = teamProfile.getChildByID('donateButton') as HTMLElement;
         var closeButton = teamProfile.getChildByID('close-team-page-button') as HTMLElement;
         donateButton.onclick = () => {
           if (this.localState.SpendActionPoints(1)) {
             this.localState.GainSparks(1);
-            this.DonateEnergyMatchState(socket, "team_1");
+            this.DonateEnergyMatchState(socket, this.localState.currentTeamID);
             //update UI
           }
         }
@@ -273,7 +316,7 @@ export default class MainScene extends Phaser.Scene {
 
     this.carouselTapBool = true;
     var atlasTexture = this.textures.get('atlas');
-    
+
     var frames = atlasTexture.getFrameNames();
     console.log("atlas frame name " + frames[0]);
 
@@ -281,21 +324,21 @@ export default class MainScene extends Phaser.Scene {
 
     var CreateCard = function (scene, front, frontFrame, back, backFrame) {
       return scene.add.rexPerspectiveCard({
-        front: { key: front, frame: frontFrame},
-        back: { key: back, frame: backFrame},
+        front: { key: front, frame: frontFrame },
+        back: { key: back, frame: backFrame },
         flip: false
       })
     };
 
     var data = {
       x: width / 2, y: height / 2,
-      faces:[],
+      faces: [],
       faceSpace: width
     } as PerspectiveCarousel.IConfig;
 
 
     this.staticData.teams.forEach(
-      (team)=>{
+      (team) => {
         var frontId = team.id + "_A";
         var backId = team.id + "_A_flipped";
         console.log("frontid " + frontId + " backid" + backId);
@@ -303,24 +346,69 @@ export default class MainScene extends Phaser.Scene {
       })
 
     const carousel = new PerspectiveCarousel(this, data) as PerspectiveCarousel;
+    const tapAreaLeft = this.add.rectangle(0, height / 2, width / 3, height, 0x6666, 0);
+    const tapAreaRight = this.add.rectangle(width, height / 2, width / 3, height, 0x6666, 0);
+    var cappedWidth = width;
+    var cappedWidth = Math.min(width, 700);
+    const tapAreaLeftArrow = this.add.image(cappedWidth / (32 / (2)), height / 2, 'arrow');
+    const tapAreaRightArrow = this.add.image(width - (cappedWidth / (32 / (2))), height / 2, 'arrow');
 
-    this.add.existing(carousel);
-    carousel.setInteractive()
+    tapAreaLeftArrow.scale = cappedWidth / (32 * 4);
+    tapAreaRightArrow.scale = cappedWidth / (32 * 4);
+    tapAreaLeftArrow.flipX = true;
+
+    tapAreaLeft.depth = 1;
+    tapAreaLeftArrow.depth = 1;
+    tapAreaRight.depth = 1;
+    tapAreaRightArrow.depth = 1;
+
+    carousel.roll?.setDuration(300);
+    carousel.roll?.on('complete', () => {
+      this.carouselTapBool = true;
+    });
+
+    tapAreaLeft.setInteractive()
       .on('pointerdown', async (pointer, localX, localY, event) => {
-        if(this.carouselTapBool)
-        {
-          if (localX <= (carousel.width / 2)) {
-            carousel.roll?.toLeft();
-            this.localState.RollCarousel(-1);
-            console.log("new team " + this.localState.currentTeamID);
-          } else {
-            carousel.roll?.toRight();
-            this.localState.RollCarousel(1);
-            await this.delay(500);
-            console.log("new team " + this.localState.currentTeamID);
-          }
+        if (this.carouselTapBool) {
+          this.carouselTapBool = false;
+          carousel.roll?.toLeft();
+          this.localState.RollCarousel(-1);
+          console.log("new team " + this.localState.currentTeamID);
         }
       });
+
+    tapAreaRight.setInteractive()
+      .on('pointerdown', async (pointer, localX, localY, event) => {
+        if (this.carouselTapBool) {
+          this.carouselTapBool = false;
+          carousel.roll?.toRight();
+          this.localState.RollCarousel(1);
+          console.log("new team " + this.localState.currentTeamID);
+        }
+      });
+
+      var tweenLeft = this.tweens.add({
+        targets: tapAreaLeftArrow,
+        x: 100,
+        duration: 1000,
+        ease: 'Sine.easeInOut',
+        yoyo: true,
+        loop: -1,
+        delay: 100
+      });
+
+      var tweenRight = this.tweens.add({
+        targets: tapAreaRightArrow,
+        x: width-100,
+        duration: 1000,
+        ease: 'Sine.easeInOut',
+        yoyo: true,
+        loop: -1,
+        delay: 100
+      });
+      
+
+    this.add.existing(carousel);
   }
 
   async delay(time) {
@@ -342,8 +430,8 @@ export default class MainScene extends Phaser.Scene {
   }
 
   async DonateEnergyMatchState(socket: Socket, team_id: string) {
-    
-    await socket.sendMatchState(this.match.match_id, 1, team_id); //{ "team_id": team_id }
+
+    await socket.sendMatchState(this.match.match_id, 1, { "team_id": team_id }); //
   }
 
   async ReceiveMatchState(socket: Socket) {
@@ -472,9 +560,36 @@ export default class MainScene extends Phaser.Scene {
     this.time.delayedCall(1000, this.GetRandomNumberDelay, [], this);
   }
 
-  update() {
+  UpdateStarField() {
+    this.starFieldTexture.clear();
+    this.starFieldTexture.beginDraw();
+    
+    for (var i = 0; i < this.max; i++) {
+      var perspective = this.distance / (this.distance - this.zz[i]);
+      var x = this.cameras.main.centerX + this.xx[i] * perspective;
+      var y = this.cameras.main.centerY + this.yy[i] * perspective;
+
+      this.zz[i] += this.speed;
+
+      if (this.zz[i] > 300) {
+        this.zz[i] -= 600;
+      }
+      
+      
+      this.starSprite.setTint(this.listOfColours[i]);
+      this.starFieldTexture.batchDraw(this.starSprite, x, y);
+    }
+    this.starFieldTexture.endDraw();
+  }
+
+  UpdateDancers()
+  {
 
   }
+
+  update() {
+    this.UpdateStarField();
+   }
 }
 
 

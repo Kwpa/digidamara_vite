@@ -11,6 +11,7 @@ export default {
   },
   backgroundColor: '#000000',
   transparent: false,
+  pixelArt:true,
   scale: {
     width: '100%',
     height: '100%',
