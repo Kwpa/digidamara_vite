@@ -336,6 +336,9 @@ export default class MainScene extends Phaser.Scene {
       faceSpace: width
     } as PerspectiveCarousel.IConfig;
 
+    this.avatarRenderTextures = this.make.renderTexture({
+
+    });
 
     this.staticData.teams.forEach(
       (team) => {
