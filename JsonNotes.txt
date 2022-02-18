@@ -1,0 +1,5 @@
+we have json files ready to go
+in preload we cache the json
+in create we get the json
+we then setup static data
+from the static data, and dynamic data, we can set the localstate

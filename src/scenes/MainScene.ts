@@ -55,6 +55,8 @@ export default class MainScene extends Phaser.Scene {
   width!: number;
   height!: number;
 
+  carouselTapBool!: boolean;
+
   constructor() {
     super('MainScene');
   }
@@ -250,7 +252,7 @@ export default class MainScene extends Phaser.Scene {
         console.log("title: " + title);
         const data = { name: team.title };
         const teamProfile = this.add.dom(width / 2, height / 2, TeamProfile(data) as HTMLElement);
-        teamProfile.setVisible(false);
+        teamProfile.setVisible(true);
         var donateButton = teamProfile.getChildByID('donateButton') as HTMLElement;
         var closeButton = teamProfile.getChildByID('close-team-page-button') as HTMLElement;
         donateButton.onclick = () => {
@@ -269,6 +271,7 @@ export default class MainScene extends Phaser.Scene {
   async SetupTeamAvatars() {
     let { width, height } = this.sys.game.canvas;
 
+    this.carouselTapBool = true;
     var atlasTexture = this.textures.get('atlas');
     
     var frames = atlasTexture.getFrameNames();
@@ -303,19 +306,26 @@ export default class MainScene extends Phaser.Scene {
 
     this.add.existing(carousel);
     carousel.setInteractive()
-      .on('pointerdown', (pointer, localX, localY, event) => {
-        if (localX <= (carousel.width / 2)) {
-          carousel.roll?.toLeft();
-          this.localState.RollCarousel(-1);
-          console.log("new team " + this.localState.currentTeamID);
-        } else {
-          carousel.roll?.toRight();
-          this.localState.RollCarousel(1);
-          console.log("new team " + this.localState.currentTeamID);
+      .on('pointerdown', async (pointer, localX, localY, event) => {
+        if(this.carouselTapBool)
+        {
+          if (localX <= (carousel.width / 2)) {
+            carousel.roll?.toLeft();
+            this.localState.RollCarousel(-1);
+            console.log("new team " + this.localState.currentTeamID);
+          } else {
+            carousel.roll?.toRight();
+            this.localState.RollCarousel(1);
+            await this.delay(500);
+            console.log("new team " + this.localState.currentTeamID);
+          }
         }
       });
   }
 
+  async delay(time) {
+    return new Promise(resolve => setTimeout(resolve, time));
+  }
 
   async JoinMatch(socket: Socket) {
     var list = await this.client.listMatches(this.session, 1);
@@ -332,7 +342,8 @@ export default class MainScene extends Phaser.Scene {
   }
 
   async DonateEnergyMatchState(socket: Socket, team_id: string) {
-    await socket.sendMatchState(this.match.match_id, 1, { "team_id": team_id });
+    
+    await socket.sendMatchState(this.match.match_id, 1, team_id); //{ "team_id": team_id }
   }
 
   async ReceiveMatchState(socket: Socket) {

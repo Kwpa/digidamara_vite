@@ -27,6 +27,10 @@ export default class LocalGameState
     RollCarousel(leftRight: number)
     {
         this.carouselPosition += leftRight;
+        var n = this.carouselPosition;
+        var m = this.teamIDs.length;
+        var mod = ((n % m) + m) % m;
+        this.carouselPosition = mod;
         this.SetCurrentTeamID();
     }
 
