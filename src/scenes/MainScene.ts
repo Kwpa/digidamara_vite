@@ -238,7 +238,7 @@ export default class MainScene extends Phaser.Scene {
     var roomname = "PublicChat";
     await this.initializeChat(socket, roomname);
 
-    await this.GetRandomNumberDelay();
+    //await this.GetRandomNumberDelay();
 
     //-----------------------------
   }
@@ -448,7 +448,10 @@ export default class MainScene extends Phaser.Scene {
           console.log("Team " + content + " donated Energy");
           break;
         default:
-          console.log("User %o sent %o", result.presences[0].user_id, content);
+          console.log(JSON.stringify(result))
+
+          // This doesn't seem to match what's actually being received (presence.user_id)?
+          //console.log("User %o sent %o", result.presences[0].user_id, content);
       }
     };
   }
