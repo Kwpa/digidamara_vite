@@ -88,6 +88,34 @@ export default class LocalGameState
         }
         else return false;
     }
+}
 
+export class TeamRenderTextures
+{
+    id!: string;
+    rendTex_front;
+    rendTex_back;
+    
+    constructor(id, front, back) {
+        this.id = id;
+        this.rendTex_front = front;
+        this.rendTex_back = back;
+      }
+}
 
+export class TeamImages
+{
+    id!: string;
+    img_A;
+    img_A_flipped;
+    img_B;
+    img_B_flipped;
+    
+    constructor(id, A, A_flipped, B, B_flipped) {
+        this.id = id;
+        this.img_A = A;
+        this.img_A_flipped = A_flipped;
+        this.img_B = B;
+        this.img_B_flipped = B_flipped;
+      }
 }

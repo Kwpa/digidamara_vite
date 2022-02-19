@@ -1,4 +1,4 @@
-import Phaser, { Scene } from 'phaser';
+import Phaser, { Scene, Tweens } from 'phaser';
 import BaseWebsite from './elements/BaseWebsite';
 import ChatPage from './elements/ChatPage';
 import VideoPage from './elements/VideoPage';
@@ -12,10 +12,11 @@ import { ChannelMessage, ChannelMessageList, Client, Session, Socket, StorageObj
 import collect from 'collect.js';
 import PerspectiveImagePlugin from 'phaser3-rex-plugins/plugins/perspectiveimage-plugin.js';
 import { PerspectiveCarousel } from 'phaser3-rex-plugins/plugins/perspectiveimage.js';
-import LocalGameState from './LocalGameState';
+import LocalGameState, { TeamImages, TeamRenderTextures } from './LocalGameState';
 import StaticData from './StaticData';
 import RenderTexture from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/rendertexture/RenderTexture';
 import Sprite from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/sprite/Sprite';
+import Image from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/image/Image';
 
 export default class MainScene extends Phaser.Scene {
 
@@ -91,6 +92,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.json('notifications_content', '/assets/json/notifications_content.json');
     this.load.json('storyUnlocks_content', '/assets/json/storyUnlocks_content.json');
     this.load.json('appLabels_content', '/assets/json/appLabels_content.json');
+    this.load.json('eightpath', '/assets/json/paths/path_4.json');
   }
 
   create() //to tackle - server code and setup for typescript!
@@ -314,42 +316,121 @@ export default class MainScene extends Phaser.Scene {
       });
   }
 
+  imgs!: TeamImages[];
+  cardTexs!: TeamRenderTextures[];
+  faces;
+  tweenDummy;
+  pathDummy;
+  follower;
+  
   async SetupTeamAvatars() {
+
+    var json = this.cache.json.get('eightpath');
+
+    var CreateCard = function (scene, front, back) {
+      return scene.add.rexPerspectiveCard({
+        front: { key: front },
+        back: { key: back},
+        flip: false
+      })
+    };
+
+    this.follower = { t: 0, vec: new Phaser.Math.Vector2()};
+    this.pathDummy = new Phaser.Curves.Path(json);
+    
+    this.tweenDummy = this.tweens.addCounter({
+      from: 0,
+      to: 1,
+      duration: 500,
+      ease: 'Power0',//'Sine.easeInOut',
+      yoyo: true,
+      repeat: -1,
+      delay: 200
+    })
+
+    this.tweens.add({
+      targets: this.follower,
+        t: 1,
+        ease: 'Power0',
+        duration: 4000,
+        yoyo: false,
+        repeat: -1
+    });
+
+
     let { width, height } = this.sys.game.canvas;
+    
+    this.cardTexs = [];
+    this.faces = [];
+    this.imgs = [];
+    for(var i = 0; i < this.staticData.teams.length; i++)
+    {
+      var id = i+1;
+      var a = this.add.image(300,300,'atlas','t_00'+id+'_A');
+      var a_f = this.add.image(300,300,'atlas','t_00'+id+'_A_flipped');
+      var b = this.add.image(300,300,'atlas','t_00'+id+'_B');
+      var b_f = this.add.image(300,300,'atlas','t_00'+id+'_B_flipped');
+      this.imgs.push(
+        new TeamImages(
+          't_00'+i,
+          a.setTint(0x808080),
+          a_f.setTint(0x808080),
+          b.setTint(0x808080),
+          b_f.setTint(0x808080)
+          )
+        );
+      var rendTex_front = this.add.renderTexture(0,0,600,600);
+      rendTex_front.draw(this.imgs[i].img_A, 150, 300);
+      rendTex_front.draw(this.imgs[i].img_B, 450, 300);
+      var rendTex_back = this.add.renderTexture(0,0,600,600);
+      rendTex_back.draw(this.imgs[i].img_A_flipped, 150,300);
+      rendTex_back.draw(this.imgs[i].img_B_flipped, 450,300);
+      rendTex_front.saveTexture('t_00'+id+'_front');
+      rendTex_back.saveTexture('t_00'+id+'_back');
+      this.cardTexs.push(
+        new TeamRenderTextures(
+          't_00'+id,
+          rendTex_front,
+          rendTex_back
+        )
+      );
+      var card = CreateCard(this, 't_00'+id+'_front', 't_00'+id+'_back');
+      this.faces.push(card);
+    }
+    this.imgs.forEach((img)=>{
+      img.img_A.setVisible(false);
+      img.img_A_flipped.setVisible(false);
+      img.img_B.setVisible(false);
+      img.img_B_flipped.setVisible(false);
+    })
+    this.cardTexs.forEach((rt)=>{
+      rt.rendTex_front.setVisible(false);
+      rt.rendTex_back.setVisible(false);
+    })
 
     this.carouselTapBool = true;
     var atlasTexture = this.textures.get('atlas');
 
     var frames = atlasTexture.getFrameNames();
-    console.log("atlas frame name " + frames[0]);
 
     //var sprite = this.add.image(width/2,height/2,'atlas', frames[0]);
 
-    var CreateCard = function (scene, front, frontFrame, back, backFrame) {
-      return scene.add.rexPerspectiveCard({
-        front: { key: front, frame: frontFrame },
-        back: { key: back, frame: backFrame },
-        flip: false
-      })
-    };
 
     var data = {
       x: width / 2, y: height / 2,
-      faces: [],
-      faceSpace: width
+      faces: this.faces,
+      faceSpace: Math.min(width, 200)
     } as PerspectiveCarousel.IConfig;
 
-    this.avatarRenderTextures = this.make.renderTexture({
+    
 
-    });
-
-    this.staticData.teams.forEach(
+    /*this.staticData.teams.forEach(
       (team) => {
         var frontId = team.id + "_A";
         var backId = team.id + "_A_flipped";
         console.log("frontid " + frontId + " backid" + backId);
         data.faces?.push(CreateCard(this, 'atlas', frontId, 'atlas', backId));
-      })
+      })*/
 
     const carousel = new PerspectiveCarousel(this, data) as PerspectiveCarousel;
     const tapAreaLeft = this.add.rectangle(0, height / 2, width / 3, height, 0x6666, 0);
@@ -378,7 +459,20 @@ export default class MainScene extends Phaser.Scene {
         if (this.carouselTapBool) {
           this.carouselTapBool = false;
           carousel.roll?.toLeft();
+
+          for(var i =0; i < this.imgs.length; i++)
+          {
+            var img = this.imgs[i];
+            (img.img_A as Image).setTint(0x808080);
+            (img.img_B as Image).setTint(0x808080);
+            (this.cardTexs[i].rendTex_front as RenderTexture).clear();
+            this.cardTexs[i].rendTex_front.draw(this.imgs[i].img_A, 150, 300);
+            this.cardTexs[i].rendTex_front.draw(this.imgs[i].img_B, 450, 300);
+          }
+
           this.localState.RollCarousel(-1);
+          (this.imgs[this.localState.carouselPosition].img_A as Image).setTint(0xffffff);
+          (this.imgs[this.localState.carouselPosition].img_B as Image).setTint(0xffffff);
           console.log("new team " + this.localState.currentTeamID);
         }
       });
@@ -388,14 +482,29 @@ export default class MainScene extends Phaser.Scene {
         if (this.carouselTapBool) {
           this.carouselTapBool = false;
           carousel.roll?.toRight();
+          
+          for(var i =0; i < this.imgs.length; i++)
+          {
+            var img = this.imgs[i];
+            (img.img_A as Image).setTint(0x808080);
+            (img.img_B as Image).setTint(0x808080);
+            (this.cardTexs[i].rendTex_front as RenderTexture).clear();
+            this.cardTexs[i].rendTex_front.draw(this.imgs[i].img_A, 150, 300);
+            this.cardTexs[i].rendTex_front.draw(this.imgs[i].img_B, 450, 300);
+          }
+
           this.localState.RollCarousel(1);
+          (this.imgs[this.localState.carouselPosition].img_A as Image).setTint(0xffffff);
+          (this.imgs[this.localState.carouselPosition].img_B as Image).setTint(0xffffff);
           console.log("new team " + this.localState.currentTeamID);
         }
       });
 
+      var arrowX = Math.min(width*0.10,100);
+
       var tweenLeft = this.tweens.add({
         targets: tapAreaLeftArrow,
-        x: 100,
+        x: arrowX,
         duration: 1000,
         ease: 'Sine.easeInOut',
         yoyo: true,
@@ -405,7 +514,7 @@ export default class MainScene extends Phaser.Scene {
 
       var tweenRight = this.tweens.add({
         targets: tapAreaRightArrow,
-        x: width-100,
+        x: width-arrowX,
         duration: 1000,
         ease: 'Sine.easeInOut',
         yoyo: true,
@@ -419,6 +528,12 @@ export default class MainScene extends Phaser.Scene {
 
   async delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
+  }
+
+  TintRenderTexture(id: number, colour:number)
+  {
+    (this.cardTexs[id].rendTex_front as RenderTexture).setTint(colour);
+    (this.cardTexs[id].rendTex_back as RenderTexture).setTint(colour);
   }
 
   async JoinMatch(socket: Socket) {
@@ -594,6 +709,21 @@ export default class MainScene extends Phaser.Scene {
   }
 
   update() {
+    if(this.cardTexs != null)
+    {
+          /* this.TintRenderTexture(i, 0xffff0000); */
+          this.pathDummy.getPoint(this.follower.t, this.follower.vec);
+          var x = this.follower.vec.x; 
+          var y = this.follower.vec.y;
+
+          var id = this.localState.carouselPosition;
+          this.cardTexs[id].rendTex_front.clear();
+          /* this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_A, 150+(this.tweenDummy as Tweens.Tween).getValue()*10, 300);
+          this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_B, 450+(this.tweenDummy as Tweens.Tween).getValue()*-10,300); */
+
+          this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_A,150+ x*0.2,200+y*0.2);
+          this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_B,350+x*0.2,200+y*0.2);
+    }
     this.UpdateStarField();
    }
 }
