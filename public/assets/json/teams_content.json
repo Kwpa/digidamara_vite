@@ -2,7 +2,7 @@
     "teams": [
         {
             "id": "t_001",
-            "title": "Ada and Alf",
+            "title": "TEAM ONE TITLE",
             "bio": "t_001",
             "avatarIcons": {
                 "dancefloor": "/assets/...",
@@ -60,8 +60,8 @@
         },
         {
             "id": "t_002",
-            "title": "Ada and Alf",
-            "bio": "t_001",
+            "title": "TEAM TWO TITLE",
+            "bio": "t_002",
             "avatarIcons": {
                 "dancefloor": "/assets/...",
                 "dancefloor_flipped": "/assets/..."
@@ -118,8 +118,8 @@
         },
         {
             "id": "t_003",
-            "title": "Ada and Alf",
-            "bio": "t_001",
+            "title": "TEAM THREE TITLE",
+            "bio": "t_003",
             "avatarIcons": {
                 "dancefloor": "/assets/...",
                 "dancefloor_flipped": "/assets/..."
@@ -176,8 +176,8 @@
         },
         {
             "id": "t_004",
-            "title": "Ada and Alf",
-            "bio": "t_001",
+            "title": "TEAM FOUR TITLE",
+            "bio": "t_004",
             "avatarIcons": {
                 "dancefloor": "/assets/...",
                 "dancefloor_flipped": "/assets/..."
@@ -234,8 +234,8 @@
         },
         {
             "id": "t_005",
-            "title": "Ada and Alf",
-            "bio": "t_001",
+            "title": "TEAM FIVE TITLE",
+            "bio": "t_005",
             "avatarIcons": {
                 "dancefloor": "/assets/...",
                 "dancefloor_flipped": "/assets/..."
@@ -292,8 +292,8 @@
         },
         {
             "id": "t_006",
-            "title": "Ada and Alf",
-            "bio": "t_001",
+            "title": "TEAM SIX TITLE",
+            "bio": "t_006",
             "avatarIcons": {
                 "dancefloor": "/assets/...",
                 "dancefloor_flipped": "/assets/..."

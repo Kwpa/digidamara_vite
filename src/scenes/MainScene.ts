@@ -448,7 +448,7 @@ export default class MainScene extends Phaser.Scene {
           console.log("Team " + content + " donated Energy");
           break;
         default:
-          console.log("User %o sent %o", result.presences[0].user_id, content);
+          console.info("User %o sent %o", result.presences[0].user_id, content);
       }
     };
   }

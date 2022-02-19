@@ -1,0 +1,86 @@
+{
+    "type": "Path",
+    "x": 0,
+    "y": 0,
+    "autoClose": true,
+    "curves": [
+        {
+            "type": "CubicBezierCurve",
+            "points": [
+                300,
+                200,
+                300,
+                150,
+                350,
+                100,
+                400,
+                100
+            ]
+        },
+        {
+            "type": "CubicBezierCurve",
+            "points": [
+                400,
+                100,
+                450,
+                100,
+                500,
+                150,
+                500,
+                200
+            ]
+        },
+        {
+            "type": "CubicBezierCurve",
+            "points": [
+                500,
+                200,
+                500,
+                300,
+                300,
+                300,
+                300,
+                400
+            ]
+        },
+        {
+            "type": "CubicBezierCurve",
+            "points": [
+                300,
+                400,
+                300,
+                450,
+                350,
+                500,
+                400,
+                500
+            ]
+        },
+        {
+            "type": "CubicBezierCurve",
+            "points": [
+                400,
+                500,
+                450,
+                500,
+                500,
+                450,
+                500,
+                400
+            ]
+        },
+        {
+            "type": "CubicBezierCurve",
+            "points": [
+                500,
+                400,
+                500,
+                300,
+                300,
+                300,
+                300,
+                200
+            ]
+        }
+    ]
+}

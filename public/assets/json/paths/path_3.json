@@ -1,0 +1,47 @@
+{
+    "type": "Path",
+    "x": 0,
+    "y": 0,
+    "autoClose": true,
+    "curves": [
+        {
+            "type": "CubicBezierCurve",
+            "points": [
+                350,
+                500,
+                400,
+                500,
+                450,
+                450,
+                450,
+                400
+            ]
+        },
+        {
+            "type": "CubicBezierCurve",
+            "points": [
+                450,
+                400,
+                450,
+                300,
+                350,
+                350,
+                350,
+                250
+            ]
+        },
+        {
+            "type": "CubicBezierCurve",
+            "points": [
+                350,
+                250,
+                350,
+                200,
+                400,
+                150,
+                450,
+                150
+            ]
+        }
+    ]
+}
