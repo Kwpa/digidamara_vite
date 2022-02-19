@@ -1,0 +1,139 @@
+class Demo extends Phaser.Scene {
+    constructor() {
+        super({
+            key: 'examples'
+        })
+    }
+
+    preload() {       
+        this.load.plugin('rexperspectiveimageplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexperspectiveimageplugin.min.js', true);
+      
+        this.load.atlas('poker', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/poker2/poker.png', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/poker2/poker.json');
+      this.load.image('random', 'https://i.picsum.photos/id/343/200/200.jpg?hmac=51jfTxjhIC4eQHibl9fcu56Q5VlXZxJLdHsbgsGd_zE');
+    }
+    
+  cardTexs;
+  faces;
+  img;
+  tweenDummy;
+  create() {
+        this.cardTexs = [];
+        this.faces = [];
+        this.img = this.add.image(200, 200, 'random');
+        this.img.setVisible(false);
+        for (var i = 0; i < 10; i++) {
+           
+            var rendTex = this.add.renderTexture(0,0,200,200); 
+            rendTex.setVisible(false);
+            //rendTex.draw(thiimg, 100, 100);
+            //rendTex.draw(img, 50, 100);
+          
+            rendTex.saveTexture('card_rt_'+i);
+            //rendTex.clear();
+            this.cardTexs.push(rendTex);
+            var card = CreateCard(this, 'card_rt_'+i);
+            this.faces.push(card);
+            /*this.tweens.add({
+              targets: card,
+              y: 310,
+              duration: 2000,
+              ease: 'Sine.easeInOut',
+              yoyo: true,
+              loop: -1,
+              delay: 200
+            })*/
+          this.tweenDummy = this.tweens.addCounter({
+              from: 0,
+              to: 1,
+              duration: 2000,
+              ease: 'Sine.easeInOut',
+              yoyo: true,
+              repeat: -1,
+              delay: 200
+            })
+          
+          
+        }
+        var carousel = this.add.rexPerspectiveCarousel({
+            x: 400, y: 300,
+
+            faces: this.faces,
+            faceSpace: 60
+        })
+
+        carousel
+            .setInteractive()
+            .on('pointerdown', function (pointer, localX, localY, event) {;
+                if (localX <= (carousel.width / 2)) {
+                    carousel.roll.toNext();
+                } else {
+                    carousel.roll.toPrevious();
+                }
+            });
+      
+
+
+        this.add.graphics({
+            lineStyle: {
+                width: 3,
+                color: 0xff0000,
+                alpha: 1
+            }
+        })
+            .strokeRect(
+                400 - (carousel.width / 2),
+                300 - (carousel.height / 2),
+                carousel.width,
+                carousel.height
+            )
+            .setDepth(1)
+      
+        this.add.text(0, 580, 'Click left/right side of red-box')
+    }
+countup = 0;
+inv = 0.1;
+  invert = 0;
+    update() 
+  {
+       
+      console.log(this.tweenDummy.getValue());
+    for (var i = 0; i < 10; i++) {
+      this.img.scale=0.5;
+     this.cardTexs[i].clear();
+     this.cardTexs[i].draw(this.img,50,150-this.tweenDummy.getValue()*100);
+     this.cardTexs[i].draw(this.img,150,50+this.tweenDummy.getValue()*100);
+    }
+  }
+}
+
+const RandInt = Phaser.Math.Between;
+const Pad = Phaser.Utils.String.Pad;
+var GetCardName = function (index) {
+    if (index === undefined) {
+        index = RandInt(0, 51);
+    }
+    return Pad(index.toString(), 3, '0', 1);
+}
+
+var CreateCard = function (scene, name) {
+    return scene.add.rexPerspectiveCard({
+        front: { key: name },
+        back: { key: name },
+        flip: false
+    })
+}
+
+var config = {
+    type: Phaser.AUTO,
+    parent: 'phaser-example',
+    width: 800,
+    height: 600,
+    scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+    },
+    scene: Demo,  
+    backgroundColor: 0x33333,
+};
+
+var game = new Phaser.Game(config);
