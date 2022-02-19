@@ -238,7 +238,7 @@ export default class MainScene extends Phaser.Scene {
     var roomname = "PublicChat";
     await this.initializeChat(socket, roomname);
 
-    await this.GetRandomNumberDelay();
+    //await this.GetRandomNumberDelay();
 
     //-----------------------------
   }
