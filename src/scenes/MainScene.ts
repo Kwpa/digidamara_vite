@@ -27,6 +27,7 @@ export default class MainScene extends Phaser.Scene {
   notifications_data!: object;
   story_data!: object;
   labels_data!: object;
+  teamProfilePages!: Phaser.GameObjects.DOMElement[];
 
 
 
@@ -112,7 +113,7 @@ export default class MainScene extends Phaser.Scene {
     const baseWebsite = this.add.dom(width / 2, height / 2, BaseWebsite() as HTMLElement);
     const chatPage = this.add.dom(width / 2, height / 2, ChatPage() as HTMLElement);
     const videoPage = this.add.dom(width / 2, height / 2, VideoPage() as HTMLElement);
-    const avatarOverlay = this.add.dom(width / 2, height / 2, AvatarOverlay() as HTMLElement);
+    const avatarOverlay = this.add.dom(width / 2, height / 2, AvatarOverlay('open') as HTMLElement);
 
     chatPage.setVisible(false);
     videoPage.setVisible(false);
@@ -148,7 +149,7 @@ export default class MainScene extends Phaser.Scene {
       videoPage.setVisible(false);
     }
     this.avatarOverlayButton.onclick = () => {
-      videoPage.setVisible(false);
+      this.teamProfilePages[this.localState.carouselPosition].setVisible(true);
     }
     this.SetVideoImages(this.videoTileContainer);
 
@@ -287,6 +288,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   async SetupTeamProfiles(socket: Socket) {
+    this.teamProfilePages = [];
     let { width, height } = this.sys.game.canvas;
 
     this.staticData.teams.forEach(
@@ -295,7 +297,8 @@ export default class MainScene extends Phaser.Scene {
         console.log("title: " + title);
         const data = { name: team.title };
         const teamProfile = this.add.dom(width / 2, height / 2, TeamProfile(data) as HTMLElement);
-        teamProfile.setVisible(true);
+        teamProfile.setVisible(false);
+        this.teamProfilePages.push(teamProfile);
         var donateButton = teamProfile.getChildByID('donateButton') as HTMLElement;
         var closeButton = teamProfile.getChildByID('close-team-page-button') as HTMLElement;
         donateButton.onclick = () => {

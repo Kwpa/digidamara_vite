@@ -2,8 +2,10 @@ import { h } from 'start-dom-jsx';
 
 const AvatarOverlay = (avatarName) => {
   return (
-    <div class="base">
-      <button id="openProfile" class="button">{avatarName}</button>
+    <div>
+      <div class="container avatar-overlay">
+      <button id="openProfile" class="button is-primary">{avatarName}</button>
+      </div>
     </div>
   )
 }
