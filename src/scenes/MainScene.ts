@@ -19,6 +19,7 @@ import StaticData from './StaticData';
 import RenderTexture from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/rendertexture/RenderTexture';
 import Sprite from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/sprite/Sprite';
 import Image from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/image/Image';
+import { Rectangle } from 'phaser3-rex-plugins/plugins/gameobjects/shape/shapes/geoms';
 
 export default class MainScene extends Phaser.Scene {
 
@@ -54,9 +55,13 @@ export default class MainScene extends Phaser.Scene {
   closeVotePageButton!: HTMLElement;
   closeVideoPageButton!: HTMLElement;
   closeHelpPageButton!: HTMLElement;
+  
   roundCounter!: HTMLElement;
   actionPointsCounter!: HTMLElement;
   sparksCounter!: HTMLElement;
+
+  tapAreaLeft;
+  tapAreaRight;
 
   avatarOverlayButton!: HTMLElement;
   voteContainer!: HTMLElement;
@@ -156,30 +161,44 @@ export default class MainScene extends Phaser.Scene {
     this.chatFooterButton.onclick = () => {
       chatPage.setVisible(true);
       this.avatarOverlay.setVisible(false);
+      this.tapAreaLeft.removeInteractive();
+      this.tapAreaRight.removeInteractive();
     }
     this.closeChatPageButton.onclick = () => {
       chatPage.setVisible(false);
       this.avatarOverlay.setVisible(true);
+      this.tapAreaLeft.setInteractive();
+      this.tapAreaRight.setInteractive();
     }
     this.videoFooterButton.onclick = () => {
       videoPage.setVisible(true);
       this.avatarOverlay.setVisible(false);
+      this.tapAreaLeft.removeInteractive();
+      this.tapAreaRight.removeInteractive();
     }
     this.closeVideoPageButton.onclick = () => {
       videoPage.setVisible(false);
       this.avatarOverlay.setVisible(true);
+      this.tapAreaLeft.setInteractive();
+      this.tapAreaRight.setInteractive();
     }
     this.voteFooterButton.onclick = () => {
       votePage.setVisible(true);
       this.avatarOverlay.setVisible(false);
+      this.tapAreaLeft.removeInteractive();
+      this.tapAreaRight.removeInteractive();
     }
     this.closeVotePageButton.onclick = () => {
       votePage.setVisible(false);
       this.avatarOverlay.setVisible(true);
+      this.tapAreaLeft.setInteractive();
+      this.tapAreaRight.setInteractive();
     }
     this.avatarOverlayButton.onclick = () => {
       this.teamProfilePages[this.localState.carouselPosition].setVisible(true);
       this.avatarOverlay.setVisible(false);
+      this.tapAreaLeft.removeInteractive();
+      this.tapAreaRight.removeInteractive();
     }
     this.SetVideoImages(this.videoTileContainer);
 
@@ -269,7 +288,7 @@ export default class MainScene extends Phaser.Scene {
 
     await this.SetupTeamProfiles(socket);
     await this.SetupTeamAvatars();
-    await this.SetupVotePage();
+    await this.SetupVotePage(socket);
 
     await this.JoinMatch(socket);
     await this.ReceiveMatchState(socket);
@@ -374,7 +393,6 @@ export default class MainScene extends Phaser.Scene {
         this.SpendSparkOnTodaysVoteMatchState(socket, 1);
         this.sparksCounter.innerHTML=this.localState.sparksAwarded.toString();
         choiceTwoField.innerHTML = this.localState.voteState.choiceTwoVotes.toString();
-        
       }
     };
     this.voteContainer.innerHTML = "";
@@ -408,6 +426,8 @@ export default class MainScene extends Phaser.Scene {
         closeButton.onclick = () => {
           teamProfile.setVisible(false);
           this.avatarOverlay.setVisible(true);
+          this.tapAreaLeft.setInteractive();
+          this.tapAreaRight.setInteractive();
         }
       });
   }
@@ -533,8 +553,8 @@ export default class MainScene extends Phaser.Scene {
       })*/
 
     const carousel = new PerspectiveCarousel(this, data) as PerspectiveCarousel;
-    const tapAreaLeft = this.add.rectangle(0, height / 2, width / 3, height, 0x6666, 0);
-    const tapAreaRight = this.add.rectangle(width, height / 2, width / 3, height, 0x6666, 0);
+    this.tapAreaLeft = this.add.rectangle(0, height / 2, width / 3, height, 0x6666, 0);
+    this.tapAreaRight = this.add.rectangle(width, height / 2, width / 3, height, 0x6666, 0);
     var cappedWidth = width;
     var cappedWidth = Math.min(width, 700);
     const tapAreaLeftArrow = this.add.image(cappedWidth / (32 / (2)), height / 2, 'arrow');
@@ -544,9 +564,9 @@ export default class MainScene extends Phaser.Scene {
     tapAreaRightArrow.scale = cappedWidth / (32 * 4);
     tapAreaLeftArrow.flipX = true;
 
-    tapAreaLeft.depth = 1;
+    this.tapAreaLeft.depth = 1;
     tapAreaLeftArrow.depth = 1;
-    tapAreaRight.depth = 1;
+    this.tapAreaRight.depth = 1;
     tapAreaRightArrow.depth = 1;
 
     carousel.roll?.setDuration(300);
@@ -554,7 +574,7 @@ export default class MainScene extends Phaser.Scene {
       this.carouselTapBool = true;
     });
 
-    tapAreaLeft.setInteractive()
+    this.tapAreaLeft.setInteractive()
       .on('pointerdown', async (pointer, localX, localY, event) => {
         if (this.carouselTapBool) {
           this.carouselTapBool = false;
@@ -576,7 +596,7 @@ export default class MainScene extends Phaser.Scene {
         }
       });
 
-    tapAreaRight.setInteractive()
+    this.tapAreaRight.setInteractive()
       .on('pointerdown', async (pointer, localX, localY, event) => {
         if (this.carouselTapBool) {
           this.carouselTapBool = false;
