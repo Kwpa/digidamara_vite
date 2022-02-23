@@ -1,29 +1,59 @@
 export default class LocalGameState
 {
     username!: string;
-    actionPoints!: number;
-    sparks!: number;
+    actionPoints: number = 0;
+    sparksAwarded: number = 0;
     maxActionPoints!: number;
     carouselPosition!: number;
     currentTeamID!: string;
     teamIDs!: string[];
-    round!: number;
+    round: number = 0;
+    voteState!: VoteScenarioState;
 
     Init(username: string, maxActionPoints: number, teamIDs : string[])
     {
+        this.GainActionPoints(5);
+        this.GetRound();
         this.username = username;
         this.maxActionPoints = maxActionPoints;
         this.SetActionPointsToMax();
         this.carouselPosition = 0;
         this.teamIDs = teamIDs;
         this.SetCurrentTeamID()
+        this.voteState = new VoteScenarioState();
         console.log("starting team " + this.currentTeamID);
     }
 
     GetRound()
     {
-        this.round = 0;
+        this.round = 1;
         return this.round;
+    }
+
+    HaveSparks()
+    {
+        if(this.sparksAwarded > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    HaveSpentSparksOnTodaysVote(choice: number)
+    {
+        if(choice==0){
+            return this.voteState.choiceOneVotes > 0; 
+        }
+        else if (choice==1)
+        {
+            return this.voteState.choiceTwoVotes > 0;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     SetCurrentTeamID()
@@ -76,21 +106,16 @@ export default class LocalGameState
 
     GainSparks(amount: number)
     {
-        var newAmount = this.sparks + amount;  
-        this.SetSparks(newAmount);
-    }
-
-    SetSparks(amount: number)
-    {
-        this.sparks = amount;
+        var newAmount = this.sparksAwarded + amount;  
+        this.sparksAwarded = newAmount;
     }
     
     SpendSparks(amount: number)
     {
-        var newAmount = this.sparks - amount;
+        var newAmount = this.sparksAwarded - amount;
         if(newAmount >= 0)
         {
-            this.SetSparks(newAmount);
+            this.sparksAwarded = newAmount;
             return true;
         }
         else return false;
@@ -125,4 +150,51 @@ export class TeamImages
         this.img_B = B;
         this.img_B_flipped = B_flipped;
       }
+}
+
+export class VoteScenarioState
+{
+    choiceOneVotes: number = 0;
+    choiceTwoVotes: number = 0;
+    winnerIndex: number = -1;
+
+    IncreaseVote(choiceIndex: number)
+    {
+        switch(choiceIndex)
+        {
+            case 0:
+                this.choiceOneVotes++;
+                break;
+            case 1:
+                this.choiceTwoVotes++;
+                break;
+        }
+    }
+    DecreaseVote(choiceIndex: number)
+    {
+        switch(choiceIndex)
+        {
+            case 0:
+                this.choiceOneVotes = Math.max(this.choiceOneVotes-1,0);
+                break;
+            case 1:
+                this.choiceTwoVotes = Math.max(this.choiceTwoVotes-1,0);
+                break;
+        }
+    }
+    EvaluateWinner()
+    {
+        if(this.choiceOneVotes > this.choiceTwoVotes)
+        {
+            this.winnerIndex = 0;
+        }
+        else if (this.choiceOneVotes > this.choiceTwoVotes)
+        {
+            this.winnerIndex = 1;
+        }
+        else
+        {
+            this.winnerIndex = 2;
+        }
+    }
 }

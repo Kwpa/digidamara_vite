@@ -54,6 +54,9 @@ export default class MainScene extends Phaser.Scene {
   closeVotePageButton!: HTMLElement;
   closeVideoPageButton!: HTMLElement;
   closeHelpPageButton!: HTMLElement;
+  roundCounter!: HTMLElement;
+  actionPointsCounter!: HTMLElement;
+  sparksCounter!: HTMLElement;
 
   avatarOverlayButton!: HTMLElement;
   voteContainer!: HTMLElement;
@@ -133,6 +136,9 @@ export default class MainScene extends Phaser.Scene {
     this.textElement.hidden = true;
     this.anotherTextElement.hidden = true;
 
+    this.roundCounter = baseWebsite.getChildByID("round-header-value") as HTMLElement;
+    this.actionPointsCounter = baseWebsite.getChildByID("ap-header-value") as HTMLElement;
+    this.sparksCounter = baseWebsite.getChildByID("sparks-header-value") as HTMLElement;
     this.chatSubmitButton = document.getElementById('chat-submit-button') as HTMLElement;
     this.chatMessageContainer = document.getElementById('chat-container') as HTMLElement;
     this.messageInput = chatPage.getChildByID('chat-input') as HTMLInputElement;
@@ -317,12 +323,60 @@ export default class MainScene extends Phaser.Scene {
     })
     var username = account.user?.username as string;
     this.localState.Init(username, 5, list);
+    this.actionPointsCounter.innerHTML=this.localState.actionPoints.toString();
+    this.sparksCounter.innerHTML=this.localState.sparksAwarded.toString();
+    this.roundCounter.innerHTML=this.localState.round.toString();
   }
 
-  async SetupVotePage() {
+  async SetupVotePage(socket: Socket) {
 
-    var todaysScenario = this.staticData.voteScenarios[this.localState.GetRound()];
+    var todaysScenario = this.staticData.voteScenarios[this.localState.GetRound()-1];
     var voteScenario = VoteScenario(todaysScenario) as HTMLElement;
+    const choiceOneField = voteScenario.querySelector('#' + "choiceOne") as HTMLElement;
+    const choiceOneSubtractButton = voteScenario.querySelector('#' + "choiceOneSubtract") as HTMLElement;
+    choiceOneSubtractButton.onclick=()=>{
+      if(this.localState.HaveSpentSparksOnTodaysVote(0))
+      {
+        this.localState.voteState.DecreaseVote(0);
+        this.localState.GainSparks(1);
+        this.sparksCounter.innerHTML=this.localState.sparksAwarded.toString();
+        choiceOneField.innerHTML = this.localState.voteState.choiceOneVotes.toString();
+      }
+    };
+    const choiceOneAddButton = voteScenario.querySelector('#' + "choiceOneAdd") as HTMLElement;
+    choiceOneAddButton.onclick=()=>{
+      if(this.localState.HaveSparks())
+      {
+        this.localState.voteState.IncreaseVote(0);
+        this.localState.SpendSparks(1);
+        this.sparksCounter.innerHTML=this.localState.sparksAwarded.toString();
+        choiceOneField.innerHTML = this.localState.voteState.choiceOneVotes.toString();
+      }
+    };
+    const choiceTwoField = voteScenario.querySelector('#' + "choiceTwo") as HTMLElement;
+    const choiceTwoSubtractButton = voteScenario.querySelector('#' + "choiceTwoSubtract") as HTMLElement;
+    choiceTwoSubtractButton.onclick=()=>{
+      if(this.localState.HaveSpentSparksOnTodaysVote(1))
+      {
+        this.localState.voteState.DecreaseVote(1);
+        this.localState.GainSparks(1);
+        this.SpendSparkOnTodaysVoteMatchState(socket, -1);
+        this.sparksCounter.innerHTML=this.localState.sparksAwarded.toString();
+        choiceTwoField.innerHTML = this.localState.voteState.choiceTwoVotes.toString();
+      }
+    };
+    const choiceTwoAddButton = voteScenario.querySelector('#' + "choiceTwoAdd") as HTMLElement;
+    choiceTwoAddButton.onclick=()=>{
+      if(this.localState.HaveSparks())
+      {
+        this.localState.voteState.IncreaseVote(1);
+        this.localState.SpendSparks(1);
+        this.SpendSparkOnTodaysVoteMatchState(socket, 1);
+        this.sparksCounter.innerHTML=this.localState.sparksAwarded.toString();
+        choiceTwoField.innerHTML = this.localState.voteState.choiceTwoVotes.toString();
+        
+      }
+    };
     this.voteContainer.innerHTML = "";
     this.voteContainer.append(voteScenario);
     //element.append(voteScenario);
@@ -345,6 +399,8 @@ export default class MainScene extends Phaser.Scene {
         donateButton.onclick = () => {
           if (this.localState.SpendActionPoints(1)) {
             this.localState.GainSparks(1);
+            this.actionPointsCounter.innerHTML=this.localState.actionPoints.toString();
+            this.sparksCounter.innerHTML=this.localState.sparksAwarded.toString();
             this.DonateEnergyMatchState(socket, this.localState.currentTeamID);
             //update UI
           }
@@ -589,6 +645,11 @@ export default class MainScene extends Phaser.Scene {
   async DonateEnergyMatchState(socket: Socket, team_id: string) {
 
     await socket.sendMatchState(this.match.match_id, 1, { "team_id": team_id }); //
+  }
+
+  async SpendSparkOnTodaysVoteMatchState(socket: Socket, choiceIndex: number) {
+
+    await socket.sendMatchState(this.match.match_id, 2, { "choice": choiceIndex }); //
   }
 
   async ReceiveMatchState(socket: Socket) {
