@@ -1,0 +1,15 @@
+{
+    "scenarios": [
+        {
+            "id": "v_001",
+            "title": "Make or Break!",
+            "description": "It's all on you our viewers to decide!",
+            "choiceOne_title":"Make It",
+            "choiceOne_description":"Bob the Builder would be proud!",
+            "choiceOne_consquence":"You made a new world!",
+            "choiceTwo_title":"Break It",
+            "choiceTwo_description":"Shattering reality sounds fun!",
+            "choiceTwo_consquence":"Whole planets have been put through the blender."
+        }
+    ]
+}

@@ -4,7 +4,7 @@ const TeamProfile = (teamData) => {
   return (
     <div class="base">
       <div class="container">
-        <div class="chat-page notification">
+        <div class="chat-page box">
           <nav class="level">
             <div class="level-left">
               <div class="level-item has-text-centered">
@@ -16,9 +16,12 @@ const TeamProfile = (teamData) => {
                 <img id="close-team-page-button" class="hdrftr-icon" src="/assets/black_icons/icon_cross_black.png" style=""></img>
               </div>
             </div>
-
-        </nav>
-        <button id="donateButton" class="button fixed-button-footer is-primary is-responsive">Donate</button>
+          </nav>
+          <div class="fixed-button-footer">
+            <button id="donateButton" class="button is-primary is-responsive">Donate</button>
+            <button id="joinFanClubButton" class="button is-primary is-responsive">Join Fan Club</button>
+            <button id="upgradeButton" class="button is-primary is-responsive">Upgrade</button>
+          </div>
         </div>
       </div>
     </div>

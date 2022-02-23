@@ -7,6 +7,7 @@ export default class LocalGameState
     carouselPosition!: number;
     currentTeamID!: string;
     teamIDs!: string[];
+    round!: number;
 
     Init(username: string, maxActionPoints: number, teamIDs : string[])
     {
@@ -17,6 +18,12 @@ export default class LocalGameState
         this.teamIDs = teamIDs;
         this.SetCurrentTeamID()
         console.log("starting team " + this.currentTeamID);
+    }
+
+    GetRound()
+    {
+        this.round = 0;
+        return this.round;
     }
 
     SetCurrentTeamID()

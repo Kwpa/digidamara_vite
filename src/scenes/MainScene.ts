@@ -5,10 +5,12 @@ import VideoPage from './elements/VideoPage';
 import ChatMessageOtherUser from './elements/ChatMessageOtherUser';
 import ChatMessageCurrentUser from './elements/ChatMessageCurrentUser';
 import VideoTile from './elements/VideoTile';
+import VoteScenario from './elements/VoteScenario';
 import AvatarOverlay from './elements/AvatarOverlay';
 import TeamProfile from './elements/TeamProfile';
+import VotingPage from './elements/VotingPage';
 import Bulma from '../node_modules/bulma/css/bulma.css';
-import { ChannelMessage, ChannelMessageList, Client, Session, Socket, StorageObject, Users, User, Match, StorageObjects } from "@heroiclabs/nakama-js";
+import { ChannelMessage, ChannelMessageList, Client, Session, Socket, StorageObject, Users, User, Match, StorageObjects, MatchData } from "@heroiclabs/nakama-js";
 import collect from 'collect.js';
 import PerspectiveImagePlugin from 'phaser3-rex-plugins/plugins/perspectiveimage-plugin.js';
 import { PerspectiveCarousel } from 'phaser3-rex-plugins/plugins/perspectiveimage.js';
@@ -23,14 +25,12 @@ export default class MainScene extends Phaser.Scene {
   localState!: LocalGameState;
   staticData!: StaticData;
   teams_data!: object;
-  ballots_data!: object;
+  voteScenarios_data!: object;
   items_data!: object;
   notifications_data!: object;
   story_data!: object;
   labels_data!: object;
   teamProfilePages!: Phaser.GameObjects.DOMElement[];
-
-
 
   session!: Session;
   client!: Client;
@@ -54,7 +54,10 @@ export default class MainScene extends Phaser.Scene {
   closeVotePageButton!: HTMLElement;
   closeVideoPageButton!: HTMLElement;
   closeHelpPageButton!: HTMLElement;
+
   avatarOverlayButton!: HTMLElement;
+  voteContainer!: HTMLElement;
+  avatarOverlay!: Phaser.GameObjects.DOMElement;
 
   width!: number;
   height!: number;
@@ -86,13 +89,14 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('arrow', '/assets/ui/arrow.png');
     this.load.image('star', '/assets/ui/star.png');
     this.load.image('heart', '/assets/ui/heart.png');
+    this.load.image('spotlight', '/assets/ui/spotlight2.png');
     this.load.json('teams_content', '/assets/json/teams_content.json');
-    this.load.json('ballotOptions_content', '/assets/json/ballotOptions_content.json');
+    this.load.json('voteScenarios_content', '/assets/json/voteScenarios_content.json');
     this.load.json('items_content', '/assets/json/items_content.json');
     this.load.json('notifications_content', '/assets/json/notifications_content.json');
     this.load.json('storyUnlocks_content', '/assets/json/storyUnlocks_content.json');
     this.load.json('appLabels_content', '/assets/json/appLabels_content.json');
-    this.load.json('eightpath', '/assets/json/paths/path_4.json');
+    this.load.json('eightpath', '/assets/json/paths/path_2.json');
   }
 
   create() //to tackle - server code and setup for typescript!
@@ -102,7 +106,7 @@ export default class MainScene extends Phaser.Scene {
     console.log('load Main Scene');
 
     this.teams_data = this.cache.json.get('teams_content') as object;
-    this.ballots_data = this.cache.json.get('ballotOptions_content');
+    this.voteScenarios_data = this.cache.json.get('voteScenarios_content') as object;
     this.items_data = this.cache.json.get('items_content');
     this.notifications_data = this.cache.json.get('notifications_content');
     this.story_data = this.cache.json.get('storyUnlocks_content');
@@ -115,10 +119,12 @@ export default class MainScene extends Phaser.Scene {
     const baseWebsite = this.add.dom(width / 2, height / 2, BaseWebsite() as HTMLElement);
     const chatPage = this.add.dom(width / 2, height / 2, ChatPage() as HTMLElement);
     const videoPage = this.add.dom(width / 2, height / 2, VideoPage() as HTMLElement);
-    const avatarOverlay = this.add.dom(width / 2, height / 2, AvatarOverlay('open') as HTMLElement);
+    const votePage = this.add.dom(width / 2, height / 2, VotingPage() as HTMLElement);
+    this.avatarOverlay = this.add.dom(width / 2, height / 2, AvatarOverlay('open') as HTMLElement);
 
     chatPage.setVisible(false);
     videoPage.setVisible(false);
+    votePage.setVisible(false);
     //baseWebsite.setVisible(false);
 
     //debug
@@ -132,30 +138,51 @@ export default class MainScene extends Phaser.Scene {
     this.messageInput = chatPage.getChildByID('chat-input') as HTMLInputElement;
     this.chatFooterButton = document.getElementById('chat-footer-button') as HTMLElement;
     this.videoFooterButton = document.getElementById('video-footer-button') as HTMLElement;
+    this.voteFooterButton = document.getElementById('vote-footer-button') as HTMLElement;
     this.closeChatPageButton = chatPage.getChildByID('close-chat-page-button') as HTMLElement;
     this.closeVideoPageButton = videoPage.getChildByID('close-video-page-button') as HTMLElement;
+    this.closeVotePageButton = votePage.getChildByID('close-voting-page-button') as HTMLElement;
+    this.voteContainer = votePage.getChildByID('vote-container') as HTMLElement;
     this.videoTileContainer = videoPage.getChildByID('video-container') as HTMLElement;
-    this.avatarOverlayButton = avatarOverlay.getChildByID('openProfile') as HTMLElement;
+    this.avatarOverlayButton = this.avatarOverlay.getChildByID('openProfile') as HTMLElement;
 
 
     this.chatFooterButton.onclick = () => {
       chatPage.setVisible(true);
+      this.avatarOverlay.setVisible(false);
     }
     this.closeChatPageButton.onclick = () => {
       chatPage.setVisible(false);
+      this.avatarOverlay.setVisible(true);
     }
     this.videoFooterButton.onclick = () => {
       videoPage.setVisible(true);
+      this.avatarOverlay.setVisible(false);
     }
     this.closeVideoPageButton.onclick = () => {
       videoPage.setVisible(false);
+      this.avatarOverlay.setVisible(true);
+    }
+    this.voteFooterButton.onclick = () => {
+      votePage.setVisible(true);
+      this.avatarOverlay.setVisible(false);
+    }
+    this.closeVotePageButton.onclick = () => {
+      votePage.setVisible(false);
+      this.avatarOverlay.setVisible(true);
     }
     this.avatarOverlayButton.onclick = () => {
       this.teamProfilePages[this.localState.carouselPosition].setVisible(true);
+      this.avatarOverlay.setVisible(false);
     }
     this.SetVideoImages(this.videoTileContainer);
 
     //-----------------------------
+
+    const spotlight = this.add.image(width / 2, height / 2, 'spotlight');
+    spotlight.setAlpha(0.4);
+    spotlight.scaleY = height / 500;
+    spotlight.scaleX = Math.max(1, width / 1000);
 
     this.GetLatestStaticData();
     this.StartClientConnection();
@@ -175,7 +202,7 @@ export default class MainScene extends Phaser.Scene {
       this.items_data,
       this.story_data,
       this.notifications_data,
-      this.ballots_data,
+      this.voteScenarios_data,
       this.labels_data
     );
   }
@@ -187,6 +214,7 @@ export default class MainScene extends Phaser.Scene {
   StarField() {
     let { width, height } = this.sys.game.canvas;
     this.starSprite = this.add.sprite(0, 0, 'heart');
+    //this.starSprite.scale = 3;
     this.xx = [];
     this.yy = [];
     this.zz = [];
@@ -194,14 +222,15 @@ export default class MainScene extends Phaser.Scene {
 
     this.listOfColours = [];
     for (var i = 0; i < this.max; i++) {
-      var colstring = "0x" + Math.floor(Math.random()*16777215).toString(16);
+      var colstring = "0x" + Math.floor(Math.random() * 16777215).toString(16);
+      //colstring = "0xffffff";
       this.listOfColours.push(parseInt(colstring));
     }
 
-    var squareDistance = Math.max(width,height);
+    var squareDistance = Math.max(width, height);
     for (var i = 0; i < this.max; i++) {
-      this.xx.push(Math.floor(Math.random() * squareDistance) - squareDistance/2);
-      this.yy.push(Math.floor(Math.random() * squareDistance) - squareDistance/2);
+      this.xx.push(Math.floor(Math.random() * squareDistance) - squareDistance / 2);
+      this.yy.push(Math.floor(Math.random() * squareDistance) - squareDistance / 2);
       this.zz.push(Math.floor(Math.random() * 1700) - 100);
     }
   }
@@ -234,6 +263,7 @@ export default class MainScene extends Phaser.Scene {
 
     await this.SetupTeamProfiles(socket);
     await this.SetupTeamAvatars();
+    await this.SetupVotePage();
 
     await this.JoinMatch(socket);
     await this.ReceiveMatchState(socket);
@@ -289,6 +319,15 @@ export default class MainScene extends Phaser.Scene {
     this.localState.Init(username, 5, list);
   }
 
+  async SetupVotePage() {
+
+    var todaysScenario = this.staticData.voteScenarios[this.localState.GetRound()];
+    var voteScenario = VoteScenario(todaysScenario) as HTMLElement;
+    this.voteContainer.innerHTML = "";
+    this.voteContainer.append(voteScenario);
+    //element.append(voteScenario);
+  }
+
   async SetupTeamProfiles(socket: Socket) {
     this.teamProfilePages = [];
     let { width, height } = this.sys.game.canvas;
@@ -312,6 +351,7 @@ export default class MainScene extends Phaser.Scene {
         }
         closeButton.onclick = () => {
           teamProfile.setVisible(false);
+          this.avatarOverlay.setVisible(true);
         }
       });
   }
@@ -322,7 +362,7 @@ export default class MainScene extends Phaser.Scene {
   tweenDummy;
   pathDummy;
   follower;
-  
+
   async SetupTeamAvatars() {
 
     var json = this.cache.json.get('eightpath');
@@ -330,14 +370,14 @@ export default class MainScene extends Phaser.Scene {
     var CreateCard = function (scene, front, back) {
       return scene.add.rexPerspectiveCard({
         front: { key: front },
-        back: { key: back},
+        back: { key: back },
         flip: false
       })
     };
 
-    this.follower = { t: 0, vec: new Phaser.Math.Vector2()};
+    this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
     this.pathDummy = new Phaser.Curves.Path(json);
-    
+
     this.tweenDummy = this.tweens.addCounter({
       from: 0,
       to: 1,
@@ -350,60 +390,64 @@ export default class MainScene extends Phaser.Scene {
 
     this.tweens.add({
       targets: this.follower,
-        t: 1,
-        ease: 'Power0',
-        duration: 4000,
-        yoyo: false,
-        repeat: -1
+      t: 1,
+      ease: 'Power0',
+      duration: 4000,
+      yoyo: false,
+      repeat: -1
     });
 
 
     let { width, height } = this.sys.game.canvas;
-    
+
     this.cardTexs = [];
     this.faces = [];
     this.imgs = [];
-    for(var i = 0; i < this.staticData.teams.length; i++)
-    {
-      var id = i+1;
-      var a = this.add.image(300,300,'atlas','t_00'+id+'_A');
-      var a_f = this.add.image(300,300,'atlas','t_00'+id+'_A_flipped');
-      var b = this.add.image(300,300,'atlas','t_00'+id+'_B');
-      var b_f = this.add.image(300,300,'atlas','t_00'+id+'_B_flipped');
+    for (var i = 0; i < this.staticData.teams.length; i++) {
+      var id = i + 1;
+      var a = this.add.image(300, 300, 'atlas', 't_00' + id + '_A');
+      var a_f = this.add.image(300, 300, 'atlas', 't_00' + id + '_A_flipped');
+      var b = this.add.image(300, 300, 'atlas', 't_00' + id + '_B');
+      var b_f = this.add.image(300, 300, 'atlas', 't_00' + id + '_B_flipped');
+
+      var startingColour = 0x808080;
+      if (i == 0) {
+        startingColour = 0xffffff;
+      }
       this.imgs.push(
         new TeamImages(
-          't_00'+i,
-          a.setTint(0x808080),
+          't_00' + i,
+          a.setTint(startingColour),
           a_f.setTint(0x808080),
-          b.setTint(0x808080),
+          b.setTint(startingColour),
           b_f.setTint(0x808080)
-          )
-        );
-      var rendTex_front = this.add.renderTexture(0,0,600,600);
+        )
+      );
+      var rendTex_front = this.add.renderTexture(0, 0, 600, 600);
       rendTex_front.draw(this.imgs[i].img_A, 150, 300);
       rendTex_front.draw(this.imgs[i].img_B, 450, 300);
-      var rendTex_back = this.add.renderTexture(0,0,600,600);
-      rendTex_back.draw(this.imgs[i].img_A_flipped, 150,300);
-      rendTex_back.draw(this.imgs[i].img_B_flipped, 450,300);
-      rendTex_front.saveTexture('t_00'+id+'_front');
-      rendTex_back.saveTexture('t_00'+id+'_back');
+      var rendTex_back = this.add.renderTexture(0, 0, 600, 600);
+      rendTex_back.draw(this.imgs[i].img_A_flipped, 150, 300);
+      rendTex_back.draw(this.imgs[i].img_B_flipped, 450, 300);
+      rendTex_front.saveTexture('t_00' + id + '_front');
+      rendTex_back.saveTexture('t_00' + id + '_back');
       this.cardTexs.push(
         new TeamRenderTextures(
-          't_00'+id,
+          't_00' + id,
           rendTex_front,
           rendTex_back
         )
       );
-      var card = CreateCard(this, 't_00'+id+'_front', 't_00'+id+'_back');
+      var card = CreateCard(this, 't_00' + id + '_front', 't_00' + id + '_back');
       this.faces.push(card);
     }
-    this.imgs.forEach((img)=>{
+    this.imgs.forEach((img) => {
       img.img_A.setVisible(false);
       img.img_A_flipped.setVisible(false);
       img.img_B.setVisible(false);
       img.img_B_flipped.setVisible(false);
     })
-    this.cardTexs.forEach((rt)=>{
+    this.cardTexs.forEach((rt) => {
       rt.rendTex_front.setVisible(false);
       rt.rendTex_back.setVisible(false);
     })
@@ -422,7 +466,7 @@ export default class MainScene extends Phaser.Scene {
       faceSpace: Math.min(width, 200)
     } as PerspectiveCarousel.IConfig;
 
-    
+
 
     /*this.staticData.teams.forEach(
       (team) => {
@@ -460,8 +504,7 @@ export default class MainScene extends Phaser.Scene {
           this.carouselTapBool = false;
           carousel.roll?.toLeft();
 
-          for(var i =0; i < this.imgs.length; i++)
-          {
+          for (var i = 0; i < this.imgs.length; i++) {
             var img = this.imgs[i];
             (img.img_A as Image).setTint(0x808080);
             (img.img_B as Image).setTint(0x808080);
@@ -482,9 +525,8 @@ export default class MainScene extends Phaser.Scene {
         if (this.carouselTapBool) {
           this.carouselTapBool = false;
           carousel.roll?.toRight();
-          
-          for(var i =0; i < this.imgs.length; i++)
-          {
+
+          for (var i = 0; i < this.imgs.length; i++) {
             var img = this.imgs[i];
             (img.img_A as Image).setTint(0x808080);
             (img.img_B as Image).setTint(0x808080);
@@ -500,40 +542,34 @@ export default class MainScene extends Phaser.Scene {
         }
       });
 
-      var arrowX = Math.min(width*0.10,100);
+    var arrowX = Math.min(width * 0.10, 100);
 
-      var tweenLeft = this.tweens.add({
-        targets: tapAreaLeftArrow,
-        x: arrowX,
-        duration: 1000,
-        ease: 'Sine.easeInOut',
-        yoyo: true,
-        loop: -1,
-        delay: 100
-      });
+    var tweenLeft = this.tweens.add({
+      targets: tapAreaLeftArrow,
+      x: arrowX,
+      duration: 1000,
+      ease: 'Sine.easeInOut',
+      yoyo: true,
+      loop: -1,
+      delay: 100
+    });
 
-      var tweenRight = this.tweens.add({
-        targets: tapAreaRightArrow,
-        x: width-arrowX,
-        duration: 1000,
-        ease: 'Sine.easeInOut',
-        yoyo: true,
-        loop: -1,
-        delay: 100
-      });
-      
+    var tweenRight = this.tweens.add({
+      targets: tapAreaRightArrow,
+      x: width - arrowX,
+      duration: 1000,
+      ease: 'Sine.easeInOut',
+      yoyo: true,
+      loop: -1,
+      delay: 100
+    });
+
 
     this.add.existing(carousel);
   }
 
   async delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
-  }
-
-  TintRenderTexture(id: number, colour:number)
-  {
-    (this.cardTexs[id].rendTex_front as RenderTexture).setTint(colour);
-    (this.cardTexs[id].rendTex_back as RenderTexture).setTint(colour);
   }
 
   async JoinMatch(socket: Socket) {
@@ -556,14 +592,23 @@ export default class MainScene extends Phaser.Scene {
   }
 
   async ReceiveMatchState(socket: Socket) {
-    socket.onmatchdata = (result) => {
+    socket.onmatchdata = (result: MatchData) => {
       var content = result.data;
       switch (result.op_code) {
         case 101:
           console.log("A custom opcode.");
           break;
         case 1:
-          console.log("Team " + content + " donated Energy");
+          console.log("User " + result.presences[0].username + " donated Energy to " + content);
+          break;
+        case 2:
+          console.log("User " + result.presences[0].username + " spent Sparks on " + content);
+          break;
+        case 4:
+          console.log("User " + result.presences[0].username + " joined " + content + "s fan club");
+          break;
+        case 5:
+          console.log("User " + result.presences[0].username + " upgraded " + content);
           break;
         default:
           console.info("User %o sent %o", result.presences[0].user_id, content);
@@ -684,7 +729,7 @@ export default class MainScene extends Phaser.Scene {
   UpdateStarField() {
     this.starFieldTexture.clear();
     this.starFieldTexture.beginDraw();
-    
+
     for (var i = 0; i < this.max; i++) {
       var perspective = this.distance / (this.distance - this.zz[i]);
       var x = this.cameras.main.centerX + this.xx[i] * perspective;
@@ -695,37 +740,37 @@ export default class MainScene extends Phaser.Scene {
       if (this.zz[i] > 300) {
         this.zz[i] -= 600;
       }
-      
-      
+
+
       this.starSprite.setTint(this.listOfColours[i]);
       this.starFieldTexture.batchDraw(this.starSprite, x, y);
     }
     this.starFieldTexture.endDraw();
   }
 
-  UpdateDancers()
-  {
+  UpdateDancers() {
 
   }
 
   update() {
-    if(this.cardTexs != null)
-    {
-          /* this.TintRenderTexture(i, 0xffff0000); */
-          this.pathDummy.getPoint(this.follower.t, this.follower.vec);
-          var x = this.follower.vec.x; 
-          var y = this.follower.vec.y;
+    if (this.cardTexs != null) {
+      /* this.TintRenderTexture(i, 0xffff0000); */
+      this.pathDummy.getPoint(this.follower.t, this.follower.vec);
+      var x = this.follower.vec.x;
+      var y = this.follower.vec.y;
 
-          var id = this.localState.carouselPosition;
-          this.cardTexs[id].rendTex_front.clear();
-          /* this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_A, 150+(this.tweenDummy as Tweens.Tween).getValue()*10, 300);
-          this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_B, 450+(this.tweenDummy as Tweens.Tween).getValue()*-10,300); */
+      var id = this.localState.carouselPosition;
+      this.cardTexs[id].rendTex_front.clear();
+      /* this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_A, 150+(this.tweenDummy as Tweens.Tween).getValue()*10, 300);
+      this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_B, 450+(this.tweenDummy as Tweens.Tween).getValue()*-10,300); */
 
-          this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_A,150+ x*0.2,200+y*0.2);
-          this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_B,350+x*0.2,200+y*0.2);
+      this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_A, 150 + x * 0.2, 200 + y * 0.2);
+      x = -x + 460;
+      y = y;
+      this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_B, 350 + x * 0.2, 200 + y * 0.2);
     }
     this.UpdateStarField();
-   }
+  }
 }
 
 

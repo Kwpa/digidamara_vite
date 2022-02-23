@@ -4,7 +4,7 @@ const ChatPage = () => {
   return (
     <div class="base">
       <div class="container">
-        <div class="chat-page notification">
+        <div class="chat-page box">
           <nav class="level">
             <div class="level-left">
               <div class="level-item has-text-centered">
