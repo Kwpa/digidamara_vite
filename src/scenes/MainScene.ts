@@ -113,10 +113,13 @@ export default class MainScene extends Phaser.Scene {
 
   create() //to tackle - server code and setup for typescript!
   {
-    let { width, height } = this.sys.game.canvas;
-    console.log(width);
     console.log('load Main Scene');
+    
+    this.AsyncCreate();
+  }
 
+  async LoadJSON()
+  {
     this.teams_data = this.cache.json.get('teams_content') as object;
     this.barks_data = this.cache.json.get('barks_content') as object;
     this.items_data = this.cache.json.get('items_content') as object;
@@ -124,7 +127,13 @@ export default class MainScene extends Phaser.Scene {
     this.notifications_data = this.cache.json.get('notifications_content') as object;
     this.voteScenarios_data = this.cache.json.get('voteScenarios_content') as object;
     this.labels_data = this.cache.json.get('appLabels_content') as object;
+  }
 
+  async AsyncCreate()
+  {
+
+    this.LoadJSON();
+    let { width, height } = this.sys.game.canvas;
     const game = document.getElementsByTagName('canvas')[0];
     game.style.setProperty('position', 'absolute');
     game.style.setProperty('z-index', '-1');
