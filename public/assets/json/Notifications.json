@@ -1,0 +1,50 @@
+[
+    {
+        "id":  "n_001",
+        "round":  "1",
+        "title":  "Introduction",
+        "content":  "Welcome to Digidamara!",
+        "encryption":  "0",
+        "delay":  "1"
+    },
+    {
+        "id":  "n_002",
+        "round":  "2",
+        "title":  "Hey listen!",
+        "content":  "Did you know that the world is ending?",
+        "encryption":  "0",
+        "delay":  ""
+    },
+    {
+        "id":  "n_003",
+        "round":  "3",
+        "title":  "It\u0027s time!",
+        "content":  "Vote now!",
+        "encryption":  "0",
+        "delay":  ""
+    },
+    {
+        "id":  "n_004",
+        "round":  "4",
+        "title":  "Are you listening?",
+        "content":  "Bow down to me!",
+        "encryption":  "0",
+        "delay":  ""
+    },
+    {
+        "id":  "n_005",
+        "round":  "5",
+        "title":  "The End",
+        "content":  "I suppose you think you\u0027ve won...",
+        "encryption":  "0",
+        "delay":  ""
+    },
+    {
+        "id":  "n_006",
+        "round":  "1",
+        "title":  "The Throx",
+        "content":  "I must disrupt... no more sparks... darkness for... destroyed...",
+        "encryption":  "",
+        "delay":  ""
+    }
+]

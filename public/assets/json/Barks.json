@@ -1,0 +1,56 @@
+[
+    {
+        "id":  "b_001",
+        "teamId":  "t_001",
+        "character":  "Altar",
+        "title":  "Irritated",
+        "content":  "I can\u0027t believe that the other team is making us look so bad!",
+        "color":  "0xff0000",
+        "encryption":  "0"
+    },
+    {
+        "id":  "b_002",
+        "teamId":  "t_001",
+        "character":  "Ambiv",
+        "title":  "Proud",
+        "content":  "The crowd is sure getting a kick out of us tonight!",
+        "color":  "0xff0000",
+        "encryption":  "0"
+    },
+    {
+        "id":  "b_003",
+        "teamId":  "t_002",
+        "character":  "Bagolda",
+        "title":  "Curious",
+        "content":  "I wonder who will be out this round?",
+        "color":  "0xff0000",
+        "encryption":  "0"
+    },
+    {
+        "id":  "b_004",
+        "teamId":  "any",
+        "character":  "Media",
+        "title":  "Enemy Approaching",
+        "content":  "The Throx has been sighted in a nearby quadrant!",
+        "color":  "0xff0000",
+        "encryption":  "0"
+    },
+    {
+        "id":  "b_005",
+        "teamId":  "any",
+        "character":  "Media",
+        "title":  "Presenter",
+        "content":  "The Presenter is marshalling forth a barrage of spark suckers!",
+        "color":  "0xff0000",
+        "encryption":  "0"
+    },
+    {
+        "id":  "b_006",
+        "teamId":  "any",
+        "character":  "Media",
+        "title":  "Missing body",
+        "content":  "The Presenter has vanished!",
+        "color":  "0xff0000",
+        "encryption":  "0"
+    }
+]

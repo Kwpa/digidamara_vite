@@ -1,0 +1,722 @@
+[
+    {
+        "id":  "i_001",
+        "teamId":  "t_001",
+        "round":  "1",
+        "title":  "The Ring of Power",
+        "description":  "A cool description of the item",
+        "iconId":  "i_001"
+    },
+    {
+        "id":  "i_002",
+        "teamId":  "t_001",
+        "round":  "1",
+        "title":  "The Gauntlet of Galantry",
+        "description":  "A cool description of the item",
+        "iconId":  "i_002"
+    },
+    {
+        "id":  "i_003",
+        "teamId":  "t_001",
+        "round":  "1",
+        "title":  "The Snorkle of Deep Diving",
+        "description":  "A cool description of the item",
+        "iconId":  "i_003"
+    },
+    {
+        "id":  "i_004",
+        "teamId":  "t_001",
+        "round":  "2",
+        "title":  "The Fan of Air Conditioning",
+        "description":  "A cool description of the item",
+        "iconId":  "i_004"
+    },
+    {
+        "id":  "i_005",
+        "teamId":  "t_001",
+        "round":  "2",
+        "title":  "The Flower of Field Frolicing",
+        "description":  "A cool description of the item",
+        "iconId":  "i_005"
+    },
+    {
+        "id":  "i_006",
+        "teamId":  "t_001",
+        "round":  "2",
+        "title":  "The Clown Nose of Laughter",
+        "description":  "A cool description of the item",
+        "iconId":  "i_006"
+    },
+    {
+        "id":  "i_007",
+        "teamId":  "t_001",
+        "round":  "3",
+        "title":  "The Mirror of Self Reflection",
+        "description":  "A cool description of the item",
+        "iconId":  "i_007"
+    },
+    {
+        "id":  "i_008",
+        "teamId":  "t_001",
+        "round":  "3",
+        "title":  "The Teddy of Comfort",
+        "description":  "A cool description of the item",
+        "iconId":  "i_008"
+    },
+    {
+        "id":  "i_009",
+        "teamId":  "t_001",
+        "round":  "3",
+        "title":  "The Necklace of Riches",
+        "description":  "A cool description of the item",
+        "iconId":  "i_009"
+    },
+    {
+        "id":  "i_010",
+        "teamId":  "t_001",
+        "round":  "4",
+        "title":  "The Shovel of Hard Work",
+        "description":  "A cool description of the item",
+        "iconId":  "i_010"
+    },
+    {
+        "id":  "i_011",
+        "teamId":  "t_001",
+        "round":  "4",
+        "title":  "The Lunchbox of Hunger",
+        "description":  "A cool description of the item",
+        "iconId":  "i_011"
+    },
+    {
+        "id":  "i_012",
+        "teamId":  "t_001",
+        "round":  "4",
+        "title":  "The Watch of Punctuality",
+        "description":  "A cool description of the item",
+        "iconId":  "i_012"
+    },
+    {
+        "id":  "i_013",
+        "teamId":  "t_001",
+        "round":  "5",
+        "title":  "The Dice of Chance",
+        "description":  "A cool description of the item",
+        "iconId":  "i_013"
+    },
+    {
+        "id":  "i_014",
+        "teamId":  "t_001",
+        "round":  "5",
+        "title":  "The Sword of Violence",
+        "description":  "A cool description of the item",
+        "iconId":  "i_014"
+    },
+    {
+        "id":  "i_015",
+        "teamId":  "t_001",
+        "round":  "5",
+        "title":  "The Mask of Lies",
+        "description":  "A cool description of the item",
+        "iconId":  "i_015"
+    },
+    {
+        "id":  "i_016",
+        "teamId":  "t_002",
+        "round":  "1",
+        "title":  "The Ring of Power",
+        "description":  "A cool description of the item",
+        "iconId":  "i_001"
+    },
+    {
+        "id":  "i_017",
+        "teamId":  "t_002",
+        "round":  "1",
+        "title":  "The Gauntlet of Galantry",
+        "description":  "A cool description of the item",
+        "iconId":  "i_002"
+    },
+    {
+        "id":  "i_018",
+        "teamId":  "t_002",
+        "round":  "1",
+        "title":  "The Snorkle of Deep Diving",
+        "description":  "A cool description of the item",
+        "iconId":  "i_003"
+    },
+    {
+        "id":  "i_019",
+        "teamId":  "t_002",
+        "round":  "2",
+        "title":  "The Fan of Air Conditioning",
+        "description":  "A cool description of the item",
+        "iconId":  "i_004"
+    },
+    {
+        "id":  "i_020",
+        "teamId":  "t_002",
+        "round":  "2",
+        "title":  "The Flower of Field Frolicing",
+        "description":  "A cool description of the item",
+        "iconId":  "i_005"
+    },
+    {
+        "id":  "i_021",
+        "teamId":  "t_002",
+        "round":  "2",
+        "title":  "The Clown Nose of Laughter",
+        "description":  "A cool description of the item",
+        "iconId":  "i_006"
+    },
+    {
+        "id":  "i_022",
+        "teamId":  "t_002",
+        "round":  "3",
+        "title":  "The Mirror of Self Reflection",
+        "description":  "A cool description of the item",
+        "iconId":  "i_007"
+    },
+    {
+        "id":  "i_023",
+        "teamId":  "t_002",
+        "round":  "3",
+        "title":  "The Teddy of Comfort",
+        "description":  "A cool description of the item",
+        "iconId":  "i_008"
+    },
+    {
+        "id":  "i_024",
+        "teamId":  "t_002",
+        "round":  "3",
+        "title":  "The Necklace of Riches",
+        "description":  "A cool description of the item",
+        "iconId":  "i_009"
+    },
+    {
+        "id":  "i_025",
+        "teamId":  "t_002",
+        "round":  "4",
+        "title":  "The Shovel of Hard Work",
+        "description":  "A cool description of the item",
+        "iconId":  "i_010"
+    },
+    {
+        "id":  "i_026",
+        "teamId":  "t_002",
+        "round":  "4",
+        "title":  "The Lunchbox of Hunger",
+        "description":  "A cool description of the item",
+        "iconId":  "i_011"
+    },
+    {
+        "id":  "i_027",
+        "teamId":  "t_002",
+        "round":  "4",
+        "title":  "The Watch of Punctuality",
+        "description":  "A cool description of the item",
+        "iconId":  "i_012"
+    },
+    {
+        "id":  "i_028",
+        "teamId":  "t_002",
+        "round":  "5",
+        "title":  "The Dice of Chance",
+        "description":  "A cool description of the item",
+        "iconId":  "i_013"
+    },
+    {
+        "id":  "i_029",
+        "teamId":  "t_002",
+        "round":  "5",
+        "title":  "The Sword of Violence",
+        "description":  "A cool description of the item",
+        "iconId":  "i_014"
+    },
+    {
+        "id":  "i_030",
+        "teamId":  "t_002",
+        "round":  "5",
+        "title":  "The Mask of Lies",
+        "description":  "A cool description of the item",
+        "iconId":  "i_015"
+    },
+    {
+        "id":  "i_031",
+        "teamId":  "t_003",
+        "round":  "1",
+        "title":  "The Ring of Power",
+        "description":  "A cool description of the item",
+        "iconId":  "i_001"
+    },
+    {
+        "id":  "i_032",
+        "teamId":  "t_003",
+        "round":  "1",
+        "title":  "The Gauntlet of Galantry",
+        "description":  "A cool description of the item",
+        "iconId":  "i_002"
+    },
+    {
+        "id":  "i_033",
+        "teamId":  "t_003",
+        "round":  "1",
+        "title":  "The Snorkle of Deep Diving",
+        "description":  "A cool description of the item",
+        "iconId":  "i_003"
+    },
+    {
+        "id":  "i_034",
+        "teamId":  "t_003",
+        "round":  "2",
+        "title":  "The Fan of Air Conditioning",
+        "description":  "A cool description of the item",
+        "iconId":  "i_004"
+    },
+    {
+        "id":  "i_035",
+        "teamId":  "t_003",
+        "round":  "2",
+        "title":  "The Flower of Field Frolicing",
+        "description":  "A cool description of the item",
+        "iconId":  "i_005"
+    },
+    {
+        "id":  "i_036",
+        "teamId":  "t_003",
+        "round":  "2",
+        "title":  "The Clown Nose of Laughter",
+        "description":  "A cool description of the item",
+        "iconId":  "i_006"
+    },
+    {
+        "id":  "i_037",
+        "teamId":  "t_003",
+        "round":  "3",
+        "title":  "The Mirror of Self Reflection",
+        "description":  "A cool description of the item",
+        "iconId":  "i_007"
+    },
+    {
+        "id":  "i_038",
+        "teamId":  "t_003",
+        "round":  "3",
+        "title":  "The Teddy of Comfort",
+        "description":  "A cool description of the item",
+        "iconId":  "i_008"
+    },
+    {
+        "id":  "i_039",
+        "teamId":  "t_003",
+        "round":  "3",
+        "title":  "The Necklace of Riches",
+        "description":  "A cool description of the item",
+        "iconId":  "i_009"
+    },
+    {
+        "id":  "i_040",
+        "teamId":  "t_003",
+        "round":  "4",
+        "title":  "The Shovel of Hard Work",
+        "description":  "A cool description of the item",
+        "iconId":  "i_010"
+    },
+    {
+        "id":  "i_041",
+        "teamId":  "t_003",
+        "round":  "4",
+        "title":  "The Lunchbox of Hunger",
+        "description":  "A cool description of the item",
+        "iconId":  "i_011"
+    },
+    {
+        "id":  "i_042",
+        "teamId":  "t_003",
+        "round":  "4",
+        "title":  "The Watch of Punctuality",
+        "description":  "A cool description of the item",
+        "iconId":  "i_012"
+    },
+    {
+        "id":  "i_043",
+        "teamId":  "t_003",
+        "round":  "5",
+        "title":  "The Dice of Chance",
+        "description":  "A cool description of the item",
+        "iconId":  "i_013"
+    },
+    {
+        "id":  "i_044",
+        "teamId":  "t_003",
+        "round":  "5",
+        "title":  "The Sword of Violence",
+        "description":  "A cool description of the item",
+        "iconId":  "i_014"
+    },
+    {
+        "id":  "i_045",
+        "teamId":  "t_003",
+        "round":  "5",
+        "title":  "The Mask of Lies",
+        "description":  "A cool description of the item",
+        "iconId":  "i_015"
+    },
+    {
+        "id":  "i_046",
+        "teamId":  "t_004",
+        "round":  "1",
+        "title":  "The Ring of Power",
+        "description":  "A cool description of the item",
+        "iconId":  "i_001"
+    },
+    {
+        "id":  "i_047",
+        "teamId":  "t_004",
+        "round":  "1",
+        "title":  "The Gauntlet of Galantry",
+        "description":  "A cool description of the item",
+        "iconId":  "i_002"
+    },
+    {
+        "id":  "i_048",
+        "teamId":  "t_004",
+        "round":  "1",
+        "title":  "The Snorkle of Deep Diving",
+        "description":  "A cool description of the item",
+        "iconId":  "i_003"
+    },
+    {
+        "id":  "i_049",
+        "teamId":  "t_004",
+        "round":  "2",
+        "title":  "The Fan of Air Conditioning",
+        "description":  "A cool description of the item",
+        "iconId":  "i_004"
+    },
+    {
+        "id":  "i_050",
+        "teamId":  "t_004",
+        "round":  "2",
+        "title":  "The Flower of Field Frolicing",
+        "description":  "A cool description of the item",
+        "iconId":  "i_005"
+    },
+    {
+        "id":  "i_051",
+        "teamId":  "t_004",
+        "round":  "2",
+        "title":  "The Clown Nose of Laughter",
+        "description":  "A cool description of the item",
+        "iconId":  "i_006"
+    },
+    {
+        "id":  "i_052",
+        "teamId":  "t_004",
+        "round":  "3",
+        "title":  "The Mirror of Self Reflection",
+        "description":  "A cool description of the item",
+        "iconId":  "i_007"
+    },
+    {
+        "id":  "i_053",
+        "teamId":  "t_004",
+        "round":  "3",
+        "title":  "The Teddy of Comfort",
+        "description":  "A cool description of the item",
+        "iconId":  "i_008"
+    },
+    {
+        "id":  "i_054",
+        "teamId":  "t_004",
+        "round":  "3",
+        "title":  "The Necklace of Riches",
+        "description":  "A cool description of the item",
+        "iconId":  "i_009"
+    },
+    {
+        "id":  "i_055",
+        "teamId":  "t_004",
+        "round":  "4",
+        "title":  "The Shovel of Hard Work",
+        "description":  "A cool description of the item",
+        "iconId":  "i_010"
+    },
+    {
+        "id":  "i_056",
+        "teamId":  "t_004",
+        "round":  "4",
+        "title":  "The Lunchbox of Hunger",
+        "description":  "A cool description of the item",
+        "iconId":  "i_011"
+    },
+    {
+        "id":  "i_057",
+        "teamId":  "t_004",
+        "round":  "4",
+        "title":  "The Watch of Punctuality",
+        "description":  "A cool description of the item",
+        "iconId":  "i_012"
+    },
+    {
+        "id":  "i_058",
+        "teamId":  "t_004",
+        "round":  "5",
+        "title":  "The Dice of Chance",
+        "description":  "A cool description of the item",
+        "iconId":  "i_013"
+    },
+    {
+        "id":  "i_059",
+        "teamId":  "t_004",
+        "round":  "5",
+        "title":  "The Sword of Violence",
+        "description":  "A cool description of the item",
+        "iconId":  "i_014"
+    },
+    {
+        "id":  "i_060",
+        "teamId":  "t_004",
+        "round":  "5",
+        "title":  "The Mask of Lies",
+        "description":  "A cool description of the item",
+        "iconId":  "i_015"
+    },
+    {
+        "id":  "i_061",
+        "teamId":  "t_005",
+        "round":  "1",
+        "title":  "The Ring of Power",
+        "description":  "A cool description of the item",
+        "iconId":  "i_001"
+    },
+    {
+        "id":  "i_062",
+        "teamId":  "t_005",
+        "round":  "1",
+        "title":  "The Gauntlet of Galantry",
+        "description":  "A cool description of the item",
+        "iconId":  "i_002"
+    },
+    {
+        "id":  "i_063",
+        "teamId":  "t_005",
+        "round":  "1",
+        "title":  "The Snorkle of Deep Diving",
+        "description":  "A cool description of the item",
+        "iconId":  "i_003"
+    },
+    {
+        "id":  "i_064",
+        "teamId":  "t_005",
+        "round":  "2",
+        "title":  "The Fan of Air Conditioning",
+        "description":  "A cool description of the item",
+        "iconId":  "i_004"
+    },
+    {
+        "id":  "i_065",
+        "teamId":  "t_005",
+        "round":  "2",
+        "title":  "The Flower of Field Frolicing",
+        "description":  "A cool description of the item",
+        "iconId":  "i_005"
+    },
+    {
+        "id":  "i_066",
+        "teamId":  "t_005",
+        "round":  "2",
+        "title":  "The Clown Nose of Laughter",
+        "description":  "A cool description of the item",
+        "iconId":  "i_006"
+    },
+    {
+        "id":  "i_067",
+        "teamId":  "t_005",
+        "round":  "3",
+        "title":  "The Mirror of Self Reflection",
+        "description":  "A cool description of the item",
+        "iconId":  "i_007"
+    },
+    {
+        "id":  "i_068",
+        "teamId":  "t_005",
+        "round":  "3",
+        "title":  "The Teddy of Comfort",
+        "description":  "A cool description of the item",
+        "iconId":  "i_008"
+    },
+    {
+        "id":  "i_069",
+        "teamId":  "t_005",
+        "round":  "3",
+        "title":  "The Necklace of Riches",
+        "description":  "A cool description of the item",
+        "iconId":  "i_009"
+    },
+    {
+        "id":  "i_070",
+        "teamId":  "t_005",
+        "round":  "4",
+        "title":  "The Shovel of Hard Work",
+        "description":  "A cool description of the item",
+        "iconId":  "i_010"
+    },
+    {
+        "id":  "i_071",
+        "teamId":  "t_005",
+        "round":  "4",
+        "title":  "The Lunchbox of Hunger",
+        "description":  "A cool description of the item",
+        "iconId":  "i_011"
+    },
+    {
+        "id":  "i_072",
+        "teamId":  "t_005",
+        "round":  "4",
+        "title":  "The Watch of Punctuality",
+        "description":  "A cool description of the item",
+        "iconId":  "i_012"
+    },
+    {
+        "id":  "i_073",
+        "teamId":  "t_005",
+        "round":  "5",
+        "title":  "The Dice of Chance",
+        "description":  "A cool description of the item",
+        "iconId":  "i_013"
+    },
+    {
+        "id":  "i_074",
+        "teamId":  "t_005",
+        "round":  "5",
+        "title":  "The Sword of Violence",
+        "description":  "A cool description of the item",
+        "iconId":  "i_014"
+    },
+    {
+        "id":  "i_075",
+        "teamId":  "t_005",
+        "round":  "5",
+        "title":  "The Mask of Lies",
+        "description":  "A cool description of the item",
+        "iconId":  "i_015"
+    },
+    {
+        "id":  "i_076",
+        "teamId":  "t_006",
+        "round":  "1",
+        "title":  "The Ring of Power",
+        "description":  "A cool description of the item",
+        "iconId":  "i_001"
+    },
+    {
+        "id":  "i_077",
+        "teamId":  "t_006",
+        "round":  "1",
+        "title":  "The Gauntlet of Galantry",
+        "description":  "A cool description of the item",
+        "iconId":  "i_002"
+    },
+    {
+        "id":  "i_078",
+        "teamId":  "t_006",
+        "round":  "1",
+        "title":  "The Snorkle of Deep Diving",
+        "description":  "A cool description of the item",
+        "iconId":  "i_003"
+    },
+    {
+        "id":  "i_079",
+        "teamId":  "t_006",
+        "round":  "2",
+        "title":  "The Fan of Air Conditioning",
+        "description":  "A cool description of the item",
+        "iconId":  "i_004"
+    },
+    {
+        "id":  "i_080",
+        "teamId":  "t_006",
+        "round":  "2",
+        "title":  "The Flower of Field Frolicing",
+        "description":  "A cool description of the item",
+        "iconId":  "i_005"
+    },
+    {
+        "id":  "i_081",
+        "teamId":  "t_006",
+        "round":  "2",
+        "title":  "The Clown Nose of Laughter",
+        "description":  "A cool description of the item",
+        "iconId":  "i_006"
+    },
+    {
+        "id":  "i_082",
+        "teamId":  "t_006",
+        "round":  "3",
+        "title":  "The Mirror of Self Reflection",
+        "description":  "A cool description of the item",
+        "iconId":  "i_007"
+    },
+    {
+        "id":  "i_083",
+        "teamId":  "t_006",
+        "round":  "3",
+        "title":  "The Teddy of Comfort",
+        "description":  "A cool description of the item",
+        "iconId":  "i_008"
+    },
+    {
+        "id":  "i_084",
+        "teamId":  "t_006",
+        "round":  "3",
+        "title":  "The Necklace of Riches",
+        "description":  "A cool description of the item",
+        "iconId":  "i_009"
+    },
+    {
+        "id":  "i_085",
+        "teamId":  "t_006",
+        "round":  "4",
+        "title":  "The Shovel of Hard Work",
+        "description":  "A cool description of the item",
+        "iconId":  "i_010"
+    },
+    {
+        "id":  "i_086",
+        "teamId":  "t_006",
+        "round":  "4",
+        "title":  "The Lunchbox of Hunger",
+        "description":  "A cool description of the item",
+        "iconId":  "i_011"
+    },
+    {
+        "id":  "i_087",
+        "teamId":  "t_006",
+        "round":  "4",
+        "title":  "The Watch of Punctuality",
+        "description":  "A cool description of the item",
+        "iconId":  "i_012"
+    },
+    {
+        "id":  "i_088",
+        "teamId":  "t_006",
+        "round":  "5",
+        "title":  "The Dice of Chance",
+        "description":  "A cool description of the item",
+        "iconId":  "i_013"
+    },
+    {
+        "id":  "i_089",
+        "teamId":  "t_006",
+        "round":  "5",
+        "title":  "The Sword of Violence",
+        "description":  "A cool description of the item",
+        "iconId":  "i_014"
+    },
+    {
+        "id":  "i_090",
+        "teamId":  "t_006",
+        "round":  "5",
+        "title":  "The Mask of Lies",
+        "description":  "A cool description of the item",
+        "iconId":  "i_015"
+    }
+]

@@ -1,0 +1,24 @@
+[
+    {
+        "id":  "v_001",
+        "title":  "Something has gone wrong. Do you...",
+        "description":  "What should we do?",
+        "choiceOne_title":  "Run for your life",
+        "choiceOne_description":  "We\u0027ll get out of here alive!",
+        "choiceOne_consequences":  "We just made it out",
+        "choiceTwo_title":  "Fight for your life",
+        "choiceTwo_description":  "Time to knuckle down.",
+        "choiceTwo_consequences":  "Bruised, bloody, victorious"
+    },
+    {
+        "id":  "v_002",
+        "title":  "The superior, sci-fi!!",
+        "description":  "The choice is yours!",
+        "choiceOne_title":  "Farscape",
+        "choiceOne_description":  "What a show!",
+        "choiceOne_consequences":  "Frack! We won!",
+        "choiceTwo_title":  "Red Dwarf",
+        "choiceTwo_description":  "Hilarious!",
+        "choiceTwo_consequences":  "Craig Charles for the win!"
+    }
+]

@@ -1,0 +1,38 @@
+[
+    {
+        "id":  "l_app_title",
+        "content":  "Digidama"
+    },
+    {
+        "id":  "l_header_round",
+        "content":  "Round"
+    },
+    {
+        "id":  "l_header_actionpoints",
+        "content":  "Action Points"
+    },
+    {
+        "id":  "l_header_sparks",
+        "content":  "Sparks"
+    },
+    {
+        "id":  "l_header_settings",
+        "content":  "Settings"
+    },
+    {
+        "id":  "l_footer_chat",
+        "content":  "Chat"
+    },
+    {
+        "id":  "l_footer_vote",
+        "content":  "Vote"
+    },
+    {
+        "id":  "l_footer_videos",
+        "content":  "Video"
+    },
+    {
+        "id":  "l_footer_help",
+        "content":  "Help"
+    }
+]

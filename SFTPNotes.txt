@@ -1,0 +1,11 @@
+make sure ssh agent is running!
+Use Get-Service ssh-agent to find out if stopped
+Use Get-Service ssh-agent | Select StartType to find out is disabled
+To start use: Get-Service -Name ssh-agent | Set-Service -StartupType Manual
+Then, use vscode to save a copy of the priv key
+Change permissions on file if needed (Properties / Security / Advanced / disable inherintance extreme, add user Gradius for permissions
+Finally, go to .ssh and use ssh-add <keyname>
+Enter password
+THEN
+sftp -P 18765 u1122-rivlkpske2gg@digidamara.com
+port, username and host are found on siteground

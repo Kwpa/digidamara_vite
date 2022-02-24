@@ -1,0 +1,272 @@
+[
+    {
+        "id":  "s_001",
+        "teamId":  "t_001",
+        "round":  "1",
+        "title":  "The Lost Element",
+        "content":  "The people knew it was time to rise and take the Lost Element from their rulers",
+        "encryption":  "0",
+        "iconId":  "t_001"
+    },
+    {
+        "id":  "s_002",
+        "teamId":  "t_001",
+        "round":  "2",
+        "title":  "The Big Cheese",
+        "content":  "Landing on the planet, they were shocked to find that it was in fact made of cheese.",
+        "encryption":  "1",
+        "iconId":  "t_001"
+    },
+    {
+        "id":  "s_003",
+        "teamId":  "t_001",
+        "round":  "3",
+        "title":  "The Fragile Bear",
+        "content":  "Cheese was guarded by Bears. One took a liking to an alien.",
+        "encryption":  "1",
+        "iconId":  "t_001"
+    },
+    {
+        "id":  "s_004",
+        "teamId":  "t_001",
+        "round":  "4",
+        "title":  "The Angry Mole",
+        "content":  "Bears and Moles fought for the cheese. The alien tried to make a truce.",
+        "encryption":  "1",
+        "iconId":  "t_001"
+    },
+    {
+        "id":  "s_005",
+        "teamId":  "t_001",
+        "round":  "5",
+        "title":  "The Banquet",
+        "content":  "Everyone ate cheese together. The aliens were award a big Cheddar Wheel.",
+        "encryption":  "1",
+        "iconId":  "t_001"
+    },
+    {
+        "id":  "s_006",
+        "teamId":  "t_002",
+        "round":  "1",
+        "title":  "The Lost Element",
+        "content":  "The people knew it was time to rise and take the Lost Element from their rulers",
+        "encryption":  "0",
+        "iconId":  "t_002"
+    },
+    {
+        "id":  "s_007",
+        "teamId":  "t_002",
+        "round":  "2",
+        "title":  "The Big Cheese",
+        "content":  "Landing on the planet, they were shocked to find that it was in fact made of cheese.",
+        "encryption":  "2",
+        "iconId":  "t_002"
+    },
+    {
+        "id":  "s_008",
+        "teamId":  "t_002",
+        "round":  "3",
+        "title":  "The Fragile Bear",
+        "content":  "Cheese was guarded by Bears. One took a liking to an alien.",
+        "encryption":  "2",
+        "iconId":  "t_002"
+    },
+    {
+        "id":  "s_009",
+        "teamId":  "t_002",
+        "round":  "4",
+        "title":  "The Angry Mole",
+        "content":  "Bears and Moles fought for the cheese. The alien tried to make a truce.",
+        "encryption":  "2",
+        "iconId":  "t_002"
+    },
+    {
+        "id":  "s_010",
+        "teamId":  "t_002",
+        "round":  "5",
+        "title":  "The Banquet",
+        "content":  "Everyone ate cheese together. The aliens were award a big Cheddar Wheel.",
+        "encryption":  "2",
+        "iconId":  "t_002"
+    },
+    {
+        "id":  "s_011",
+        "teamId":  "t_003",
+        "round":  "1",
+        "title":  "The Lost Element",
+        "content":  "The people knew it was time to rise and take the Lost Element from their rulers",
+        "encryption":  "0",
+        "iconId":  "t_003"
+    },
+    {
+        "id":  "s_012",
+        "teamId":  "t_003",
+        "round":  "2",
+        "title":  "The Big Cheese",
+        "content":  "Landing on the planet, they were shocked to find that it was in fact made of cheese.",
+        "encryption":  "3",
+        "iconId":  "t_003"
+    },
+    {
+        "id":  "s_013",
+        "teamId":  "t_003",
+        "round":  "3",
+        "title":  "The Fragile Bear",
+        "content":  "Cheese was guarded by Bears. One took a liking to an alien.",
+        "encryption":  "3",
+        "iconId":  "t_003"
+    },
+    {
+        "id":  "s_014",
+        "teamId":  "t_003",
+        "round":  "4",
+        "title":  "The Angry Mole",
+        "content":  "Bears and Moles fought for the cheese. The alien tried to make a truce.",
+        "encryption":  "3",
+        "iconId":  "t_003"
+    },
+    {
+        "id":  "s_015",
+        "teamId":  "t_003",
+        "round":  "5",
+        "title":  "The Banquet",
+        "content":  "Everyone ate cheese together. The aliens were award a big Cheddar Wheel.",
+        "encryption":  "3",
+        "iconId":  "t_003"
+    },
+    {
+        "id":  "s_016",
+        "teamId":  "t_004",
+        "round":  "1",
+        "title":  "The Lost Element",
+        "content":  "The people knew it was time to rise and take the Lost Element from their rulers",
+        "encryption":  "0",
+        "iconId":  "t_004"
+    },
+    {
+        "id":  "s_017",
+        "teamId":  "t_004",
+        "round":  "2",
+        "title":  "The Big Cheese",
+        "content":  "Landing on the planet, they were shocked to find that it was in fact made of cheese.",
+        "encryption":  "4",
+        "iconId":  "t_004"
+    },
+    {
+        "id":  "s_018",
+        "teamId":  "t_004",
+        "round":  "3",
+        "title":  "The Fragile Bear",
+        "content":  "Cheese was guarded by Bears. One took a liking to an alien.",
+        "encryption":  "4",
+        "iconId":  "t_004"
+    },
+    {
+        "id":  "s_019",
+        "teamId":  "t_004",
+        "round":  "4",
+        "title":  "The Angry Mole",
+        "content":  "Bears and Moles fought for the cheese. The alien tried to make a truce.",
+        "encryption":  "4",
+        "iconId":  "t_004"
+    },
+    {
+        "id":  "s_020",
+        "teamId":  "t_004",
+        "round":  "5",
+        "title":  "The Banquet",
+        "content":  "Everyone ate cheese together. The aliens were award a big Cheddar Wheel.",
+        "encryption":  "4",
+        "iconId":  "t_004"
+    },
+    {
+        "id":  "s_021",
+        "teamId":  "t_005",
+        "round":  "1",
+        "title":  "The Lost Element",
+        "content":  "The people knew it was time to rise and take the Lost Element from their rulers",
+        "encryption":  "0",
+        "iconId":  "t_005"
+    },
+    {
+        "id":  "s_022",
+        "teamId":  "t_005",
+        "round":  "2",
+        "title":  "The Big Cheese",
+        "content":  "Landing on the planet, they were shocked to find that it was in fact made of cheese.",
+        "encryption":  "5",
+        "iconId":  "t_005"
+    },
+    {
+        "id":  "s_023",
+        "teamId":  "t_005",
+        "round":  "3",
+        "title":  "The Fragile Bear",
+        "content":  "Cheese was guarded by Bears. One took a liking to an alien.",
+        "encryption":  "5",
+        "iconId":  "t_005"
+    },
+    {
+        "id":  "s_024",
+        "teamId":  "t_005",
+        "round":  "4",
+        "title":  "The Angry Mole",
+        "content":  "Bears and Moles fought for the cheese. The alien tried to make a truce.",
+        "encryption":  "5",
+        "iconId":  "t_005"
+    },
+    {
+        "id":  "s_025",
+        "teamId":  "t_005",
+        "round":  "5",
+        "title":  "The Banquet",
+        "content":  "Everyone ate cheese together. The aliens were award a big Cheddar Wheel.",
+        "encryption":  "5",
+        "iconId":  "t_005"
+    },
+    {
+        "id":  "s_026",
+        "teamId":  "t_006",
+        "round":  "1",
+        "title":  "The Lost Element",
+        "content":  "The people knew it was time to rise and take the Lost Element from their rulers",
+        "encryption":  "0",
+        "iconId":  "t_006"
+    },
+    {
+        "id":  "s_027",
+        "teamId":  "t_006",
+        "round":  "2",
+        "title":  "The Big Cheese",
+        "content":  "Landing on the planet, they were shocked to find that it was in fact made of cheese.",
+        "encryption":  "6",
+        "iconId":  "t_006"
+    },
+    {
+        "id":  "s_028",
+        "teamId":  "t_006",
+        "round":  "3",
+        "title":  "The Fragile Bear",
+        "content":  "Cheese was guarded by Bears. One took a liking to an alien.",
+        "encryption":  "6",
+        "iconId":  "t_006"
+    },
+    {
+        "id":  "s_029",
+        "teamId":  "t_006",
+        "round":  "4",
+        "title":  "The Angry Mole",
+        "content":  "Bears and Moles fought for the cheese. The alien tried to make a truce.",
+        "encryption":  "6",
+        "iconId":  "t_006"
+    },
+    {
+        "id":  "s_030",
+        "teamId":  "t_006",
+        "round":  "5",
+        "title":  "The Banquet",
+        "content":  "Everyone ate cheese together. The aliens were award a big Cheddar Wheel.",
+        "encryption":  "6",
+        "iconId":  "t_006"
+    }
+]

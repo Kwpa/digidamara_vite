@@ -1,0 +1,5 @@
+separate document
+We copy it 
+demand / schedule tsv -> json -> ftp to siteground
+> 24/7 would need 
+voting prioritised

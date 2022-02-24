@@ -1,0 +1,13 @@
+!echo hi
+cd www\digidamara.com\public_html\data
+pwd
+lcd C:\Users\Gradius\Documents\Github\digidamara_vite\public\assets\json
+lpwd
+put Teams.json
+put Barks.json
+put Items.json
+put Story.json
+put Notifications.json
+put VotingScenarios.json
+put Labels.json
+bye

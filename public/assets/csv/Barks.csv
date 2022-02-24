@@ -1,0 +1,7 @@
+"id","teamId","character","title","content","color","encryption"
+"b_001","t_001","Altar","Irritated","I can't believe that the other team is making us look so bad!","0xff0000","0"
+"b_002","t_001","Ambiv","Proud","The crowd is sure getting a kick out of us tonight!","0xff0000","0"
+"b_003","t_002","Bagolda","Curious","I wonder who will be out this round?","0xff0000","0"
+"b_004","any","Media","Enemy Approaching","The Throx has been sighted in a nearby quadrant!","0xff0000","0"
+"b_005","any","Media","Presenter","The Presenter is marshalling forth a barrage of spark suckers!","0xff0000","0"
+"b_006","any","Media","Missing body","The Presenter has vanished!","0xff0000","0"
