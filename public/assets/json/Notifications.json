@@ -13,7 +13,7 @@
         "title":  "Hey listen!",
         "content":  "Did you know that the world is ending?",
         "encryption":  "0",
-        "delay":  ""
+        "delay":  "1"
     },
     {
         "id":  "n_003",
@@ -21,7 +21,7 @@
         "title":  "It\u0027s time!",
         "content":  "Vote now!",
         "encryption":  "0",
-        "delay":  ""
+        "delay":  "1"
     },
     {
         "id":  "n_004",
@@ -29,7 +29,7 @@
         "title":  "Are you listening?",
         "content":  "Bow down to me!",
         "encryption":  "0",
-        "delay":  ""
+        "delay":  "1"
     },
     {
         "id":  "n_005",
@@ -37,14 +37,14 @@
         "title":  "The End",
         "content":  "I suppose you think you\u0027ve won...",
         "encryption":  "0",
-        "delay":  ""
+        "delay":  "1"
     },
     {
         "id":  "n_006",
         "round":  "1",
         "title":  "The Throx",
         "content":  "I must disrupt... no more sparks... darkness for... destroyed...",
-        "encryption":  "",
-        "delay":  ""
+        "encryption":  "0",
+        "delay":  "7"
     }
 ]

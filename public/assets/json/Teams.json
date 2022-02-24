@@ -5,6 +5,7 @@
         "characterOne_name":  "Altar",
         "characterTwo_name":  "Ambiv",
         "biography":  "These aliens are from a distant land.",
+        "favouriteDanceMove":  "Able Amble",
         "iconId":  "t_001"
     },
     {
@@ -13,6 +14,7 @@
         "characterOne_name":  "Betty",
         "characterTwo_name":  "Bagolda",
         "biography":  "These aliens have trombones for hands.",
+        "favouriteDanceMove":  "Big Band Boogie",
         "iconId":  "t_002"
     },
     {
@@ -21,6 +23,7 @@
         "characterOne_name":  "Carlos",
         "characterTwo_name":  "Cuthbert",
         "biography":  "These aliens want to absorb as much as possible.",
+        "favouriteDanceMove":  "Classical Curtail",
         "iconId":  "t_003"
     },
     {
@@ -29,6 +32,7 @@
         "characterOne_name":  "Dolores",
         "characterTwo_name":  "Ducky",
         "biography":  "These aliens are made of elastic and bounce everywhere.",
+        "favouriteDanceMove":  "Devastating Dip",
         "iconId":  "t_004"
     },
     {
@@ -37,6 +41,7 @@
         "characterOne_name":  "Egart",
         "characterTwo_name":  "Esta",
         "biography":  "These aliens will be forever remembered as martyrs.",
+        "favouriteDanceMove":  "Enticing Elope",
         "iconId":  "t_005"
     },
     {
@@ -45,6 +50,7 @@
         "characterOne_name":  "Frogpit",
         "characterTwo_name":  "Froom",
         "biography":  "These aliens own a megacorp made of millions of employees and one star whale.",
+        "favouriteDanceMove":  "Frustrated Ferret",
         "iconId":  "t_006"
     }
 ]

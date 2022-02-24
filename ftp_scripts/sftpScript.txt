@@ -1,7 +1,7 @@
 !echo hi
-cd www\digidamara.com\public_html\data
+cd www\digidamara.com\public_html\data\eng
 pwd
-lcd C:\Users\Gradius\Documents\Github\digidamara_vite\public\assets\json
+lcd public\assets\json
 lpwd
 put Teams.json
 put Barks.json

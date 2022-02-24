@@ -25,12 +25,15 @@ export default class MainScene extends Phaser.Scene {
 
   localState!: LocalGameState;
   staticData!: StaticData;
+  
   teams_data!: object;
-  voteScenarios_data!: object;
+  barks_data!: object;
   items_data!: object;
-  notifications_data!: object;
   story_data!: object;
+  notifications_data!: object;
+  voteScenarios_data!: object;
   labels_data!: object;
+
   teamProfilePages!: Phaser.GameObjects.DOMElement[];
 
   session!: Session;
@@ -98,12 +101,13 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('star', '/assets/ui/star.png');
     this.load.image('heart', '/assets/ui/heart.png');
     this.load.image('spotlight', '/assets/ui/spotlight2.png');
-    this.load.json('teams_content', '/assets/json/teams_content.json');
-    this.load.json('voteScenarios_content', '/assets/json/voteScenarios_content.json');
-    this.load.json('items_content', '/assets/json/items_content.json');
-    this.load.json('notifications_content', '/assets/json/notifications_content.json');
-    this.load.json('storyUnlocks_content', '/assets/json/storyUnlocks_content.json');
-    this.load.json('appLabels_content', '/assets/json/appLabels_content.json');
+    this.load.json('teams_content', '/assets/json/Teams.json');
+    this.load.json('barks_content', '/assets/json/Barks.json');
+    this.load.json('items_content', '/assets/json/Items.json');
+    this.load.json('storyUnlocks_content', '/assets/json/Story.json');
+    this.load.json('notifications_content', '/assets/json/Notifications.json');
+    this.load.json('voteScenarios_content', '/assets/json/VotingScenarios.json');
+    this.load.json('appLabels_content', '/assets/json/Labels.json');
     this.load.json('eightpath', '/assets/json/paths/path_2.json');
   }
 
@@ -114,11 +118,12 @@ export default class MainScene extends Phaser.Scene {
     console.log('load Main Scene');
 
     this.teams_data = this.cache.json.get('teams_content') as object;
+    this.barks_data = this.cache.json.get('barks_content') as object;
+    this.items_data = this.cache.json.get('items_content') as object;
+    this.story_data = this.cache.json.get('storyUnlocks_content') as object;
+    this.notifications_data = this.cache.json.get('notifications_content') as object;
     this.voteScenarios_data = this.cache.json.get('voteScenarios_content') as object;
-    this.items_data = this.cache.json.get('items_content');
-    this.notifications_data = this.cache.json.get('notifications_content');
-    this.story_data = this.cache.json.get('storyUnlocks_content');
-    this.labels_data = this.cache.json.get('appLabels_content');
+    this.labels_data = this.cache.json.get('appLabels_content') as object;
 
     const game = document.getElementsByTagName('canvas')[0];
     game.style.setProperty('position', 'absolute');
@@ -224,6 +229,7 @@ export default class MainScene extends Phaser.Scene {
     this.staticData = await new StaticData();
     this.staticData.Init(
       this.teams_data,
+      this.barks_data,
       this.items_data,
       this.story_data,
       this.notifications_data,

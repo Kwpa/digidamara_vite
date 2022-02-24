@@ -9,3 +9,6 @@ Enter password
 THEN
 sftp -P 18765 u1122-rivlkpske2gg@digidamara.com
 port, username and host are found on siteground
+
+script created to do this automagically from windows computer!
+in powershell run .\uploadSpreadsheet.ps1 from digidamara_vite folder
