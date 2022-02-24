@@ -131,7 +131,6 @@ export default class MainScene extends Phaser.Scene {
 
   async AsyncCreate()
   {
-
     this.LoadJSON();
     let { width, height } = this.sys.game.canvas;
     const game = document.getElementsByTagName('canvas')[0];
