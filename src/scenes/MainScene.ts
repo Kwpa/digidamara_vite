@@ -14,12 +14,13 @@ import { ChannelMessage, ChannelMessageList, Client, Session, Socket, StorageObj
 import collect from 'collect.js';
 import PerspectiveImagePlugin from 'phaser3-rex-plugins/plugins/perspectiveimage-plugin.js';
 import { PerspectiveCarousel } from 'phaser3-rex-plugins/plugins/perspectiveimage.js';
-import LocalGameState, { TeamImages, TeamRenderTextures } from './LocalGameState';
+import LocalGameState, { TeamImages, TeamRenderTextures, TeamState, VoteScenarioState } from './LocalGameState';
 import StaticData from './StaticData';
 import RenderTexture from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/rendertexture/RenderTexture';
 import Sprite from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/sprite/Sprite';
 import Image from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/image/Image';
 import { Rectangle } from 'phaser3-rex-plugins/plugins/gameobjects/shape/shapes/geoms';
+import * as bulmaToast from 'bulma-toast';
 
 export default class MainScene extends Phaser.Scene {
 
@@ -71,6 +72,7 @@ export default class MainScene extends Phaser.Scene {
   avatarOverlayButton!: HTMLElement;
   voteContainer!: HTMLElement;
   avatarOverlay!: Phaser.GameObjects.DOMElement;
+  notificationsArea!: HTMLElement;
 
   width!: number;
   height!: number;
@@ -96,6 +98,7 @@ export default class MainScene extends Phaser.Scene {
   startStarField: boolean = false;
   startCharacterGraphics: boolean = false;
 
+  receiveServerNotifications: boolean = false;
 
   constructor() {
     super('MainScene');
@@ -194,6 +197,21 @@ export default class MainScene extends Phaser.Scene {
     this.AsyncCreate();
   }
 
+  SetupNotifications()
+  {
+    bulmaToast.setDefaults({
+      type: 'is-warning',
+      position: 'top-center',
+      closeOnClick: true,
+      pauseOnHover: true, 
+      duration: 100000,
+      dismissible: true,
+      appendTo: this.notificationsArea
+    });
+
+    this.receiveServerNotifications = true;
+  }
+
   async LoadJSON() {
     this.teams_data = this.cache.json.get('teams_content') as object;
     this.barks_data = this.cache.json.get('barks_content') as object;
@@ -212,6 +230,7 @@ export default class MainScene extends Phaser.Scene {
     await this.delay(1200);
     //console.log(this.cache.json);
 
+    
     let { width, height } = this.sys.game.canvas;
     const leftCurtain = this.add.graphics();
     const rightCurtain = this.add.graphics();
@@ -256,15 +275,15 @@ export default class MainScene extends Phaser.Scene {
         delay: 1000,
         onComplete: () => { this.avatarOverlay.setVisible(true); }
       }
-    );
-
-    const game = document.getElementsByTagName('canvas')[0];
-    game.style.setProperty('position', 'absolute');
-    game.style.setProperty('z-index', '-1');
-
-    const baseWebsite = this.add.dom(width / 2, height / 2, BaseWebsite() as HTMLElement);
-    const chatPage = this.add.dom(width / 2, height / 2, ChatPage() as HTMLElement);
-    const videoPage = this.add.dom(width / 2, height / 2, VideoPage() as HTMLElement);
+      );
+      
+      const game = document.getElementsByTagName('canvas')[0];
+      game.style.setProperty('position', 'absolute');
+      game.style.setProperty('z-index', '-1');
+      
+      const baseWebsite = this.add.dom(width / 2, height / 2, BaseWebsite() as HTMLElement);
+      const chatPage = this.add.dom(width / 2, height / 2, ChatPage() as HTMLElement);
+      const videoPage = this.add.dom(width / 2, height / 2, VideoPage() as HTMLElement);
     const votePage = this.add.dom(width / 2, height / 2, VotingPage() as HTMLElement);
     this.avatarOverlay = this.add.dom(width / 2, height / 2, AvatarOverlay('open') as HTMLElement);
     this.avatarOverlay.setVisible(false);
@@ -278,7 +297,7 @@ export default class MainScene extends Phaser.Scene {
     this.anotherTextElement = document.getElementById('chat-update') as HTMLElement;
     this.textElement.hidden = true;
     this.anotherTextElement.hidden = true;
-
+    
     this.roundCounter = baseWebsite.getChildByID("round-header-value") as HTMLElement;
     this.actionPointsCounter = baseWebsite.getChildByID("ap-header-value") as HTMLElement;
     this.sparksCounter = baseWebsite.getChildByID("sparks-header-value") as HTMLElement;
@@ -294,7 +313,7 @@ export default class MainScene extends Phaser.Scene {
     this.voteContainer = votePage.getChildByID('vote-container') as HTMLElement;
     this.videoTileContainer = videoPage.getChildByID('video-container') as HTMLElement;
     this.avatarOverlayButton = this.avatarOverlay.getChildByID('openProfile') as HTMLElement;
-
+    this.notificationsArea = baseWebsite.getChildByID("gameArea") as HTMLElement;
 
     this.chatFooterButton.onclick = () => {
       chatPage.setVisible(true);
@@ -339,24 +358,26 @@ export default class MainScene extends Phaser.Scene {
       this.tapAreaRight.removeInteractive();
     }
     this.SetVideoImages(this.videoTileContainer);
-
+    
+    this.SetupNotifications();
+    
     //-----------------------------
-
+    
     const spotlight = this.add.image(width / 2, height / 2, 'spotlight');
     spotlight.setAlpha(0.4);
     spotlight.scaleY = height / 500;
     spotlight.scaleX = Math.max(1, width / 1000);
-
+    
     this.StarField();
 
     await this.GetLatestStaticData();
     await this.StartClientConnection();
 
-
+    
     await this.GetLatestDynamicData();
-
+    
   }
-
+  
   async GetLatestStaticData() {
     this.staticData = await new StaticData();
     this.staticData.Init(
@@ -512,12 +533,21 @@ export default class MainScene extends Phaser.Scene {
   async SetupLocalState(user_id: string) {
     var account = await this.client.getAccount(this.session);
     this.localState = new LocalGameState();
-    var list: string[] = [];
+
+    var teamIdList: string[] = [];
+    var teamStateList: TeamState[] = [];
+    var voteStateList: VoteScenarioState[] = [];
+
     this.staticData.teams.forEach((team) => {
-      list.push(team.id);
+      teamIdList.push(team.id);
+      teamStateList.push(new TeamState(team.id));
+    });
+    this.staticData.voteScenarios.forEach(() => {
+      voteStateList.push(new VoteScenarioState());
     })
+
     var username = account.user?.username as string;
-    this.localState.Init(username, 5, list);
+    this.localState.Init(username, 5, teamIdList, voteStateList, teamStateList);
     this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
     this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
     this.roundCounter.innerHTML = this.localState.round.toString();
@@ -532,40 +562,41 @@ export default class MainScene extends Phaser.Scene {
     const choiceOneSubtractButton = voteScenario.querySelector('#' + "choiceOneSubtract") as HTMLElement;
     choiceOneSubtractButton.onclick = () => {
       if (this.localState.HaveSpentSparksOnTodaysVote(0)) {
-        this.localState.voteState.DecreaseVote(0);
-        this.localState.GainSparks(1, false);
+        this.localState.voteStates[this.localState.round-1].DecreaseVote(0);
+        this.localState.GainSparks(1);
         this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
-        choiceOneField.innerHTML = this.localState.voteState.choiceOneVotes.toString();
+        choiceOneField.innerHTML = this.localState.voteStates[this.localState.round-1].choiceOneVotes.toString();
       }
     };
     const choiceOneAddButton = voteScenario.querySelector('#' + "choiceOneAdd") as HTMLElement;
     choiceOneAddButton.onclick = () => {
       if (this.localState.HaveSparks()) {
-        this.localState.voteState.IncreaseVote(0);
+        console.log()
+        this.localState.voteStates[this.localState.round-1].IncreaseVote(0);
         this.localState.SpendSparks(1);
         this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
-        choiceOneField.innerHTML = this.localState.voteState.choiceOneVotes.toString();
+        choiceOneField.innerHTML = this.localState.voteStates[this.localState.round-1].choiceOneVotes.toString();
       }
     };
     const choiceTwoField = voteScenario.querySelector('#' + "choiceTwo") as HTMLElement;
     const choiceTwoSubtractButton = voteScenario.querySelector('#' + "choiceTwoSubtract") as HTMLElement;
     choiceTwoSubtractButton.onclick = () => {
       if (this.localState.HaveSpentSparksOnTodaysVote(1)) {
-        this.localState.voteState.DecreaseVote(1);
-        this.localState.GainSparks(1, false);
+        this.localState.voteStates[this.localState.round-1].DecreaseVote(1);
+        this.localState.GainSparks(1);
         this.SpendSparkOnTodaysVoteMatchState(socket, -1);
         this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
-        choiceTwoField.innerHTML = this.localState.voteState.choiceTwoVotes.toString();
+        choiceTwoField.innerHTML = this.localState.voteStates[this.localState.round-1].choiceTwoVotes.toString();
       }
     };
     const choiceTwoAddButton = voteScenario.querySelector('#' + "choiceTwoAdd") as HTMLElement;
     choiceTwoAddButton.onclick = () => {
       if (this.localState.HaveSparks()) {
-        this.localState.voteState.IncreaseVote(1);
+        this.localState.voteStates[this.localState.round-1].IncreaseVote(1);
         this.localState.SpendSparks(1);
         this.SpendSparkOnTodaysVoteMatchState(socket, 1);
         this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
-        choiceTwoField.innerHTML = this.localState.voteState.choiceTwoVotes.toString();
+        choiceTwoField.innerHTML = this.localState.voteStates[this.localState.round-1].choiceTwoVotes.toString();
       }
     };
     this.voteContainer.innerHTML = "";
@@ -587,9 +618,10 @@ export default class MainScene extends Phaser.Scene {
         this.teamProfilePages.push(teamProfile);
         var donateButton = teamProfile.getChildByID('donateButton') as HTMLElement;
         var closeButton = teamProfile.getChildByID('close-team-page-button') as HTMLElement;
+        
         donateButton.onclick = () => {
           if (this.localState.SpendActionPoints(1)) {
-            this.localState.GainSparks(1, true);
+            this.localState.GainSparks(1+this.localState.GetUpgradeLevel());
             this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
             this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
             this.DonateEnergyMatchState(socket, this.localState.currentTeamID);
@@ -726,8 +758,8 @@ export default class MainScene extends Phaser.Scene {
       })*/
 
     const carousel = new PerspectiveCarousel(this, data) as PerspectiveCarousel;
-    this.tapAreaLeft = this.add.rectangle(0, height / 2, width / 3, height, 0x6666, 0);
-    this.tapAreaRight = this.add.rectangle(width, height / 2, width / 3, height, 0x6666, 0);
+    this.tapAreaLeft = this.add.rectangle(0, height / 2, width / 3, height-240, 0x6666, 0);
+    this.tapAreaRight = this.add.rectangle(width, height / 2, width / 3, height-240, 0x6666, 0);
     var cappedWidth = width;
     var cappedWidth = Math.min(width, 700);
     const tapAreaLeftArrow = this.add.image(cappedWidth / (32 / (2)), height / 2, 'arrow');
@@ -878,6 +910,15 @@ export default class MainScene extends Phaser.Scene {
         case 5:
           console.log("User " + result.presence.username + " upgraded " + content);
           break;
+        case 100: 
+          console.log("Notification");
+          if(this.receiveServerNotifications)
+          {
+            bulmaToast.toast(
+              { 
+                message: content
+              });
+          }
         default:
           console.info("User %o sent %o", result.presence.user_id, content);
       }

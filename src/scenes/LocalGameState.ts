@@ -8,9 +8,10 @@ export default class LocalGameState
     currentTeamID!: string;
     teamIDs!: string[];
     round: number = 0;
-    voteState!: VoteScenarioState;
+    voteStates!: VoteScenarioState[];
+    teamStates!: TeamState[];
 
-    Init(username: string, maxActionPoints: number, teamIDs : string[])
+    Init(username: string, maxActionPoints: number, teamIDs : string[], voteStates, teamStates)
     {
         this.GainActionPoints(5);
         this.GetRound();
@@ -20,8 +21,8 @@ export default class LocalGameState
         this.carouselPosition = 0;
         this.teamIDs = teamIDs;
         this.SetCurrentTeamID()
-        this.voteState = new VoteScenarioState();
-        console.log("starting team " + this.currentTeamID);
+        this.voteStates = voteStates;
+        this.teamStates = teamStates;      
     }
 
     GetRound()
@@ -44,11 +45,11 @@ export default class LocalGameState
     HaveSpentSparksOnTodaysVote(choice: number)
     {
         if(choice==0){
-            return this.voteState.choiceOneVotes > 0; 
+            return this.voteStates[this.round-1].choiceOneVotes > 0; 
         }
         else if (choice==1)
         {
-            return this.voteState.choiceTwoVotes > 0;
+            return this.voteStates[this.round-1].choiceTwoVotes > 0;
         }
         else
         {
@@ -104,10 +105,24 @@ export default class LocalGameState
         else return false;
     }
 
-    GainSparks(amount: number, upgrade: boolean)
+    UpgradeTeam(teamId:string)
+    {
+        this.teamStates.filter(p=>p.id==this.currentTeamID)[0].upgradeLevel++;
+    }
+
+    GetUpgradeLevel()
+    {
+        return this.teamStates.filter(p=>p.id==this.currentTeamID)[0].upgradeLevel;
+    }
+    JoinFanClub(teamId)
+    {
+        this.teamStates.filter(p=>p.id==teamId)[0].userInFanClub = true;
+    }
+
+    GainSparks(amount: number)
     {
         var newAmount = this.sparksAwarded + amount;  
-        if(upgrade) newAmount+= this.upgradeLevel;
+        
         this.sparksAwarded = newAmount;
     }
     
@@ -162,7 +177,7 @@ export class TeamState
     currentEnergy: number = 0;
     userInFanClub: boolean = false;
 
-    constructor(id){
+    constructor(id: string){
         this.id = id;
     }
 }

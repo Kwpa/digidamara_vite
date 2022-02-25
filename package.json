@@ -31,6 +31,7 @@
     "@creativebulma/bulma-badge": "creativebulma/bulma-badge",
     "@heroiclabs/nakama-js": "^2.3",
     "bulma": "^0.9.3",
+    "bulma-toast": "^2.4.1",
     "collect.js": "^4.31.3",
     "collections": "5.1.13",
     "phaser3-rex-plugins": "^1.1.61",

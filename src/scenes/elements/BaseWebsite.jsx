@@ -42,7 +42,7 @@ const BaseWebsite = () => {
           </nav>
         </div>
       </div>
-      <div class="container">
+      <div id="gameArea"class="container">
         <h1 id="rnd-update" class="has-text-primary">
           HI
         </h1>
