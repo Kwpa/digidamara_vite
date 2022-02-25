@@ -26,7 +26,7 @@ export default class LocalGameState
 
     GetRound()
     {
-        this.round = 1;
+        this.round = 2;
         return this.round;
     }
 
@@ -104,9 +104,10 @@ export default class LocalGameState
         else return false;
     }
 
-    GainSparks(amount: number)
+    GainSparks(amount: number, upgrade: boolean)
     {
         var newAmount = this.sparksAwarded + amount;  
+        if(upgrade) newAmount+= this.upgradeLevel;
         this.sparksAwarded = newAmount;
     }
     
@@ -150,6 +151,20 @@ export class TeamImages
         this.img_B = B;
         this.img_B_flipped = B_flipped;
       }
+}
+
+export class TeamState
+{
+    id!: string;
+    outOfCompetition: boolean = false;
+    upgradeLevel: number = 0;
+    energyRequirement: number = 1;
+    currentEnergy: number = 0;
+    userInFanClub: boolean = false;
+
+    constructor(id){
+        this.id = id;
+    }
 }
 
 export class VoteScenarioState

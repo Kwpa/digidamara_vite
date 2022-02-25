@@ -96,19 +96,22 @@ export default class MainScene extends Phaser.Scene {
   }
 
   preload() {
+    //this.load.crossOrigin = "Anonymous";
+    
     this.load.atlas('atlas', '/assets/test_avatars/avatar_atlas.png', ' /assets/json/avatar_atlas.json');
     this.load.image('arrow', '/assets/ui/arrow.png');
     this.load.image('star', '/assets/ui/star.png');
     this.load.image('heart', '/assets/ui/heart.png');
     this.load.image('spotlight', '/assets/ui/spotlight2.png');
-    this.load.json('teams_content', '/assets/json/Teams.json');
-    this.load.json('barks_content', '/assets/json/Barks.json');
-    this.load.json('items_content', '/assets/json/Items.json');
-    this.load.json('storyUnlocks_content', '/assets/json/Story.json');
-    this.load.json('notifications_content', '/assets/json/Notifications.json');
-    this.load.json('voteScenarios_content', '/assets/json/VotingScenarios.json');
-    this.load.json('appLabels_content', '/assets/json/Labels.json');
+    this.load.json('voteScenarios_content', 'https://digidamara.com/data/eng/VotingScenarios.json'); //https://digidamara.com/data/eng/VotingScenarios.json
+    this.load.json('teams_content', 'https://digidamara.com/data/eng/Teams.json');
+    this.load.json('barks_content', 'https://digidamara.com/data/eng/Barks.json');
+    this.load.json('items_content', 'https://digidamara.com/data/eng/Items.json');
+    this.load.json('storyUnlocks_content', 'https://digidamara.com/data/eng/Story.json');
+    this.load.json('notifications_content', 'https://digidamara.com/data/eng/Notifications.json');
+    this.load.json('appLabels_content', 'https://digidamara.com/data/eng/Labels.json');
     this.load.json('eightpath', '/assets/json/paths/path_2.json');
+    //this.load.on('complete', this.AsyncCreate);
   }
 
   create() //to tackle - server code and setup for typescript!
@@ -126,12 +129,15 @@ export default class MainScene extends Phaser.Scene {
     this.story_data = this.cache.json.get('storyUnlocks_content') as object;
     this.notifications_data = this.cache.json.get('notifications_content') as object;
     this.voteScenarios_data = this.cache.json.get('voteScenarios_content') as object;
+    console.log(this.notifications_data);
     this.labels_data = this.cache.json.get('appLabels_content') as object;
   }
 
   async AsyncCreate()
   {
-    this.LoadJSON();
+    await this.delay(10000);
+    await this.LoadJSON();
+    console.log(this.cache.json);
     let { width, height } = this.sys.game.canvas;
     const game = document.getElementsByTagName('canvas')[0];
     game.style.setProperty('position', 'absolute');
@@ -364,6 +370,7 @@ export default class MainScene extends Phaser.Scene {
   async SetupVotePage(socket: Socket) {
 
     var todaysScenario = this.staticData.voteScenarios[this.localState.GetRound()-1];
+    console.log(todaysScenario);
     var voteScenario = VoteScenario(todaysScenario) as HTMLElement;
     const choiceOneField = voteScenario.querySelector('#' + "choiceOne") as HTMLElement;
     const choiceOneSubtractButton = voteScenario.querySelector('#' + "choiceOneSubtract") as HTMLElement;
@@ -371,7 +378,7 @@ export default class MainScene extends Phaser.Scene {
       if(this.localState.HaveSpentSparksOnTodaysVote(0))
       {
         this.localState.voteState.DecreaseVote(0);
-        this.localState.GainSparks(1);
+        this.localState.GainSparks(1,false);
         this.sparksCounter.innerHTML=this.localState.sparksAwarded.toString();
         choiceOneField.innerHTML = this.localState.voteState.choiceOneVotes.toString();
       }
@@ -392,7 +399,7 @@ export default class MainScene extends Phaser.Scene {
       if(this.localState.HaveSpentSparksOnTodaysVote(1))
       {
         this.localState.voteState.DecreaseVote(1);
-        this.localState.GainSparks(1);
+        this.localState.GainSparks(1, false);
         this.SpendSparkOnTodaysVoteMatchState(socket, -1);
         this.sparksCounter.innerHTML=this.localState.sparksAwarded.toString();
         choiceTwoField.innerHTML = this.localState.voteState.choiceTwoVotes.toString();
@@ -430,7 +437,7 @@ export default class MainScene extends Phaser.Scene {
         var closeButton = teamProfile.getChildByID('close-team-page-button') as HTMLElement;
         donateButton.onclick = () => {
           if (this.localState.SpendActionPoints(1)) {
-            this.localState.GainSparks(1);
+            this.localState.GainSparks(1, true);
             this.actionPointsCounter.innerHTML=this.localState.actionPoints.toString();
             this.sparksCounter.innerHTML=this.localState.sparksAwarded.toString();
             this.DonateEnergyMatchState(socket, this.localState.currentTeamID);
@@ -848,23 +855,23 @@ export default class MainScene extends Phaser.Scene {
   }
 
   update() {
-    if (this.cardTexs != null) {
-      /* this.TintRenderTexture(i, 0xffff0000); */
-      this.pathDummy.getPoint(this.follower.t, this.follower.vec);
-      var x = this.follower.vec.x;
-      var y = this.follower.vec.y;
+    // if (this.cardTexs != null) {
+    //   /* this.TintRenderTexture(i, 0xffff0000); */
+    //   this.pathDummy.getPoint(this.follower.t, this.follower.vec);
+    //   var x = this.follower.vec.x;
+    //   var y = this.follower.vec.y;
 
-      var id = this.localState.carouselPosition;
-      this.cardTexs[id].rendTex_front.clear();
-      /* this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_A, 150+(this.tweenDummy as Tweens.Tween).getValue()*10, 300);
-      this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_B, 450+(this.tweenDummy as Tweens.Tween).getValue()*-10,300); */
+    //   var id = this.localState.carouselPosition;
+    //   this.cardTexs[id].rendTex_front.clear();
+    //   /* this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_A, 150+(this.tweenDummy as Tweens.Tween).getValue()*10, 300);
+    //   this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_B, 450+(this.tweenDummy as Tweens.Tween).getValue()*-10,300); */
 
-      this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_A, 150 + x * 0.2, 200 + y * 0.2);
-      x = -x + 460;
-      y = y;
-      this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_B, 350 + x * 0.2, 200 + y * 0.2);
-    }
-    this.UpdateStarField();
+    //   this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_A, 150 + x * 0.2, 200 + y * 0.2);
+    //   x = -x + 460;
+    //   y = y;
+    //   this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_B, 350 + x * 0.2, 200 + y * 0.2);
+    // }
+    // this.UpdateStarField();
   }
 }
 

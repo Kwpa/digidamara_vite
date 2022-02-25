@@ -1,0 +1,6 @@
+Header always set Access-Control-Allow-Origin: *
+RewriteEngine on
+RewriteCond %{HTTP_HOST} ^digidamara.com$ [NC,OR]
+RewriteCond %{HTTP_HOST} ^www.digidamara.com$
+RewriteCond %{REQUEST_URI} !digidamara_prototype/dist/
+RewriteRule (.*) /digidamara_prototype/dist/$1 [L]
