@@ -215,19 +215,31 @@ export default class MainScene extends Phaser.Scene {
     
     let { width, height } = this.sys.game.canvas;
     const leftCurtain = this.add.graphics();
+    const rightCurtain = this.add.graphics();
     leftCurtain.fillStyle(0x545454,1);
     leftCurtain.fillRect(0,0,width/2, height);
+    leftCurtain.fillStyle(0x2a2a2a);
+    leftCurtain.fillRect(width/2-3,0,3, height);
+    for(var i=0; i< 20; i++)
+    {
+      leftCurtain.fillCircle(width/2-10,i*height/20,4);
+    }
     leftCurtain.depth = 2;
-    const rightCurtain = this.add.graphics();
     rightCurtain.fillStyle(0x545454,1);
     rightCurtain.fillRect(width/2,0,width/2, height);
+    rightCurtain.fillStyle(0x2a2a2a);
+    rightCurtain.fillRect(width/2,0,3, height);
+    for(var i=0; i< 20; i++)
+    {
+      rightCurtain.fillCircle(width/2+10,i*height/20,4);
+    }
     rightCurtain.depth = 2;
 
     var leftCurtainTween = this.tweens.add(
       {
         targets: leftCurtain,
         x: -width,
-        duration: 2500,
+        duration: 2200,
         ease: 'Quad.easeIn',
         yoyo: false,
         loop: 0,
@@ -239,7 +251,7 @@ export default class MainScene extends Phaser.Scene {
       {
         targets: rightCurtain,
         x: width,
-        duration: 2500,
+        duration: 2200,
         ease: 'Quad.easeIn',
         yoyo: false,
         loop: 0,
@@ -366,7 +378,7 @@ export default class MainScene extends Phaser.Scene {
 
   StarField() {
     let { width, height } = this.sys.game.canvas;
-    this.starSprite = this.add.sprite(0, 0, 'heart');
+    this.starSprite = this.add.sprite(0, 0, 'star');
     //this.starSprite.scale = 3;
     this.xx = [];
     this.yy = [];
@@ -962,8 +974,8 @@ export default class MainScene extends Phaser.Scene {
         this.zz[i] -= 600;
       }
 
-
-      this.starSprite.setTint(this.listOfColours[i]);
+      this.starSprite.setTint(0xffffff);
+      //this.starSprite.setTint(this.listOfColours[i]);
       this.starFieldTexture.batchDraw(this.starSprite, x, y);
     }
     this.starFieldTexture.endDraw();
