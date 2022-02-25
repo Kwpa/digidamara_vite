@@ -547,7 +547,22 @@ export default class MainScene extends Phaser.Scene {
     })
 
     var username = account.user?.username as string;
-    this.localState.Init(username, 5, teamIdList, voteStateList, teamStateList);
+    var getSystemUsers = (await this.client.getUsers(this.session,[],['SystemUser'])).users as User[];
+    
+    var getRoundTrack = await this.client.readStorageObjects(this.session, {
+      "object_ids": [{
+        "collection": "roundTrack",
+        "key": "round",
+        "user_id": getSystemUsers[0].id
+      }]
+    }) as StorageObjects;
+    console.log(getRoundTrack);
+    //if (getRoundTrack.objects.length > 0) {
+      var storageObject = collect(getRoundTrack.objects).first();
+      var jsonString = JSON.stringify(storageObject.value);
+      var round = JSON.parse(jsonString).round;
+    //}
+    this.localState.Init(username, round, 5, teamIdList, voteStateList, teamStateList);
     this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
     this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
     this.roundCounter.innerHTML = this.localState.round.toString();
@@ -555,7 +570,7 @@ export default class MainScene extends Phaser.Scene {
 
   async SetupVotePage(socket: Socket) {
 
-    var todaysScenario = this.staticData.voteScenarios[this.localState.GetRound() - 1];
+    var todaysScenario = this.staticData.voteScenarios[this.localState.round - 1];
     console.log(todaysScenario);
     var voteScenario = VoteScenario(todaysScenario) as HTMLElement;
     const choiceOneField = voteScenario.querySelector('#' + "choiceOne") as HTMLElement;

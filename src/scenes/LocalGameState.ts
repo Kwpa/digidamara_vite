@@ -11,10 +11,10 @@ export default class LocalGameState
     voteStates!: VoteScenarioState[];
     teamStates!: TeamState[];
 
-    Init(username: string, maxActionPoints: number, teamIDs : string[], voteStates, teamStates)
+    Init(username: string, round: number, maxActionPoints: number, teamIDs : string[], voteStates, teamStates)
     {
         this.GainActionPoints(5);
-        this.GetRound();
+        this.round = round;
         this.username = username;
         this.maxActionPoints = maxActionPoints;
         this.SetActionPointsToMax();
