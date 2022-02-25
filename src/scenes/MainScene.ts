@@ -104,94 +104,93 @@ export default class MainScene extends Phaser.Scene {
   preload() {
     //this.load.crossOrigin = "Anonymous";
     this.LoadingBar();
-    
+
     this.load.atlas('atlas', '/assets/test_avatars/avatar_atlas.png', ' /assets/json/avatar_atlas.json');
     this.load.image('arrow', '/assets/images/arrow.png');
     this.load.image('star', '/assets/images/star.png');
     this.load.image('heart', '/assets/images/heart.png');
     this.load.image('spotlight', '/assets/images/spotlight2.png');
-    this.load.json('voteScenarios_content', 'https://digidamara.com/data/eng/VotingScenarios.json'); //https://digidamara.com/data/eng/VotingScenarios.json
-    this.load.json('teams_content', 'https://digidamara.com/data/eng/Teams.json');
-    this.load.json('barks_content', 'https://digidamara.com/data/eng/Barks.json');
-    this.load.json('items_content', 'https://digidamara.com/data/eng/Items.json');
-    this.load.json('storyUnlocks_content', 'https://digidamara.com/data/eng/Story.json');
-    this.load.json('notifications_content', 'https://digidamara.com/data/eng/Notifications.json');
-    this.load.json('appLabels_content', 'https://digidamara.com/data/eng/Labels.json');
+    this.load.json('voteScenarios_content', '/assets/json/VotingScenarios.json'); //https://digidamara.com/data/eng/VotingScenarios.json
+    this.load.json('teams_content', '/assets/json/Teams.json');
+    this.load.json('barks_content', '/assets/json/Barks.json');
+    this.load.json('items_content', '/assets/json/Items.json');
+    this.load.json('storyUnlocks_content', '/assets/json/Story.json');
+    this.load.json('notifications_content', '/assets/json/Notifications.json');
+    this.load.json('appLabels_content', '/assets/json/Labels.json');
     this.load.json('eightpath', '/assets/json/paths/path_2.json');
     //this.load.on('complete', () => {this.flag = true});
   }
-  
-  async LoadingBar()
-  {
+
+  async LoadingBar() {
     this.load.image('logo', '/assets/images/logo.png');
-    var {width, height} = this.sys.game.canvas;
+    var { width, height } = this.sys.game.canvas;
     var progressBar = this.add.graphics();
     var progressBox = this.add.graphics();
     progressBox.fillStyle(0x222222, 0.8);
-    progressBox.fillRect(width/2-(160), height/2-(10), 320, 50);
-    
-    
+    progressBox.fillRect(width / 2 - (160), height / 2 - (10), 320, 50);
+
+
     var loadingText = this.make.text({
-        x: width / 2,
-        y: height / 2 + 150,
-        text: 'Loading...',
-        style: {
-            font: '20px monospace',
-            color: '#ffffff'
-        }
+      x: width / 2,
+      y: height / 2 + 150,
+      text: 'Loading...',
+      style: {
+        font: '20px monospace',
+        color: '#ffffff'
+      }
     });
     loadingText.setOrigin(0.5, 0.5);
-    
+
     var percentText = this.make.text({
-        x: width / 2,
-        y: height / 2 + 195,
-        text: '0%',
-        style: {
-            font: '18px monospace',
-            color: '#ffffff'
-        }
+      x: width / 2,
+      y: height / 2 + 195,
+      text: '0%',
+      style: {
+        font: '18px monospace',
+        color: '#ffffff'
+      }
     });
     percentText.setOrigin(0.5, 0.5);
-    
+
     var assetText = this.make.text({
-        x: width / 2,
-        y: height / 2 + 250,
-        text: '',
-        style: {
-            font: '18px monospace',
-            color: '#ffffff'
-        }
+      x: width / 2,
+      y: height / 2 + 250,
+      text: '',
+      style: {
+        font: '18px monospace',
+        color: '#ffffff'
+      }
     });
     assetText.setOrigin(0.5, 0.5);
-    
+
     this.load.on('progress', function (value) {
-        percentText.setText(parseInt(""+ (value * 100)) + '%');
-        progressBar.clear();
-        progressBar.fillStyle(0xffffff, 1);
-        progressBar.fillRect(width/2-150, height/2-(0), 300 * value, 30);
+      percentText.setText(parseInt("" + (value * 100)) + '%');
+      progressBar.clear();
+      progressBar.fillStyle(0xffffff, 1);
+      progressBar.fillRect(width / 2 - 150, height / 2 - (0), 300 * value, 30);
     });
-    
+
     this.load.on('fileprogress', function (file) {
-        assetText.setText('Loading asset: ' + file.key);
+      assetText.setText('Loading asset: ' + file.key);
     });
-    this.load.on('complete', async() => {
+    this.load.on('complete', async () => {
       await this.delay(3000);
       progressBar.destroy();
-        progressBox.destroy();
-        loadingText.destroy();
-        percentText.destroy();
-        assetText.destroy();
-        this.logo.destroy();
-        this.assetsLoaded = true;
+      progressBox.destroy();
+      loadingText.destroy();
+      percentText.destroy();
+      assetText.destroy();
+      this.logo.destroy();
+      this.assetsLoaded = true;
     });
   }
 
   create() //to tackle - server code and setup for typescript!
   {
-    var {width, height} = this.sys.game.canvas;
+    var { width, height } = this.sys.game.canvas;
     console.log('load Main Scene');
-    this.logo = this.add.image(width/2,height/2-200,'logo');
-    this.logo.scale = Math.min(((0.8*width)/512),1.5);
+    this.logo = this.add.image(width / 2, height / 2 - 200, 'logo');
+    this.logo.scale = Math.min(((0.8 * width) / 512), 1.5);
     this.AsyncCreate();
   }
 
@@ -212,26 +211,25 @@ export default class MainScene extends Phaser.Scene {
     await this.LoadJSON();
     await this.delay(1200);
     //console.log(this.cache.json);
-    
+
     let { width, height } = this.sys.game.canvas;
     const leftCurtain = this.add.graphics();
     const rightCurtain = this.add.graphics();
-    leftCurtain.fillStyle(0x545454,1);
-    leftCurtain.fillRect(0,0,width/2, height);
+    const dots = Math.floor(height / 50);
+    leftCurtain.fillStyle(0x545454, 1);
+    leftCurtain.fillRect(0, 0, width / 2, height);
     leftCurtain.fillStyle(0x2a2a2a);
-    leftCurtain.fillRect(width/2-3,0,3, height);
-    for(var i=0; i< 20; i++)
-    {
-      leftCurtain.fillCircle(width/2-10,i*height/20,4);
+    leftCurtain.fillRect(width / 2 - 3, 0, 3, height);
+    for (var i = 0; i < dots; i++) {
+      leftCurtain.fillCircle(width / 2 - 10, i * height / dots, 4);
     }
     leftCurtain.depth = 2;
-    rightCurtain.fillStyle(0x545454,1);
-    rightCurtain.fillRect(width/2,0,width/2, height);
+    rightCurtain.fillStyle(0x545454, 1);
+    rightCurtain.fillRect(width / 2, 0, width / 2, height);
     rightCurtain.fillStyle(0x2a2a2a);
-    rightCurtain.fillRect(width/2,0,3, height);
-    for(var i=0; i< 20; i++)
-    {
-      rightCurtain.fillCircle(width/2+10,i*height/20,4);
+    rightCurtain.fillRect(width / 2, 0, 3, height);
+    for (var i = 0; i < dots; i++) {
+      rightCurtain.fillCircle(width / 2 + 10, i * height / dots, 4);
     }
     rightCurtain.depth = 2;
 
@@ -256,7 +254,7 @@ export default class MainScene extends Phaser.Scene {
         yoyo: false,
         loop: 0,
         delay: 1000,
-        onComplete: () => {this.avatarOverlay.setVisible(true);}
+        onComplete: () => { this.avatarOverlay.setVisible(true); }
       }
     );
 
@@ -402,19 +400,56 @@ export default class MainScene extends Phaser.Scene {
   }
 
   async StartClientConnection() {
-    var rand = Math.floor(Math.random() * 10000);
+
+    this.client = new Client("defaultkey", "127.0.0.1", "7350", false);
+    var deviceId = "";
+    var create = true;
+
+    try {
+      const key = await localStorage.getItem('ddm_localData');
+      console.log("deviceId: " + key);
+      const value = JSON.parse(key as string);
+      
+      if (value == null) 
+      {
+        deviceId = Phaser.Utils.String.UUID() as string;
+
+        localStorage.setItem('ddm_localData', JSON.stringify(
+          {
+            "deviceId": deviceId
+          }
+        ))
+        create = true;
+
+      } 
+      else 
+      {
+        deviceId = value.deviceId as string;        
+      }
+    }
+    catch (error) {
+      console.log("An error occurred: %o", error);
+    }
+    var rand = Math.floor(Math.random() * 100000);
+    this.session = await this.client.authenticateDevice(deviceId, create);
+    console.info("Successfully authenticated:", this.session);
+
+    if (create) {
+      await this.client.updateAccount(this.session,
+        {
+          avatar_url: "https://source.boringavatars.com/marble/50/" + Math.floor(Math.random() * 100000)
+        }
+      );
+    }
+
+    /* var rand = Math.floor(Math.random() * 10000);
     var email = "kaiuser_" + rand + "@gmail.com";
     var password = "password";
     var url = "https://source.boringavatars.com/marble/50/" + rand;
     this.client = new Client("defaultkey", "127.0.0.1", "7350", false);
-    this.session = await this.client.authenticateEmail(email, password, true);
+    this.session = await this.client.authenticateEmail(email, password, true); */
 
-    await this.client.updateAccount(this.session,
-      {
-        username: rand.toString(),
-        avatar_url: url
-      }
-    );
+
 
     //this.session.username = "Kai";
     //this.socket = this.client.createSocket(true, false);
@@ -793,10 +828,10 @@ export default class MainScene extends Phaser.Scene {
   waitUntil(conditionFunction) {
 
     const poll = resolve => {
-      if(conditionFunction()) resolve();
+      if (conditionFunction()) resolve();
       else setTimeout(_ => poll(resolve), 400);
     }
-  
+
     return new Promise(poll);
   }
 
@@ -832,19 +867,19 @@ export default class MainScene extends Phaser.Scene {
           console.log("A custom opcode.");
           break;
         case 1:
-          console.log("User " + result.presences[0].username + " donated Energy to " + content);
+          console.log("User " + result.presence.username + " donated Energy to " + content);
           break;
         case 2:
-          console.log("User " + result.presences[0].username + " spent Sparks on " + content);
+          console.log("User " + result.presence.username + " spent Sparks on " + content);
           break;
         case 4:
-          console.log("User " + result.presences[0].username + " joined " + content + "s fan club");
+          console.log("User " + result.presence.username + " joined " + content + "s fan club");
           break;
         case 5:
-          console.log("User " + result.presences[0].username + " upgraded " + content);
+          console.log("User " + result.presence.username + " upgraded " + content);
           break;
         default:
-          console.info("User %o sent %o", result.presences[0].user_id, content);
+          console.info("User %o sent %o", result.presence.user_id, content);
       }
     };
   }
@@ -1001,8 +1036,8 @@ export default class MainScene extends Phaser.Scene {
   }
 
   update() {
-    if(this.startCharacterGraphics) this.UpdateDancers();
-    if(this.startStarField) this.UpdateStarField();
+    if (this.startCharacterGraphics) this.UpdateDancers();
+    if (this.startStarField) this.UpdateStarField();
   }
 }
 
