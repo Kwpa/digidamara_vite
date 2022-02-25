@@ -25,7 +25,7 @@ export default class MainScene extends Phaser.Scene {
 
   localState!: LocalGameState;
   staticData!: StaticData;
-  
+
   teams_data!: object;
   barks_data!: object;
   items_data!: object;
@@ -58,13 +58,15 @@ export default class MainScene extends Phaser.Scene {
   closeVotePageButton!: HTMLElement;
   closeVideoPageButton!: HTMLElement;
   closeHelpPageButton!: HTMLElement;
-  
+
   roundCounter!: HTMLElement;
   actionPointsCounter!: HTMLElement;
   sparksCounter!: HTMLElement;
 
   tapAreaLeft;
   tapAreaRight;
+
+  logo;
 
   avatarOverlayButton!: HTMLElement;
   voteContainer!: HTMLElement;
@@ -90,6 +92,10 @@ export default class MainScene extends Phaser.Scene {
   avatarRenderTextures;
   avatarSprites;
 
+  assetsLoaded: boolean = false;
+  startStarField: boolean = false;
+  startCharacterGraphics: boolean = false;
+
 
   constructor() {
     super('MainScene');
@@ -97,12 +103,13 @@ export default class MainScene extends Phaser.Scene {
 
   preload() {
     //this.load.crossOrigin = "Anonymous";
+    this.LoadingBar();
     
     this.load.atlas('atlas', '/assets/test_avatars/avatar_atlas.png', ' /assets/json/avatar_atlas.json');
-    this.load.image('arrow', '/assets/ui/arrow.png');
-    this.load.image('star', '/assets/ui/star.png');
-    this.load.image('heart', '/assets/ui/heart.png');
-    this.load.image('spotlight', '/assets/ui/spotlight2.png');
+    this.load.image('arrow', '/assets/images/arrow.png');
+    this.load.image('star', '/assets/images/star.png');
+    this.load.image('heart', '/assets/images/heart.png');
+    this.load.image('spotlight', '/assets/images/spotlight2.png');
     this.load.json('voteScenarios_content', 'https://digidamara.com/data/eng/VotingScenarios.json'); //https://digidamara.com/data/eng/VotingScenarios.json
     this.load.json('teams_content', 'https://digidamara.com/data/eng/Teams.json');
     this.load.json('barks_content', 'https://digidamara.com/data/eng/Barks.json');
@@ -111,18 +118,84 @@ export default class MainScene extends Phaser.Scene {
     this.load.json('notifications_content', 'https://digidamara.com/data/eng/Notifications.json');
     this.load.json('appLabels_content', 'https://digidamara.com/data/eng/Labels.json');
     this.load.json('eightpath', '/assets/json/paths/path_2.json');
-    //this.load.on('complete', this.AsyncCreate);
+    //this.load.on('complete', () => {this.flag = true});
+  }
+  
+  async LoadingBar()
+  {
+    this.load.image('logo', '/assets/images/logo.png');
+    var {width, height} = this.sys.game.canvas;
+    var progressBar = this.add.graphics();
+    var progressBox = this.add.graphics();
+    progressBox.fillStyle(0x222222, 0.8);
+    progressBox.fillRect(width/2-(160), height/2-(10), 320, 50);
+    
+    
+    var loadingText = this.make.text({
+        x: width / 2,
+        y: height / 2 + 150,
+        text: 'Loading...',
+        style: {
+            font: '20px monospace',
+            color: '#ffffff'
+        }
+    });
+    loadingText.setOrigin(0.5, 0.5);
+    
+    var percentText = this.make.text({
+        x: width / 2,
+        y: height / 2 + 195,
+        text: '0%',
+        style: {
+            font: '18px monospace',
+            color: '#ffffff'
+        }
+    });
+    percentText.setOrigin(0.5, 0.5);
+    
+    var assetText = this.make.text({
+        x: width / 2,
+        y: height / 2 + 250,
+        text: '',
+        style: {
+            font: '18px monospace',
+            color: '#ffffff'
+        }
+    });
+    assetText.setOrigin(0.5, 0.5);
+    
+    this.load.on('progress', function (value) {
+        percentText.setText(parseInt(""+ (value * 100)) + '%');
+        progressBar.clear();
+        progressBar.fillStyle(0xffffff, 1);
+        progressBar.fillRect(width/2-150, height/2-(0), 300 * value, 30);
+    });
+    
+    this.load.on('fileprogress', function (file) {
+        assetText.setText('Loading asset: ' + file.key);
+    });
+    this.load.on('complete', async() => {
+      await this.delay(3000);
+      progressBar.destroy();
+        progressBox.destroy();
+        loadingText.destroy();
+        percentText.destroy();
+        assetText.destroy();
+        this.logo.destroy();
+        this.assetsLoaded = true;
+    });
   }
 
   create() //to tackle - server code and setup for typescript!
   {
+    var {width, height} = this.sys.game.canvas;
     console.log('load Main Scene');
-    
+    this.logo = this.add.image(width/2,height/2-200,'logo');
+    this.logo.scale = Math.min(((0.8*width)/512),1.5);
     this.AsyncCreate();
   }
 
-  async LoadJSON()
-  {
+  async LoadJSON() {
     this.teams_data = this.cache.json.get('teams_content') as object;
     this.barks_data = this.cache.json.get('barks_content') as object;
     this.items_data = this.cache.json.get('items_content') as object;
@@ -133,12 +206,48 @@ export default class MainScene extends Phaser.Scene {
     this.labels_data = this.cache.json.get('appLabels_content') as object;
   }
 
-  async AsyncCreate()
-  {
-    await this.delay(10000);
+  async AsyncCreate() {
+
+    await this.waitUntilAssetsLoaded();
     await this.LoadJSON();
-    console.log(this.cache.json);
+    await this.delay(1200);
+    //console.log(this.cache.json);
+    
     let { width, height } = this.sys.game.canvas;
+    const leftCurtain = this.add.graphics();
+    leftCurtain.fillStyle(0x545454,1);
+    leftCurtain.fillRect(0,0,width/2, height);
+    leftCurtain.depth = 2;
+    const rightCurtain = this.add.graphics();
+    rightCurtain.fillStyle(0x545454,1);
+    rightCurtain.fillRect(width/2,0,width/2, height);
+    rightCurtain.depth = 2;
+
+    var leftCurtainTween = this.tweens.add(
+      {
+        targets: leftCurtain,
+        x: -width,
+        duration: 2500,
+        ease: 'Quad.easeIn',
+        yoyo: false,
+        loop: 0,
+        delay: 1000
+      }
+    );
+
+    var rightCurtainTween = this.tweens.add(
+      {
+        targets: rightCurtain,
+        x: width,
+        duration: 2500,
+        ease: 'Quad.easeIn',
+        yoyo: false,
+        loop: 0,
+        delay: 1000,
+        onComplete: () => {this.avatarOverlay.setVisible(true);}
+      }
+    );
+
     const game = document.getElementsByTagName('canvas')[0];
     game.style.setProperty('position', 'absolute');
     game.style.setProperty('z-index', '-1');
@@ -148,7 +257,7 @@ export default class MainScene extends Phaser.Scene {
     const videoPage = this.add.dom(width / 2, height / 2, VideoPage() as HTMLElement);
     const votePage = this.add.dom(width / 2, height / 2, VotingPage() as HTMLElement);
     this.avatarOverlay = this.add.dom(width / 2, height / 2, AvatarOverlay('open') as HTMLElement);
-
+    this.avatarOverlay.setVisible(false);
     chatPage.setVisible(false);
     videoPage.setVisible(false);
     votePage.setVisible(false);
@@ -228,16 +337,15 @@ export default class MainScene extends Phaser.Scene {
     spotlight.scaleY = height / 500;
     spotlight.scaleX = Math.max(1, width / 1000);
 
-    this.GetLatestStaticData();
-    this.StartClientConnection();
-
-
-    this.GetLatestDynamicData();
-
     this.StarField();
+
+    await this.GetLatestStaticData();
+    await this.StartClientConnection();
+
+
+    await this.GetLatestDynamicData();
+
   }
-
-
 
   async GetLatestStaticData() {
     this.staticData = await new StaticData();
@@ -278,6 +386,7 @@ export default class MainScene extends Phaser.Scene {
       this.yy.push(Math.floor(Math.random() * squareDistance) - squareDistance / 2);
       this.zz.push(Math.floor(Math.random() * 1700) - 100);
     }
+    this.startStarField = true;
   }
 
   async StartClientConnection() {
@@ -362,57 +471,53 @@ export default class MainScene extends Phaser.Scene {
     })
     var username = account.user?.username as string;
     this.localState.Init(username, 5, list);
-    this.actionPointsCounter.innerHTML=this.localState.actionPoints.toString();
-    this.sparksCounter.innerHTML=this.localState.sparksAwarded.toString();
-    this.roundCounter.innerHTML=this.localState.round.toString();
+    this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
+    this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
+    this.roundCounter.innerHTML = this.localState.round.toString();
   }
 
   async SetupVotePage(socket: Socket) {
 
-    var todaysScenario = this.staticData.voteScenarios[this.localState.GetRound()-1];
+    var todaysScenario = this.staticData.voteScenarios[this.localState.GetRound() - 1];
     console.log(todaysScenario);
     var voteScenario = VoteScenario(todaysScenario) as HTMLElement;
     const choiceOneField = voteScenario.querySelector('#' + "choiceOne") as HTMLElement;
     const choiceOneSubtractButton = voteScenario.querySelector('#' + "choiceOneSubtract") as HTMLElement;
-    choiceOneSubtractButton.onclick=()=>{
-      if(this.localState.HaveSpentSparksOnTodaysVote(0))
-      {
+    choiceOneSubtractButton.onclick = () => {
+      if (this.localState.HaveSpentSparksOnTodaysVote(0)) {
         this.localState.voteState.DecreaseVote(0);
-        this.localState.GainSparks(1,false);
-        this.sparksCounter.innerHTML=this.localState.sparksAwarded.toString();
+        this.localState.GainSparks(1, false);
+        this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
         choiceOneField.innerHTML = this.localState.voteState.choiceOneVotes.toString();
       }
     };
     const choiceOneAddButton = voteScenario.querySelector('#' + "choiceOneAdd") as HTMLElement;
-    choiceOneAddButton.onclick=()=>{
-      if(this.localState.HaveSparks())
-      {
+    choiceOneAddButton.onclick = () => {
+      if (this.localState.HaveSparks()) {
         this.localState.voteState.IncreaseVote(0);
         this.localState.SpendSparks(1);
-        this.sparksCounter.innerHTML=this.localState.sparksAwarded.toString();
+        this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
         choiceOneField.innerHTML = this.localState.voteState.choiceOneVotes.toString();
       }
     };
     const choiceTwoField = voteScenario.querySelector('#' + "choiceTwo") as HTMLElement;
     const choiceTwoSubtractButton = voteScenario.querySelector('#' + "choiceTwoSubtract") as HTMLElement;
-    choiceTwoSubtractButton.onclick=()=>{
-      if(this.localState.HaveSpentSparksOnTodaysVote(1))
-      {
+    choiceTwoSubtractButton.onclick = () => {
+      if (this.localState.HaveSpentSparksOnTodaysVote(1)) {
         this.localState.voteState.DecreaseVote(1);
         this.localState.GainSparks(1, false);
         this.SpendSparkOnTodaysVoteMatchState(socket, -1);
-        this.sparksCounter.innerHTML=this.localState.sparksAwarded.toString();
+        this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
         choiceTwoField.innerHTML = this.localState.voteState.choiceTwoVotes.toString();
       }
     };
     const choiceTwoAddButton = voteScenario.querySelector('#' + "choiceTwoAdd") as HTMLElement;
-    choiceTwoAddButton.onclick=()=>{
-      if(this.localState.HaveSparks())
-      {
+    choiceTwoAddButton.onclick = () => {
+      if (this.localState.HaveSparks()) {
         this.localState.voteState.IncreaseVote(1);
         this.localState.SpendSparks(1);
         this.SpendSparkOnTodaysVoteMatchState(socket, 1);
-        this.sparksCounter.innerHTML=this.localState.sparksAwarded.toString();
+        this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
         choiceTwoField.innerHTML = this.localState.voteState.choiceTwoVotes.toString();
       }
     };
@@ -438,8 +543,8 @@ export default class MainScene extends Phaser.Scene {
         donateButton.onclick = () => {
           if (this.localState.SpendActionPoints(1)) {
             this.localState.GainSparks(1, true);
-            this.actionPointsCounter.innerHTML=this.localState.actionPoints.toString();
-            this.sparksCounter.innerHTML=this.localState.sparksAwarded.toString();
+            this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
+            this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
             this.DonateEnergyMatchState(socket, this.localState.currentTeamID);
             //update UI
           }
@@ -661,12 +766,26 @@ export default class MainScene extends Phaser.Scene {
       delay: 100
     });
 
-
+    this.startCharacterGraphics = true;
     this.add.existing(carousel);
   }
 
   async delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
+  }
+
+  async waitUntilAssetsLoaded() {
+    await this.waitUntil(_ => this.assetsLoaded == true);
+  }
+
+  waitUntil(conditionFunction) {
+
+    const poll = resolve => {
+      if(conditionFunction()) resolve();
+      else setTimeout(_ => poll(resolve), 400);
+    }
+  
+    return new Promise(poll);
   }
 
   async JoinMatch(socket: Socket) {
@@ -851,27 +970,27 @@ export default class MainScene extends Phaser.Scene {
   }
 
   UpdateDancers() {
+    if (this.cardTexs != null) {
+      /* this.TintRenderTexture(i, 0xffff0000); */
+      this.pathDummy.getPoint(this.follower.t, this.follower.vec);
+      var x = this.follower.vec.x;
+      var y = this.follower.vec.y;
 
+      var id = this.localState.carouselPosition;
+      this.cardTexs[id].rendTex_front.clear();
+      /* this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_A, 150+(this.tweenDummy as Tweens.Tween).getValue()*10, 300);
+      this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_B, 450+(this.tweenDummy as Tweens.Tween).getValue()*-10,300); */
+
+      this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_A, 150 + x * 0.2, 200 + y * 0.2);
+      x = -x + 460;
+      y = y;
+      this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_B, 350 + x * 0.2, 200 + y * 0.2);
+    }
   }
 
   update() {
-    // if (this.cardTexs != null) {
-    //   /* this.TintRenderTexture(i, 0xffff0000); */
-    //   this.pathDummy.getPoint(this.follower.t, this.follower.vec);
-    //   var x = this.follower.vec.x;
-    //   var y = this.follower.vec.y;
-
-    //   var id = this.localState.carouselPosition;
-    //   this.cardTexs[id].rendTex_front.clear();
-    //   /* this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_A, 150+(this.tweenDummy as Tweens.Tween).getValue()*10, 300);
-    //   this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_B, 450+(this.tweenDummy as Tweens.Tween).getValue()*-10,300); */
-
-    //   this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_A, 150 + x * 0.2, 200 + y * 0.2);
-    //   x = -x + 460;
-    //   y = y;
-    //   this.cardTexs[id].rendTex_front.draw(this.imgs[id].img_B, 350 + x * 0.2, 200 + y * 0.2);
-    // }
-    // this.UpdateStarField();
+    if(this.startCharacterGraphics) this.UpdateDancers();
+    if(this.startStarField) this.UpdateStarField();
   }
 }
 
