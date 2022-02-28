@@ -12,12 +12,14 @@ export default class StaticData
         this.notifications = [];
         this.voteScenarios = [];
         this.appLabels = [];
+        //console.log(story_data[0].teamId + " " + teams_data[0].id);
+         
         for(var k in teams_data)
         {
             var teamData = teams_data[k];
-            var barks = barks_data.filter(a=> a.team_id == teamData.id);
-            var items = items_data.filter(a=> a.team_id == teamData.id);
-            var story = story_data.filter(a=> a.team_id == teamData.id);
+            var barks = barks_data.filter(a=> a.teamId == teamData.id);
+            var items = items_data.filter(a=> a.teamId == teamData.id);
+            var story = story_data.filter(a=> a.teamId == teamData.id);
             this.teams.push(new TeamData(teams_data[k], barks, items, story));
         }
         for(var k in notifications_data)

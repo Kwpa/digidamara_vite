@@ -17,10 +17,28 @@ const TeamProfile = (teamData) => {
               </div>
             </div>
           </nav>
+
+          <div class="columns">
+            <div class="column">
+              <div class='box story-container scroller'>
+                <h1 class="content">Story</h1>
+                <div class="level">
+                  <button id="donateButton" class="button is-primary is-responsive">Donate</button>
+                  <button id="joinFanClubButton" class="button is-primary is-responsive">Join Fan Club</button>
+                  <button id="upgradeButton" class="button is-primary is-responsive">Upgrade</button>
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div id="story-container" class='box story-container scroller' style="display-height: flex;">
+                <h1 class="content">Story</h1>
+              </div>
+            </div>
+          </div>
+
+
           <div class="fixed-button-footer">
-            <button id="donateButton" class="button is-primary is-responsive">Donate</button>
-            <button id="joinFanClubButton" class="button is-primary is-responsive">Join Fan Club</button>
-            <button id="upgradeButton" class="button is-primary is-responsive">Upgrade</button>
+
           </div>
         </div>
       </div>

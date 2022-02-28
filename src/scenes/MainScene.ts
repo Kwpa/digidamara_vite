@@ -9,6 +9,8 @@ import VoteScenario from './elements/VoteScenario';
 import AvatarOverlay from './elements/AvatarOverlay';
 import TeamProfile from './elements/TeamProfile';
 import VotingPage from './elements/VotingPage';
+import StoryAccordian from './elements/StoryAccordian';
+
 import Bulma from '../node_modules/bulma/css/bulma.css';
 import { ChannelMessage, ChannelMessageList, Client, Session, Socket, StorageObject, Users, User, Match, StorageObjects, MatchData } from "@heroiclabs/nakama-js";
 import collect from 'collect.js';
@@ -100,6 +102,8 @@ export default class MainScene extends Phaser.Scene {
 
   receiveServerNotifications: boolean = false;
 
+  webConfig;
+
   constructor() {
     super('MainScene');
   }
@@ -117,10 +121,12 @@ export default class MainScene extends Phaser.Scene {
     this.load.json('teams_content', '/assets/json/Teams.json');
     this.load.json('barks_content', '/assets/json/Barks.json');
     this.load.json('items_content', '/assets/json/Items.json');
-    this.load.json('storyUnlocks_content', '/assets/json/Story.json');
+    this.load.json('story_content', '/assets/json/Story.json');
     this.load.json('notifications_content', '/assets/json/Notifications.json');
     this.load.json('appLabels_content', '/assets/json/Labels.json');
     this.load.json('eightpath', '/assets/json/paths/path_2.json');
+    this.load.json('web_config', '/assets/json/web_config.json');
+
     //this.load.on('complete', () => {this.flag = true});
   }
 
@@ -216,11 +222,12 @@ export default class MainScene extends Phaser.Scene {
     this.teams_data = this.cache.json.get('teams_content') as object;
     this.barks_data = this.cache.json.get('barks_content') as object;
     this.items_data = this.cache.json.get('items_content') as object;
-    this.story_data = this.cache.json.get('storyUnlocks_content') as object;
+    this.story_data = this.cache.json.get('story_content') as object;
     this.notifications_data = this.cache.json.get('notifications_content') as object;
     this.voteScenarios_data = this.cache.json.get('voteScenarios_content') as object;
     console.log(this.notifications_data);
     this.labels_data = this.cache.json.get('appLabels_content') as object;
+    this.webConfig = this.cache.json.get('web_config') as object; 
   }
 
   async AsyncCreate() {
@@ -357,6 +364,7 @@ export default class MainScene extends Phaser.Scene {
       this.tapAreaLeft.removeInteractive();
       this.tapAreaRight.removeInteractive();
     }
+
     this.SetVideoImages(this.videoTileContainer);
     
     this.SetupNotifications();
@@ -423,7 +431,7 @@ export default class MainScene extends Phaser.Scene {
   async StartClientConnection() {
 
     //this.client = new Client("defaultkey", "127.0.0.1", "7350", false);
-    this.client = new Client("defaultkey", "massive-grasshopper-40.loca.lt", "7350", true);
+    this.client = new Client("defaultkey", this.webConfig.hostname, this.webConfig.port, this.webConfig.ssl);
     var deviceId = "";
     var create = true;
 
@@ -630,6 +638,12 @@ export default class MainScene extends Phaser.Scene {
         console.log("title: " + title);
         const data = { name: team.title };
         const teamProfile = this.add.dom(width / 2, height / 2, TeamProfile(data) as HTMLElement);
+        const container = teamProfile.getChildByID('story-container') as HTMLElement; 
+        team.story.forEach((story)=>{
+
+          const storyAccordian = StoryAccordian(story) as HTMLElement;
+          container.append(storyAccordian);
+        });
         teamProfile.setVisible(false);
         this.teamProfilePages.push(teamProfile);
         var donateButton = teamProfile.getChildByID('donateButton') as HTMLElement;

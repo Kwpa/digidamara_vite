@@ -22,4 +22,7 @@ cd ServerPrototype\bin\Debug\netcoreapp3.1
 .\ServerPrototype.exe run
 3) Expose port 
 
-Problem! Mixed content prevents a https site loading http stuff
+Problem! Mixed content prevents a https site loading http stuff - resolved by entering correct info into authentication this.client.Device
+
+Caching
+<php header("Cache-Control: no-cache"); ?>
