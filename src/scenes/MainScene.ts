@@ -422,7 +422,8 @@ export default class MainScene extends Phaser.Scene {
 
   async StartClientConnection() {
 
-    this.client = new Client("defaultkey", "127.0.0.1", "7350", false);
+    //this.client = new Client("defaultkey", "127.0.0.1", "7350", false);
+    this.client = new Client("defaultkey", "massive-grasshopper-40.loca.lt", "7350", true);
     var deviceId = "";
     var create = true;
 

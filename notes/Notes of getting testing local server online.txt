@@ -1,0 +1,25 @@
+There are services out there that can expose a port to the internet:
+https://theboroer.github.io/localtunnel-www/
+https://ngrok.com/
+http://localhost.run/
+
+For now, localtunnel seems to be working with vite production build on port 5000
+
+While running the server locally (must use yarn build and yarn serve) you can then use the following command: 
+npx localtunnel --port 5000  
+
+This will give you a randomly named proxy server url such as: https://rude-jellyfish-27.loca.lt/
+
+This can be shared with testers! :)
+
+So instructions to get things up and running!
+
+1) Run docker desktop > start containers (may need docker-compose file to be initiated using docker-compose up cmd)
+2) Open Powershell at the master folder (i.e. nakama server), enter:
+cd ServerPrototype\bin\Debug\netcoreapp3.1
+.\ServerPrototype.exe reset
+.\ServerPrototype.exe init
+.\ServerPrototype.exe run
+3) Expose port 
+
+Problem! Mixed content prevents a https site loading http stuff
