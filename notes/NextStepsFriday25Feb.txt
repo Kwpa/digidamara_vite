@@ -1,0 +1,10 @@
+notifications
+team profile
+sending messages to server
+connecting via device id
+setting up round config
+add music
+
+load user remaining action points (store in cache?)
+load user remaining sparks
+load team energies
