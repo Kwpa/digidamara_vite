@@ -642,6 +642,18 @@ export default class MainScene extends Phaser.Scene {
         team.story.forEach((story)=>{
 
           const storyAccordian = StoryAccordian(story) as HTMLElement;
+          const mainButton = storyAccordian.querySelectorAll("#open-close-button")[0] as HTMLElement; 
+          const collapsibleMessage = storyAccordian.querySelectorAll("#collapsible-message")[0] as HTMLElement;
+          mainButton.onclick=()=>{
+            if(collapsibleMessage.style.maxHeight)
+            {
+              collapsibleMessage.style.maxHeight = null; //works as intended
+            }
+            else
+            {
+              collapsibleMessage.style.maxHeight = collapsibleMessage.scrollHeight+"px";
+            }
+          } 
           container.append(storyAccordian);
         });
         teamProfile.setVisible(false);

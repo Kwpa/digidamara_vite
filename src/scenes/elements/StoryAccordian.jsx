@@ -3,11 +3,11 @@ import { h } from 'start-dom-jsx';
 const StoryAccordian = (storyData) => {
   return (
     <article class="message">
-      <button class="message-header accordian">
-        <p>{storyData.title} Click to Expand / Collapse</p>
+      <button id="open-close-button" class="message-header accordian">
+        <p>{storyData.title}</p>
         <button class="delete" aria-label="delete"></button>
       </button>
-      <div id="collapsible-message" class="message-body is-collapsible">
+      <div id="collapsible-message" class="message-body accordian-content">
         <div class="message-body-content">
           {storyData.content}
         </div>

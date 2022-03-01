@@ -3,7 +3,7 @@ import { h } from 'start-dom-jsx';
 const TeamProfile = (teamData) => {
   return (
     <div class="base">
-      <div class="container">
+      <div class="base-container">
         <div class="chat-page box">
           <nav class="level">
             <div class="level-left">
@@ -17,10 +17,9 @@ const TeamProfile = (teamData) => {
               </div>
             </div>
           </nav>
-
           <div class="columns">
             <div class="column">
-              <div class='box story-container scroller'>
+              <div class='box'>
                 <h1 class="content">Story</h1>
                 <div class="level">
                   <button id="donateButton" class="button is-primary is-responsive">Donate</button>
@@ -29,20 +28,22 @@ const TeamProfile = (teamData) => {
                 </div>
               </div>
             </div>
-            <div class="column">
-              <div id="story-container" class='box story-container scroller' style="display-height: flex;">
+            <div class="column scroller">
+              <div class='story-surround box'>
                 <h1 class="content">Story</h1>
+                <div id="story-container" class='story-container'>
+                  
+                </div>
               </div>
             </div>
           </div>
 
-
           <div class="fixed-button-footer">
-
+            <button id="donateButton" class="button is-primary is-responsive">Donate</button>
           </div>
         </div>
       </div>
-    </div>
+    </div >
   )
 }
 

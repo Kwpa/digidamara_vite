@@ -3,7 +3,7 @@ import { h } from 'start-dom-jsx';
 const VotingPage = (voteData) => {
   return (
     <div class="base">
-      <div class="container">
+      <div class="base-container">
         <div class="chat-page box">
           <nav class="level">
             <div class="level-left">

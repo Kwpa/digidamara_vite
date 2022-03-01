@@ -1,0 +1,27 @@
+ssl disable for testing on siteground if using
+otherwise just port forward from device
+
+OKAY:
+
+Port forwarding is the easiest way for us to serve up the website without errors:
+mainly because a tool such as localtunnel requires us to send extra headers as part of our authentication requests (other tools may not require this though, to be investigated) which we can't do easily without modifying the NakamaJS client module.
+
+The disadvantage to port forwarding is that we cannot access the nakama server via https (a way the internet creates secure communications via certificates). This is okay for testing as we are not collecting any use data from client connections. However this will be an issue later when the experience is live. Being hosted from a cloud-server will hopefully solve this issue.
+
+For now, we have to configure the client to connect to a locally hosted Nakama server and open port 7350 to the internet.
+
+> Go to router settings and open Port Forwarding
+> Setup a 7350 TCP port with the local (not public) IP address of your device. Name it something like Nakama.
+> If you need to find you local IP address, you can enter ipconfig into your commandline terminal of choice. It should open up all ip addresses, you're looking for the one conencted to your current internet connection
+> Now go get your public IP: different from local! Go get it from https://whatismyip.com/
+> Open web_config.json file on the client.
+> Edit the hostname to the public IP, change the port to 7350, and ssl to false
+> To test on the public website, ensure that you disable HTTPS Enforce (on siteground, Website Settings>Security>HTTPS Enforce).
+> Then build the web app (yarn build) and upload it to the dist folder in public_html. Flush the website cache (on siteground this is found in the Website Settings>Speed>Cache>Dynamic Caching) 
+> Remember to re-enable HTTPS Enforce
+> Then, share the http address with players: http://www.digidamara.com 
+> any other address than the one above will fail! Browsers like to force https where possible and this will break things.
+BOOM WEBSITE IT AVAILABLE!
+
+
+

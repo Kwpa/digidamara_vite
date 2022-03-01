@@ -19,4 +19,4 @@ Import-Csv "public\assets\csv\VotingScenarios.csv" | ConvertTo-Json | Set-Conten
 Invoke-WebRequest "https://docs.google.com/spreadsheets/d/1gdqnvbIQByJ_ukNYsLmbQBCnNSLgCzplQkRgaSPO72c/gviz/tq?tqx=out:csv&sheet=Labels" -OutFile "public\assets\csv\Labels.csv"
 Import-Csv "public\assets\csv\Labels.csv" | ConvertTo-Json | Set-Content -Path "public\assets\json\Labels.json"
 
-sftp -b ftp_scripts\sftpScript.txt -P 18765 u1122-rivlkpske2gg@digidamara.com
+sftp -b ftp_scripts\sftpScript_jsonFiles.txt -P 18765 u1122-rivlkpske2gg@digidamara.com

@@ -13,23 +13,7 @@
       margin: 0;
       background: transparent;
     }
-
-    button.accordian {
-      width: 100%;
-      border: none;
-      outline: none;
-      cursor: pointer;
-      transition: background-color 0.1s linear;
-    }
-
-    button.accordian:hover {
-      background-color: #000000; 
-      border: none;
-      outline: none;
-      cursor: pointer;
-    }
-
-    .container {
+    .base-container {
       padding-top: 120px;
       padding-bottom: 120px;
       height: 100%;
@@ -181,14 +165,41 @@
       height: 70%;
       width: 100%;
     }
+    .story-surround {
+  max-height:50%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+    }
     .story-container {
-      height: 100%;
-      width: 100%;
-      display:flex;
+  overflow-y: auto;
     }
 
     .avatar-overlay {
       top: 25vh;
+    }
+
+    button.accordian {
+      width: 100%;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      transition: background-color 0.1s linear;
+    }
+
+    button.accordian:hover {
+      background-color: #000000; 
+      border: none;
+      outline: none;
+      cursor: pointer;
+    }
+
+
+    .accordian-content
+    {
+      padding: 0 20px;
+      overflow: hidden;
+      max-height: 0;
     }
   </style>
   <script>var exports = {};</script>
