@@ -571,6 +571,9 @@ export default class MainScene extends Phaser.Scene {
       var jsonString = JSON.stringify(storageObject.value);
       var round = JSON.parse(jsonString).round;
     //}
+
+    //store and reload action points from localstorage
+
     this.localState.Init(username, round, 5, teamIdList, voteStateList, teamStateList);
     this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
     this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
@@ -636,7 +639,7 @@ export default class MainScene extends Phaser.Scene {
       (team) => {
         var title = team.id as string;
         console.log("title: " + title);
-        const data = { name: team.title };
+        const data = { name: team.title, biography: team.biography };
         const teamProfile = this.add.dom(width / 2, height / 2, TeamProfile(data) as HTMLElement);
         const container = teamProfile.getChildByID('story-container') as HTMLElement; 
         team.story.forEach((story)=>{

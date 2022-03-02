@@ -5,7 +5,7 @@ const VotingPage = (voteData) => {
     <div class="base">
       <div class="base-container">
         <div class="chat-page box">
-          <nav class="level">
+          <nav class="level is-mobile">
             <div class="level-left">
               <div class="level-item has-text-centered">
                 <h1 class="title has-text-black">Today's Vote</h1>

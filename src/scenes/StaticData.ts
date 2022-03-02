@@ -17,6 +17,7 @@ export default class StaticData
         for(var k in teams_data)
         {
             var teamData = teams_data[k];
+            console.log(teams_data[k].biography);
             var barks = barks_data.filter(a=> a.teamId == teamData.id);
             var items = items_data.filter(a=> a.teamId == teamData.id);
             var story = story_data.filter(a=> a.teamId == teamData.id);

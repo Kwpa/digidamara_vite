@@ -13,6 +13,11 @@
   dependencies:
     bulma latest
 
+"@creativebulma/bulma-divider@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@creativebulma/bulma-divider/-/bulma-divider-1.1.0.tgz#fb0c3527efc5b8d7b1ac52cd065e9f8c57b5a8bc"
+  integrity sha512-Lx5MlUhgAnTF+wNZ5LXcaE1K0F2m0Pkwte1p08FBsIyRV6Oq7BuKPk/O9XJPcF+vR6BjCxNy/hjYFXtNmoXbNg==
+
 "@heroiclabs/nakama-js@^2.3":
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/@heroiclabs/nakama-js/-/nakama-js-2.3.0.tgz#a5e8da5dc64f54159ad8a9a15fc5331b56fe538d"
