@@ -1,4 +1,4 @@
-make sure ssh agent is running!
+make sure ssh agent is running before running the script!
 Use Get-Service ssh-agent to find out if stopped
 Use Get-Service ssh-agent | Select StartType to find out is disabled
 To start use: Get-Service -Name ssh-agent | Set-Service -StartupType Manual
