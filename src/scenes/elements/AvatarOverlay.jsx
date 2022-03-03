@@ -1,6 +1,6 @@
 import { h } from 'start-dom-jsx';
 
-const AvatarOverlay = (avatarName) => {
+const AvatarOverlay = (avatarName, id) => {
   return (
     <div>
       <div class="ov-container">
@@ -15,6 +15,9 @@ const AvatarOverlay = (avatarName) => {
             <div class="level">
               <div class="level-item">
                 <button id="openProfile" class="button is-primary">{avatarName}</button>
+                <div id="avId" class="tag">
+                  t_???
+                </div>
               </div>
             </div>
 

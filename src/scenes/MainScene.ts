@@ -403,7 +403,7 @@ export default class MainScene extends Phaser.Scene {
   {
     this.getSystemUsers = (await this.client.getUsers(this.session, [], ['SystemUser'])).users as User[];
   }
-
+  
   async GetLatestDynamicData() 
   {   
     var getUserData = await localStorage.getItem("ddm_localData");
@@ -1032,6 +1032,7 @@ export default class MainScene extends Phaser.Scene {
           (this.imgs[this.localState.carouselPosition].img_B as Image).setTint(0xffffff);
           await this.AnimateOverlayChange();
           console.log("new team " + this.localState.currentTeamID);
+          this.avatarOverlay.getChildByID("avId").innerHTML=this.localState.currentTeamID;
         }
       });
 
@@ -1056,6 +1057,7 @@ export default class MainScene extends Phaser.Scene {
           
           await this.AnimateOverlayChange();
           console.log("new team " + this.localState.currentTeamID);
+          this.avatarOverlay.getChildByID("avId").innerHTML=this.localState.currentTeamID;
         }
       });
 
