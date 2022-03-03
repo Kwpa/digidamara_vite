@@ -23,11 +23,15 @@ import Sprite from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/spr
 import Image from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/image/Image';
 import { Rectangle } from 'phaser3-rex-plugins/plugins/gameobjects/shape/shapes/geoms';
 import * as bulmaToast from 'bulma-toast';
+import { NakamaApi } from '@heroiclabs/nakama-js/dist/api.gen';
+import DynamicData from './DynamicData';
 
 export default class MainScene extends Phaser.Scene {
 
   localState!: LocalGameState;
   staticData!: StaticData;
+  dynamicData!: DynamicData;
+  getSystemUsers!: User[];
 
   teams_data!: object;
   barks_data!: object;
@@ -38,7 +42,6 @@ export default class MainScene extends Phaser.Scene {
   labels_data!: object;
 
   teamProfilePages!: Phaser.GameObjects.DOMElement[];
-
   session!: Session;
   client!: Client;
   match!: Match;
@@ -72,6 +75,7 @@ export default class MainScene extends Phaser.Scene {
   logo;
 
   avatarOverlayButton!: HTMLElement;
+  overlayProgressBar!: HTMLInputElement;
   voteContainer!: HTMLElement;
   avatarOverlay!: Phaser.GameObjects.DOMElement;
   notificationsArea!: HTMLElement;
@@ -203,13 +207,12 @@ export default class MainScene extends Phaser.Scene {
     this.AsyncCreate();
   }
 
-  SetupNotifications()
-  {
+  SetupNotifications() {
     bulmaToast.setDefaults({
       type: 'is-warning',
       position: 'top-center',
       closeOnClick: true,
-      pauseOnHover: true, 
+      pauseOnHover: true,
       duration: 100000,
       dismissible: true,
       appendTo: this.notificationsArea
@@ -227,7 +230,7 @@ export default class MainScene extends Phaser.Scene {
     this.voteScenarios_data = this.cache.json.get('voteScenarios_content') as object;
     console.log(this.notifications_data);
     this.labels_data = this.cache.json.get('appLabels_content') as object;
-    this.webConfig = this.cache.json.get('web_config') as object; 
+    this.webConfig = this.cache.json.get('web_config') as object;
   }
 
   async AsyncCreate() {
@@ -237,7 +240,7 @@ export default class MainScene extends Phaser.Scene {
     await this.delay(1200);
     //console.log(this.cache.json);
 
-    
+
     let { width, height } = this.sys.game.canvas;
     const leftCurtain = this.add.graphics();
     const rightCurtain = this.add.graphics();
@@ -282,17 +285,18 @@ export default class MainScene extends Phaser.Scene {
         delay: 1000,
         onComplete: () => { this.avatarOverlay.setVisible(true); }
       }
-      );
-      
-      const game = document.getElementsByTagName('canvas')[0];
-      game.style.setProperty('position', 'absolute');
-      game.style.setProperty('z-index', '-1');
-      
-      const baseWebsite = this.add.dom(width / 2, height / 2, BaseWebsite() as HTMLElement);
-      const chatPage = this.add.dom(width / 2, height / 2, ChatPage() as HTMLElement);
-      const videoPage = this.add.dom(width / 2, height / 2, VideoPage() as HTMLElement);
+    );
+
+    const game = document.getElementsByTagName('canvas')[0];
+    game.style.setProperty('position', 'absolute');
+    game.style.setProperty('z-index', '-1');
+
+    const baseWebsite = this.add.dom(width / 2, height / 2, BaseWebsite() as HTMLElement);
+    const chatPage = this.add.dom(width / 2, height / 2, ChatPage() as HTMLElement);
+    const videoPage = this.add.dom(width / 2, height / 2, VideoPage() as HTMLElement);
     const votePage = this.add.dom(width / 2, height / 2, VotingPage() as HTMLElement);
     this.avatarOverlay = this.add.dom(width / 2, height / 2, AvatarOverlay('open') as HTMLElement);
+    this.overlayProgressBar = this.avatarOverlay.getChildByID("teamEnergyBar") as HTMLInputElement;
     this.avatarOverlay.setVisible(false);
     chatPage.setVisible(false);
     videoPage.setVisible(false);
@@ -304,7 +308,7 @@ export default class MainScene extends Phaser.Scene {
     this.anotherTextElement = document.getElementById('chat-update') as HTMLElement;
     this.textElement.hidden = true;
     this.anotherTextElement.hidden = true;
-    
+
     this.roundCounter = baseWebsite.getChildByID("round-header-value") as HTMLElement;
     this.actionPointsCounter = baseWebsite.getChildByID("ap-header-value") as HTMLElement;
     this.sparksCounter = baseWebsite.getChildByID("sparks-header-value") as HTMLElement;
@@ -366,26 +370,22 @@ export default class MainScene extends Phaser.Scene {
     }
 
     this.SetVideoImages(this.videoTileContainer);
-    
+
     this.SetupNotifications();
-    
+
     //-----------------------------
-    
+
     const spotlight = this.add.image(width / 2, height / 2, 'spotlight');
     spotlight.setAlpha(0.4);
     spotlight.scaleY = height / 500;
     spotlight.scaleX = Math.max(1, width / 1000);
-    
+
     this.StarField();
 
     await this.GetLatestStaticData();
     await this.StartClientConnection();
-
-    
-    await this.GetLatestDynamicData();
-    
   }
-  
+
   async GetLatestStaticData() {
     this.staticData = await new StaticData();
     this.staticData.Init(
@@ -399,8 +399,81 @@ export default class MainScene extends Phaser.Scene {
     );
   }
 
-  async GetLatestDynamicData() {
+  async GetSystemUsers()
+  {
+    this.getSystemUsers = (await this.client.getUsers(this.session, [], ['SystemUser'])).users as User[];
+  }
 
+  async GetLatestDynamicData(id: string) 
+  {   
+    var getUserData = await this.client.readStorageObjects(this.session, {
+      "object_ids": [{
+        "collection": "users",
+        "key": id,
+        "user_id": this.getSystemUsers[0].id
+      }]});
+    var getTeams = await this.client.readStorageObjects(this.session, {
+      "object_ids": [{
+        "collection": "teams",
+        "key": "t_001",
+        "user_id": this.getSystemUsers[0].id
+      },{
+        "collection": "teams",
+        "key": "t_002",
+        "user_id": this.getSystemUsers[0].id
+      },{
+        "collection": "teams",
+        "key": "t_003",
+        "user_id": this.getSystemUsers[0].id
+      },{
+        "collection": "teams",
+        "key": "t_004",
+        "user_id": this.getSystemUsers[0].id
+      },{
+        "collection": "teams",
+        "key": "t_005",
+        "user_id": this.getSystemUsers[0].id
+      },{
+        "collection": "teams",
+        "key": "t_006",
+        "user_id": this.getSystemUsers[0].id
+      }]
+    }) as StorageObjects;
+
+    var teamsStateData: TeamState[] = [];
+
+    getTeams.objects.forEach(team => {
+      
+      var teamJsonString = JSON.stringify(team.value);
+      var parsedJson = JSON.parse(teamJsonString);
+      teamsStateData.push(new TeamState(
+        parsedJson.id,
+        parsedJson.eliminated,
+        parsedJson.upgradeLevel,
+        parsedJson.energyRequirement,
+        parsedJson.energy,
+        parsedJson.inFanClub
+        )
+      )
+    });
+    
+    var getRoundTrack = await this.client.readStorageObjects(this.session, {
+      "object_ids": [{
+        "collection": "roundTrack",
+        "key": "round",
+        "user_id": this.getSystemUsers[0].id
+      }]
+    }) as StorageObjects;
+
+    var roundStorageObject = collect(getRoundTrack.objects).first();
+    var jsonString = JSON.stringify(roundStorageObject.value);
+    var roundObject = JSON.parse(jsonString);
+
+    this.dynamicData = new DynamicData(teamsStateData,getUserData, roundObject);
+  }
+
+  SetOverlayProgresBar(value: number, maxValue: number) {
+    this.overlayProgressBar.value = Math.floor(value / maxValue * 100).toString();
   }
 
   StarField() {
@@ -434,14 +507,14 @@ export default class MainScene extends Phaser.Scene {
     this.client = new Client("defaultkey", this.webConfig.hostname, this.webConfig.port, this.webConfig.ssl);
     var deviceId = "";
     var create = true;
+    var newUserStorage = false;
 
     try {
       const key = await localStorage.getItem('ddm_localData');
       console.log("deviceId: " + key);
       const value = JSON.parse(key as string);
-      
-      if (value == null) 
-      {
+
+      if (value == null) {
         deviceId = Phaser.Utils.String.UUID() as string;
 
         localStorage.setItem('ddm_localData', JSON.stringify(
@@ -450,11 +523,11 @@ export default class MainScene extends Phaser.Scene {
           }
         ))
         create = true;
+        newUserStorage = true;
 
-      } 
-      else 
-      {
-        deviceId = value.deviceId as string;        
+      }
+      else {
+        deviceId = value.deviceId as string;
       }
     }
     catch (error) {
@@ -472,6 +545,8 @@ export default class MainScene extends Phaser.Scene {
       );
     }
 
+    
+
     /* var rand = Math.floor(Math.random() * 10000);
     var email = "kaiuser_" + rand + "@gmail.com";
     var password = "password";
@@ -487,7 +562,35 @@ export default class MainScene extends Phaser.Scene {
     let id: string = this.session.user_id as string;
     console.info("Sesh id:", id);
 
-    await this.SetupLocalState(id);
+    var account = await this.client.getAccount(this.session);
+    var username = account.user?.username as string;
+
+    if (newUserStorage) //if a new user, set up a new storage object for them!
+    {
+      const objects = [{
+        "collection": "users",
+        "key": id,
+        "value": {
+          "id": id,
+          "username":username,
+          "actionPoints":0,
+          "sparks":0,
+          "t_001UpgradeLevel": 0,
+          "t_002UpgradeLevel": 0,
+          "t_003UpgradeLevel": 0,
+          "t_004UpgradeLevel": 0,
+          "t_005UpgradeLevel": 0,
+          "t_006UpgradeLevel": 0
+        }
+      }];
+      
+      var writeObjects = await this.client.writeStorageObjects(this.session,objects);
+    }
+
+    await this.GetSystemUsers();
+    var setupData = await this.GetLatestDynamicData(id);
+    console.log("dynamic! " + this.dynamicData.dynamicTeamsState[0]);
+    await this.SetupLocalState(id, username, setupData);
 
     const socket = this.client.createSocket();
     await socket.connect(this.session, true);
@@ -539,45 +642,94 @@ export default class MainScene extends Phaser.Scene {
     )
   }
 
-  async SetupLocalState(user_id: string) {
-    var account = await this.client.getAccount(this.session);
+  async SetupLocalState(user_id: string, username: string, setupData) {
     this.localState = new LocalGameState();
 
     var teamIdList: string[] = [];
     var teamStateList: TeamState[] = [];
     var voteStateList: VoteScenarioState[] = [];
 
-    this.staticData.teams.forEach((team) => {
-      teamIdList.push(team.id);
-      teamStateList.push(new TeamState(team.id));
-    });
+    for(var i=0; i< this.staticData.teams.length; i++)
+    {
+      var teamStatic = this.staticData.teams[i];
+      var teamDynamic = this.dynamicData.dynamicTeamsState[i];
+      var userDynamic = this.dynamicData.dynamicUserState;
+      var roundDynamic = this.dynamicData.dynamicRoundState;
+      var upgradeLevel = 0;
+      switch(teamStatic.id)
+      {
+        case "t_001":
+          upgradeLevel = userDynamic.t_001UpgradeLevel;
+          break;
+        case "t_002":
+          upgradeLevel = userDynamic.t_002UpgradeLevel;
+          break;
+        case "t_003":
+          upgradeLevel = userDynamic.t_003UpgradeLevel;
+          break;
+        case "t_004":
+          upgradeLevel = userDynamic.t_004UpgradeLevel;
+          break;
+        case "t_005":
+          upgradeLevel = userDynamic.t_005UpgradeLevel;
+          break;
+        case "t_006":
+          upgradeLevel = userDynamic.t_006UpgradeLevel;
+          break;
+      }
+
+      var inFanClub = false;
+
+      switch(teamStatic.id)
+      {
+        case "t_001":
+          inFanClub = userDynamic.t_001InFanClub;
+          break;
+        case "t_002":
+          inFanClub = userDynamic.t_002InFanClub;
+          break;
+        case "t_003":
+          inFanClub = userDynamic.t_003InFanClub;
+          break;
+        case "t_004":
+          inFanClub = userDynamic.t_004InFanClub;
+          break;
+        case "t_005":
+          inFanClub = userDynamic.t_005InFanClub;
+          break;
+        case "t_006":
+          inFanClub = userDynamic.t_006InFanClub;
+          break;
+      }
+
+      teamIdList.push(teamStatic.id);
+      teamStateList.push(new TeamState(
+        teamStatic.id,
+        teamDynamic.outOfCompetition,
+        upgradeLevel,
+        roundDynamic.energyRequirement,
+        teamDynamic.currentEnergy,
+        inFanClub
+        ));
+    }
+    
     this.staticData.voteScenarios.forEach(() => {
       voteStateList.push(new VoteScenarioState());
     })
 
-    var username = account.user?.username as string;
-    var getSystemUsers = (await this.client.getUsers(this.session,[],['SystemUser'])).users as User[];
     
-    var getRoundTrack = await this.client.readStorageObjects(this.session, {
-      "object_ids": [{
-        "collection": "roundTrack",
-        "key": "round",
-        "user_id": getSystemUsers[0].id
-      }]
-    }) as StorageObjects;
-    console.log(getRoundTrack);
-    //if (getRoundTrack.objects.length > 0) {
-      var storageObject = collect(getRoundTrack.objects).first();
-      var jsonString = JSON.stringify(storageObject.value);
-      var round = JSON.parse(jsonString).round;
+    var getSystemUsers = (await this.client.getUsers(this.session, [], ['SystemUser'])).users as User[];
     //}
 
     //store and reload action points from localstorage
 
-    this.localState.Init(username, round, 5, teamIdList, voteStateList, teamStateList);
+    this.localState.Init(username, this.dynamicData.dynamicRoundState.round, 5, this.dynamicData.dynamicRoundState.energyRequirement, teamIdList, voteStateList, teamStateList);
     this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
     this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
     this.roundCounter.innerHTML = this.localState.round.toString();
+    this.SetOverlayProgresBar(
+      this.localState.teamStates[this.localState.carouselPosition].currentEnergy, 
+      this.localState.roundEnergyRequirement);
   }
 
   async SetupVotePage(socket: Socket) {
@@ -589,41 +741,41 @@ export default class MainScene extends Phaser.Scene {
     const choiceOneSubtractButton = voteScenario.querySelector('#' + "choiceOneSubtract") as HTMLElement;
     choiceOneSubtractButton.onclick = () => {
       if (this.localState.HaveSpentSparksOnTodaysVote(0)) {
-        this.localState.voteStates[this.localState.round-1].DecreaseVote(0);
+        this.localState.voteStates[this.localState.round - 1].DecreaseVote(0);
         this.localState.GainSparks(1);
         this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
-        choiceOneField.innerHTML = this.localState.voteStates[this.localState.round-1].choiceOneVotes.toString();
+        choiceOneField.innerHTML = this.localState.voteStates[this.localState.round - 1].choiceOneVotes.toString();
       }
     };
     const choiceOneAddButton = voteScenario.querySelector('#' + "choiceOneAdd") as HTMLElement;
     choiceOneAddButton.onclick = () => {
       if (this.localState.HaveSparks()) {
         console.log()
-        this.localState.voteStates[this.localState.round-1].IncreaseVote(0);
+        this.localState.voteStates[this.localState.round - 1].IncreaseVote(0);
         this.localState.SpendSparks(1);
         this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
-        choiceOneField.innerHTML = this.localState.voteStates[this.localState.round-1].choiceOneVotes.toString();
+        choiceOneField.innerHTML = this.localState.voteStates[this.localState.round - 1].choiceOneVotes.toString();
       }
     };
     const choiceTwoField = voteScenario.querySelector('#' + "choiceTwo") as HTMLElement;
     const choiceTwoSubtractButton = voteScenario.querySelector('#' + "choiceTwoSubtract") as HTMLElement;
     choiceTwoSubtractButton.onclick = () => {
       if (this.localState.HaveSpentSparksOnTodaysVote(1)) {
-        this.localState.voteStates[this.localState.round-1].DecreaseVote(1);
+        this.localState.voteStates[this.localState.round - 1].DecreaseVote(1);
         this.localState.GainSparks(1);
         this.SpendSparkOnTodaysVoteMatchState(socket, -1);
         this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
-        choiceTwoField.innerHTML = this.localState.voteStates[this.localState.round-1].choiceTwoVotes.toString();
+        choiceTwoField.innerHTML = this.localState.voteStates[this.localState.round - 1].choiceTwoVotes.toString();
       }
     };
     const choiceTwoAddButton = voteScenario.querySelector('#' + "choiceTwoAdd") as HTMLElement;
     choiceTwoAddButton.onclick = () => {
       if (this.localState.HaveSparks()) {
-        this.localState.voteStates[this.localState.round-1].IncreaseVote(1);
+        this.localState.voteStates[this.localState.round - 1].IncreaseVote(1);
         this.localState.SpendSparks(1);
         this.SpendSparkOnTodaysVoteMatchState(socket, 1);
         this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
-        choiceTwoField.innerHTML = this.localState.voteStates[this.localState.round-1].choiceTwoVotes.toString();
+        choiceTwoField.innerHTML = this.localState.voteStates[this.localState.round - 1].choiceTwoVotes.toString();
       }
     };
     this.voteContainer.innerHTML = "";
@@ -641,35 +793,34 @@ export default class MainScene extends Phaser.Scene {
         console.log("title: " + title);
         const data = { name: team.title, biography: team.biography };
         const teamProfile = this.add.dom(width / 2, height / 2, TeamProfile(data) as HTMLElement);
-        const container = teamProfile.getChildByID('story-container') as HTMLElement; 
-        team.story.forEach((story)=>{
+        const container = teamProfile.getChildByID('story-container') as HTMLElement;
+        team.story.forEach((story) => {
 
           const storyAccordian = StoryAccordian(story) as HTMLElement;
-          const mainButton = storyAccordian.querySelectorAll("#open-close-button")[0] as HTMLElement; 
+          const mainButton = storyAccordian.querySelectorAll("#open-close-button")[0] as HTMLElement;
           const collapsibleMessage = storyAccordian.querySelectorAll("#collapsible-message")[0] as HTMLElement;
-          mainButton.onclick=()=>{
-            if(collapsibleMessage.style.maxHeight)
-            {
+          mainButton.onclick = () => {
+            if (collapsibleMessage.style.maxHeight) {
               collapsibleMessage.style.maxHeight = null; //works as intended
             }
-            else
-            {
-              collapsibleMessage.style.maxHeight = collapsibleMessage.scrollHeight+"px";
+            else {
+              collapsibleMessage.style.maxHeight = collapsibleMessage.scrollHeight + "px";
             }
-          } 
+          }
           container.append(storyAccordian);
         });
         teamProfile.setVisible(false);
         this.teamProfilePages.push(teamProfile);
         var donateButton = teamProfile.getChildByID('donateButton') as HTMLElement;
         var closeButton = teamProfile.getChildByID('close-team-page-button') as HTMLElement;
-        
-        donateButton.onclick = () => {
+
+        donateButton.onclick = async() => {
           if (this.localState.SpendActionPoints(1)) {
-            this.localState.GainSparks(1+this.localState.GetUpgradeLevel());
+            this.localState.GainSparks(1 + this.localState.GetUpgradeLevel());
+            this.localState.teamStates[this.localState.carouselPosition].DonateEnergy();
             this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
             this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
-            this.DonateEnergyMatchState(socket, this.localState.currentTeamID);
+            await this.DonateEnergyMatchState(socket, this.localState.currentTeamID);
             //update UI
           }
         }
@@ -803,8 +954,8 @@ export default class MainScene extends Phaser.Scene {
       })*/
 
     const carousel = new PerspectiveCarousel(this, data) as PerspectiveCarousel;
-    this.tapAreaLeft = this.add.rectangle(0, height / 2, width / 3, height-240, 0x6666, 0);
-    this.tapAreaRight = this.add.rectangle(width, height / 2, width / 3, height-240, 0x6666, 0);
+    this.tapAreaLeft = this.add.rectangle(0, height / 2, width / 3, height - 240, 0x6666, 0);
+    this.tapAreaRight = this.add.rectangle(width, height / 2, width / 3, height - 240, 0x6666, 0);
     var cappedWidth = width;
     var cappedWidth = Math.min(width, 700);
     const tapAreaLeftArrow = this.add.image(cappedWidth / (32 / (2)), height / 2, 'arrow');
@@ -928,6 +1079,12 @@ export default class MainScene extends Phaser.Scene {
 
   async DonateEnergyMatchState(socket: Socket, team_id: string) {
 
+    console.log("donate!!!! " + this.localState.teamStates[this.localState.carouselPosition].currentEnergy);
+
+    this.SetOverlayProgresBar(
+      this.localState.teamStates[this.localState.carouselPosition].currentEnergy, 
+      this.localState.roundEnergyRequirement);
+
     await socket.sendMatchState(this.match.match_id, 1, { "team_id": team_id }); //
   }
 
@@ -944,6 +1101,11 @@ export default class MainScene extends Phaser.Scene {
           console.log("A custom opcode.");
           break;
         case 1:
+          console.log("Received! " + content.team_id);
+          if (this.localState.currentTeamID == content.team_id) {
+            this.localState.GetCurrentTeamState().DonateEnergy();
+            this.SetOverlayProgresBar(this.localState.teamStates[this.localState.carouselPosition].currentEnergy, this.localState.roundEnergyRequirement);
+          }
           console.log("User " + result.presence.username + " donated Energy to " + content);
           break;
         case 2:
@@ -955,12 +1117,11 @@ export default class MainScene extends Phaser.Scene {
         case 5:
           console.log("User " + result.presence.username + " upgraded " + content);
           break;
-        case 100: 
+        case 100:
           console.log("Notification");
-          if(this.receiveServerNotifications)
-          {
+          if (this.receiveServerNotifications) {
             bulmaToast.toast(
-              { 
+              {
                 message: content
               });
           }

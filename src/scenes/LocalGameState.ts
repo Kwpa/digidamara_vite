@@ -8,21 +8,29 @@ export default class LocalGameState
     currentTeamID!: string;
     teamIDs!: string[];
     round: number = 0;
+    roundEnergyRequirement!: number;
     voteStates!: VoteScenarioState[];
     teamStates!: TeamState[];
 
-    Init(username: string, round: number, maxActionPoints: number, teamIDs : string[], voteStates, teamStates)
+    Init(username: string, round: number, maxActionPoints: number, energyRequirement: number, teamIDs : string[], voteStates, teamStates)
     {
         this.GainActionPoints(5);
         this.round = round;
         this.username = username;
         this.maxActionPoints = maxActionPoints;
+        this.roundEnergyRequirement = energyRequirement;
+        console.log("hey  ---- " + this.roundEnergyRequirement);
         this.SetActionPointsToMax();
         this.carouselPosition = 0;
         this.teamIDs = teamIDs;
         this.SetCurrentTeamID()
         this.voteStates = voteStates;
         this.teamStates = teamStates;      
+    }
+
+    GetCurrentTeamState()
+    {
+        return this.teamStates[this.carouselPosition];
     }
 
     GetRound()
@@ -177,8 +185,42 @@ export class TeamState
     currentEnergy: number = 0;
     userInFanClub: boolean = false;
 
-    constructor(id: string){
+    constructor(id, outOfComp, upgradeLevel, energyReq, currentEnergy, inFanClub){
         this.id = id;
+        this.outOfCompetition = outOfComp;
+        this.upgradeLevel = upgradeLevel;
+        this.energyRequirement = energyReq;
+        this.currentEnergy = currentEnergy;
+        this.userInFanClub = inFanClub;
+    }
+
+    Upgrade()
+    {
+        this.upgradeLevel++;
+    }
+    UpgradeBy(value:number)
+    {
+        this.upgradeLevel += value;
+    }
+    OutOfCompetition()
+    {
+        this.outOfCompetition=true;
+    }
+    SetEnergyRequirement(value: number)
+    {
+        this.energyRequirement = value;
+    }
+    DonateEnergy()
+    {
+        this.currentEnergy++;
+    }
+    DonateEnergyBy(value:number)
+    {
+        this.currentEnergy+=value;
+    }
+    JoinFanClub()
+    {
+        this.userInFanClub=true;
     }
 }
 
