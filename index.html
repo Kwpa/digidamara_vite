@@ -13,10 +13,16 @@
       margin: 0;
       background: transparent;
     }
+
     .base-container {
       padding-top: 120px;
       padding-bottom: 120px;
       height: 100%;
+    }
+    .ov-container {
+      position:relative;
+      width:300px;
+      height: calc(100vh - 240px);
     }
 
     .base {
@@ -77,14 +83,14 @@
     }
 
     .story-surround {
-      max-height:100%;
+      max-height: 100%;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
     }
 
     .story-container {
-  overflow-y: auto;
+      overflow-y: auto;
     }
 
     .chat-container {
@@ -197,15 +203,14 @@
     }
 
     button.accordian:hover {
-      background-color: #000000; 
+      background-color: #000000;
       border: none;
       outline: none;
       cursor: pointer;
     }
 
 
-    .accordian-content
-    {
+    .accordian-content {
       padding: 0 20px;
       overflow: hidden;
       max-height: 0;
