@@ -1,24 +1,57 @@
 [
     {
         "id":  "v_001",
-        "title":  "Something has gone wrong. Do you...",
-        "description":  "What should we do?",
-        "choiceOne_title":  "Run for your life",
-        "choiceOne_description":  "We\u0027ll get out of here alive!",
-        "choiceOne_consequences":  "We just made it out",
-        "choiceTwo_title":  "Fight for your life",
-        "choiceTwo_description":  "Time to knuckle down.",
-        "choiceTwo_consequences":  "Bruised, bloody, victorious"
+        "title":  "A mysterious box appears…",
+        "description":  "Should we open the tome of wonders?",
+        "choiceOne_title":  "Open the tome of wonders",
+        "choiceOne_description":  "It could help us!",
+        "choiceOne_consequences":  "A holographic mouse pops out of the box and says in a tiny whisper \u0027Psst..did you know? The pilot crew of this space station are supposedly the best of the best! But how did they get so good...\u0027",
+        "choiceTwo_title":  "Keep it closed",
+        "choiceTwo_description":  "The results could be catastrophic!",
+        "choiceTwo_consequences":  "The tome disappears into galactic space. Phew…nothing bad happened."
     },
     {
         "id":  "v_002",
-        "title":  "The superior, sci-fi!!",
-        "description":  "The choice is yours!",
-        "choiceOne_title":  "Farscape",
-        "choiceOne_description":  "What a show!",
-        "choiceOne_consequences":  "Frack! We won!",
-        "choiceTwo_title":  "Stars Wars",
-        "choiceTwo_description":  "Hilarious!",
-        "choiceTwo_consequences":  "Craig Charles for the win!"
+        "title":  "The bribe",
+        "description":  "One of the teams wants to bribe the Promoter! Should we let them?",
+        "choiceOne_title":  "Yes",
+        "choiceOne_description":  "I wonder what they will use as a bribe?",
+        "choiceOne_consequences":  "Bribing team gains a snifty new sharpy cool attitude (that is very popular) but some other teams now look down upon them",
+        "choiceTwo_title":  "No",
+        "choiceTwo_description":  "The Promoter cannot be bought and sold!",
+        "choiceTwo_consequences":  "Moral purity has been maintained. Fan adoration sky rockets!"
+    },
+    {
+        "id":  "v_003",
+        "title":  "The Consummation",
+        "description":  "One dancer eats and absorbs it\u0027s partner to become the ultimate dancer, do we penalize them?",
+        "choiceOne_title":  "Yes",
+        "choiceOne_description":  "Such actions must be punishable to maintain order",
+        "choiceOne_consequences":  "The change is hard and they fart out the cries of agony of their consumed partner",
+        "choiceTwo_title":  "No",
+        "choiceTwo_description":  "The stress of the competition made it inevitable.",
+        "choiceTwo_consequences":  "Gain new dance move"
+    },
+    {
+        "id":  "v_004",
+        "title":  "Our Direction",
+        "description":  "The navigation system has failed us, do we trust the pilot crew or do we reactivate the system?",
+        "choiceOne_title":  "Trust",
+        "choiceOne_description":  "Our energy is better used elsewhere",
+        "choiceOne_consequences":  "A few technical glitches but we seem to be alright. The end of the universe is close.",
+        "choiceTwo_title":  "Reactivate",
+        "choiceTwo_description":  "We don\u0027t want to get lost!",
+        "choiceTwo_consequences":  "We struggle, one team loses all their briefcase items/personal possessions. The end of the universe is close."
+    },
+    {
+        "id":  "v_005",
+        "title":  "What do others think about us?",
+        "description":  "Protest is happening all over the galaxies. They claim that there is an alternative way to birth the new universe rather than by dance marathon. Should we abandon the dance or keep going?",
+        "choiceOne_title":  "Abandon ship",
+        "choiceOne_description":  "What if there is a better way?",
+        "choiceOne_consequences":  "The new universe is born! But who..or what.. has shaped it?",
+        "choiceTwo_title":  "Keep going",
+        "choiceTwo_description":  "We\u0027ve heard these stories before, let them take their chances",
+        "choiceTwo_consequences":  "The new universe is born! How do we deal with what we have become?"
     }
 ]

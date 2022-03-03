@@ -12,15 +12,16 @@ export default class LocalGameState
     voteStates!: VoteScenarioState[];
     teamStates!: TeamState[];
 
-    Init(username: string, round: number, maxActionPoints: number, energyRequirement: number, teamIDs : string[], voteStates, teamStates)
+    Init(username: string, round: number, actionPoints: number, maxActionPoints: number, sparksAwarded: number, energyRequirement: number, teamIDs : string[], voteStates, teamStates)
     {
-        this.GainActionPoints(5);
+        this.actionPoints = actionPoints;
+        this.sparksAwarded = sparksAwarded;
         this.round = round;
         this.username = username;
         this.maxActionPoints = maxActionPoints;
         this.roundEnergyRequirement = energyRequirement;
         console.log("hey  ---- " + this.roundEnergyRequirement);
-        this.SetActionPointsToMax();
+        //this.SetActionPointsToMax();
         this.carouselPosition = 0;
         this.teamIDs = teamIDs;
         this.SetCurrentTeamID()
@@ -102,6 +103,17 @@ export default class LocalGameState
         this.actionPoints = this.maxActionPoints;
     }
     
+    SpendActionPointOnDonation()
+    {
+        var newAmount = this.actionPoints - 1;
+        if(newAmount >= 0 && this.GetCurrentTeamState().currentEnergy < this.roundEnergyRequirement)
+        {
+            this.SetActionPoints(newAmount);
+            return true;
+        }
+        else return false;
+    }
+
     SpendActionPoints(amount: number)
     {
         var newAmount = this.actionPoints - amount;

@@ -404,14 +404,11 @@ export default class MainScene extends Phaser.Scene {
     this.getSystemUsers = (await this.client.getUsers(this.session, [], ['SystemUser'])).users as User[];
   }
 
-  async GetLatestDynamicData(id: string) 
+  async GetLatestDynamicData() 
   {   
-    var getUserData = await this.client.readStorageObjects(this.session, {
-      "object_ids": [{
-        "collection": "users",
-        "key": id,
-        "user_id": this.getSystemUsers[0].id
-      }]});
+    var getUserData = await localStorage.getItem("ddm_localData");
+    var parsedUserData = JSON.parse(getUserData as string);
+    console.log(parsedUserData);
     var getTeams = await this.client.readStorageObjects(this.session, {
       "object_ids": [{
         "collection": "teams",
@@ -469,7 +466,9 @@ export default class MainScene extends Phaser.Scene {
     var jsonString = JSON.stringify(roundStorageObject.value);
     var roundObject = JSON.parse(jsonString);
 
-    this.dynamicData = new DynamicData(teamsStateData,getUserData, roundObject);
+    await this.WriteToDDMLocalStorage("round", roundObject.round);
+
+    this.dynamicData = new DynamicData(teamsStateData,parsedUserData, roundObject);
   }
 
   SetOverlayProgresBar(value: number, maxValue: number) {
@@ -516,15 +515,7 @@ export default class MainScene extends Phaser.Scene {
 
       if (value == null) {
         deviceId = Phaser.Utils.String.UUID() as string;
-
-        localStorage.setItem('ddm_localData', JSON.stringify(
-          {
-            "deviceId": deviceId
-          }
-        ))
-        create = true;
         newUserStorage = true;
-
       }
       else {
         deviceId = value.deviceId as string;
@@ -537,15 +528,33 @@ export default class MainScene extends Phaser.Scene {
     this.session = await this.client.authenticateDevice(deviceId, create);
     console.info("Successfully authenticated:", this.session);
 
-    if (create) {
+    var account = await this.client.getAccount(this.session);
+    var username = account.user?.username as string;
+
+    if(newUserStorage)
+    {
+      localStorage.setItem('ddm_localData', JSON.stringify(
+        {
+          "deviceId": deviceId,
+          "username":username,
+          "actionPoints":5,
+          "sparks":0,
+          "round":0,
+          "t_001UpgradeLevel": 0,
+          "t_002UpgradeLevel": 0,
+          "t_003UpgradeLevel": 0,
+          "t_004UpgradeLevel": 0,
+          "t_005UpgradeLevel": 0,
+          "t_006UpgradeLevel": 0
+        }
+      ));      
+
       await this.client.updateAccount(this.session,
         {
           avatar_url: "https://source.boringavatars.com/marble/50/" + Math.floor(Math.random() * 100000)
         }
       );
     }
-
-    
 
     /* var rand = Math.floor(Math.random() * 10000);
     var email = "kaiuser_" + rand + "@gmail.com";
@@ -562,33 +571,8 @@ export default class MainScene extends Phaser.Scene {
     let id: string = this.session.user_id as string;
     console.info("Sesh id:", id);
 
-    var account = await this.client.getAccount(this.session);
-    var username = account.user?.username as string;
-
-    if (newUserStorage) //if a new user, set up a new storage object for them!
-    {
-      const objects = [{
-        "collection": "users",
-        "key": id,
-        "value": {
-          "id": id,
-          "username":username,
-          "actionPoints":0,
-          "sparks":0,
-          "t_001UpgradeLevel": 0,
-          "t_002UpgradeLevel": 0,
-          "t_003UpgradeLevel": 0,
-          "t_004UpgradeLevel": 0,
-          "t_005UpgradeLevel": 0,
-          "t_006UpgradeLevel": 0
-        }
-      }];
-      
-      var writeObjects = await this.client.writeStorageObjects(this.session,objects);
-    }
-
     await this.GetSystemUsers();
-    var setupData = await this.GetLatestDynamicData(id);
+    var setupData = await this.GetLatestDynamicData();
     console.log("dynamic! " + this.dynamicData.dynamicTeamsState[0]);
     await this.SetupLocalState(id, username, setupData);
 
@@ -723,9 +707,12 @@ export default class MainScene extends Phaser.Scene {
 
     //store and reload action points from localstorage
 
-    this.localState.Init(username, this.dynamicData.dynamicRoundState.round, 5, this.dynamicData.dynamicRoundState.energyRequirement, teamIdList, voteStateList, teamStateList);
-    this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
-    this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
+    var actionPoints = await this.ReadFromDDMLocalStorageNumber("actionPoints");
+    var sparks = await this.ReadFromDDMLocalStorageNumber("sparks"); 
+
+    this.localState.Init(username, this.dynamicData.dynamicRoundState.round, actionPoints, 5, sparks, this.dynamicData.dynamicRoundState.energyRequirement, teamIdList, voteStateList, teamStateList);
+    this.actionPointsCounter.innerHTML = (await this.ReadFromDDMLocalStorageNumber("actionPoints")).toString();
+    this.sparksCounter.innerHTML = (await this.ReadFromDDMLocalStorageNumber("sparks")).toString();
     this.roundCounter.innerHTML = this.localState.round.toString();
     this.SetOverlayProgresBar(
       this.localState.teamStates[this.localState.carouselPosition].currentEnergy, 
@@ -815,11 +802,22 @@ export default class MainScene extends Phaser.Scene {
         var closeButton = teamProfile.getChildByID('close-team-page-button') as HTMLElement;
 
         donateButton.onclick = async() => {
-          if (this.localState.SpendActionPoints(1)) {
+          if (this.localState.SpendActionPointOnDonation()) {
             this.localState.GainSparks(1 + this.localState.GetUpgradeLevel());
             this.localState.teamStates[this.localState.carouselPosition].DonateEnergy();
             this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
             this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
+
+            await this.WriteToDDMLocalStorage("actionPoints", this.localState.actionPoints);
+            await this.WriteToDDMLocalStorage("sparks", this.localState.sparksAwarded);
+
+            this.SetOverlayProgresBar(
+              this.localState.teamStates[this.localState.carouselPosition].currentEnergy, 
+              this.localState.roundEnergyRequirement);
+
+            var getUserData = await localStorage.getItem("ddm_localData");
+            const value = JSON.parse(getUserData as string);
+
             await this.DonateEnergyMatchState(socket, this.localState.currentTeamID);
             //update UI
           }
@@ -839,6 +837,45 @@ export default class MainScene extends Phaser.Scene {
   tweenDummy;
   pathDummy;
   follower;
+
+  async WriteToDDMLocalStorage(key:string, value)
+  {
+      const data = await localStorage.getItem('ddm_localData');
+      const json = JSON.parse(data as string);
+      json[key] = value;
+
+      localStorage.setItem('ddm_localData', JSON.stringify(json));   
+  }
+
+  async ReadFromDDMLocalStorageNumber(key:string)
+  {
+      const data = await localStorage.getItem('ddm_localData');
+      const json = JSON.parse(data as string);
+      return json[key] as number;  
+  }
+
+  async RefreshForNewRound()
+  {
+    var account = (await this.client.getAccount(this.session)).user;
+    await this.GetLatestDynamicData();
+    await this.SetupLocalState(account?.id as string, account?.username as string, this.dynamicData);
+    var actionPointsReset=5;
+    var round = this.dynamicData.dynamicRoundState.round;
+    this.localState.roundEnergyRequirement = this.dynamicData.dynamicRoundState.energyRequirement;
+    this.localState.teamStates.forEach((team)=>
+    {
+      team.currentEnergy=0;
+      team.energyRequirement=this.localState.roundEnergyRequirement;
+    }
+    )
+
+    this.actionPointsCounter.innerHTML = actionPointsReset.toString();
+    this.roundCounter.innerHTML = round.toString();
+    this.SetOverlayProgresBar(0, this.localState.roundEnergyRequirement);
+
+    await this.WriteToDDMLocalStorage("actionPoints", actionPointsReset);
+    await this.WriteToDDMLocalStorage("round", this.localState.round);
+  }
 
   async SetupTeamAvatars() {
 
@@ -993,6 +1030,7 @@ export default class MainScene extends Phaser.Scene {
           this.localState.RollCarousel(-1);
           (this.imgs[this.localState.carouselPosition].img_A as Image).setTint(0xffffff);
           (this.imgs[this.localState.carouselPosition].img_B as Image).setTint(0xffffff);
+          await this.AnimateOverlayChange();
           console.log("new team " + this.localState.currentTeamID);
         }
       });
@@ -1015,6 +1053,8 @@ export default class MainScene extends Phaser.Scene {
           this.localState.RollCarousel(1);
           (this.imgs[this.localState.carouselPosition].img_A as Image).setTint(0xffffff);
           (this.imgs[this.localState.carouselPosition].img_B as Image).setTint(0xffffff);
+          
+          await this.AnimateOverlayChange();
           console.log("new team " + this.localState.currentTeamID);
         }
       });
@@ -1043,6 +1083,16 @@ export default class MainScene extends Phaser.Scene {
 
     this.startCharacterGraphics = true;
     this.add.existing(carousel);
+  }
+
+  async AnimateOverlayChange()
+  {
+    const overlayBox = this.avatarOverlay.getChildByID("avatar-overlay-ui") as HTMLElement;
+    overlayBox.style.animation="700ms grow-and-shrink";
+    await this.delay(350);
+    this.SetOverlayProgresBar(this.localState.teamStates[this.localState.carouselPosition].currentEnergy, this.localState.roundEnergyRequirement);
+    await this.delay(350);
+    overlayBox.style.animation="700ms steady";
   }
 
   async delay(time) {
@@ -1081,10 +1131,6 @@ export default class MainScene extends Phaser.Scene {
 
     console.log("donate!!!! " + this.localState.teamStates[this.localState.carouselPosition].currentEnergy);
 
-    this.SetOverlayProgresBar(
-      this.localState.teamStates[this.localState.carouselPosition].currentEnergy, 
-      this.localState.roundEnergyRequirement);
-
     await socket.sendMatchState(this.match.match_id, 1, { "team_id": team_id }); //
   }
 
@@ -1098,12 +1144,13 @@ export default class MainScene extends Phaser.Scene {
       var content = result.data;
       switch (result.op_code) {
         case 101:
-          console.log("A custom opcode.");
+          this.RefreshForNewRound();
+          console.log("User " + result.presence.username + " refreshed for a new round");
           break;
         case 1:
           console.log("Received! " + content.team_id);
+          this.localState.GetCurrentTeamState().DonateEnergy();
           if (this.localState.currentTeamID == content.team_id) {
-            this.localState.GetCurrentTeamState().DonateEnergy();
             this.SetOverlayProgresBar(this.localState.teamStates[this.localState.carouselPosition].currentEnergy, this.localState.roundEnergyRequirement);
           }
           console.log("User " + result.presence.username + " donated Energy to " + content);

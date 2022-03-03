@@ -1,37 +1,37 @@
 [
     {
         "id":  "t_001",
-        "title":  "Altar and Ambiv",
-        "characterOne_name":  "Altar",
-        "characterTwo_name":  "Ambiv",
-        "biography":  "This planet is a world full of joyful music and joyful dance steps. There is one of the most famous dance styles on this planet - Cushance. Every year, millions of creatures came to learn this dance. This year, this planet sent their biggest masters - Master Gauri \u0026 Master Refilwe to participate in the dance marathon, hoping to inspire everyone to have no fear of death through dance.\n\n“There is no need to be afraid of change. It is normal for everything to change. Change never stops, it\u0027s just that we don\u0027t notice it.”  - Master Gauri \u0026 Master Refilwe",
+        "title":  "Master Gauri \u0026 Refilwe",
+        "characterOne_name":  "Master Gauri",
+        "characterTwo_name":  "Refilwe",
+        "biography":  "This planet is a world full of joyful music and joyful dance steps. There is one of the most famous dance styles on this planet - Cushance. Every year, millions of creatures came to learn this dance. This year, this planet sent their biggest masters - Master Gauri \u0026 Master Refilwe to participate in the dance marathon, hoping to inspire everyone to have no fear of death through dance.\n\n\n“There is no need to be afraid of change. It is normal for everything to change. Change never stops, it\u0027s just that we don\u0027t notice it.” - Master Gauri \u0026 Master Refilwe",
         "favouriteDanceMove":  "Able Amble",
         "iconId":  "t_001"
     },
     {
         "id":  "t_002",
-        "title":  "Brima and Bagolda",
-        "characterOne_name":  "Brima",
-        "characterTwo_name":  "Bagolda",
-        "biography":  "These aliens have trombones for hands.",
+        "title":  "The Brutus",
+        "characterOne_name":  "Formation 16",
+        "characterTwo_name":  "Formation 17",
+        "biography":  "Brutus is a group of fighters who have been actively preparing for a battle for a long time. Their village, My fellow Brutus, used to be the ally of the Village-Lye. Since the lyes turned their backs on Brutus, they have become isolated and helpless. They were hoping to be able to show their spirit of being a fighter on the world stage one day.",
         "favouriteDanceMove":  "Big Band Boogie",
         "iconId":  "t_002"
     },
     {
         "id":  "t_003",
-        "title":  "Carlos and Cuthbert",
-        "characterOne_name":  "Carlos",
-        "characterTwo_name":  "Cuthbert",
-        "biography":  "These aliens want to absorb as much as possible.",
+        "title":  "Popper \u0026 Piper",
+        "characterOne_name":  "Popper",
+        "characterTwo_name":  "Piper",
+        "biography":  "Relying on is the goal of survival, entanglement is the spiritual food. The last two endangered creatures in the world, wondering if they can pass through the cracks of time and get a new chance to the next universe?",
         "favouriteDanceMove":  "Classical Curtail",
         "iconId":  "t_003"
     },
     {
         "id":  "t_004",
-        "title":  "Dolores and Ducky",
-        "characterOne_name":  "Dolores",
-        "characterTwo_name":  "Ducky",
-        "biography":  "These aliens are made of elastic and bounce everywhere.",
+        "title":  "The Sglunkus Snorfluxii",
+        "characterOne_name":  "Gruffus Brunter",
+        "characterTwo_name":  "",
+        "biography":  "Sglunkus Snorfluxii are massive beasts that live in vast open landscapes of earth, rock and water. They are content to be solitary but have vast family networks, with occasional violent outbursts when faced against a foe. With a tendency to enjoy smashing and eating anything in sight, they can get carried away in battles of brute force and are in ongoing conflict with the Balloons** \nAfter multiple inter-galactic dance tours aboard the Soul Train, Gruffus Brunter is a pioneer of his galaxy, ready to bet the universe on their dance moves. It is their great honour to represent the noble species and show the Universe that they are more than just a hungry, aggressive lump.",
         "favouriteDanceMove":  "Devastating Dip",
         "iconId":  "t_004"
     },

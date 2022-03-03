@@ -72,7 +72,7 @@ const BaseWebsite = () => {
               <div id="video-footer-button" class="badger has-background-dark" style="padding: 0px;">
                 <img class="hdrftr-icon" src="/assets/white_icons/icon_camera_white.png"></img>
                 <h1 title="Badge top right" class="badge is-top-left">8</h1>
-                <h1 class="heading has-text-centered has-text-white">Video</h1>
+                <h1 class="heading has-text-centered has-text-white">News</h1>
               </div>
             </div>
             <div class="level-item has-text-centered">
