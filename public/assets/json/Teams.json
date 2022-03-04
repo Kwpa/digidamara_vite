@@ -13,8 +13,8 @@
         "title":  "The Brutus",
         "characterOne_name":  "Formation 16",
         "characterTwo_name":  "Formation 17",
-        "biography":  "Brutus is a group of fighters who have been actively preparing for a battle for a long time. Their village, My fellow Brutus, used to be the ally of the Village-Lye. Since the lyes turned their backs on Brutus, they have become isolated and helpless. They were hoping to be able to show their spirit of being a fighter on the world stage one day.",
-        "favouriteDanceMove":  "Big Band Boogie",
+        "biography":  "Brutus is a group of fighters who have been actively preparing for a battle for a long time. Their village, My fellow Brutus, used to be the ally of the Village-Lye. Since the lyes turned their backs on Brutus, they have become isolated and helpless. They were hoping to be able to show their spirit of being a fighter on the world stage one day. Their fighting style can be quite sensuous and has crossovers in their courtship. Formation 16 and Formation 17 are experts in their field.\n",
+        "favouriteDanceMove":  "Enticing Elope",
         "iconId":  "t_002"
     },
     {
@@ -31,26 +31,26 @@
         "title":  "The Sglunkus Snorfluxii",
         "characterOne_name":  "Gruffus Brunter",
         "characterTwo_name":  "",
-        "biography":  "Sglunkus Snorfluxii are massive beasts that live in vast open landscapes of earth, rock and water. They are content to be solitary but have vast family networks, with occasional violent outbursts when faced against a foe. With a tendency to enjoy smashing and eating anything in sight, they can get carried away in battles of brute force and are in ongoing conflict with the Balloons** \nAfter multiple inter-galactic dance tours aboard the Soul Train, Gruffus Brunter is a pioneer of his galaxy, ready to bet the universe on their dance moves. It is their great honour to represent the noble species and show the Universe that they are more than just a hungry, aggressive lump.",
+        "biography":  "Sglunkus Snorfluxii are massive beasts that live in vast open landscapes of earth, rock and water. They are content to be solitary but have vast family networks, with occasional violent outbursts when faced against a foe. With a tendency to enjoy smashing and eating anything in sight, they can get carried away in battles of brute force and are in ongoing conflict with the Eeeksums.\nAfter multiple inter-galactic dance tours aboard the Soul Train, Gruffus Brunter is a pioneer of his galaxy, ready to bet the universe on their dance moves. It is their great honour to represent the noble species and show the Universe that they are more than just a hungry, aggressive lump.",
         "favouriteDanceMove":  "Devastating Dip",
         "iconId":  "t_004"
     },
     {
         "id":  "t_005",
-        "title":  "Egart and Esta",
-        "characterOne_name":  "Egart",
-        "characterTwo_name":  "Esta",
-        "biography":  "These aliens will be forever remembered as martyrs.",
-        "favouriteDanceMove":  "Enticing Elope",
+        "title":  "Eeeksum",
+        "characterOne_name":  "Babe",
+        "characterTwo_name":  "Bas",
+        "biography":  "The burrowing bandits from the Bobble galaxy, Babe and Bas, have dug deep into the hearts of many on their home planet. This celebrity sibling duo competed professionally at numerous inter-galactic competitions for high and long bounce and have no doubt that their moves will pave the way for their rise to fame and fortune in Digidamara. The greater Eeeksum population in Bobble live in large colonies along orb-filled micro lakes. They are known to outwit (and out dance) enemies using their favourite dance sequence! Though they have an innate disposition for play and frivolity, it is because undue hardship can cause Eeeksums to perish from stress. Babe and Bas have an unusual emotional endurance and can muster the inner strength to keep on plorpin’ even in the face of danger; a face they just may see, as their mortal enemies The Sglunkus Snorfluxii are also in the competition.",
+        "favouriteDanceMove":  "Plorp and Flick",
         "iconId":  "t_005"
     },
     {
         "id":  "t_006",
-        "title":  "Frogpit and Froom",
-        "characterOne_name":  "Frogpit",
-        "characterTwo_name":  "Froom",
-        "biography":  "These aliens own a megacorp made of millions of employees and one star whale.",
-        "favouriteDanceMove":  "Frustrated Ferret",
+        "title":  "Mandulae",
+        "characterOne_name":  "Entheroll",
+        "characterTwo_name":  "Auram",
+        "biography":  "Entheroll \u0026 Auram have not felt the warmth of light on their aquatic bodies since the dawn of the last universe. They are rare Mandulae, beings who live a life of deep contemplation and meditation at the bottom of the oceanic planet Tenebris in the Deep Innks Galaxy. Mandulae communicate with both vocalizations and movements, and their angelic voices guide their quest for wisdom and beauty in sound and form. Having a lifespan eons longer than most beings, they subsist off of energy generated by molecular activity and travel based on the inherent flow of cosmic energy. Multi universe memory suggests they adapt easily to varied fluid biomes and may at one time have called many galaxies their home. It is unclear how or why Enteroll and Auram arrived at Digidamara. Some audiences are concerned about their unexpected participation. Others seem almost hypnotized by their ever changing form. There is a prophecy that when the Mandulae shall rise to the surface of the water, a great truth will come to light.",
+        "favouriteDanceMove":  "The Aqueous",
         "iconId":  "t_006"
     }
 ]

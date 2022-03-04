@@ -3,48 +3,112 @@
         "id":  "n_001",
         "round":  "1",
         "title":  "Introduction",
-        "content":  "Welcome to Digidamara!",
+        "content":  "Welcome back to Digidamara - who will YOU choose to birth the new universe?! These are your final 6 teams! The last team standing will shape the next universe as we know it!",
         "encryption":  "0",
         "delay":  "1"
     },
     {
         "id":  "n_002",
-        "round":  "2",
-        "title":  "Hey listen!",
-        "content":  "Did you know that the world is ending?",
+        "round":  "1",
+        "title":  "Spectacular!",
+        "content":  "Twists and turns…… Nervous and exciting! You have no reason not to continue to watch it! Hmm?",
         "encryption":  "0",
         "delay":  "1"
     },
     {
         "id":  "n_003",
-        "round":  "3",
-        "title":  "It\u0027s time!",
-        "content":  "Vote now!",
+        "round":  "",
+        "title":  "Bravo!",
+        "content":  "It\u0027s an expression of love. Although we don\u0027t know if the next universe will have such a tragic expression of love…… we have all seen it TODAY, and I\u0027ll die without regret!",
         "encryption":  "0",
         "delay":  "1"
     },
     {
         "id":  "n_004",
-        "round":  "4",
-        "title":  "Are you listening?",
-        "content":  "Bow down to me!",
+        "round":  "2",
+        "title":  "New Day",
+        "content":  "Tune in, tune on, tune out, tune off and explode - it\u0027s DIGIDAMARA!!! If not 100% satisfied - go get another version of satisfaction! Let\u0027s see where our contestants are today….",
         "encryption":  "0",
         "delay":  "1"
     },
     {
         "id":  "n_005",
-        "round":  "5",
-        "title":  "The End",
-        "content":  "I suppose you think you\u0027ve won...",
+        "round":  "",
+        "title":  "It\u0027s time!",
+        "content":  "Vote now! We can\u0027t build the new universe without you!",
         "encryption":  "0",
         "delay":  "1"
     },
     {
         "id":  "n_006",
-        "round":  "1",
-        "title":  "The Throx",
-        "content":  "I must disrupt... no more sparks... darkness for... destroyed...",
+        "round":  "",
+        "title":  "Donate now!",
+        "content":  "Competing for the biggest prize ever known - the universe! Don\u0027t they deserve your support? Get those sparks poppin!",
         "encryption":  "0",
         "delay":  "7"
+    },
+    {
+        "id":  "n_007",
+        "round":  "",
+        "title":  "Support",
+        "content":  "Don’t they all deserve your adoration folks?! Don’t they all deserve your support and love? Isn’t that the Intergalatic way? Donate to your favourite team today!",
+        "encryption":  "0",
+        "delay":  "1"
+    },
+    {
+        "id":  "n_008",
+        "round":  "",
+        "title":  "Are you listening?",
+        "content":  "Their life and death are in your hands. Tomorrow is never promised to anyone, so dance until your side hurts, say I love you to those you love. For tomorrow may never come…at least not in the way you expect it.",
+        "encryption":  "0",
+        "delay":  "1"
+    },
+    {
+        "id":  "n_009",
+        "round":  "",
+        "title":  "The End A",
+        "content":  "Thank you, thank you so much for giving me all your energy…now the universe will be perfect, and everyone will be transformed through my mind\u0027s eye. *all known life is swallowed into the Promoter\u0027s third eye*",
+        "encryption":  "0",
+        "delay":  "1"
+    },
+    {
+        "id":  "n_010",
+        "round":  "",
+        "title":  "The End B",
+        "content":  "If everything just went according to plan, if everyone just listened and played their part, it would be perfect. Don’t you have everything!? Don’t you want everyone to have everything?!?!! aaaahhh….*blips into the void*",
+        "encryption":  "0",
+        "delay":  "1"
+    },
+    {
+        "id":  "n_011",
+        "round":  "",
+        "title":  "Elimination A",
+        "content":  "That’s the thing about pain… It demands to be felt. Sit with the pain until it passes, and you will be calmer for the next one. Today, we have learnt a lot from those dancers……",
+        "encryption":  "0",
+        "delay":  "1"
+    },
+    {
+        "id":  "n_012",
+        "round":  "",
+        "title":  "Taking a break",
+        "content":  "Our transmission is breaking up as we swing behind the liquid darkness field of our partner moon, see you on the other side....",
+        "encryption":  "0",
+        "delay":  "1"
+    },
+    {
+        "id":  "n_013",
+        "round":  "",
+        "title":  "Elimination B",
+        "content":  "Sad to see them go...50 bajillion clickhours danced, 4X90 wattjules accumulated...the new universe grows near!",
+        "encryption":  "0",
+        "delay":  "1"
+    },
+    {
+        "id":  "",
+        "round":  "",
+        "title":  "The Throx",
+        "content":  "I must disrupt... no more sparks... darkness for... destroyed...",
+        "encryption":  "",
+        "delay":  ""
     }
 ]
