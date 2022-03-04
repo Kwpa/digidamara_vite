@@ -466,8 +466,6 @@ export default class MainScene extends Phaser.Scene {
     var jsonString = JSON.stringify(roundStorageObject.value);
     var roundObject = JSON.parse(jsonString);
 
-    await this.WriteToDDMLocalStorage("round", roundObject.round);
-
     this.dynamicData = new DynamicData(teamsStateData,parsedUserData, roundObject);
   }
 
@@ -498,6 +496,17 @@ export default class MainScene extends Phaser.Scene {
       this.zz.push(Math.floor(Math.random() * 1700) - 100);
     }
     this.startStarField = true;
+  }
+
+  StartRefreshTimer()
+  {
+    var timer = this.time.addEvent({
+      delay: 30000,                // ms
+      callback: this.RefreshFromDynamicData,
+      //args: [],
+      callbackScope: this,
+      loop: true
+  });
   }
 
   async StartClientConnection() {
@@ -540,6 +549,7 @@ export default class MainScene extends Phaser.Scene {
           "actionPoints":5,
           "sparks":0,
           "round":0,
+          "energyRequirement":3,
           "t_001UpgradeLevel": 0,
           "t_002UpgradeLevel": 0,
           "t_003UpgradeLevel": 0,
@@ -556,25 +566,13 @@ export default class MainScene extends Phaser.Scene {
       );
     }
 
-    /* var rand = Math.floor(Math.random() * 10000);
-    var email = "kaiuser_" + rand + "@gmail.com";
-    var password = "password";
-    var url = "https://source.boringavatars.com/marble/50/" + rand;
-    this.client = new Client("defaultkey", "127.0.0.1", "7350", false);
-    this.session = await this.client.authenticateEmail(email, password, true); */
-
-
-
-    //this.session.username = "Kai";
-    //this.socket = this.client.createSocket(true, false);
     console.info("Successfully authenticated:", this.session);
     let id: string = this.session.user_id as string;
     console.info("Sesh id:", id);
 
     await this.GetSystemUsers();
-    var setupData = await this.GetLatestDynamicData();
-    console.log("dynamic! " + this.dynamicData.dynamicTeamsState[0]);
-    await this.SetupLocalState(id, username, setupData);
+    await this.GetLatestDynamicData();
+    await this.SetupLocalState(username);
 
     const socket = this.client.createSocket();
     await socket.connect(this.session, true);
@@ -588,10 +586,18 @@ export default class MainScene extends Phaser.Scene {
 
     var roomname = "PublicChat";
     await this.initializeChat(socket, roomname);
+    await this.AddEventListeners();
+    this.StartRefreshTimer();
 
-    //await this.GetRandomNumberDelay();
+    /* var rand = Math.floor(Math.random() * 10000);
+    var email = "kaiuser_" + rand + "@gmail.com";
+    var password = "password";
+    var url = "https://source.boringavatars.com/marble/50/" + rand;
+    this.client = new Client("defaultkey", "127.0.0.1", "7350", false);
+    this.session = await this.client.authenticateEmail(email, password, true); */
+    //this.session.username = "Kai";
+    //this.socket = this.client.createSocket(true, false);
 
-    //-----------------------------
   }
 
   SetVideoImages(element: HTMLElement) {
@@ -624,9 +630,28 @@ export default class MainScene extends Phaser.Scene {
         //const playVideo = videoTile
       }
     )
+
+
   }
 
-  async SetupLocalState(user_id: string, username: string, setupData) {
+  async AddEventListeners()
+  {
+    this.game.events.addListener(Phaser.Core.Events.FOCUS, this.OnFocus, this);
+    this.game.events.addListener(Phaser.Core.Events.BLUR, this.OnBlur, this);
+  }
+
+  async OnFocus()
+  {
+    console.log("on focus");
+    this.RefreshFromDynamicData();
+  }
+
+  async OnBlur()
+  {
+    console.log("on blur");
+  }
+
+  async SetupLocalState(username: string) {
     this.localState = new LocalGameState();
 
     var teamIdList: string[] = [];
@@ -719,6 +744,41 @@ export default class MainScene extends Phaser.Scene {
       this.localState.roundEnergyRequirement);
   }
 
+  async ReloadLocalState() {
+
+    var userDynamic = this.dynamicData.dynamicUserState;
+    var roundDynamic = this.dynamicData.dynamicRoundState;
+
+    for(var i=0; i< this.dynamicData.dynamicTeamsState.length; i++)
+    {
+      var teamDynamic = this.dynamicData.dynamicTeamsState[i];
+      var upgradeLevel = 0;
+      var inFanClub = false;
+
+      switch(teamDynamic.id)
+      {
+        case "t_001": upgradeLevel = userDynamic.t_001UpgradeLevel; inFanClub = userDynamic.t_001InFanClub; break; 
+        case "t_002": upgradeLevel = userDynamic.t_002UpgradeLevel; inFanClub = userDynamic.t_002InFanClub; break;
+        case "t_003": upgradeLevel = userDynamic.t_003UpgradeLevel; inFanClub = userDynamic.t_003InFanClub; break;
+        case "t_004": upgradeLevel = userDynamic.t_004UpgradeLevel; inFanClub = userDynamic.t_004InFanClub; break;
+        case "t_005": upgradeLevel = userDynamic.t_005UpgradeLevel; inFanClub = userDynamic.t_005InFanClub; break;
+        case "t_006": upgradeLevel = userDynamic.t_006UpgradeLevel; inFanClub = userDynamic.t_006InFanClub; break;
+      }
+
+      this.localState.teamStates[i].UpdateFromDynamicData(teamDynamic, roundDynamic.energyRequirement, upgradeLevel, inFanClub);
+    }
+
+    if(this.localState.UpdateFromDynamicData(roundDynamic))
+    {
+      await this.WriteToDDMLocalStorage(["energyRequirement","round"], [this.localState.roundEnergyRequirement, this.localState.round]);
+      //trigger new round
+    }
+    else{
+      await this.WriteToDDMLocalStorage(["energyRequirement","round"], [this.localState.roundEnergyRequirement, this.localState.round]);      
+    }
+
+  }
+
   async SetupVotePage(socket: Socket) {
 
     var todaysScenario = this.staticData.voteScenarios[this.localState.round - 1];
@@ -808,8 +868,7 @@ export default class MainScene extends Phaser.Scene {
             this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
             this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
 
-            await this.WriteToDDMLocalStorage("actionPoints", this.localState.actionPoints);
-            await this.WriteToDDMLocalStorage("sparks", this.localState.sparksAwarded);
+            await this.WriteToDDMLocalStorage(["actionPoints","sparks"], [this.localState.actionPoints, this.localState.sparksAwarded]);
 
             this.SetOverlayProgresBar(
               this.localState.teamStates[this.localState.carouselPosition].currentEnergy, 
@@ -838,11 +897,15 @@ export default class MainScene extends Phaser.Scene {
   pathDummy;
   follower;
 
-  async WriteToDDMLocalStorage(key:string, value)
+  async WriteToDDMLocalStorage(keys:string[], values: Array<any>)
   {
       const data = await localStorage.getItem('ddm_localData');
       const json = JSON.parse(data as string);
-      json[key] = value;
+      var i = 0;
+      keys.forEach((key)=>{
+        json[key] = values[i];
+        i++;
+      })
 
       localStorage.setItem('ddm_localData', JSON.stringify(json));   
   }
@@ -854,27 +917,16 @@ export default class MainScene extends Phaser.Scene {
       return json[key] as number;  
   }
 
-  async RefreshForNewRound()
+  async RefreshFromDynamicData()
   {
-    var account = (await this.client.getAccount(this.session)).user;
+    console.log("refresh");
     await this.GetLatestDynamicData();
-    await this.SetupLocalState(account?.id as string, account?.username as string, this.dynamicData);
-    var actionPointsReset=5;
-    var round = this.dynamicData.dynamicRoundState.round;
-    this.localState.roundEnergyRequirement = this.dynamicData.dynamicRoundState.energyRequirement;
-    this.localState.teamStates.forEach((team)=>
-    {
-      team.currentEnergy=0;
-      team.energyRequirement=this.localState.roundEnergyRequirement;
-    }
-    )
+    await this.ReloadLocalState();
+    await this.WriteToDDMLocalStorage(["actionPoints","energyExpectation","round"], [this.localState.actionPoints, this.localState.roundEnergyRequirement, this.localState.round]);
 
-    this.actionPointsCounter.innerHTML = actionPointsReset.toString();
-    this.roundCounter.innerHTML = round.toString();
-    this.SetOverlayProgresBar(0, this.localState.roundEnergyRequirement);
-
-    await this.WriteToDDMLocalStorage("actionPoints", actionPointsReset);
-    await this.WriteToDDMLocalStorage("round", this.localState.round);
+    this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
+    this.roundCounter.innerHTML = this.localState.round.toString();
+    this.SetOverlayProgresBar(this.localState.GetCurrentTeamState().currentEnergy, this.localState.roundEnergyRequirement);
   }
 
   async SetupTeamAvatars() {
@@ -1263,32 +1315,6 @@ export default class MainScene extends Phaser.Scene {
     this.chatMessageContainer.scrollTop = this.chatMessageContainer.scrollHeight + 50;
   }
 
-  async GetRandomNumberDelay() {
-    const users = await this.client.getUsers(this.session, ["ba700f1c-d7f0-4782-a0b4-ed7d8a1d1301"]);
-    var user = collect(users.users).first();
-    //console.info("username: " + user.username);
-    //console.info("Repeat");    
-    var result = await this.client.readStorageObjects(this.session, {
-      "object_ids": [{
-        "collection": "random",
-        "key": "randomNumber_1",
-        "user_id": user.id
-      }]
-    });
-
-    //17739cb2-6fc6-4143-b9e1-4a82bfe62eb5
-
-    if (result.objects.length > 0) {
-      var storageObject = collect(result.objects).first();
-      var jsonString = JSON.stringify(storageObject.value);
-      var number = JSON.parse(jsonString).number;
-      //console.info("Number: ", number);
-
-      this.textElement.innerHTML = number;
-    }
-
-    this.time.delayedCall(1000, this.GetRandomNumberDelay, [], this);
-  }
 
   UpdateStarField() {
     this.starFieldTexture.clear();

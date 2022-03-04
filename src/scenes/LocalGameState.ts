@@ -1,3 +1,5 @@
+import DynamicData from "./DynamicData";
+
 export default class LocalGameState
 {
     username!: string;
@@ -20,13 +22,25 @@ export default class LocalGameState
         this.username = username;
         this.maxActionPoints = maxActionPoints;
         this.roundEnergyRequirement = energyRequirement;
-        console.log("hey  ---- " + this.roundEnergyRequirement);
-        //this.SetActionPointsToMax();
         this.carouselPosition = 0;
         this.teamIDs = teamIDs;
         this.SetCurrentTeamID()
         this.voteStates = voteStates;
         this.teamStates = teamStates;      
+    }
+
+    UpdateFromDynamicData(dynamicData)
+    {
+        this.roundEnergyRequirement = dynamicData.energyRequirement;
+        var round = dynamicData.round;
+        if(this.round != round)
+        {
+            this.round = round;
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     GetCurrentTeamState()
@@ -204,6 +218,15 @@ export class TeamState
         this.energyRequirement = energyReq;
         this.currentEnergy = currentEnergy;
         this.userInFanClub = inFanClub;
+    }
+
+    UpdateFromDynamicData(teamDynamic: TeamState, energyRequirement:number, upgradeLevel:number, inFanClub:boolean)
+    {
+        this.currentEnergy=teamDynamic.currentEnergy;
+        this.outOfCompetition=teamDynamic.outOfCompetition;
+        this.upgradeLevel=upgradeLevel;
+        this.userInFanClub=inFanClub;
+        this.energyRequirement = energyRequirement;
     }
 
     Upgrade()
