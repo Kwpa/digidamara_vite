@@ -68,11 +68,11 @@ export default class LocalGameState
     HaveSpentSparksOnTodaysVote(choice: number)
     {
         if(choice==0){
-            return this.voteStates[this.round-1].choiceOneVotes > 0; 
+            return this.voteStates[this.round-1].choiceOneVotesUser > 0; 
         }
         else if (choice==1)
         {
-            return this.voteStates[this.round-1].choiceTwoVotes > 0;
+            return this.voteStates[this.round-1].choiceTwoVotesUser > 0;
         }
         else
         {
@@ -262,15 +262,29 @@ export class TeamState
 export class VoteScenarioState
 {
     id: string = "";
-    choiceOneVotes: number = 0;
-    choiceTwoVotes: number = 0;
+    choiceOneVotesUser: number = 0;
+    choiceTwoVotesUser: number = 0;
+
+    choiceOneVotesGlobal: number = 0;
+    choiceTwoVotesGlobal: number = 0;
+
     winnerIndex: number = -1;
 
-    constructor(id: string, cOneVotes, cTwoVotes, winner){
+    constructor(id: string, oneUser, twoUser, oneGlobal, twoGlobal, winner){
         this.id = id;
-        this.choiceOneVotes = cOneVotes;
-        this.choiceTwoVotes = cTwoVotes;
+        this.choiceOneVotesUser = oneUser;
+        this.choiceTwoVotesUser = twoUser;
+        this.choiceOneVotesGlobal = oneGlobal;
+        this.choiceTwoVotesGlobal = twoGlobal;
         this.winnerIndex = winner;
+    }
+
+    UpdateFromDynamicData(oneUser: number, twoUser: number, oneGlobal: number, twoGlobal:number)
+    {
+        this.choiceOneVotesUser = oneUser;
+        this.choiceTwoVotesUser = twoUser;
+        this.choiceOneVotesGlobal = oneGlobal;
+        this.choiceTwoVotesGlobal = twoGlobal;
     }
 
     IncreaseVote(choiceIndex: number)
@@ -278,10 +292,12 @@ export class VoteScenarioState
         switch(choiceIndex)
         {
             case 0:
-                this.choiceOneVotes++;
+                this.choiceOneVotesUser++;
+                this.choiceOneVotesGlobal++;
                 break;
             case 1:
-                this.choiceTwoVotes++;
+                this.choiceTwoVotesUser++;
+                this.choiceTwoVotesGlobal++;
                 break;
         }
     }
@@ -290,20 +306,22 @@ export class VoteScenarioState
         switch(choiceIndex)
         {
             case 0:
-                this.choiceOneVotes = Math.max(this.choiceOneVotes-1,0);
+                this.choiceOneVotesUser = Math.max(this.choiceOneVotesUser-1,0);
+                this.choiceOneVotesGlobal = Math.max(this.choiceOneVotesGlobal-1,0);
                 break;
             case 1:
-                this.choiceTwoVotes = Math.max(this.choiceTwoVotes-1,0);
+                this.choiceTwoVotesUser = Math.max(this.choiceTwoVotesUser-1,0);
+                this.choiceTwoVotesGlobal = Math.max(this.choiceTwoVotesGlobal-1,0);
                 break;
         }
     }
     EvaluateWinner()
     {
-        if(this.choiceOneVotes > this.choiceTwoVotes)
+        if(this.choiceOneVotesGlobal > this.choiceTwoVotesGlobal)
         {
             this.winnerIndex = 0;
         }
-        else if (this.choiceOneVotes > this.choiceTwoVotes)
+        else if (this.choiceOneVotesGlobal > this.choiceTwoVotesGlobal)
         {
             this.winnerIndex = 1;
         }

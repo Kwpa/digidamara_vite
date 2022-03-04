@@ -25,6 +25,7 @@ import { Rectangle } from 'phaser3-rex-plugins/plugins/gameobjects/shape/shapes/
 import * as bulmaToast from 'bulma-toast';
 import { NakamaApi } from '@heroiclabs/nakama-js/dist/api.gen';
 import DynamicData from './DynamicData';
+import CanvasGameObjectBase from 'phaser3-rex-plugins/plugins/utils/types/CanvasGameObjectBase';
 
 export default class MainScene extends Phaser.Scene {
 
@@ -79,6 +80,11 @@ export default class MainScene extends Phaser.Scene {
   voteContainer!: HTMLElement;
   avatarOverlay!: Phaser.GameObjects.DOMElement;
   notificationsArea!: HTMLElement;
+
+  voteChoiceOneUser!: HTMLElement;
+  voteChoiceOneGlobal!: HTMLElement;
+  voteChoiceTwoUser!: HTMLElement;
+  voteChoiceTwoGlobal!: HTMLElement;
 
   width!: number;
   height!: number;
@@ -408,31 +414,6 @@ export default class MainScene extends Phaser.Scene {
     this.overlayProgressBar.value = Math.floor(value / maxValue * 100).toString();
   }
 
-  StarField() {
-    let { width, height } = this.sys.game.canvas;
-    this.starSprite = this.add.sprite(0, 0, 'star');
-    //this.starSprite.scale = 3;
-    this.xx = [];
-    this.yy = [];
-    this.zz = [];
-    this.starFieldTexture = this.add.renderTexture(0, 0, width * 2, height * 2);
-
-    this.listOfColours = [];
-    for (var i = 0; i < this.max; i++) {
-      var colstring = "0x" + Math.floor(Math.random() * 16777215).toString(16);
-      //colstring = "0xffffff";
-      this.listOfColours.push(parseInt(colstring));
-    }
-
-    var squareDistance = Math.max(width, height);
-    for (var i = 0; i < this.max; i++) {
-      this.xx.push(Math.floor(Math.random() * squareDistance) - squareDistance / 2);
-      this.yy.push(Math.floor(Math.random() * squareDistance) - squareDistance / 2);
-      this.zz.push(Math.floor(Math.random() * 1700) - 100);
-    }
-    this.startStarField = true;
-  }
-
   StartRefreshTimer()
   {
     var timer = this.time.addEvent({
@@ -490,7 +471,19 @@ export default class MainScene extends Phaser.Scene {
           "t_003UpgradeLevel": 0,
           "t_004UpgradeLevel": 0,
           "t_005UpgradeLevel": 0,
-          "t_006UpgradeLevel": 0
+          "t_006UpgradeLevel": 0,
+          "v_001_choiceOne":0,
+          "v_001_choiceTwo":0,
+          "v_002_choiceOne":0,
+          "v_002_choiceTwo":0,
+          "v_003_choiceOne":0,
+          "v_003_choiceTwo":0,
+          "v_004_choiceOne":0,
+          "v_004_choiceTwo":0,
+          "v_005_choiceOne":0,
+          "v_005_choiceTwo":0,
+          "v_006_choiceOne":0,
+          "v_006_choiceTwo":0
         }
       ));      
 
@@ -669,27 +662,27 @@ export default class MainScene extends Phaser.Scene {
         "collection": "voting_scenarios",
         "key": "v_005",
         "user_id": this.getSystemUsers[0].id
-      },{
-        "collection": "voting_scenarios",
-        "key": "v_006",
-        "user_id": this.getSystemUsers[0].id
       }]
     }) as StorageObjects;
 
     var votesStateData: VoteScenarioState[] = [];
 
-    getVotes.objects.forEach(vote => {
-      
+    for(var i = 0; i< getVotes.objects.length;i++)
+    {
+      var vote = getVotes.objects[i];
       var voteJsonString = JSON.stringify(vote.value);
       var parsedJson = JSON.parse(voteJsonString);
+      var choiceOne = await this.ReadFromDDMLocalStorageNumber(parsedJson.id+"_choiceOne");
+      var choiceTwo = await this.ReadFromDDMLocalStorageNumber(parsedJson.id+"_choiceTwo");
       votesStateData.push(new VoteScenarioState(
         parsedJson.id,
-        parsedJson.choiceOneVotes,
-        parsedJson.choiceTwoVotes,
-        parsedJson.winnerIndex
-        )
-      )
-    });
+        choiceOne,choiceTwo,
+        parsedJson.choice1Votes,
+        parsedJson.choice2Votes,
+        parsedJson.winner
+        ));
+    }
+
 
     this.dynamicData = new DynamicData(teamsStateData, parsedUserData, roundObject, votesStateData);
   }
@@ -701,12 +694,13 @@ export default class MainScene extends Phaser.Scene {
     var teamStateList: TeamState[] = [];
     var voteStateList: VoteScenarioState[] = [];
 
+    var userDynamic = this.dynamicData.dynamicUserState;
+    var roundDynamic = this.dynamicData.dynamicRoundState;
+
     for(var i=0; i< this.staticData.teams.length; i++)
     {
       var teamStatic = this.staticData.teams[i];
       var teamDynamic = this.dynamicData.dynamicTeamsState[i];
-      var userDynamic = this.dynamicData.dynamicUserState;
-      var roundDynamic = this.dynamicData.dynamicRoundState;
       var upgradeLevel = 0;
       switch(teamStatic.id)
       {
@@ -764,10 +758,15 @@ export default class MainScene extends Phaser.Scene {
         inFanClub
         ));
     }
-    
-    this.staticData.voteScenarios.forEach((voteScenario) => {
-      voteStateList.push(new VoteScenarioState(voteScenario.id,0,0,-1));
-    });
+
+    for(var i = 0; i<this.dynamicData.dynamicVoteScenariosState.length; i++)
+    {
+      var voteDynamic = this.dynamicData.dynamicVoteScenariosState[i];
+      var choiceOne = await this.ReadFromDDMLocalStorageNumber(this.dynamicData.dynamicVoteScenariosState[i].id+"_choiceOne");
+      var choiceTwo = await this.ReadFromDDMLocalStorageNumber(this.dynamicData.dynamicVoteScenariosState[i].id+"_choiceTwo"); 
+      var vote = new VoteScenarioState(voteDynamic.id, choiceOne, choiceTwo, voteDynamic.choiceOneVotesGlobal, voteDynamic.choiceOneVotesGlobal, voteDynamic.winnerIndex);
+      voteStateList.push(vote);
+    }
 
     this.GetSystemUsers();
     //}
@@ -778,6 +777,7 @@ export default class MainScene extends Phaser.Scene {
     var sparks = await this.ReadFromDDMLocalStorageNumber("sparks"); 
 
     this.localState.Init(username, this.dynamicData.dynamicRoundState.round, actionPoints, 5, sparks, this.dynamicData.dynamicRoundState.energyRequirement, teamIdList, voteStateList, teamStateList);
+    
     this.actionPointsCounter.innerHTML = (await this.ReadFromDDMLocalStorageNumber("actionPoints")).toString();
     this.sparksCounter.innerHTML = (await this.ReadFromDDMLocalStorageNumber("sparks")).toString();
     this.roundCounter.innerHTML = this.localState.round.toString();
@@ -788,9 +788,9 @@ export default class MainScene extends Phaser.Scene {
 
   async ReloadLocalState() {
 
-    var userDynamic = this.dynamicData.dynamicUserState;
+    var userDynamicFromLocal = this.dynamicData.dynamicUserState;
     var roundDynamic = this.dynamicData.dynamicRoundState;
-
+    
     for(var i=0; i< this.dynamicData.dynamicTeamsState.length; i++)
     {
       var teamDynamic = this.dynamicData.dynamicTeamsState[i];
@@ -799,15 +799,23 @@ export default class MainScene extends Phaser.Scene {
 
       switch(teamDynamic.id)
       {
-        case "t_001": upgradeLevel = userDynamic.t_001UpgradeLevel; inFanClub = userDynamic.t_001InFanClub; break; 
-        case "t_002": upgradeLevel = userDynamic.t_002UpgradeLevel; inFanClub = userDynamic.t_002InFanClub; break;
-        case "t_003": upgradeLevel = userDynamic.t_003UpgradeLevel; inFanClub = userDynamic.t_003InFanClub; break;
-        case "t_004": upgradeLevel = userDynamic.t_004UpgradeLevel; inFanClub = userDynamic.t_004InFanClub; break;
-        case "t_005": upgradeLevel = userDynamic.t_005UpgradeLevel; inFanClub = userDynamic.t_005InFanClub; break;
-        case "t_006": upgradeLevel = userDynamic.t_006UpgradeLevel; inFanClub = userDynamic.t_006InFanClub; break;
+        case "t_001": upgradeLevel = userDynamicFromLocal.t_001UpgradeLevel; inFanClub = userDynamicFromLocal.t_001InFanClub; break; 
+        case "t_002": upgradeLevel = userDynamicFromLocal.t_002UpgradeLevel; inFanClub = userDynamicFromLocal.t_002InFanClub; break;
+        case "t_003": upgradeLevel = userDynamicFromLocal.t_003UpgradeLevel; inFanClub = userDynamicFromLocal.t_003InFanClub; break;
+        case "t_004": upgradeLevel = userDynamicFromLocal.t_004UpgradeLevel; inFanClub = userDynamicFromLocal.t_004InFanClub; break;
+        case "t_005": upgradeLevel = userDynamicFromLocal.t_005UpgradeLevel; inFanClub = userDynamicFromLocal.t_005InFanClub; break;
+        case "t_006": upgradeLevel = userDynamicFromLocal.t_006UpgradeLevel; inFanClub = userDynamicFromLocal.t_006InFanClub; break;
       }
 
       this.localState.teamStates[i].UpdateFromDynamicData(teamDynamic, roundDynamic.energyRequirement, upgradeLevel, inFanClub);
+    }
+
+    for(var i = 0; i<this.localState.voteStates.length; i++)
+    {
+      var voteDynamic = this.dynamicData.dynamicVoteScenariosState[i] as VoteScenarioState;
+      var choiceOne = await this.ReadFromDDMLocalStorageNumber(this.localState.voteStates[i].id+"_choiceOne");
+      var choiceTwo = await this.ReadFromDDMLocalStorageNumber(this.localState.voteStates[i].id+"_choiceTwo");   
+      this.localState.voteStates[i].UpdateFromDynamicData(choiceOne, choiceTwo, voteDynamic.choiceOneVotesGlobal, voteDynamic.choiceTwoVotesGlobal);
     }
 
     if(this.localState.UpdateFromDynamicData(roundDynamic))
@@ -824,50 +832,70 @@ export default class MainScene extends Phaser.Scene {
   async SetupVotePage(socket: Socket) {
 
     var todaysScenario = this.staticData.voteScenarios[this.localState.round - 1];
+    var todaysScenarioState = this.localState.voteStates[this.localState.round - 1];
     console.log(todaysScenario);
     var voteScenario = VoteScenario(todaysScenario) as HTMLElement;
-    const choiceOneField = voteScenario.querySelector('#' + "choiceOne") as HTMLElement;
+    this.voteChoiceOneUser = voteScenario.querySelector('#' + "choiceOne") as HTMLElement;
+    this.voteChoiceTwoUser = voteScenario.querySelector('#' + "choiceTwo") as HTMLElement;
+    this.voteChoiceOneGlobal = voteScenario.querySelector('#' + "choice-one-total-count") as HTMLElement;
+    this.voteChoiceTwoGlobal = voteScenario.querySelector('#' + "choice-two-total-count") as HTMLElement;
+    this.voteChoiceOneUser.innerHTML = todaysScenarioState.choiceOneVotesUser.toString();
+    this.voteChoiceTwoUser.innerHTML = todaysScenarioState.choiceTwoVotesUser.toString();
+
+    console.log(todaysScenarioState);
+
+    this.voteChoiceOneGlobal.innerHTML = "Total Votes: " + todaysScenarioState.choiceOneVotesGlobal.toString();
+    this.voteChoiceTwoGlobal.innerHTML = "Total Votes: " + todaysScenarioState.choiceTwoVotesGlobal.toString();
+
     const choiceOneSubtractButton = voteScenario.querySelector('#' + "choiceOneSubtract") as HTMLElement;
-    choiceOneSubtractButton.onclick = () => {
+    choiceOneSubtractButton.onclick = async() => {
       if (this.localState.HaveSpentSparksOnTodaysVote(0)) {
-        this.localState.voteStates[this.localState.round - 1].DecreaseVote(0);
+        todaysScenarioState.DecreaseVote(0);
         this.localState.GainSparks(1);
+        await this.WriteToDDMLocalStorage(["sparks"],[this.localState.sparksAwarded]);
+        await this.WriteToDDMLocalStorage([todaysScenarioState.id+"_choiceOne"],[todaysScenarioState.choiceOneVotesUser]);
         this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
-        choiceOneField.innerHTML = this.localState.voteStates[this.localState.round - 1].choiceOneVotes.toString();
+        this.voteChoiceOneUser.innerHTML = todaysScenarioState.choiceOneVotesUser.toString();
+        this.voteChoiceOneGlobal.innerHTML = "Total Votes: " + todaysScenarioState.choiceOneVotesGlobal.toString();
         this.SentVoteMatchState(socket, this.localState.voteStates[this.localState.round-1].id, 0, -1);
       }
     };
     const choiceOneAddButton = voteScenario.querySelector('#' + "choiceOneAdd") as HTMLElement;
-    choiceOneAddButton.onclick = () => {
+    choiceOneAddButton.onclick = async() => {
       if (this.localState.HaveSparks()) {
-        console.log()
-        this.localState.voteStates[this.localState.round - 1].IncreaseVote(0);
+        todaysScenarioState.IncreaseVote(0);
         this.localState.SpendSparks(1);
+        await this.WriteToDDMLocalStorage(["sparks"],[this.localState.sparksAwarded]);
+        await this.WriteToDDMLocalStorage([todaysScenarioState.id+"_choiceOne"],[todaysScenarioState.choiceOneVotesUser]);
         this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
-        choiceOneField.innerHTML = this.localState.voteStates[this.localState.round - 1].choiceOneVotes.toString();
+        this.voteChoiceOneUser.innerHTML = todaysScenarioState.choiceOneVotesUser.toString();
+        this.voteChoiceOneGlobal.innerHTML = "Total Votes: " + todaysScenarioState.choiceOneVotesGlobal.toString();
         this.SentVoteMatchState(socket, this.localState.voteStates[this.localState.round-1].id, 0, 1);
       }
     };
-    const choiceTwoField = voteScenario.querySelector('#' + "choiceTwo") as HTMLElement;
     const choiceTwoSubtractButton = voteScenario.querySelector('#' + "choiceTwoSubtract") as HTMLElement;
-    choiceTwoSubtractButton.onclick = () => {
+    choiceTwoSubtractButton.onclick = async() => {
       if (this.localState.HaveSpentSparksOnTodaysVote(1)) {
-        this.localState.voteStates[this.localState.round - 1].DecreaseVote(1);
+        todaysScenarioState.DecreaseVote(1);
         this.localState.GainSparks(1);
-        this.SpendSparkOnTodaysVoteMatchState(socket, -1);
+        await this.WriteToDDMLocalStorage(["sparks"],[this.localState.sparksAwarded]);
+        await this.WriteToDDMLocalStorage([todaysScenarioState.id+"_choiceTwo"],[todaysScenarioState.choiceTwoVotesUser]);
         this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
-        choiceTwoField.innerHTML = this.localState.voteStates[this.localState.round - 1].choiceTwoVotes.toString();
+        this.voteChoiceTwoUser.innerHTML = todaysScenarioState.choiceTwoVotesUser.toString();
+        this.voteChoiceTwoGlobal.innerHTML = "Total Votes: " + todaysScenarioState.choiceTwoVotesGlobal.toString();
         this.SentVoteMatchState(socket, this.localState.voteStates[this.localState.round-1].id, 1, -1);
       }
     };
     const choiceTwoAddButton = voteScenario.querySelector('#' + "choiceTwoAdd") as HTMLElement;
-    choiceTwoAddButton.onclick = () => {
+    choiceTwoAddButton.onclick = async() => {
       if (this.localState.HaveSparks()) {
-        this.localState.voteStates[this.localState.round - 1].IncreaseVote(1);
+        todaysScenarioState.IncreaseVote(1);
         this.localState.SpendSparks(1);
-        this.SpendSparkOnTodaysVoteMatchState(socket, 1);
+        await this.WriteToDDMLocalStorage(["sparks"],[this.localState.sparksAwarded]);
+        await this.WriteToDDMLocalStorage([todaysScenarioState.id+"_choiceTwo"],[todaysScenarioState.choiceTwoVotesUser]);
         this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
-        choiceTwoField.innerHTML = this.localState.voteStates[this.localState.round - 1].choiceTwoVotes.toString();
+        this.voteChoiceTwoUser.innerHTML = this.localState.voteStates[this.localState.round - 1].choiceTwoVotesUser.toString();
+        this.voteChoiceTwoGlobal.innerHTML = "Total Votes: " + this.localState.voteStates[this.localState.round - 1].choiceTwoVotesGlobal.toString();
         this.SentVoteMatchState(socket, this.localState.voteStates[this.localState.round-1].id, 1, 1);
       }
     };
@@ -968,11 +996,17 @@ export default class MainScene extends Phaser.Scene {
     console.log("refresh");
     await this.GetLatestDynamicData();
     await this.ReloadLocalState();
-    await this.WriteToDDMLocalStorage(["actionPoints","energyExpectation","round"], [this.localState.actionPoints, this.localState.roundEnergyRequirement, this.localState.round]);
+    await this.WriteToDDMLocalStorage(["actionPoints","energyRequirement","round"], [this.localState.actionPoints, this.localState.roundEnergyRequirement, this.localState.round]);
 
     this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
     this.roundCounter.innerHTML = this.localState.round.toString();
     this.SetOverlayProgresBar(this.localState.GetCurrentTeamState().currentEnergy, this.localState.roundEnergyRequirement);
+  
+    this.voteChoiceOneUser.innerHTML = this.localState.voteStates[this.localState.round - 1].choiceOneVotesUser.toString();
+    this.voteChoiceTwoUser.innerHTML = this.localState.voteStates[this.localState.round - 1].choiceTwoVotesUser.toString();
+    this.voteChoiceOneGlobal.innerHTML = "Total Votes: " + this.localState.voteStates[this.localState.round - 1].choiceOneVotesGlobal.toString();
+    this.voteChoiceTwoGlobal.innerHTML = "Total Votes: " + this.localState.voteStates[this.localState.round - 1].choiceTwoVotesGlobal.toString();
+
   }
 
   async SetupTeamAvatars() {
@@ -1185,6 +1219,31 @@ export default class MainScene extends Phaser.Scene {
     this.add.existing(carousel);
   }
 
+  StarField() {
+    let { width, height } = this.sys.game.canvas;
+    this.starSprite = this.add.sprite(0, 0, 'star');
+    //this.starSprite.scale = 3;
+    this.xx = [];
+    this.yy = [];
+    this.zz = [];
+    this.starFieldTexture = this.add.renderTexture(0, 0, width * 2, height * 2);
+
+    this.listOfColours = [];
+    for (var i = 0; i < this.max; i++) {
+      var colstring = "0x" + Math.floor(Math.random() * 16777215).toString(16);
+      //colstring = "0xffffff";
+      this.listOfColours.push(parseInt(colstring));
+    }
+
+    var squareDistance = Math.max(width, height);
+    for (var i = 0; i < this.max; i++) {
+      this.xx.push(Math.floor(Math.random() * squareDistance) - squareDistance / 2);
+      this.yy.push(Math.floor(Math.random() * squareDistance) - squareDistance / 2);
+      this.zz.push(Math.floor(Math.random() * 1700) - 100);
+    }
+    this.startStarField = true;
+  }
+
   async AnimateOverlayChange()
   {
     const overlayBox = this.avatarOverlay.getChildByID("avatar-overlay-ui") as HTMLElement;
@@ -1241,11 +1300,6 @@ export default class MainScene extends Phaser.Scene {
     await socket.sendMatchState(this.match.match_id, 2, { "scenarioId": scenarioId, "option": choiceIndex, "votes": value}); //
   }
 
-  async SpendSparkOnTodaysVoteMatchState(socket: Socket, choiceIndex: number) {
-
-    await socket.sendMatchState(this.match.match_id, 2, { "choice": choiceIndex }); //
-  }
-
   async ReceiveMatchState(socket: Socket) {
     socket.onmatchdata = (result: MatchData) => {
       var content = result.data;
@@ -1273,12 +1327,12 @@ export default class MainScene extends Phaser.Scene {
           break;
         case 100:
           console.log("Notification");
-          if (this.receiveServerNotifications) {
-            bulmaToast.toast(
-              {
-                message: content
-              });
-          }
+          // if (this.receiveServerNotifications) {
+          //   bulmaToast.toast(
+          //     {
+          //       message: content
+          //     });
+          // }
         default:
           console.info("User %o sent %o", result.presence.user_id, content);
       }

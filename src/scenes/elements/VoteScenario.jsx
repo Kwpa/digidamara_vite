@@ -16,6 +16,17 @@ const VoteScenario = (scenarioData) => {
             <div class="content">
               {scenarioData.choiceOne_description}
             </div>
+            <div class="level">
+              <div class="level-item">
+                <div class="message is-warning">
+                  <div class="message-body">
+                    <h1 id="choice-one-total-count">
+                      Total Votes: 100
+                    </h1>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="buttons has-addons is-centered">
               <button id="choiceOneSubtract" class="button is-danger">-</button>
               <button id="choiceOne" class="button is-static">0</button>
@@ -28,6 +39,17 @@ const VoteScenario = (scenarioData) => {
             <h1><strong class="has-text-white">{scenarioData.choiceTwo_title}</strong></h1>
             <div class="content">
               {scenarioData.choiceTwo_description}
+            </div>
+            <div class="level">
+              <div class="level-item">
+                <div class="message is-warning">
+                  <div class="message-body">
+                    <h1 id="choice-two-total-count">
+                      Total Votes: 100
+                    </h1>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="buttons has-addons is-centered">
               <button id="choiceTwoSubtract" class="button is-danger">-</button>
