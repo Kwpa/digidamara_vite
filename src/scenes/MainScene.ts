@@ -23,9 +23,7 @@ import Sprite from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/spr
 import Image from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/image/Image';
 import { Rectangle } from 'phaser3-rex-plugins/plugins/gameobjects/shape/shapes/geoms';
 import * as bulmaToast from 'bulma-toast';
-import { NakamaApi } from '@heroiclabs/nakama-js/dist/api.gen';
 import DynamicData from './DynamicData';
-import CanvasGameObjectBase from 'phaser3-rex-plugins/plugins/utils/types/CanvasGameObjectBase';
 
 export default class MainScene extends Phaser.Scene {
 
@@ -857,7 +855,7 @@ export default class MainScene extends Phaser.Scene {
         this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
         this.voteChoiceOneUser.innerHTML = todaysScenarioState.choiceOneVotesUser.toString();
         this.voteChoiceOneGlobal.innerHTML = "Total Votes: " + todaysScenarioState.choiceOneVotesGlobal.toString();
-        this.SentVoteMatchState(socket, this.localState.voteStates[this.localState.round-1].id, 0, -1);
+        this.SentVoteMatchState(socket,todaysScenarioState.id, 0, -1);
       }
     };
     const choiceOneAddButton = voteScenario.querySelector('#' + "choiceOneAdd") as HTMLElement;
@@ -870,7 +868,7 @@ export default class MainScene extends Phaser.Scene {
         this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
         this.voteChoiceOneUser.innerHTML = todaysScenarioState.choiceOneVotesUser.toString();
         this.voteChoiceOneGlobal.innerHTML = "Total Votes: " + todaysScenarioState.choiceOneVotesGlobal.toString();
-        this.SentVoteMatchState(socket, this.localState.voteStates[this.localState.round-1].id, 0, 1);
+        this.SentVoteMatchState(socket, todaysScenarioState.id, 0, 1);
       }
     };
     const choiceTwoSubtractButton = voteScenario.querySelector('#' + "choiceTwoSubtract") as HTMLElement;
@@ -883,7 +881,7 @@ export default class MainScene extends Phaser.Scene {
         this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
         this.voteChoiceTwoUser.innerHTML = todaysScenarioState.choiceTwoVotesUser.toString();
         this.voteChoiceTwoGlobal.innerHTML = "Total Votes: " + todaysScenarioState.choiceTwoVotesGlobal.toString();
-        this.SentVoteMatchState(socket, this.localState.voteStates[this.localState.round-1].id, 1, -1);
+        this.SentVoteMatchState(socket, todaysScenarioState.id, 1, -1);
       }
     };
     const choiceTwoAddButton = voteScenario.querySelector('#' + "choiceTwoAdd") as HTMLElement;
@@ -894,9 +892,9 @@ export default class MainScene extends Phaser.Scene {
         await this.WriteToDDMLocalStorage(["sparks"],[this.localState.sparksAwarded]);
         await this.WriteToDDMLocalStorage([todaysScenarioState.id+"_choiceTwo"],[todaysScenarioState.choiceTwoVotesUser]);
         this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
-        this.voteChoiceTwoUser.innerHTML = this.localState.voteStates[this.localState.round - 1].choiceTwoVotesUser.toString();
+        this.voteChoiceTwoUser.innerHTML = todaysScenarioState.choiceTwoVotesUser.toString();
         this.voteChoiceTwoGlobal.innerHTML = "Total Votes: " + this.localState.voteStates[this.localState.round - 1].choiceTwoVotesGlobal.toString();
-        this.SentVoteMatchState(socket, this.localState.voteStates[this.localState.round-1].id, 1, 1);
+        this.SentVoteMatchState(socket, todaysScenarioState.id, 1, 1);
       }
     };
     this.voteContainer.innerHTML = "";
