@@ -12,7 +12,7 @@ const BaseWebsite = () => {
                 <img class="hdrftr-icon" src="/assets/white_icons/icon_day_white.png"></img>
               </span>
               <span>
-                <h1 id="round-header-value" class="title is-size-2 has-text-white">1</h1>
+                <h1 id="round-header-value" class="title is-size-2 has-text-white">-</h1>
               </span>
             </div>
             <div class="level-item has-text-centered">
@@ -21,7 +21,7 @@ const BaseWebsite = () => {
                 <img class="hdrftr-icon" src="/assets/white_icons/icon_actionpoints_white.png"></img>
               </span>
               <span>
-                <h1 id="ap-header-value" class="title is-size-2 has-text-white">5</h1>
+                <h1 id="ap-header-value" class="title is-size-2 has-text-white">-</h1>
               </span>
             </div>
             <div class="level-item has-text-centered">
@@ -30,7 +30,7 @@ const BaseWebsite = () => {
                 <img class="hdrftr-icon" src="/assets/white_icons/icon_sparks_white.png"></img>
               </span>
               <span>
-                <h1 id="sparks-header-value" class="title is-size-2 has-text-white">101</h1>
+                <h1 id="sparks-header-value" class="title is-size-2 has-text-white">-</h1>
               </span>
             </div>
             <div class="level-item has-text-centered">
