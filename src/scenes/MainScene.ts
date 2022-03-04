@@ -301,6 +301,7 @@ export default class MainScene extends Phaser.Scene {
     const votePage = this.add.dom(width / 2, height / 2, VotingPage() as HTMLElement);
     this.avatarOverlay = this.add.dom(width / 2, height / 2, AvatarOverlay('open') as HTMLElement);
     this.overlayProgressBar = this.avatarOverlay.getChildByID("teamEnergyBar") as HTMLInputElement;
+
     this.avatarOverlay.setVisible(false);
     chatPage.setVisible(false);
     videoPage.setVisible(false);
@@ -403,24 +404,33 @@ export default class MainScene extends Phaser.Scene {
     );
   }
 
-  async GetSystemUsers()
-  {
+  async GetSystemUsers() {
     this.getSystemUsers = (await this.client.getUsers(this.session, [], ['SystemUser'])).users as User[];
   }
 
-  SetOverlayProgresBar(value: number, maxValue: number) {
-    this.overlayProgressBar.value = Math.floor(value / maxValue * 100).toString();
+  SetOverlayProgress(value: number, maxValue: number) {
+    console.log("progress: " + value + " " + maxValue);
+    var normalisedValue = Math.floor(value / maxValue * 100).toString();
+    this.overlayProgressBar.value = normalisedValue;
   }
 
-  StartRefreshTimer()
-  {
+  SetTeamProfileProgress(value: number, maxValue: number, teamIndex: number) {
+    var normalisedValue = Math.floor(value / maxValue * 100).toString();
+    var remainder = maxValue - value;
+    const getTeamBar = this.teamProfilePages[teamIndex].getChildByID("teamEnergyBar") as HTMLInputElement;
+    const getTeamNote = this.teamProfilePages[teamIndex].getChildByID("teamEnergy") as HTMLElement;
+    getTeamBar.value = normalisedValue;
+    getTeamNote.innerHTML = "Needs " + remainder + "/" + maxValue + " more energy!";
+  }
+
+  StartRefreshTimer() {
     var timer = this.time.addEvent({
       delay: 30000,                // ms
       callback: this.RefreshFromDynamicData,
       //args: [],
       callbackScope: this,
       loop: true
-  });
+    });
   }
 
   async StartClientConnection() {
@@ -454,36 +464,35 @@ export default class MainScene extends Phaser.Scene {
     var account = await this.client.getAccount(this.session);
     var username = account.user?.username as string;
 
-    if(newUserStorage)
-    {
+    if (newUserStorage) {
       localStorage.setItem('ddm_localData', JSON.stringify(
         {
           "deviceId": deviceId,
-          "username":username,
-          "actionPoints":5,
-          "sparks":0,
-          "round":0,
-          "energyRequirement":3,
+          "username": username,
+          "actionPoints": 5,
+          "sparks": 0,
+          "round": 0,
+          "energyRequirement": 3,
           "t_001UpgradeLevel": 0,
           "t_002UpgradeLevel": 0,
           "t_003UpgradeLevel": 0,
           "t_004UpgradeLevel": 0,
           "t_005UpgradeLevel": 0,
           "t_006UpgradeLevel": 0,
-          "v_001_choiceOne":0,
-          "v_001_choiceTwo":0,
-          "v_002_choiceOne":0,
-          "v_002_choiceTwo":0,
-          "v_003_choiceOne":0,
-          "v_003_choiceTwo":0,
-          "v_004_choiceOne":0,
-          "v_004_choiceTwo":0,
-          "v_005_choiceOne":0,
-          "v_005_choiceTwo":0,
-          "v_006_choiceOne":0,
-          "v_006_choiceTwo":0
+          "v_001_choiceOne": 0,
+          "v_001_choiceTwo": 0,
+          "v_002_choiceOne": 0,
+          "v_002_choiceTwo": 0,
+          "v_003_choiceOne": 0,
+          "v_003_choiceTwo": 0,
+          "v_004_choiceOne": 0,
+          "v_004_choiceTwo": 0,
+          "v_005_choiceOne": 0,
+          "v_005_choiceTwo": 0,
+          "v_006_choiceOne": 0,
+          "v_006_choiceTwo": 0
         }
-      ));      
+      ));
 
       await this.client.updateAccount(this.session,
         {
@@ -560,25 +569,21 @@ export default class MainScene extends Phaser.Scene {
 
   }
 
-  async AddEventListeners()
-  {
+  async AddEventListeners() {
     this.game.events.addListener(Phaser.Core.Events.FOCUS, this.OnFocus, this);
     this.game.events.addListener(Phaser.Core.Events.BLUR, this.OnBlur, this);
   }
 
-  async OnFocus()
-  {
+  async OnFocus() {
     console.log("on focus");
     this.RefreshFromDynamicData();
   }
 
-  async OnBlur()
-  {
+  async OnBlur() {
     console.log("on blur");
   }
 
-  async GetLatestDynamicData() 
-  {   
+  async GetLatestDynamicData() {
     var getUserData = await localStorage.getItem("ddm_localData");
     var parsedUserData = JSON.parse(getUserData as string);
     console.log(parsedUserData);
@@ -587,23 +592,23 @@ export default class MainScene extends Phaser.Scene {
         "collection": "teams",
         "key": "t_001",
         "user_id": this.getSystemUsers[0].id
-      },{
+      }, {
         "collection": "teams",
         "key": "t_002",
         "user_id": this.getSystemUsers[0].id
-      },{
+      }, {
         "collection": "teams",
         "key": "t_003",
         "user_id": this.getSystemUsers[0].id
-      },{
+      }, {
         "collection": "teams",
         "key": "t_004",
         "user_id": this.getSystemUsers[0].id
-      },{
+      }, {
         "collection": "teams",
         "key": "t_005",
         "user_id": this.getSystemUsers[0].id
-      },{
+      }, {
         "collection": "teams",
         "key": "t_006",
         "user_id": this.getSystemUsers[0].id
@@ -613,7 +618,7 @@ export default class MainScene extends Phaser.Scene {
     var teamsStateData: TeamState[] = [];
 
     getTeams.objects.forEach(team => {
-      
+
       var teamJsonString = JSON.stringify(team.value);
       var parsedJson = JSON.parse(teamJsonString);
       teamsStateData.push(new TeamState(
@@ -623,10 +628,10 @@ export default class MainScene extends Phaser.Scene {
         parsedJson.energyRequirement,
         parsedJson.energy,
         parsedJson.inFanClub
-        )
+      )
       )
     });
-    
+
     var getRoundTrack = await this.client.readStorageObjects(this.session, {
       "object_ids": [{
         "collection": "roundTrack",
@@ -644,19 +649,19 @@ export default class MainScene extends Phaser.Scene {
         "collection": "voting_scenarios",
         "key": "v_001",
         "user_id": this.getSystemUsers[0].id
-      },{
+      }, {
         "collection": "voting_scenarios",
         "key": "v_002",
         "user_id": this.getSystemUsers[0].id
-      },{
+      }, {
         "collection": "voting_scenarios",
         "key": "v_003",
         "user_id": this.getSystemUsers[0].id
-      },{
+      }, {
         "collection": "voting_scenarios",
         "key": "v_004",
         "user_id": this.getSystemUsers[0].id
-      },{
+      }, {
         "collection": "voting_scenarios",
         "key": "v_005",
         "user_id": this.getSystemUsers[0].id
@@ -665,20 +670,19 @@ export default class MainScene extends Phaser.Scene {
 
     var votesStateData: VoteScenarioState[] = [];
 
-    for(var i = 0; i< getVotes.objects.length;i++)
-    {
+    for (var i = 0; i < getVotes.objects.length; i++) {
       var vote = getVotes.objects[i];
       var voteJsonString = JSON.stringify(vote.value);
       var parsedJson = JSON.parse(voteJsonString);
-      var choiceOne = await this.ReadFromDDMLocalStorageNumber(parsedJson.id+"_choiceOne");
-      var choiceTwo = await this.ReadFromDDMLocalStorageNumber(parsedJson.id+"_choiceTwo");
+      var choiceOne = await this.ReadFromDDMLocalStorageNumber(parsedJson.id + "_choiceOne");
+      var choiceTwo = await this.ReadFromDDMLocalStorageNumber(parsedJson.id + "_choiceTwo");
       votesStateData.push(new VoteScenarioState(
         parsedJson.id,
-        choiceOne,choiceTwo,
+        choiceOne, choiceTwo,
         parsedJson.choice1Votes,
         parsedJson.choice2Votes,
         parsedJson.winner
-        ));
+      ));
     }
 
 
@@ -695,13 +699,11 @@ export default class MainScene extends Phaser.Scene {
     var userDynamic = this.dynamicData.dynamicUserState;
     var roundDynamic = this.dynamicData.dynamicRoundState;
 
-    for(var i=0; i< this.staticData.teams.length; i++)
-    {
+    for (var i = 0; i < this.staticData.teams.length; i++) {
       var teamStatic = this.staticData.teams[i];
       var teamDynamic = this.dynamicData.dynamicTeamsState[i];
       var upgradeLevel = 0;
-      switch(teamStatic.id)
-      {
+      switch (teamStatic.id) {
         case "t_001":
           upgradeLevel = userDynamic.t_001UpgradeLevel;
           break;
@@ -724,8 +726,7 @@ export default class MainScene extends Phaser.Scene {
 
       var inFanClub = false;
 
-      switch(teamStatic.id)
-      {
+      switch (teamStatic.id) {
         case "t_001":
           inFanClub = userDynamic.t_001InFanClub;
           break;
@@ -754,14 +755,13 @@ export default class MainScene extends Phaser.Scene {
         roundDynamic.energyRequirement,
         teamDynamic.currentEnergy,
         inFanClub
-        ));
+      ));
     }
 
-    for(var i = 0; i<this.dynamicData.dynamicVoteScenariosState.length; i++)
-    {
+    for (var i = 0; i < this.dynamicData.dynamicVoteScenariosState.length; i++) {
       var voteDynamic = this.dynamicData.dynamicVoteScenariosState[i];
-      var choiceOne = await this.ReadFromDDMLocalStorageNumber(this.dynamicData.dynamicVoteScenariosState[i].id+"_choiceOne");
-      var choiceTwo = await this.ReadFromDDMLocalStorageNumber(this.dynamicData.dynamicVoteScenariosState[i].id+"_choiceTwo"); 
+      var choiceOne = await this.ReadFromDDMLocalStorageNumber(this.dynamicData.dynamicVoteScenariosState[i].id + "_choiceOne");
+      var choiceTwo = await this.ReadFromDDMLocalStorageNumber(this.dynamicData.dynamicVoteScenariosState[i].id + "_choiceTwo");
       var vote = new VoteScenarioState(voteDynamic.id, choiceOne, choiceTwo, voteDynamic.choiceOneVotesGlobal, voteDynamic.choiceOneVotesGlobal, voteDynamic.winnerIndex);
       voteStateList.push(vote);
     }
@@ -772,15 +772,16 @@ export default class MainScene extends Phaser.Scene {
     //store and reload action points from localstorage
 
     var actionPoints = await this.ReadFromDDMLocalStorageNumber("actionPoints");
-    var sparks = await this.ReadFromDDMLocalStorageNumber("sparks"); 
+    var sparks = await this.ReadFromDDMLocalStorageNumber("sparks");
 
     this.localState.Init(username, this.dynamicData.dynamicRoundState.round, actionPoints, 5, sparks, this.dynamicData.dynamicRoundState.energyRequirement, teamIdList, voteStateList, teamStateList);
-    
+
     this.actionPointsCounter.innerHTML = (await this.ReadFromDDMLocalStorageNumber("actionPoints")).toString();
     this.sparksCounter.innerHTML = (await this.ReadFromDDMLocalStorageNumber("sparks")).toString();
     this.roundCounter.innerHTML = this.localState.round.toString();
-    this.SetOverlayProgresBar(
-      this.localState.teamStates[this.localState.carouselPosition].currentEnergy, 
+
+    this.SetOverlayProgress(
+      this.localState.GetCurrentTeamState().currentEnergy,
       this.localState.roundEnergyRequirement);
   }
 
@@ -788,16 +789,14 @@ export default class MainScene extends Phaser.Scene {
 
     var userDynamicFromLocal = this.dynamicData.dynamicUserState;
     var roundDynamic = this.dynamicData.dynamicRoundState;
-    
-    for(var i=0; i< this.dynamicData.dynamicTeamsState.length; i++)
-    {
+
+    for (var i = 0; i < this.dynamicData.dynamicTeamsState.length; i++) {
       var teamDynamic = this.dynamicData.dynamicTeamsState[i];
       var upgradeLevel = 0;
       var inFanClub = false;
 
-      switch(teamDynamic.id)
-      {
-        case "t_001": upgradeLevel = userDynamicFromLocal.t_001UpgradeLevel; inFanClub = userDynamicFromLocal.t_001InFanClub; break; 
+      switch (teamDynamic.id) {
+        case "t_001": upgradeLevel = userDynamicFromLocal.t_001UpgradeLevel; inFanClub = userDynamicFromLocal.t_001InFanClub; break;
         case "t_002": upgradeLevel = userDynamicFromLocal.t_002UpgradeLevel; inFanClub = userDynamicFromLocal.t_002InFanClub; break;
         case "t_003": upgradeLevel = userDynamicFromLocal.t_003UpgradeLevel; inFanClub = userDynamicFromLocal.t_003InFanClub; break;
         case "t_004": upgradeLevel = userDynamicFromLocal.t_004UpgradeLevel; inFanClub = userDynamicFromLocal.t_004InFanClub; break;
@@ -808,21 +807,24 @@ export default class MainScene extends Phaser.Scene {
       this.localState.teamStates[i].UpdateFromDynamicData(teamDynamic, roundDynamic.energyRequirement, upgradeLevel, inFanClub);
     }
 
-    for(var i = 0; i<this.localState.voteStates.length; i++)
-    {
+    for (var j = 0; j < this.localState.teamStates.length; j++) {
+      var teamState = this.localState.teamStates[j];
+      this.SetTeamProfileProgress(teamState.currentEnergy, this.localState.roundEnergyRequirement, j);
+    }
+
+    for (var i = 0; i < this.localState.voteStates.length; i++) {
       var voteDynamic = this.dynamicData.dynamicVoteScenariosState[i] as VoteScenarioState;
-      var choiceOne = await this.ReadFromDDMLocalStorageNumber(this.localState.voteStates[i].id+"_choiceOne");
-      var choiceTwo = await this.ReadFromDDMLocalStorageNumber(this.localState.voteStates[i].id+"_choiceTwo");   
+      var choiceOne = await this.ReadFromDDMLocalStorageNumber(this.localState.voteStates[i].id + "_choiceOne");
+      var choiceTwo = await this.ReadFromDDMLocalStorageNumber(this.localState.voteStates[i].id + "_choiceTwo");
       this.localState.voteStates[i].UpdateFromDynamicData(choiceOne, choiceTwo, voteDynamic.choiceOneVotesGlobal, voteDynamic.choiceTwoVotesGlobal);
     }
 
-    if(this.localState.UpdateFromDynamicData(roundDynamic))
-    {
-      await this.WriteToDDMLocalStorage(["energyRequirement","round"], [this.localState.roundEnergyRequirement, this.localState.round]);
+    if (this.localState.UpdateFromDynamicData(roundDynamic)) {
+      await this.WriteToDDMLocalStorage(["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
       //trigger new round
     }
-    else{
-      await this.WriteToDDMLocalStorage(["energyRequirement","round"], [this.localState.roundEnergyRequirement, this.localState.round]);      
+    else {
+      await this.WriteToDDMLocalStorage(["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
     }
 
   }
@@ -846,25 +848,25 @@ export default class MainScene extends Phaser.Scene {
     this.voteChoiceTwoGlobal.innerHTML = "Total Votes: " + todaysScenarioState.choiceTwoVotesGlobal.toString();
 
     const choiceOneSubtractButton = voteScenario.querySelector('#' + "choiceOneSubtract") as HTMLElement;
-    choiceOneSubtractButton.onclick = async() => {
+    choiceOneSubtractButton.onclick = async () => {
       if (this.localState.HaveSpentSparksOnTodaysVote(0)) {
         todaysScenarioState.DecreaseVote(0);
         this.localState.GainSparks(1);
-        await this.WriteToDDMLocalStorage(["sparks"],[this.localState.sparksAwarded]);
-        await this.WriteToDDMLocalStorage([todaysScenarioState.id+"_choiceOne"],[todaysScenarioState.choiceOneVotesUser]);
+        await this.WriteToDDMLocalStorage(["sparks"], [this.localState.sparksAwarded]);
+        await this.WriteToDDMLocalStorage([todaysScenarioState.id + "_choiceOne"], [todaysScenarioState.choiceOneVotesUser]);
         this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
         this.voteChoiceOneUser.innerHTML = todaysScenarioState.choiceOneVotesUser.toString();
         this.voteChoiceOneGlobal.innerHTML = "Total Votes: " + todaysScenarioState.choiceOneVotesGlobal.toString();
-        this.SentVoteMatchState(socket,todaysScenarioState.id, 0, -1);
+        this.SentVoteMatchState(socket, todaysScenarioState.id, 0, -1);
       }
     };
     const choiceOneAddButton = voteScenario.querySelector('#' + "choiceOneAdd") as HTMLElement;
-    choiceOneAddButton.onclick = async() => {
+    choiceOneAddButton.onclick = async () => {
       if (this.localState.HaveSparks()) {
         todaysScenarioState.IncreaseVote(0);
         this.localState.SpendSparks(1);
-        await this.WriteToDDMLocalStorage(["sparks"],[this.localState.sparksAwarded]);
-        await this.WriteToDDMLocalStorage([todaysScenarioState.id+"_choiceOne"],[todaysScenarioState.choiceOneVotesUser]);
+        await this.WriteToDDMLocalStorage(["sparks"], [this.localState.sparksAwarded]);
+        await this.WriteToDDMLocalStorage([todaysScenarioState.id + "_choiceOne"], [todaysScenarioState.choiceOneVotesUser]);
         this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
         this.voteChoiceOneUser.innerHTML = todaysScenarioState.choiceOneVotesUser.toString();
         this.voteChoiceOneGlobal.innerHTML = "Total Votes: " + todaysScenarioState.choiceOneVotesGlobal.toString();
@@ -872,12 +874,12 @@ export default class MainScene extends Phaser.Scene {
       }
     };
     const choiceTwoSubtractButton = voteScenario.querySelector('#' + "choiceTwoSubtract") as HTMLElement;
-    choiceTwoSubtractButton.onclick = async() => {
+    choiceTwoSubtractButton.onclick = async () => {
       if (this.localState.HaveSpentSparksOnTodaysVote(1)) {
         todaysScenarioState.DecreaseVote(1);
         this.localState.GainSparks(1);
-        await this.WriteToDDMLocalStorage(["sparks"],[this.localState.sparksAwarded]);
-        await this.WriteToDDMLocalStorage([todaysScenarioState.id+"_choiceTwo"],[todaysScenarioState.choiceTwoVotesUser]);
+        await this.WriteToDDMLocalStorage(["sparks"], [this.localState.sparksAwarded]);
+        await this.WriteToDDMLocalStorage([todaysScenarioState.id + "_choiceTwo"], [todaysScenarioState.choiceTwoVotesUser]);
         this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
         this.voteChoiceTwoUser.innerHTML = todaysScenarioState.choiceTwoVotesUser.toString();
         this.voteChoiceTwoGlobal.innerHTML = "Total Votes: " + todaysScenarioState.choiceTwoVotesGlobal.toString();
@@ -885,12 +887,12 @@ export default class MainScene extends Phaser.Scene {
       }
     };
     const choiceTwoAddButton = voteScenario.querySelector('#' + "choiceTwoAdd") as HTMLElement;
-    choiceTwoAddButton.onclick = async() => {
+    choiceTwoAddButton.onclick = async () => {
       if (this.localState.HaveSparks()) {
         todaysScenarioState.IncreaseVote(1);
         this.localState.SpendSparks(1);
-        await this.WriteToDDMLocalStorage(["sparks"],[this.localState.sparksAwarded]);
-        await this.WriteToDDMLocalStorage([todaysScenarioState.id+"_choiceTwo"],[todaysScenarioState.choiceTwoVotesUser]);
+        await this.WriteToDDMLocalStorage(["sparks"], [this.localState.sparksAwarded]);
+        await this.WriteToDDMLocalStorage([todaysScenarioState.id + "_choiceTwo"], [todaysScenarioState.choiceTwoVotesUser]);
         this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
         this.voteChoiceTwoUser.innerHTML = todaysScenarioState.choiceTwoVotesUser.toString();
         this.voteChoiceTwoGlobal.innerHTML = "Total Votes: " + this.localState.voteStates[this.localState.round - 1].choiceTwoVotesGlobal.toString();
@@ -933,18 +935,23 @@ export default class MainScene extends Phaser.Scene {
         var donateButton = teamProfile.getChildByID('donateButton') as HTMLElement;
         var closeButton = teamProfile.getChildByID('close-team-page-button') as HTMLElement;
 
-        donateButton.onclick = async() => {
+        donateButton.onclick = async () => {
           if (this.localState.SpendActionPointOnDonation()) {
             this.localState.GainSparks(1 + this.localState.GetUpgradeLevel());
             this.localState.teamStates[this.localState.carouselPosition].DonateEnergy();
             this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
             this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
 
-            await this.WriteToDDMLocalStorage(["actionPoints","sparks"], [this.localState.actionPoints, this.localState.sparksAwarded]);
+            await this.WriteToDDMLocalStorage(["actionPoints", "sparks"], [this.localState.actionPoints, this.localState.sparksAwarded]);
 
-            this.SetOverlayProgresBar(
-              this.localState.teamStates[this.localState.carouselPosition].currentEnergy, 
+            this.SetOverlayProgress(
+              this.localState.teamStates[this.localState.carouselPosition].currentEnergy,
               this.localState.roundEnergyRequirement);
+
+            for (var j = 0; j < this.localState.teamStates.length; j++) {
+              var teamState = this.localState.teamStates[j];
+              this.SetTeamProfileProgress(teamState.currentEnergy, this.localState.roundEnergyRequirement, j);
+            }
 
             var getUserData = await localStorage.getItem("ddm_localData");
             const value = JSON.parse(getUserData as string);
@@ -960,6 +967,11 @@ export default class MainScene extends Phaser.Scene {
           this.tapAreaRight.setInteractive();
         }
       });
+
+    for (var j = 0; j < this.localState.teamStates.length; j++) {
+      var teamState = this.localState.teamStates[j];
+      this.SetTeamProfileProgress(teamState.currentEnergy, this.localState.roundEnergyRequirement, j);
+    }
   }
 
   imgs!: TeamImages[];
@@ -969,37 +981,34 @@ export default class MainScene extends Phaser.Scene {
   pathDummy;
   follower;
 
-  async WriteToDDMLocalStorage(keys:string[], values: Array<any>)
-  {
-      const data = await localStorage.getItem('ddm_localData');
-      const json = JSON.parse(data as string);
-      var i = 0;
-      keys.forEach((key)=>{
-        json[key] = values[i];
-        i++;
-      })
+  async WriteToDDMLocalStorage(keys: string[], values: Array<any>) {
+    const data = await localStorage.getItem('ddm_localData');
+    const json = JSON.parse(data as string);
+    var i = 0;
+    keys.forEach((key) => {
+      json[key] = values[i];
+      i++;
+    })
 
-      localStorage.setItem('ddm_localData', JSON.stringify(json));   
+    localStorage.setItem('ddm_localData', JSON.stringify(json));
   }
 
-  async ReadFromDDMLocalStorageNumber(key:string)
-  {
-      const data = await localStorage.getItem('ddm_localData');
-      const json = JSON.parse(data as string);
-      return json[key] as number;  
+  async ReadFromDDMLocalStorageNumber(key: string) {
+    const data = await localStorage.getItem('ddm_localData');
+    const json = JSON.parse(data as string);
+    return json[key] as number;
   }
 
-  async RefreshFromDynamicData()
-  {
+  async RefreshFromDynamicData() {
     console.log("refresh");
     await this.GetLatestDynamicData();
     await this.ReloadLocalState();
-    await this.WriteToDDMLocalStorage(["actionPoints","energyRequirement","round"], [this.localState.actionPoints, this.localState.roundEnergyRequirement, this.localState.round]);
+    await this.WriteToDDMLocalStorage(["actionPoints", "energyRequirement", "round"], [this.localState.actionPoints, this.localState.roundEnergyRequirement, this.localState.round]);
 
     this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
     this.roundCounter.innerHTML = this.localState.round.toString();
-    this.SetOverlayProgresBar(this.localState.GetCurrentTeamState().currentEnergy, this.localState.roundEnergyRequirement);
-  
+    this.SetOverlayProgress(this.localState.GetCurrentTeamState().currentEnergy, this.localState.roundEnergyRequirement);
+
     this.voteChoiceOneUser.innerHTML = this.localState.voteStates[this.localState.round - 1].choiceOneVotesUser.toString();
     this.voteChoiceTwoUser.innerHTML = this.localState.voteStates[this.localState.round - 1].choiceTwoVotesUser.toString();
     this.voteChoiceOneGlobal.innerHTML = "Total Votes: " + this.localState.voteStates[this.localState.round - 1].choiceOneVotesGlobal.toString();
@@ -1162,7 +1171,7 @@ export default class MainScene extends Phaser.Scene {
           (this.imgs[this.localState.carouselPosition].img_B as Image).setTint(0xffffff);
           await this.AnimateOverlayChange();
           console.log("new team " + this.localState.currentTeamID);
-          this.avatarOverlay.getChildByID("avId").innerHTML=this.localState.currentTeamID;
+          this.avatarOverlay.getChildByID("avId").innerHTML = this.localState.currentTeamID;
         }
       });
 
@@ -1184,10 +1193,10 @@ export default class MainScene extends Phaser.Scene {
           this.localState.RollCarousel(1);
           (this.imgs[this.localState.carouselPosition].img_A as Image).setTint(0xffffff);
           (this.imgs[this.localState.carouselPosition].img_B as Image).setTint(0xffffff);
-          
+
           await this.AnimateOverlayChange();
           console.log("new team " + this.localState.currentTeamID);
-          this.avatarOverlay.getChildByID("avId").innerHTML=this.localState.currentTeamID;
+          this.avatarOverlay.getChildByID("avId").innerHTML = this.localState.currentTeamID;
         }
       });
 
@@ -1242,14 +1251,13 @@ export default class MainScene extends Phaser.Scene {
     this.startStarField = true;
   }
 
-  async AnimateOverlayChange()
-  {
+  async AnimateOverlayChange() {
     const overlayBox = this.avatarOverlay.getChildByID("avatar-overlay-ui") as HTMLElement;
-    overlayBox.style.animation="700ms grow-and-shrink";
+    overlayBox.style.animation = "700ms grow-and-shrink";
     await this.delay(350);
-    this.SetOverlayProgresBar(this.localState.teamStates[this.localState.carouselPosition].currentEnergy, this.localState.roundEnergyRequirement);
+    this.SetOverlayProgress(this.localState.GetCurrentTeamState().currentEnergy, this.localState.roundEnergyRequirement);
     await this.delay(350);
-    overlayBox.style.animation="700ms steady";
+    overlayBox.style.animation = "700ms steady";
   }
 
   async delay(time) {
@@ -1291,11 +1299,11 @@ export default class MainScene extends Phaser.Scene {
     await socket.sendMatchState(this.match.match_id, 1, { "team_id": team_id }); //
   }
 
-  async SentVoteMatchState(socket: Socket, scenarioId: string, choiceIndex: number, value:number) {
+  async SentVoteMatchState(socket: Socket, scenarioId: string, choiceIndex: number, value: number) {
 
     console.log("send vote!!!! " + scenarioId + " " + choiceIndex + " " + value);
 
-    await socket.sendMatchState(this.match.match_id, 2, { "scenarioId": scenarioId, "option": choiceIndex, "votes": value}); //
+    await socket.sendMatchState(this.match.match_id, 2, { "scenarioId": scenarioId, "option": choiceIndex, "votes": value }); //
   }
 
   async ReceiveMatchState(socket: Socket) {
@@ -1310,7 +1318,11 @@ export default class MainScene extends Phaser.Scene {
           console.log("Received! " + content.team_id);
           this.localState.GetCurrentTeamState().DonateEnergy();
           if (this.localState.currentTeamID == content.team_id) {
-            this.SetOverlayProgresBar(this.localState.teamStates[this.localState.carouselPosition].currentEnergy, this.localState.roundEnergyRequirement);
+            this.SetOverlayProgress(this.localState.GetCurrentTeamState().currentEnergy, this.localState.roundEnergyRequirement);
+          }
+          for (var j = 0; j < this.localState.teamStates.length; j++) {
+            var teamState = this.localState.teamStates[j];
+            this.SetTeamProfileProgress(teamState.currentEnergy, this.localState.roundEnergyRequirement, j);
           }
           console.log("User " + result.presence.username + " donated Energy to " + content);
           break;
@@ -1325,12 +1337,12 @@ export default class MainScene extends Phaser.Scene {
           break;
         case 100:
           console.log("Notification");
-          // if (this.receiveServerNotifications) {
-          //   bulmaToast.toast(
-          //     {
-          //       message: content
-          //     });
-          // }
+        // if (this.receiveServerNotifications) {
+        //   bulmaToast.toast(
+        //     {
+        //       message: content
+        //     });
+        // }
         default:
           console.info("User %o sent %o", result.presence.user_id, content);
       }
