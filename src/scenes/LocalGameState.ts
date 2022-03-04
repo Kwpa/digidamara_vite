@@ -261,9 +261,17 @@ export class TeamState
 
 export class VoteScenarioState
 {
+    id: string = "";
     choiceOneVotes: number = 0;
     choiceTwoVotes: number = 0;
     winnerIndex: number = -1;
+
+    constructor(id: string, cOneVotes, cTwoVotes, winner){
+        this.id = id;
+        this.choiceOneVotes = cOneVotes;
+        this.choiceTwoVotes = cTwoVotes;
+        this.winnerIndex = winner;
+    }
 
     IncreaseVote(choiceIndex: number)
     {

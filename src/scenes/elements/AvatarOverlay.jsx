@@ -15,7 +15,7 @@ const AvatarOverlay = (avatarName, id) => {
             <div class="level">
               <div class="level-item">
                 <button id="openProfile" class="button is-primary">{avatarName}</button>
-                <div id="avId" class="tag">
+                <div id="avId" class="tag" style="visibility:hidden;">
                   t_???
                 </div>
               </div>

@@ -403,71 +403,6 @@ export default class MainScene extends Phaser.Scene {
   {
     this.getSystemUsers = (await this.client.getUsers(this.session, [], ['SystemUser'])).users as User[];
   }
-  
-  async GetLatestDynamicData() 
-  {   
-    var getUserData = await localStorage.getItem("ddm_localData");
-    var parsedUserData = JSON.parse(getUserData as string);
-    console.log(parsedUserData);
-    var getTeams = await this.client.readStorageObjects(this.session, {
-      "object_ids": [{
-        "collection": "teams",
-        "key": "t_001",
-        "user_id": this.getSystemUsers[0].id
-      },{
-        "collection": "teams",
-        "key": "t_002",
-        "user_id": this.getSystemUsers[0].id
-      },{
-        "collection": "teams",
-        "key": "t_003",
-        "user_id": this.getSystemUsers[0].id
-      },{
-        "collection": "teams",
-        "key": "t_004",
-        "user_id": this.getSystemUsers[0].id
-      },{
-        "collection": "teams",
-        "key": "t_005",
-        "user_id": this.getSystemUsers[0].id
-      },{
-        "collection": "teams",
-        "key": "t_006",
-        "user_id": this.getSystemUsers[0].id
-      }]
-    }) as StorageObjects;
-
-    var teamsStateData: TeamState[] = [];
-
-    getTeams.objects.forEach(team => {
-      
-      var teamJsonString = JSON.stringify(team.value);
-      var parsedJson = JSON.parse(teamJsonString);
-      teamsStateData.push(new TeamState(
-        parsedJson.id,
-        parsedJson.eliminated,
-        parsedJson.upgradeLevel,
-        parsedJson.energyRequirement,
-        parsedJson.energy,
-        parsedJson.inFanClub
-        )
-      )
-    });
-    
-    var getRoundTrack = await this.client.readStorageObjects(this.session, {
-      "object_ids": [{
-        "collection": "roundTrack",
-        "key": "round",
-        "user_id": this.getSystemUsers[0].id
-      }]
-    }) as StorageObjects;
-
-    var roundStorageObject = collect(getRoundTrack.objects).first();
-    var jsonString = JSON.stringify(roundStorageObject.value);
-    var roundObject = JSON.parse(jsonString);
-
-    this.dynamicData = new DynamicData(teamsStateData,parsedUserData, roundObject);
-  }
 
   SetOverlayProgresBar(value: number, maxValue: number) {
     this.overlayProgressBar.value = Math.floor(value / maxValue * 100).toString();
@@ -651,6 +586,114 @@ export default class MainScene extends Phaser.Scene {
     console.log("on blur");
   }
 
+  async GetLatestDynamicData() 
+  {   
+    var getUserData = await localStorage.getItem("ddm_localData");
+    var parsedUserData = JSON.parse(getUserData as string);
+    console.log(parsedUserData);
+    var getTeams = await this.client.readStorageObjects(this.session, {
+      "object_ids": [{
+        "collection": "teams",
+        "key": "t_001",
+        "user_id": this.getSystemUsers[0].id
+      },{
+        "collection": "teams",
+        "key": "t_002",
+        "user_id": this.getSystemUsers[0].id
+      },{
+        "collection": "teams",
+        "key": "t_003",
+        "user_id": this.getSystemUsers[0].id
+      },{
+        "collection": "teams",
+        "key": "t_004",
+        "user_id": this.getSystemUsers[0].id
+      },{
+        "collection": "teams",
+        "key": "t_005",
+        "user_id": this.getSystemUsers[0].id
+      },{
+        "collection": "teams",
+        "key": "t_006",
+        "user_id": this.getSystemUsers[0].id
+      }]
+    }) as StorageObjects;
+
+    var teamsStateData: TeamState[] = [];
+
+    getTeams.objects.forEach(team => {
+      
+      var teamJsonString = JSON.stringify(team.value);
+      var parsedJson = JSON.parse(teamJsonString);
+      teamsStateData.push(new TeamState(
+        parsedJson.id,
+        parsedJson.eliminated,
+        parsedJson.upgradeLevel,
+        parsedJson.energyRequirement,
+        parsedJson.energy,
+        parsedJson.inFanClub
+        )
+      )
+    });
+    
+    var getRoundTrack = await this.client.readStorageObjects(this.session, {
+      "object_ids": [{
+        "collection": "roundTrack",
+        "key": "round",
+        "user_id": this.getSystemUsers[0].id
+      }]
+    }) as StorageObjects;
+
+    var roundStorageObject = collect(getRoundTrack.objects).first();
+    var jsonString = JSON.stringify(roundStorageObject.value);
+    var roundObject = JSON.parse(jsonString);
+
+    var getVotes = await this.client.readStorageObjects(this.session, {
+      "object_ids": [{
+        "collection": "voting_scenarios",
+        "key": "v_001",
+        "user_id": this.getSystemUsers[0].id
+      },{
+        "collection": "voting_scenarios",
+        "key": "v_002",
+        "user_id": this.getSystemUsers[0].id
+      },{
+        "collection": "voting_scenarios",
+        "key": "v_003",
+        "user_id": this.getSystemUsers[0].id
+      },{
+        "collection": "voting_scenarios",
+        "key": "v_004",
+        "user_id": this.getSystemUsers[0].id
+      },{
+        "collection": "voting_scenarios",
+        "key": "v_005",
+        "user_id": this.getSystemUsers[0].id
+      },{
+        "collection": "voting_scenarios",
+        "key": "v_006",
+        "user_id": this.getSystemUsers[0].id
+      }]
+    }) as StorageObjects;
+
+    var votesStateData: VoteScenarioState[] = [];
+
+    getVotes.objects.forEach(vote => {
+      
+      var voteJsonString = JSON.stringify(vote.value);
+      var parsedJson = JSON.parse(voteJsonString);
+      votesStateData.push(new VoteScenarioState(
+        parsedJson.id,
+        parsedJson.choiceOneVotes,
+        parsedJson.choiceTwoVotes,
+        parsedJson.winnerIndex
+        )
+      )
+    });
+
+    this.dynamicData = new DynamicData(teamsStateData, parsedUserData, roundObject, votesStateData);
+  }
+
   async SetupLocalState(username: string) {
     this.localState = new LocalGameState();
 
@@ -722,12 +765,11 @@ export default class MainScene extends Phaser.Scene {
         ));
     }
     
-    this.staticData.voteScenarios.forEach(() => {
-      voteStateList.push(new VoteScenarioState());
-    })
+    this.staticData.voteScenarios.forEach((voteScenario) => {
+      voteStateList.push(new VoteScenarioState(voteScenario.id,0,0,-1));
+    });
 
-    
-    var getSystemUsers = (await this.client.getUsers(this.session, [], ['SystemUser'])).users as User[];
+    this.GetSystemUsers();
     //}
 
     //store and reload action points from localstorage
@@ -792,6 +834,7 @@ export default class MainScene extends Phaser.Scene {
         this.localState.GainSparks(1);
         this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
         choiceOneField.innerHTML = this.localState.voteStates[this.localState.round - 1].choiceOneVotes.toString();
+        this.SentVoteMatchState(socket, this.localState.voteStates[this.localState.round-1].id, 0, -1);
       }
     };
     const choiceOneAddButton = voteScenario.querySelector('#' + "choiceOneAdd") as HTMLElement;
@@ -802,6 +845,7 @@ export default class MainScene extends Phaser.Scene {
         this.localState.SpendSparks(1);
         this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
         choiceOneField.innerHTML = this.localState.voteStates[this.localState.round - 1].choiceOneVotes.toString();
+        this.SentVoteMatchState(socket, this.localState.voteStates[this.localState.round-1].id, 0, 1);
       }
     };
     const choiceTwoField = voteScenario.querySelector('#' + "choiceTwo") as HTMLElement;
@@ -813,6 +857,7 @@ export default class MainScene extends Phaser.Scene {
         this.SpendSparkOnTodaysVoteMatchState(socket, -1);
         this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
         choiceTwoField.innerHTML = this.localState.voteStates[this.localState.round - 1].choiceTwoVotes.toString();
+        this.SentVoteMatchState(socket, this.localState.voteStates[this.localState.round-1].id, 1, -1);
       }
     };
     const choiceTwoAddButton = voteScenario.querySelector('#' + "choiceTwoAdd") as HTMLElement;
@@ -823,6 +868,7 @@ export default class MainScene extends Phaser.Scene {
         this.SpendSparkOnTodaysVoteMatchState(socket, 1);
         this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
         choiceTwoField.innerHTML = this.localState.voteStates[this.localState.round - 1].choiceTwoVotes.toString();
+        this.SentVoteMatchState(socket, this.localState.voteStates[this.localState.round-1].id, 1, 1);
       }
     };
     this.voteContainer.innerHTML = "";
@@ -1188,6 +1234,13 @@ export default class MainScene extends Phaser.Scene {
     await socket.sendMatchState(this.match.match_id, 1, { "team_id": team_id }); //
   }
 
+  async SentVoteMatchState(socket: Socket, scenarioId: string, choiceIndex: number, value:number) {
+
+    console.log("send vote!!!! " + scenarioId + " " + choiceIndex + " " + value);
+
+    await socket.sendMatchState(this.match.match_id, 2, { "scenarioId": scenarioId, "option": choiceIndex, "votes": value}); //
+  }
+
   async SpendSparkOnTodaysVoteMatchState(socket: Socket, choiceIndex: number) {
 
     await socket.sendMatchState(this.match.match_id, 2, { "choice": choiceIndex }); //
@@ -1198,7 +1251,7 @@ export default class MainScene extends Phaser.Scene {
       var content = result.data;
       switch (result.op_code) {
         case 101:
-          this.RefreshForNewRound();
+          this.RefreshFromDynamicData();
           console.log("User " + result.presence.username + " refreshed for a new round");
           break;
         case 1:

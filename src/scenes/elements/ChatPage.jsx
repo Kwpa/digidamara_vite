@@ -2,8 +2,8 @@ import { h } from 'start-dom-jsx';
 
 const ChatPage = () => {
   return (
-    <div class="base">
-      <div class="base-container">
+    <div>
+      <div class="ch-container">
         <div class="chat-page box">
           <nav class="level is-mobile">
             <div class="level-left">
