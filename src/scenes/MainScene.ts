@@ -1337,12 +1337,12 @@ export default class MainScene extends Phaser.Scene {
           break;
         case 100:
           console.log("Notification");
-        // if (this.receiveServerNotifications) {
-        //   bulmaToast.toast(
-        //     {
-        //       message: content
-        //     });
-        // }
+          if (this.receiveServerNotifications) {
+            bulmaToast.toast(
+              {
+                message: content
+              });
+          }
         default:
           console.info("User %o sent %o", result.presence.user_id, content);
       }
