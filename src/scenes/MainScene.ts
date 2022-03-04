@@ -1307,11 +1307,13 @@ export default class MainScene extends Phaser.Scene {
   }
 
   async ReceiveMatchState(socket: Socket) {
-    socket.onmatchdata = (result: MatchData) => {
+    socket.onmatchdata = async(result: MatchData) => {
       var content = result.data;
       switch (result.op_code) {
         case 101:
           this.RefreshFromDynamicData();
+          this.localState.SetActionPointsToMax();
+          await this.WriteToDDMLocalStorage(["actionPoints"], [this.localState.maxActionPoints]);
           console.log("User " + result.presence.username + " refreshed for a new round");
           break;
         case 1:

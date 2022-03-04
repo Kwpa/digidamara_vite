@@ -7,3 +7,4 @@ musics!
 update votes panel + sparks
 set username
 locked story
+badges increase decrease
