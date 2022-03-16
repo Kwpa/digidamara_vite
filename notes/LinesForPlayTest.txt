@@ -1,0 +1,49 @@
+.\ServerPrototype.exe notify  "Welcome to digidamara"
+.\ServerPrototype.exe notify "Wonder at the incredible feats of our dancers!"
+.\ServerPrototype.exe notify "I am the Promoter!"
+.\ServerPrototype.exe notify "I am in charge around here, and will help you take part in this competition at the end of the universe!"
+.\ServerPrototype.exe notify "Listen up!"
+.\ServerPrototype.exe notify "You have 5 action points per day. Tap on a dance team button to see their profile, then donate energy to your favourite team!"
+.\ServerPrototype.exe notify "Giving them the energy they need to survive is the only way to stay for them to stay in the race!"
+.\ServerPrototype.exe notify "The team with the lowest amount of energy per round, is elimated!"
+.\ServerPrototype.exe notify "In a draw... well.... who knows!"
+.\ServerPrototype.exe notify "You get sparks for donating! These can be used in the voting booth."
+.\ServerPrototype.exe notify "Action points refresh to five every round - but sparks do not."
+.\ServerPrototype.exe notify "You can chat to each other to make decisions"
+.\ServerPrototype.exe notify "Chat and voting are at the bottom of the screen"
+.\ServerPrototype.exe notify "Pssst. Upgrades... News... Help... Settings...don't work yet :(! Blame the engineers for that."
+.\ServerPrototype.exe notify "If Upgrades were working, you'd be able to get MORE sparks every time you donate energy to the teams"
+.\ServerPrototype.exe notify "But I digress."
+.\ServerPrototype.exe notify "Time to get the action started!"
+.\ServerPrototype.exe notify "... Off you go then!"
+
+.\ServerPrototype.exe notify "Welcome back to DIGIDAMARA!"
+.\ServerPrototype.exe notify "Here's a summary of what happened yesterday... drum roll please..."
+
+.\ServerPrototype.exe notify "Master Gauri & Refilwe are knocked out! Please do not give them any more energy"
+.\ServerPrototype.exe notify "The Brutus are knocked out! Please do not give them any more energy"
+.\ServerPrototype.exe notify "Popper & Piper are knocked out! Please do not give them any more energy"
+.\ServerPrototype.exe notify "The Sglunkus Snorfluxii are knocked out! Please do not give them any more energy"
+.\ServerPrototype.exe notify "Eeeksum are knocked out! Please do not give them any more energy"
+.\ServerPrototype.exe notify "Mandulae are knocked out! Please do not give them any more energy"
+
+.\ServerPrototype.exe notify "Votes are in! The galaxy has spoken... drum roll..."
+
+.\ServerPrototype.exe notify "A holographic mouse pops out of the box and says in a tiny whisper 'Psst..did you know? The pilot crew of this space station are supposedly the best of the best! But how did they get so good...'"
+.\ServerPrototype.exe notify "The tome disappears into galactic space. Phew…nothing bad happened.
+
+.\ServerPrototype.exe notify "Bribing team gains a snifty new sharpy cool attitude (that is very popular) but some other teams now look down upon them"
+.\ServerPrototype.exe notify "Moral purity has been maintained. Fan adoration sky rockets!"
+
+.\ServerPrototype.exe notify "The change is hard and they fart out the cries of agony of their consumed partner"
+.\ServerPrototype.exe notify "Gain new dance move"
+
+.\ServerPrototype.exe notify "A few technical glitches but we seem to be alright. The end of the universe is close."
+.\ServerPrototype.exe notify "We struggle, one team loses all their briefcase items/personal possessions. The end of the universe is close."
+
+.\ServerPrototype.exe notify "The new universe will be born! But who..or what.. has shaped it?"
+.\ServerPrototype.exe notify "The new universe is born! How do we deal with what we have become?"
+
+.\ServerPrototype.exe notify "Don’t you have everything!? Don’t you want everyone to have everything?!"If everything just went according to plan, if everyone just listened and played their part, it would be perfect." Don’t you have everything!? Don’t you want everyone to have everything?!?!! aaaahhh….*blips into the void*"
+
+

@@ -21,8 +21,8 @@ const TeamProfile = (teamData) => {
             <div class="level-item">
               <div class="box has-background-dark" style="position:relative;">
                 <figure class="image is-128x128">
-                  <img class="is-rounded" src="/assets/images/teamIcon_dummy.png">
-                  </img>
+                  <div id="team-icon">
+                  </div>
                 </figure>
                 <div style="position: absolute; top:0; left:0;">
                   <img src="/assets/images/fan.png" width="50" height="50"></img>

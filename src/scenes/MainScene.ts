@@ -780,6 +780,8 @@ export default class MainScene extends Phaser.Scene {
     this.sparksCounter.innerHTML = (await this.ReadFromDDMLocalStorageNumber("sparks")).toString();
     this.roundCounter.innerHTML = this.localState.round.toString();
 
+    this.avatarOverlayButton.innerHTML = this.staticData.teams[this.localState.carouselPosition].title;
+
     this.SetOverlayProgress(
       this.localState.GetCurrentTeamState().currentEnergy,
       this.localState.roundEnergyRequirement);
@@ -914,6 +916,8 @@ export default class MainScene extends Phaser.Scene {
         console.log("title: " + title);
         const data = { name: team.title, biography: team.biography };
         const teamProfile = this.add.dom(width / 2, height / 2, TeamProfile(data) as HTMLElement);
+        const teamIcon = teamProfile.getChildByID('team-icon') as HTMLElement;
+        teamIcon.classList.add(team.iconId);
         const container = teamProfile.getChildByID('story-container') as HTMLElement;
         team.story.forEach((story) => {
 
@@ -1172,6 +1176,7 @@ export default class MainScene extends Phaser.Scene {
           await this.AnimateOverlayChange();
           console.log("new team " + this.localState.currentTeamID);
           this.avatarOverlay.getChildByID("avId").innerHTML = this.localState.currentTeamID;
+          this.avatarOverlayButton.innerHTML = this.staticData.teams[this.localState.carouselPosition].title;
         }
       });
 
@@ -1193,6 +1198,7 @@ export default class MainScene extends Phaser.Scene {
           this.localState.RollCarousel(1);
           (this.imgs[this.localState.carouselPosition].img_A as Image).setTint(0xffffff);
           (this.imgs[this.localState.carouselPosition].img_B as Image).setTint(0xffffff);
+          this.avatarOverlayButton.innerHTML = this.staticData.teams[this.localState.carouselPosition].title;
 
           await this.AnimateOverlayChange();
           console.log("new team " + this.localState.currentTeamID);
