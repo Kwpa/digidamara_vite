@@ -5,4 +5,9 @@ declare namespace Phaser.Scenes
     rexUI: any,
     rexPerspectiveImagePlugin: any
   }
+
+  interface GlobalPlugin
+  {
+    rexYoutubePlayer: any
+  }
 }

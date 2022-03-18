@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import MainScene from "./scenes/MainScene";
 import UIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
 import PerspectiveImagePlugin from 'phaser3-rex-plugins/plugins/perspectiveimage-plugin';
+import YoutubePlayerPlugin from 'phaser3-rex-plugins/plugins/youtubeplayer-plugin.js';
 
 export default {
   type: Phaser.AUTO,
@@ -24,6 +25,11 @@ export default {
     global: [{
       key: 'rexPerspectiveImagePlugin',
       plugin: PerspectiveImagePlugin,
+      start: true
+    },
+    {
+      key: 'rexYoutubePlayer',
+      plugin: YoutubePlayerPlugin,
       start: true
     }],
     scene: [

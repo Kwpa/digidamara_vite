@@ -4,20 +4,21 @@ export default class StaticData
     notifications!: NotificationData[];
     voteScenarios!: VoteScenarioData[];
     appLabels!: AppLabelData[];
+    videoContent!: VideoContentData[];
 
-    Init(teams_data, barks_data, items_data, story_data, notifications_data, voteScenarios_data, appLabels_data)
+    Init(teams_data, barks_data, items_data, story_data, notifications_data, voteScenarios_data, appLabels_data, videoContent_data)
     {
         console.log("INIT STATIC");
         this.teams = [];
         this.notifications = [];
         this.voteScenarios = [];
         this.appLabels = [];
+        this.videoContent = [];
         //console.log(story_data[0].teamId + " " + teams_data[0].id);
          
         for(var k in teams_data)
         {
             var teamData = teams_data[k];
-            console.log(teams_data[k].biography);
             var barks = barks_data.filter(a=> a.teamId == teamData.id);
             var items = items_data.filter(a=> a.teamId == teamData.id);
             var story = story_data.filter(a=> a.teamId == teamData.id);
@@ -34,6 +35,10 @@ export default class StaticData
         for(var k in appLabels_data)
         {
             this.appLabels.push(new AppLabelData(appLabels_data[k]));
+        }
+        for(var k in videoContent_data)
+        {
+            this.videoContent.push(new VideoContentData(videoContent_data[k]));
         }
     }
 }
@@ -167,6 +172,21 @@ export class NotificationData
         this.content = notification.content;
         this.encryption = notification.encryption;
         this.delay = notification.delay;
+      }
+}
+
+export class VideoContentData
+{
+    id!: string;
+    title!: string;
+    youtubeId!: string;
+    active!: boolean;
+
+    constructor(videoContent) {
+        this.id = videoContent.id;
+        this.title = videoContent.title;
+        this.youtubeId = videoContent.youtubeId;
+        this.active = videoContent.active;
       }
 }
 

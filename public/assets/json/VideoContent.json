@@ -1,0 +1,50 @@
+[
+    {
+        "id":  "vc_001",
+        "title":  "Intro Video",
+        "youtubeId":  "wVVr4Jq_lMI",
+        "active":  "true"
+    },
+    {
+        "id":  "vc_002",
+        "title":  "Vote 1 Video",
+        "youtubeId":  "_X3HzUjptvc",
+        "active":  "true"
+    },
+    {
+        "id":  "vc_003",
+        "title":  "Vote 2 Video",
+        "youtubeId":  "wVVr4Jq_lMI",
+        "active":  "false"
+    },
+    {
+        "id":  "vc_004",
+        "title":  "Vote 3 Video",
+        "youtubeId":  "_X3HzUjptvc",
+        "active":  "false"
+    },
+    {
+        "id":  "vc_005",
+        "title":  "Vote 4 Video",
+        "youtubeId":  "wVVr4Jq_lMI",
+        "active":  "false"
+    },
+    {
+        "id":  "vc_006",
+        "title":  "The Twist Video",
+        "youtubeId":  "_X3HzUjptvc",
+        "active":  "false"
+    },
+    {
+        "id":  "vc_007",
+        "title":  "Vote 5 Video",
+        "youtubeId":  "wVVr4Jq_lMI",
+        "active":  "false"
+    },
+    {
+        "id":  "vc_008",
+        "title":  "Outro Video",
+        "youtubeId":  "_X3HzUjptvc",
+        "active":  "false"
+    }
+]

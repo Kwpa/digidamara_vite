@@ -7,6 +7,7 @@ import ChatMessageCurrentUser from './elements/ChatMessageCurrentUser';
 import VideoTile from './elements/VideoTile';
 import VoteScenario from './elements/VoteScenario';
 import AvatarOverlay from './elements/AvatarOverlay';
+import VideoPlayerOverlay from './elements/VideoPlayerOverlay';
 import TeamProfile from './elements/TeamProfile';
 import VotingPage from './elements/VotingPage';
 import StoryAccordian from './elements/StoryAccordian';
@@ -16,6 +17,7 @@ import { ChannelMessage, ChannelMessageList, Client, Session, Socket, StorageObj
 import collect from 'collect.js';
 import PerspectiveImagePlugin from 'phaser3-rex-plugins/plugins/perspectiveimage-plugin.js';
 import { PerspectiveCarousel } from 'phaser3-rex-plugins/plugins/perspectiveimage.js';
+import YoutubePlayerPlugin from 'phaser3-rex-plugins/plugins/youtubeplayer-plugin.js';
 import LocalGameState, { TeamImages, TeamRenderTextures, TeamState, VoteScenarioState } from './LocalGameState';
 import StaticData from './StaticData';
 import RenderTexture from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/rendertexture/RenderTexture';
@@ -39,6 +41,7 @@ export default class MainScene extends Phaser.Scene {
   notifications_data!: object;
   voteScenarios_data!: object;
   labels_data!: object;
+  videoContent_data!: object;
 
   teamProfilePages!: Phaser.GameObjects.DOMElement[];
   session!: Session;
@@ -63,6 +66,11 @@ export default class MainScene extends Phaser.Scene {
   closeVotePageButton!: HTMLElement;
   closeVideoPageButton!: HTMLElement;
   closeHelpPageButton!: HTMLElement;
+  closeVideoPlayerButton!: HTMLElement;
+  playVideoPlayerButton!: HTMLElement;
+  pauseVideoPlayerButton!: HTMLElement;
+  loadNextVideoPlayerButton!: HTMLElement;
+  loadPreviousVideoPlayerButton!: HTMLElement;
 
   roundCounter!: HTMLElement;
   actionPointsCounter!: HTMLElement;
@@ -78,6 +86,7 @@ export default class MainScene extends Phaser.Scene {
   voteContainer!: HTMLElement;
   avatarOverlay!: Phaser.GameObjects.DOMElement;
   notificationsArea!: HTMLElement;
+  videoPlayerContainer!: HTMLElement;
 
   voteChoiceOneUser!: HTMLElement;
   voteChoiceOneGlobal!: HTMLElement;
@@ -111,6 +120,7 @@ export default class MainScene extends Phaser.Scene {
   receiveServerNotifications: boolean = false;
 
   webConfig;
+  rexVideoPlayer;
 
   constructor() {
     super('MainScene');
@@ -132,10 +142,31 @@ export default class MainScene extends Phaser.Scene {
     this.load.json('story_content', '/assets/json/Story.json');
     this.load.json('notifications_content', '/assets/json/Notifications.json');
     this.load.json('appLabels_content', '/assets/json/Labels.json');
+    this.load.json('video_content', '/assets/json/VideoContent.json');
     this.load.json('eightpath', '/assets/json/paths/path_2.json');
     this.load.json('web_config', '/assets/json/web_config.json');
 
     //this.load.on('complete', () => {this.flag = true});
+  }
+
+  ShowVideo(scene: Scene, width: number, height: number, url: string)
+  {
+    this.rexVideoPlayer = scene.add.rexYoutubePlayer( //this does work, typescript def error :/
+      -width, -height, 400, 300, 
+      { 
+        videoId: url,
+        autoPlay: false
+      }).on('ready', () => 
+      {
+        this.rexVideoPlayer.setPosition(0,0);
+        var playeriFrame = document.querySelectorAll('iframe')[0];
+        this.videoPlayerContainer.append(playeriFrame);
+      }).on('statechange', () =>
+      {
+        console.log("video state" + this.rexVideoPlayer.videoState);
+      }
+      );
+      //this.rexVideoPlayer.
   }
 
   async LoadingBar() {
@@ -234,18 +265,18 @@ export default class MainScene extends Phaser.Scene {
     this.voteScenarios_data = this.cache.json.get('voteScenarios_content') as object;
     console.log(this.notifications_data);
     this.labels_data = this.cache.json.get('appLabels_content') as object;
+    this.videoContent_data = this.cache.json.get('video_content') as object;
     this.webConfig = this.cache.json.get('web_config') as object;
   }
 
   async AsyncCreate() {
-
+    
     await this.waitUntilAssetsLoaded();
     await this.LoadJSON();
     await this.delay(1200);
     //console.log(this.cache.json);
-
-
     let { width, height } = this.sys.game.canvas;
+
     const leftCurtain = this.add.graphics();
     const rightCurtain = this.add.graphics();
     const dots = Math.floor(height / 50);
@@ -298,11 +329,15 @@ export default class MainScene extends Phaser.Scene {
     const baseWebsite = this.add.dom(width / 2, height / 2, BaseWebsite() as HTMLElement);
     const chatPage = this.add.dom(width / 2, height / 2, ChatPage() as HTMLElement);
     const videoPage = this.add.dom(width / 2, height / 2, VideoPage() as HTMLElement);
+    const videoPlayerOverlay = this.add.dom(width / 2, height / 2, VideoPlayerOverlay() as HTMLElement);
     const votePage = this.add.dom(width / 2, height / 2, VotingPage() as HTMLElement);
     this.avatarOverlay = this.add.dom(width / 2, height / 2, AvatarOverlay('open') as HTMLElement);
     this.overlayProgressBar = this.avatarOverlay.getChildByID("teamEnergyBar") as HTMLInputElement;
+    
+    this.videoPlayerContainer = videoPlayerOverlay.getChildByID("video-player") as HTMLElement;
 
     this.avatarOverlay.setVisible(false);
+    //videoPlayerOverlay.setVisible(false);
     chatPage.setVisible(false);
     videoPage.setVisible(false);
     votePage.setVisible(false);
@@ -328,6 +363,12 @@ export default class MainScene extends Phaser.Scene {
     this.closeVotePageButton = votePage.getChildByID('close-voting-page-button') as HTMLElement;
     this.voteContainer = votePage.getChildByID('vote-container') as HTMLElement;
     this.videoTileContainer = videoPage.getChildByID('video-container') as HTMLElement;
+    //this.closeVideoPlayerButton = videoPlayerOverlay.getChildByID('video-player-button-close') as HTMLElement;
+    this.playVideoPlayerButton = videoPlayerOverlay.getChildByID('video-player-button-play') as HTMLElement;
+    this.pauseVideoPlayerButton = videoPlayerOverlay.getChildByID('video-player-button-pause') as HTMLElement;
+    this.loadNextVideoPlayerButton = videoPlayerOverlay.getChildByID('video-player-button-next') as HTMLElement;
+    this.loadPreviousVideoPlayerButton = videoPlayerOverlay.getChildByID('video-player-button-previous') as HTMLElement;
+
     this.avatarOverlayButton = this.avatarOverlay.getChildByID('openProfile') as HTMLElement;
     this.notificationsArea = baseWebsite.getChildByID("gameArea") as HTMLElement;
 
@@ -373,6 +414,18 @@ export default class MainScene extends Phaser.Scene {
       this.tapAreaLeft.removeInteractive();
       this.tapAreaRight.removeInteractive();
     }
+    this.loadNextVideoPlayerButton.onclick = () => {
+      this.NextVideo();
+    }
+    this.loadPreviousVideoPlayerButton.onclick = () => {
+      this.PreviousVideo();
+    }
+    this.playVideoPlayerButton.onclick = () => {
+      this.PlayCurrentVideo();
+    }
+    this.pauseVideoPlayerButton.onclick = () => {
+      this.PauseCurrentVideo();
+    }
 
     this.SetVideoImages(this.videoTileContainer);
 
@@ -389,6 +442,50 @@ export default class MainScene extends Phaser.Scene {
 
     await this.GetLatestStaticData();
     await this.StartClientConnection();
+
+    this.ShowVideo(this, width,height, "wVVr4Jq_lMI");
+  }
+
+  GetListOfActiveVideos()
+  {
+    var listOfActiveVideos : string[] = [];
+    this.staticData.videoContent.forEach((videoContent) => 
+    {
+      if(videoContent.active)
+      {
+        listOfActiveVideos.push(videoContent.youtubeId);
+      }
+    });
+    return listOfActiveVideos;
+  }
+
+  NextVideo()
+  {
+    var list = this.GetListOfActiveVideos();
+    var index = this.localState.RollVideoContent(1, list.length);
+    this.LoadCurrentVideo(index, list);
+  }
+
+  LoadCurrentVideo(index : number, list)
+  {
+    this.rexVideoPlayer.load(list[index]);
+  }
+
+  PreviousVideo()
+  {
+    var list = this.GetListOfActiveVideos();
+    var index = this.localState.RollVideoContent(-1, list.length);
+    this.LoadCurrentVideo(index, list);
+  }
+
+  PlayCurrentVideo()
+  {
+    this.rexVideoPlayer.play();
+  }
+
+  PauseCurrentVideo()
+  {
+    this.rexVideoPlayer.pause();
   }
 
   async GetLatestStaticData() {
@@ -400,7 +497,8 @@ export default class MainScene extends Phaser.Scene {
       this.story_data,
       this.notifications_data,
       this.voteScenarios_data,
-      this.labels_data
+      this.labels_data,
+      this.videoContent_data
     );
   }
 

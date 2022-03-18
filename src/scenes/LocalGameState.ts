@@ -7,6 +7,7 @@ export default class LocalGameState
     sparksAwarded: number = 0;
     maxActionPoints!: number;
     carouselPosition!: number;
+    videoContentPosition!: number;
     currentTeamID!: string;
     teamIDs!: string[];
     round: number = 0;
@@ -23,6 +24,7 @@ export default class LocalGameState
         this.maxActionPoints = maxActionPoints;
         this.roundEnergyRequirement = energyRequirement;
         this.carouselPosition = 0;
+        this.videoContentPosition = 0;
         this.teamIDs = teamIDs;
         this.SetCurrentTeamID()
         this.voteStates = voteStates;
@@ -93,6 +95,16 @@ export default class LocalGameState
         var mod = ((n % m) + m) % m;
         this.carouselPosition = mod;
         this.SetCurrentTeamID();
+    }
+
+    RollVideoContent(leftRight: number, activeVideoCount: number)
+    {
+        this.videoContentPosition += leftRight;
+        var n = this.videoContentPosition;
+        var m = activeVideoCount;
+        var mod = ((n % m) + m) % m;
+        this.videoContentPosition = mod;
+        return this.videoContentPosition;
     }
 
     GainActionPoints(amount: number)
