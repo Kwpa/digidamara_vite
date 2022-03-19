@@ -4,6 +4,7 @@ import ChatPage from './elements/ChatPage';
 import VideoPage from './elements/VideoPage';
 import ChatMessageOtherUser from './elements/ChatMessageOtherUser';
 import ChatMessageCurrentUser from './elements/ChatMessageCurrentUser';
+import NotificationHome from './elements/NotificationHome';
 import VideoTile from './elements/VideoTile';
 import VoteScenario from './elements/VoteScenario';
 import AvatarOverlay from './elements/AvatarOverlay';
@@ -19,7 +20,7 @@ import PerspectiveImagePlugin from 'phaser3-rex-plugins/plugins/perspectiveimage
 import { PerspectiveCarousel } from 'phaser3-rex-plugins/plugins/perspectiveimage.js';
 import YoutubePlayerPlugin from 'phaser3-rex-plugins/plugins/youtubeplayer-plugin.js';
 import LocalGameState, { TeamImages, TeamRenderTextures, TeamState, VoteScenarioState } from './LocalGameState';
-import StaticData from './StaticData';
+import StaticData, { NotificationData } from './StaticData';
 import RenderTexture from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/rendertexture/RenderTexture';
 import Sprite from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/sprite/Sprite';
 import Image from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/image/Image';
@@ -87,6 +88,7 @@ export default class MainScene extends Phaser.Scene {
   avatarOverlay!: Phaser.GameObjects.DOMElement;
   notificationsArea!: HTMLElement;
   videoPlayerContainer!: HTMLElement;
+  notificationHome!: Phaser.GameObjects.DOMElement;
 
   voteChoiceOneUser!: HTMLElement;
   voteChoiceOneGlobal!: HTMLElement;
@@ -243,7 +245,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   SetupNotifications() {
-    bulmaToast.setDefaults({
+    /* bulmaToast.setDefaults({
       type: 'is-warning',
       position: 'top-center',
       closeOnClick: true,
@@ -251,7 +253,7 @@ export default class MainScene extends Phaser.Scene {
       duration: 100000,
       dismissible: true,
       appendTo: this.notificationsArea
-    });
+    }); */
 
     this.receiveServerNotifications = true;
   }
@@ -263,7 +265,6 @@ export default class MainScene extends Phaser.Scene {
     this.story_data = this.cache.json.get('story_content') as object;
     this.notifications_data = this.cache.json.get('notifications_content') as object;
     this.voteScenarios_data = this.cache.json.get('voteScenarios_content') as object;
-    console.log(this.notifications_data);
     this.labels_data = this.cache.json.get('appLabels_content') as object;
     this.videoContent_data = this.cache.json.get('video_content') as object;
     this.webConfig = this.cache.json.get('web_config') as object;
@@ -331,13 +332,15 @@ export default class MainScene extends Phaser.Scene {
     const videoPage = this.add.dom(width / 2, height / 2, VideoPage() as HTMLElement);
     const videoPlayerOverlay = this.add.dom(width / 2, height / 2, VideoPlayerOverlay() as HTMLElement);
     const votePage = this.add.dom(width / 2, height / 2, VotingPage() as HTMLElement);
+    this.notificationHome = this.add.dom(width / 2, height / 2, NotificationHome('','') as HTMLElement);
     this.avatarOverlay = this.add.dom(width / 2, height / 2, AvatarOverlay('open') as HTMLElement);
     this.overlayProgressBar = this.avatarOverlay.getChildByID("teamEnergyBar") as HTMLInputElement;
     
     this.videoPlayerContainer = videoPlayerOverlay.getChildByID("video-player") as HTMLElement;
 
     this.avatarOverlay.setVisible(false);
-    //videoPlayerOverlay.setVisible(false);
+    videoPlayerOverlay.setVisible(false);
+    this.notificationHome.setVisible(false);
     chatPage.setVisible(false);
     videoPage.setVisible(false);
     votePage.setVisible(false);
@@ -368,6 +371,7 @@ export default class MainScene extends Phaser.Scene {
     this.pauseVideoPlayerButton = videoPlayerOverlay.getChildByID('video-player-button-pause') as HTMLElement;
     this.loadNextVideoPlayerButton = videoPlayerOverlay.getChildByID('video-player-button-next') as HTMLElement;
     this.loadPreviousVideoPlayerButton = videoPlayerOverlay.getChildByID('video-player-button-previous') as HTMLElement;
+    
 
     this.avatarOverlayButton = this.avatarOverlay.getChildByID('openProfile') as HTMLElement;
     this.notificationsArea = baseWebsite.getChildByID("gameArea") as HTMLElement;
@@ -1444,15 +1448,80 @@ export default class MainScene extends Phaser.Scene {
         case 100:
           console.log("Notification");
           if (this.receiveServerNotifications) {
-            bulmaToast.toast(
+            /* bulmaToast.toast(
               {
                 message: content
-              });
+              }); */
+              this.DisplayNotificationHome(content);
+              this.UpdateNewsFeed(content);
           }
         default:
           console.info("User %o sent %o", result.presence.user_id, content);
       }
     };
+  }
+
+  async DisplayNotificationHome(id : string)
+  {
+    if(this.localState.notificationHomeOnScreen)
+    {
+      //wait
+    } 
+    else
+    {
+      var notificationData = this.staticData.notifications.filter(p=>p.id == id)[0] as NotificationData;
+      if(notificationData != null)
+      {
+        var character = this.notificationHome.getChildByID("notification-character") as HTMLElement;
+        var icon = this.notificationHome.getChildByID("notification-icon") as HTMLImageElement;
+        var title = this.notificationHome.getChildByID("notification-title") as HTMLElement;
+        var content = this.notificationHome.getChildByID("notification-content") as HTMLElement; 
+        var nextButton = this.notificationHome.getChildByID("notification-button-next") as HTMLInputElement;
+        var closeButton = this.notificationHome.getChildByID("notification-button-close") as HTMLInputElement;
+      
+        character.innerHTML = notificationData.character;
+        icon.src = "/assets/black_icons/" + notificationData.iconPath + ".png"; 
+        title.innerHTML = notificationData.title;
+        this.localState.DivideUpNotificationHomeContent(notificationData.content);
+        this.localState.NextNotificationHomeContent();
+        content.innerHTML = this.localState.GetCurrentNotificationHomeContent();
+        if(this.localState.notificationHomeContentLength == 1)
+        {
+          nextButton.style.display = "none";
+          closeButton.style.display = "block";
+        }
+        else
+        {
+          nextButton.style.display = "block";
+          closeButton.style.display = "none";
+        }
+
+        this.notificationHome.setDepth(100);
+        this.notificationHome.setVisible(true);
+
+        nextButton.onclick = () => {
+          if(this.localState.NextNotificationHomeContent())
+          {
+            content.innerHTML = this.localState.GetCurrentNotificationHomeContent();
+          }
+          else
+          {
+            content.innerHTML = this.localState.GetCurrentNotificationHomeContent();
+            nextButton.style.display = "none";
+            closeButton.style.display = "block";
+          }
+        };
+        closeButton.onclick = () => {
+          this.notificationHome.setVisible(false);
+        };
+      }
+    }
+    
+  }
+
+  UpdateNewsFeed(id : string)
+  {
+
   }
 
   async initializeChat(socket: Socket, roomname: string) {

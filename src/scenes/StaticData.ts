@@ -161,6 +161,8 @@ export class StoryData
 export class NotificationData
 {
     id!: string;
+    character!: string;
+    iconPath!: string;
     title!: string;
     content!: string;
     encryption!: number;
@@ -169,6 +171,8 @@ export class NotificationData
     constructor(notification) {
         this.id = notification.id;
         this.title = notification.title;
+        this.character = notification.character;
+        this.iconPath = notification.iconPath;
         this.content = notification.content;
         this.encryption = notification.encryption;
         this.delay = notification.delay;

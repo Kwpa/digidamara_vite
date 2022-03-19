@@ -14,6 +14,10 @@ export default class LocalGameState
     roundEnergyRequirement!: number;
     voteStates!: VoteScenarioState[];
     teamStates!: TeamState[];
+    notificationHomeOnScreen: boolean = false;
+    notificationHomeStringArray!: string[];
+    notificationHomeContentLength!: number;
+    notificationHomePosition!: number;
 
     Init(username: string, round: number, actionPoints: number, maxActionPoints: number, sparksAwarded: number, energyRequirement: number, teamIDs : string[], voteStates, teamStates)
     {
@@ -28,7 +32,8 @@ export default class LocalGameState
         this.teamIDs = teamIDs;
         this.SetCurrentTeamID()
         this.voteStates = voteStates;
-        this.teamStates = teamStates;      
+        this.teamStates = teamStates;    
+        this.notificationHomeStringArray = [];  
     }
 
     UpdateFromDynamicData(dynamicData)
@@ -41,6 +46,39 @@ export default class LocalGameState
             return true;
         }
         else{
+            return false;
+        }
+    }
+
+    SetNotificationHomeOnScreen(set: boolean)
+    {
+        this.notificationHomeOnScreen = set;
+    }
+
+    DivideUpNotificationHomeContent(content: string)
+    {
+        var re = "/<p>.*?<\/p>/g";
+        var stringArray = content.split('\n');
+        this.notificationHomeStringArray = stringArray as string [];
+        this.notificationHomeContentLength = this.notificationHomeStringArray.length; 
+        this.notificationHomePosition = -1;
+    }
+
+    GetCurrentNotificationHomeContent()
+    {
+        return this.notificationHomeStringArray[this.notificationHomePosition];
+    }
+
+    NextNotificationHomeContent()
+    {
+        if(this.notificationHomePosition + 1 < this.notificationHomeContentLength-1)
+        {
+            this.notificationHomePosition++;
+            return true;
+        }
+        else if (this.notificationHomePosition + 1 == this.notificationHomeContentLength-1)
+        {
+            this.notificationHomePosition++;
             return false;
         }
     }

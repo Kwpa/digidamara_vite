@@ -178,6 +178,12 @@ body {
 	margin: auto;
   }
 
+  .notification-home {
+	width: 80%;
+	position: relative;
+	margin: auto;
+  }
+
   .justify-right {
 	text-align: right;
   }
