@@ -164,6 +164,7 @@ export class NotificationData
     character!: string;
     iconPath!: string;
     title!: string;
+    showTitle!: string;
     content!: string;
     encryption!: number;
     delay!: number;
@@ -171,6 +172,7 @@ export class NotificationData
     constructor(notification) {
         this.id = notification.id;
         this.title = notification.title;
+        this.showTitle = notification.showTitle;
         this.character = notification.character;
         this.iconPath = notification.iconPath;
         this.content = notification.content;

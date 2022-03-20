@@ -332,7 +332,7 @@ export default class MainScene extends Phaser.Scene {
     const videoPage = this.add.dom(width / 2, height / 2, VideoPage() as HTMLElement);
     const videoPlayerOverlay = this.add.dom(width / 2, height / 2, VideoPlayerOverlay() as HTMLElement);
     const votePage = this.add.dom(width / 2, height / 2, VotingPage() as HTMLElement);
-    this.notificationHome = this.add.dom(width / 2, height / 2, NotificationHome('','') as HTMLElement);
+    this.notificationHome = this.add.dom(width / 2, 190, NotificationHome('','') as HTMLElement);
     this.avatarOverlay = this.add.dom(width / 2, height / 2, AvatarOverlay('open') as HTMLElement);
     this.overlayProgressBar = this.avatarOverlay.getChildByID("teamEnergyBar") as HTMLInputElement;
     
@@ -1367,6 +1367,12 @@ export default class MainScene extends Phaser.Scene {
     await this.delay(350);
     overlayBox.style.animation = "700ms steady";
   }
+  async AnimateIconWobble() {
+    const icon = this.notificationHome.getChildByID("notification-icon-container") as HTMLElement;
+    icon.classList.add("wobble-hor-bottom");
+    await this.delay(800);
+    icon.classList.remove("wobble-hor-bottom");
+  }
 
   async delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
@@ -1479,9 +1485,17 @@ export default class MainScene extends Phaser.Scene {
         var nextButton = this.notificationHome.getChildByID("notification-button-next") as HTMLInputElement;
         var closeButton = this.notificationHome.getChildByID("notification-button-close") as HTMLInputElement;
       
-        character.innerHTML = notificationData.character;
-        icon.src = "/assets/black_icons/" + notificationData.iconPath + ".png"; 
-        title.innerHTML = notificationData.title;
+        character.innerHTML = '<strong class="has-text-white">' + notificationData.character + '</strong>';
+        icon.src = "/assets/white_icons/" + notificationData.iconPath + ".png"; 
+        if(notificationData.showTitle == "TRUE")
+        {
+          title.style.display = "block";
+          title.innerHTML = notificationData.title;
+        }
+        else
+        {
+          title.style.display = "none";
+        }
         this.localState.DivideUpNotificationHomeContent(notificationData.content);
         this.localState.NextNotificationHomeContent();
         content.innerHTML = this.localState.GetCurrentNotificationHomeContent();
@@ -1498,17 +1512,20 @@ export default class MainScene extends Phaser.Scene {
 
         this.notificationHome.setDepth(100);
         this.notificationHome.setVisible(true);
+        this.AnimateIconWobble();
 
         nextButton.onclick = () => {
           if(this.localState.NextNotificationHomeContent())
           {
             content.innerHTML = this.localState.GetCurrentNotificationHomeContent();
+            this.AnimateIconWobble();
           }
           else
           {
             content.innerHTML = this.localState.GetCurrentNotificationHomeContent();
             nextButton.style.display = "none";
             closeButton.style.display = "block";
+            this.AnimateIconWobble();
           }
         };
         closeButton.onclick = () => {

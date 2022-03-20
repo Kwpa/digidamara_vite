@@ -3,7 +3,7 @@ import { h } from 'start-dom-jsx';
 const BaseWebsite = () => {
   return (
     <div class="base">
-      <div class="fixed-header scroll-width">
+      <div class="fixed-header">
         <div class='notification has-background-dark'>
           <nav class="level is-mobile icon-area">
             <div class="level-item has-text-centered">

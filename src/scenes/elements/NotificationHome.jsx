@@ -3,20 +3,20 @@ import { h } from 'start-dom-jsx';
 const NotificationHome = (notification, imageURL) => {
   return (
     <div class="notification-home">
-      <div>
-        <div id="notification-character" class="notification-left">
+      <div class="notification-top has-background-dark">
+        <div id="notification-character" class="notification-left has-text-white">
           {notification.character}
         </div>
         <div class="notification-right">
-          <button id="notification-button-next" class="notification-next"> &gt; </button>
-          <button id="notification-button-close" class="notification-close"> X </button>
+          <div id="notification-button-next" class="notification-next"> Next </div>
+          <div id="notification-button-close" class="notification-close"> Close </div>
         </div>
       </div>
-      <div class="notification-icon">
+      <div class="notification-icon" id="notification-icon-container">
         <img id="notification-icon" src={imageURL}></img>
       </div>
-      <div id="notification-home" class="box has-background-info has-text-white is-size-6">
-        <h3 id="notification-title">
+      <div class="box notification-box has-background-warning is-size-6">
+        <h3 id="notification-title" class="is-size-4">
           {notification.title}
         </h3>
         <h3 id="notification-content">
