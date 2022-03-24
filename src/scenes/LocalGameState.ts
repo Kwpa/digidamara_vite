@@ -178,6 +178,28 @@ export default class LocalGameState
         else return false;
     }
 
+    SpendActionPointOnFanClub()
+    {
+        var newAmount = this.actionPoints - 1;
+        if(newAmount >= 0 && !this.GetCurrentTeamState().userInFanClub)
+        {
+            this.SetActionPoints(newAmount);
+            return true;
+        }
+        else return false;
+    }
+
+    SpendActionPointOnUpgrade()
+    {
+        var newAmount = this.actionPoints - 1;
+        if(newAmount >= 0 && this.GetCurrentTeamState().userInFanClub)
+        {
+            this.SetActionPoints(newAmount);
+            return true;
+        }
+        else return false;
+    }
+
     SpendActionPoints(amount: number)
     {
         var newAmount = this.actionPoints - amount;
@@ -305,6 +327,7 @@ export class TeamState
     }
     JoinFanClub()
     {
+        console.log(this.id + ": User joined fanclub ");
         this.userInFanClub=true;
     }
 }

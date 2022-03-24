@@ -1,0 +1,15 @@
+Talk to day about:
+
+Progress on 
+Youtube embed
+
+point digidamara to cloudflare
+manage dns from cloudflare
+create a secod dns entry (api.digidamara.com)
+points at kamatera
+ssl maanged by cloudflare
+
+Notifications
+Upgrades:
+
+Spend Action Point on Fan ClubFan Club

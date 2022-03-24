@@ -20,14 +20,14 @@ const TeamProfile = (teamData) => {
           <div class="level">
             <div class="level-item">
               <div class="box has-background-dark" style="position:relative;">
-                <figure class="image is-128x128">
+                <figure id="image-container" class="image is-128x128">
                   <div id="team-icon">
                   </div>
                 </figure>
-                <div style="position: absolute; top:0; left:0;">
+                <div id="fan-club-icon" style="position: absolute; top:0; left:0;">
                   <img src="/assets/images/fan.png" width="50" height="50"></img>
                 </div>
-                <div style="position: absolute; top:0; right:0;">
+                <div id="upgrade-background-container" style="position: absolute; top:0; right:0;">
                   <img src="/assets/images/upgrade.png" width="50" height="50"></img>
                 </div>
                 <div style="position: absolute; 
@@ -36,8 +36,8 @@ const TeamProfile = (teamData) => {
                   width: 50px; 
                   height:50px; 
                   position: absolute;">
-                  <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-                    <h1>9</h1>
+                  <div id = "upgrade-value-container" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                    <h1 id="upgrade-value">0</h1>
                   </div>
                 </div>
               </div>
@@ -78,16 +78,34 @@ const TeamProfile = (teamData) => {
             <div class="box has-background-light">
               <div class="level">
                 <div class="level-item">
-                  <button id="donateButton" class="button is-primary is-responsive" style="margin: 0 auto;">Donate</button>
-                  <span class="tag">
-                    Costs 1 Action Point
-                  </span>
+                  <div style="display: block">
+                    <button id="donate-button" class="button is-primary is-responsive" style="display: block; margin: 0 auto;">Donate</button>
+                    <div style="height: 20px;"></div>
+                    <div class="tags has-addons">
+                      <span class="tag is-primary">-1 AP</span>
+                      <span class="tag is-warning">Give Energy, Gain Sparks</span>
+                    </div>
+                  </div>
                 </div>
-                <div class="level-item">
-                  <button id="upgradeButton" class="button is-primary is-responsive" style="margin: 0 auto;">Upgrade</button>
-                  <span class="tag">
-                    Costs 1 Action Point
-                  </span>
+                <div id="fan-club-container" class="level-item">
+                  <div style="display: block">
+                    <button id="fan-club-button" class="button is-primary is-responsive" style="display: block; margin: 0 auto;">Join Fan Club</button>
+                    <div style="height: 20px;"></div>
+                    <div class="tags has-addons">
+                      <span class="tag is-primary">-1 AP</span>
+                      <span class="tag is-warning">Unlocks Upgrades and Chat</span>
+                    </div>
+                  </div>
+                </div>
+                <div id="upgrade-container" class="level-item is-centered">
+                  <div style="display: block">
+                    <button id="upgrade-button" class="button is-primary is-responsive" style="display: block; margin: 0 auto;"><img src="/assets/images/upgrade.png" width="30" height="30"></img> Upgrade</button>
+                    <div style="height: 20px;"></div>
+                    <div class="tags has-addons">
+                      <span class="tag is-primary">-1 AP</span>
+                      <span class="tag is-warning">Gain +1 Spark Per Donation</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

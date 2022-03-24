@@ -414,6 +414,23 @@ export default class MainScene extends Phaser.Scene {
     }
     this.avatarOverlayButton.onclick = () => {
       this.teamProfilePages[this.localState.carouselPosition].setVisible(true);
+      var donateButton = this.teamProfilePages[this.localState.carouselPosition].getChildByID('donate-button') as HTMLInputElement;
+      var fanClubButton = this.teamProfilePages[this.localState.carouselPosition].getChildByID('fan-club-button') as HTMLInputElement;
+      var upgradeButton = this.teamProfilePages[this.localState.carouselPosition].getChildByID('upgrade-button') as HTMLInputElement; 
+
+      if(this.localState.actionPoints == 0)
+      {
+        donateButton.setAttribute("disabled",'');
+        fanClubButton.setAttribute("disabled",'');
+        upgradeButton.setAttribute("disabled",'');
+      }
+      else
+      {
+        donateButton.removeAttribute("disabled");
+        fanClubButton.removeAttribute("disabled");
+        upgradeButton.removeAttribute("disabled");
+      }
+
       this.avatarOverlay.setVisible(false);
       this.tapAreaLeft.removeInteractive();
       this.tapAreaRight.removeInteractive();
@@ -581,6 +598,12 @@ export default class MainScene extends Phaser.Scene {
           "t_004UpgradeLevel": 0,
           "t_005UpgradeLevel": 0,
           "t_006UpgradeLevel": 0,
+          "t_001InFanClub": false,
+          "t_002InFanClub": false,
+          "t_003InFanClub": false,
+          "t_004InFanClub": false,
+          "t_005InFanClub": false,
+          "t_006InFanClub": false,
           "v_001_choiceOne": 0,
           "v_001_choiceTwo": 0,
           "v_002_choiceOne": 0,
@@ -1012,8 +1035,10 @@ export default class MainScene extends Phaser.Scene {
     this.teamProfilePages = [];
     let { width, height } = this.sys.game.canvas;
 
+    var k = 0;
     this.staticData.teams.forEach(
       (team) => {
+        
         var title = team.id as string;
         console.log("title: " + title);
         const data = { name: team.title, biography: team.biography };
@@ -1038,15 +1063,54 @@ export default class MainScene extends Phaser.Scene {
         });
         teamProfile.setVisible(false);
         this.teamProfilePages.push(teamProfile);
-        var donateButton = teamProfile.getChildByID('donateButton') as HTMLElement;
-        var closeButton = teamProfile.getChildByID('close-team-page-button') as HTMLElement;
+        var donateButton = teamProfile.getChildByID('donate-button') as HTMLInputElement;
+        var fanClubButton = teamProfile.getChildByID('fan-club-button') as HTMLInputElement;
+        var upgradeButton = teamProfile.getChildByID('upgrade-button') as HTMLInputElement;
+        var fanClubIcon = teamProfile.getChildByID('fan-club-icon') as HTMLElement;
+        var fanClubButtonContainer = teamProfile.getChildByID('fan-club-container') as HTMLElement;
+        var upgradeButtonContainer = teamProfile.getChildByID('upgrade-container') as HTMLElement;
+        var closeButton = teamProfile.getChildByID('close-team-page-button') as HTMLInputElement;
+        var upgradeValue = teamProfile.getChildByID("upgrade-value") as HTMLElement;            
+        var upgradeBackground = teamProfile.getChildByID("upgrade-background-container") as HTMLElement;
+        var imageContainer = teamProfile.getChildByID("image-container") as HTMLElement;
 
+        if(this.localState.teamStates[k].userInFanClub)
+        {
+          fanClubIcon.style.display = "block";
+          fanClubButtonContainer.style.display = "none";
+          upgradeBackground.style.display = "block";
+          upgradeValue.style.display = "inline";
+          upgradeValue.innerHTML = this.localState.teamStates[k].upgradeLevel.toString();
+        }
+        else
+        {
+          fanClubIcon.style.display = "none";
+          upgradeButtonContainer.style.display = "none";
+          upgradeBackground.style.display = "none";
+          upgradeValue.style.display = "none";
+        }
+
+        if(this.localState.actionPoints == 0)
+        {
+          donateButton.setAttribute("disabled",'');
+          fanClubButton.setAttribute("disabled",'');
+          upgradeButton.setAttribute("disabled",'');
+        }
+
+        k++;
         donateButton.onclick = async () => {
           if (this.localState.SpendActionPointOnDonation()) {
             this.localState.GainSparks(1 + this.localState.GetUpgradeLevel());
             this.localState.teamStates[this.localState.carouselPosition].DonateEnergy();
             this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
             this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
+
+            if(this.localState.actionPoints == 0)
+            {
+              donateButton.setAttribute("disabled",'');
+              fanClubButton.setAttribute("disabled",'');
+              upgradeButton.setAttribute("disabled",'');
+            }
 
             await this.WriteToDDMLocalStorage(["actionPoints", "sparks"], [this.localState.actionPoints, this.localState.sparksAwarded]);
 
@@ -1059,6 +1123,8 @@ export default class MainScene extends Phaser.Scene {
               this.SetTeamProfileProgress(teamState.currentEnergy, this.localState.roundEnergyRequirement, j);
             }
 
+            this.CSSAnimation([imageContainer], "jello-horizontal", 800);
+
             var getUserData = await localStorage.getItem("ddm_localData");
             const value = JSON.parse(getUserData as string);
 
@@ -1066,6 +1132,61 @@ export default class MainScene extends Phaser.Scene {
             //update UI
           }
         }
+
+        fanClubButton.onclick = async () => {
+          if (this.localState.SpendActionPointOnFanClub()) {
+            this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
+
+            this.localState.GetCurrentTeamState().JoinFanClub();
+            await this.WriteToDDMLocalStorage(["actionPoints", this.localState.currentTeamID + "InFanClub"], [this.localState.actionPoints, true]);
+
+            if(this.localState.actionPoints == 0)
+            {
+              donateButton.setAttribute("disabled",'');
+              fanClubButton.setAttribute("disabled",'');
+              upgradeButton.setAttribute("disabled",'');
+            }
+
+            //update UI
+         
+            fanClubButtonContainer.style.display = "none";
+            fanClubIcon.style.display = "block";
+            upgradeButtonContainer.style.display = "block"
+            upgradeBackground.style.display = "block";
+            upgradeValue.style.display = "inline";
+        
+            this.CSSAnimation([fanClubIcon, upgradeBackground],"puff-in-center", 800);
+            this.CSSAnimation([imageContainer], "jello-horizontal", 800);
+            /* var getUserData = await localStorage.getItem("ddm_localData");
+            const value = JSON.parse(getUserData as string); */
+
+            //await this.DonateEnergyMatchState(socket, this.localState.currentTeamID);
+          }
+        }
+
+        upgradeButton.onclick = async () => {
+          if (this.localState.SpendActionPointOnUpgrade()) {
+            console.log("upgrade");
+            this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
+            this.localState.UpgradeTeam(this.localState.currentTeamID);
+            await this.WriteToDDMLocalStorage(["actionPoints", this.localState.currentTeamID + "UpgradeLevel"], [this.localState.actionPoints, this.localState.GetCurrentTeamState().upgradeLevel]);
+
+            if(this.localState.actionPoints == 0)
+            {
+              donateButton.setAttribute("disabled",'');
+              fanClubButton.setAttribute("disabled",'');
+              upgradeButton.setAttribute("disabled",'');
+            }
+
+            //update UI   
+            upgradeValue.innerHTML = this.localState.GetCurrentTeamState().upgradeLevel.toString(); 
+            this.CSSAnimation([imageContainer], "jello-horizontal", 800);
+            this.CSSAnimation([upgradeValue, upgradeBackground], "wobble-hor-bottom", 800);
+
+            //await this.DonateEnergyMatchState(socket, this.localState.currentTeamID);
+          }
+        }
+
         closeButton.onclick = () => {
           teamProfile.setVisible(false);
           this.avatarOverlay.setVisible(true);
@@ -1086,6 +1207,17 @@ export default class MainScene extends Phaser.Scene {
   tweenDummy;
   pathDummy;
   follower;
+
+  async CSSAnimation(elements: HTMLElement[], nameOfAnimationClass: string, animationLength: number)
+  {
+    elements.forEach(element => {
+      element.classList.add(nameOfAnimationClass);  
+    });
+    await this.delay(animationLength);
+    elements.forEach(element => {
+      element.classList.remove(nameOfAnimationClass);  
+    });
+  }
 
   async WriteToDDMLocalStorage(keys: string[], values: Array<any>) {
     const data = await localStorage.getItem('ddm_localData');
