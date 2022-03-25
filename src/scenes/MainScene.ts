@@ -12,6 +12,8 @@ import VideoPlayerOverlay from './elements/VideoPlayerOverlay';
 import TeamProfile from './elements/TeamProfile';
 import VotingPage from './elements/VotingPage';
 import StoryAccordian from './elements/StoryAccordian';
+import ChatChannel from './elements/ChatChannel';
+
 
 import Bulma from '../node_modules/bulma/css/bulma.css';
 import { ChannelMessage, ChannelMessageList, Client, Session, Socket, StorageObject, Users, User, Match, StorageObjects, MatchData } from "@heroiclabs/nakama-js";
@@ -43,8 +45,10 @@ export default class MainScene extends Phaser.Scene {
   voteScenarios_data!: object;
   labels_data!: object;
   videoContent_data!: object;
+  chatChannels_data!: object;
 
   teamProfilePages!: Phaser.GameObjects.DOMElement[];
+  chatPages!: Phaser.GameObjects.DOMElement[];
   session!: Session;
   client!: Client;
   match!: Match;
@@ -64,6 +68,7 @@ export default class MainScene extends Phaser.Scene {
   helpFootButton!: HTMLElement;
   closeSettingsPageButton!: HTMLElement;
   closeChatPageButton!: HTMLElement;
+  closeChatChannelsPageButton!: HTMLElement;
   closeVotePageButton!: HTMLElement;
   closeVideoPageButton!: HTMLElement;
   closeHelpPageButton!: HTMLElement;
@@ -145,6 +150,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.json('notifications_content', '/assets/json/Notifications.json');
     this.load.json('appLabels_content', '/assets/json/Labels.json');
     this.load.json('video_content', '/assets/json/VideoContent.json');
+    this.load.json('chat_channels', '/assets/json/ChatChannels.json');
     this.load.json('eightpath', '/assets/json/paths/path_2.json');
     this.load.json('web_config', '/assets/json/web_config.json');
 
@@ -267,6 +273,7 @@ export default class MainScene extends Phaser.Scene {
     this.voteScenarios_data = this.cache.json.get('voteScenarios_content') as object;
     this.labels_data = this.cache.json.get('appLabels_content') as object;
     this.videoContent_data = this.cache.json.get('video_content') as object;
+    this.chatChannels_data = this.cache.json.get('chat_channels') as object;
     this.webConfig = this.cache.json.get('web_config') as object;
   }
 
@@ -328,7 +335,6 @@ export default class MainScene extends Phaser.Scene {
     game.style.setProperty('z-index', '-1');
 
     const baseWebsite = this.add.dom(width / 2, height / 2, BaseWebsite() as HTMLElement);
-    const chatPage = this.add.dom(width / 2, height / 2, ChatPage() as HTMLElement);
     const videoPage = this.add.dom(width / 2, height / 2, VideoPage() as HTMLElement);
     const videoPlayerOverlay = this.add.dom(width / 2, height / 2, VideoPlayerOverlay() as HTMLElement);
     const votePage = this.add.dom(width / 2, height / 2, VotingPage() as HTMLElement);
@@ -337,31 +343,26 @@ export default class MainScene extends Phaser.Scene {
     this.overlayProgressBar = this.avatarOverlay.getChildByID("teamEnergyBar") as HTMLInputElement;
     
     this.videoPlayerContainer = videoPlayerOverlay.getChildByID("video-player") as HTMLElement;
-
+    
     this.avatarOverlay.setVisible(false);
     videoPlayerOverlay.setVisible(false);
     this.notificationHome.setVisible(false);
-    chatPage.setVisible(false);
     videoPage.setVisible(false);
     votePage.setVisible(false);
     //baseWebsite.setVisible(false);
-
+    
     //debug
     this.textElement = document.getElementById('rnd-update') as HTMLElement;
     this.anotherTextElement = document.getElementById('chat-update') as HTMLElement;
     this.textElement.hidden = true;
     this.anotherTextElement.hidden = true;
-
+    
     this.roundCounter = baseWebsite.getChildByID("round-header-value") as HTMLElement;
     this.actionPointsCounter = baseWebsite.getChildByID("ap-header-value") as HTMLElement;
     this.sparksCounter = baseWebsite.getChildByID("sparks-header-value") as HTMLElement;
-    this.chatSubmitButton = document.getElementById('chat-submit-button') as HTMLElement;
-    this.chatMessageContainer = document.getElementById('chat-container') as HTMLElement;
-    this.messageInput = chatPage.getChildByID('chat-input') as HTMLInputElement;
     this.chatFooterButton = document.getElementById('chat-footer-button') as HTMLElement;
     this.videoFooterButton = document.getElementById('video-footer-button') as HTMLElement;
     this.voteFooterButton = document.getElementById('vote-footer-button') as HTMLElement;
-    this.closeChatPageButton = chatPage.getChildByID('close-chat-page-button') as HTMLElement;
     this.closeVideoPageButton = videoPage.getChildByID('close-video-page-button') as HTMLElement;
     this.closeVotePageButton = votePage.getChildByID('close-voting-page-button') as HTMLElement;
     this.voteContainer = votePage.getChildByID('vote-container') as HTMLElement;
@@ -372,22 +373,11 @@ export default class MainScene extends Phaser.Scene {
     this.loadNextVideoPlayerButton = videoPlayerOverlay.getChildByID('video-player-button-next') as HTMLElement;
     this.loadPreviousVideoPlayerButton = videoPlayerOverlay.getChildByID('video-player-button-previous') as HTMLElement;
     
-
+    
     this.avatarOverlayButton = this.avatarOverlay.getChildByID('openProfile') as HTMLElement;
     this.notificationsArea = baseWebsite.getChildByID("gameArea") as HTMLElement;
-
-    this.chatFooterButton.onclick = () => {
-      chatPage.setVisible(true);
-      this.avatarOverlay.setVisible(false);
-      this.tapAreaLeft.removeInteractive();
-      this.tapAreaRight.removeInteractive();
-    }
-    this.closeChatPageButton.onclick = () => {
-      chatPage.setVisible(false);
-      this.avatarOverlay.setVisible(true);
-      this.tapAreaLeft.setInteractive();
-      this.tapAreaRight.setInteractive();
-    }
+    
+    
     this.videoFooterButton.onclick = () => {
       videoPage.setVisible(true);
       this.avatarOverlay.setVisible(false);
@@ -519,7 +509,8 @@ export default class MainScene extends Phaser.Scene {
       this.notifications_data,
       this.voteScenarios_data,
       this.labels_data,
-      this.videoContent_data
+      this.videoContent_data,
+      this.chatChannels_data
     );
   }
 
@@ -615,7 +606,22 @@ export default class MainScene extends Phaser.Scene {
           "v_005_choiceOne": 0,
           "v_005_choiceTwo": 0,
           "v_006_choiceOne": 0,
-          "v_006_choiceTwo": 0
+          "v_006_choiceTwo": 0,
+          "c_001Member": 1,
+          "c_002Member": 1,
+          "c_003Member": 1,
+          "c_004Member": 1,
+          "c_005Member": 1,
+          "c_006Member": 1,
+          "c_007Member": 1,
+          "c_008Member": 1,
+          "c_009Member": 1,
+          "c_010Member": 1,
+          "c_011Member": 1,
+          "c_012Member": 1,
+          "c_013Member": 1,
+          "c_014Member": 1
+
         }
       ));
 
@@ -637,6 +643,7 @@ export default class MainScene extends Phaser.Scene {
     const socket = this.client.createSocket();
     await socket.connect(this.session, true);
 
+    await this.SetupChatChannelsAndPages();
     await this.SetupTeamProfiles(socket);
     await this.SetupTeamAvatars();
     await this.SetupVotePage(socket);
@@ -1029,6 +1036,51 @@ export default class MainScene extends Phaser.Scene {
     this.voteContainer.innerHTML = "";
     this.voteContainer.append(voteScenario);
     //element.append(voteScenario);
+  }
+
+  async SetupChatChannelsAndPages()
+  {
+    this.teamProfilePages = [];
+    let { width, height } = this.sys.game.canvas;
+
+    const chatPage = this.add.dom(width / 2, height / 2, ChatPage() as HTMLElement);
+    chatPage.setVisible(false);
+    this.chatSubmitButton = document.getElementById('chat-submit-button') as HTMLElement;
+    this.chatMessageContainer = document.getElementById('chat-container') as HTMLElement;
+    this.closeChatPageButton = chatPage.getChildByID('close-chat-page-button') as HTMLElement;
+    this.closeChatChannelsPageButton = chatPage.getChildByID('close-chat-channels-page-button') as HTMLInputElement;
+    this.messageInput = chatPage.getChildByID('chat-input') as HTMLInputElement;
+    this.chatFooterButton.onclick = () => {
+      chatPage.setVisible(true);
+      this.avatarOverlay.setVisible(false);
+      this.tapAreaLeft.removeInteractive();
+      this.tapAreaRight.removeInteractive();
+    }
+    this.closeChatPageButton.onclick = () => {
+      chatPage.setVisible(false);
+      this.avatarOverlay.setVisible(true);
+      this.tapAreaLeft.setInteractive();
+      this.tapAreaRight.setInteractive();
+    }
+    this.closeChatChannelsPageButton.onclick = () => {
+      chatPage.setVisible(false);
+      this.avatarOverlay.setVisible(true);
+      this.tapAreaLeft.setInteractive();
+      this.tapAreaRight.setInteractive();
+    }
+
+    const container = chatPage.getChildByID('chat-channel-container') as HTMLElement;
+    var k = 0;
+    this.staticData.chatChannels.forEach(async (channel) => {
+      var id = channel.id;
+      var getChannelSubscription = await this.ReadFromDDMLocalStorageNumber(id+"Member");
+      if(getChannelSubscription == 1)
+      {
+        var src = "/assets/white_icons/" + channel.iconPath + ".png"; 
+        const chatChannel = ChatChannel(channel.title, src) as HTMLElement;
+        container.append(chatChannel);
+      }
+    })
   }
 
   async SetupTeamProfiles(socket: Socket) {

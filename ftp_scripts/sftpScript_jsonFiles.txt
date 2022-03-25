@@ -11,4 +11,5 @@ put Notifications.json
 put VotingScenarios.json
 put Labels.json
 put VideoContent.json
+put ChatChannels.json
 bye

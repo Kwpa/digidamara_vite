@@ -1,0 +1,92 @@
+[
+    {
+        "id":  "c_001",
+        "title":  "Space Station",
+        "iconPath":  "icon_thepromoter",
+        "active":  "true"
+    },
+    {
+        "id":  "c_002",
+        "title":  "Universal",
+        "iconPath":  "icon_thepromoter",
+        "active":  "true"
+    },
+    {
+        "id":  "c_003",
+        "title":  "Galaxy 1",
+        "iconPath":  "icon_thepromoter",
+        "active":  "true"
+    },
+    {
+        "id":  "c_004",
+        "title":  "Galaxy 2",
+        "iconPath":  "icon_thepromoter",
+        "active":  "true"
+    },
+    {
+        "id":  "c_005",
+        "title":  "Galaxy 3",
+        "iconPath":  "icon_thepromoter",
+        "active":  "true"
+    },
+    {
+        "id":  "c_006",
+        "title":  "Galaxy 4",
+        "iconPath":  "icon_thepromoter",
+        "active":  "true"
+    },
+    {
+        "id":  "c_006",
+        "title":  "Galaxy 5",
+        "iconPath":  "icon_thepromoter",
+        "active":  "true"
+    },
+    {
+        "id":  "c_007",
+        "title":  "Galaxy 6",
+        "iconPath":  "icon_thepromoter",
+        "active":  "true"
+    },
+    {
+        "id":  "c_008",
+        "title":  "Master Gauri \u0026 Refilwe Fan Club",
+        "iconPath":  "icon_thepromoter",
+        "active":  "true"
+    },
+    {
+        "id":  "c_009",
+        "title":  "The Brutus Fan Club",
+        "iconPath":  "icon_thepromoter",
+        "active":  "true"
+    },
+    {
+        "id":  "c_010",
+        "title":  "Popper \u0026 Piper Fan Club",
+        "iconPath":  "icon_thepromoter",
+        "active":  "true"
+    },
+    {
+        "id":  "c_011",
+        "title":  "The Sglunkus Snorfluxii Fan Club",
+        "iconPath":  "icon_thepromoter",
+        "active":  "true"
+    },
+    {
+        "id":  "c_012",
+        "title":  "Eeeksum Fan Club",
+        "iconPath":  "icon_thepromoter",
+        "active":  "true"
+    },
+    {
+        "id":  "c_013",
+        "title":  "Mandulae Fan Club",
+        "iconPath":  "icon_thepromoter",
+        "active":  "true"
+    },
+    {
+        "id":  "c_014",
+        "title":  "The Promoter Fan Club",
+        "iconPath":  "icon_thepromoter",
+        "active":  "true"
+    }
+]

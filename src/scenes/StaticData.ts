@@ -5,8 +5,9 @@ export default class StaticData
     voteScenarios!: VoteScenarioData[];
     appLabels!: AppLabelData[];
     videoContent!: VideoContentData[];
+    chatChannels!: ChatChannelData[];
 
-    Init(teams_data, barks_data, items_data, story_data, notifications_data, voteScenarios_data, appLabels_data, videoContent_data)
+    Init(teams_data, barks_data, items_data, story_data, notifications_data, voteScenarios_data, appLabels_data, videoContent_data, chatChannel_data)
     {
         console.log("INIT STATIC");
         this.teams = [];
@@ -14,6 +15,7 @@ export default class StaticData
         this.voteScenarios = [];
         this.appLabels = [];
         this.videoContent = [];
+        this.chatChannels = [];
         //console.log(story_data[0].teamId + " " + teams_data[0].id);
          
         for(var k in teams_data)
@@ -39,6 +41,10 @@ export default class StaticData
         for(var k in videoContent_data)
         {
             this.videoContent.push(new VideoContentData(videoContent_data[k]));
+        }
+        for(var k in chatChannel_data)
+        {
+            this.chatChannels.push(new ChatChannelData(chatChannel_data[k]));
         }
     }
 }
@@ -193,6 +199,21 @@ export class VideoContentData
         this.title = videoContent.title;
         this.youtubeId = videoContent.youtubeId;
         this.active = videoContent.active;
+      }
+}
+
+export class ChatChannelData
+{
+    id!: string;
+    title!: string;
+    iconPath!: string;
+    active!: boolean;
+
+    constructor(chatChannel) {
+        this.id = chatChannel.id;
+        this.title = chatChannel.title;
+        this.iconPath = chatChannel.iconPath;
+        this.active = chatChannel.active;
       }
 }
 

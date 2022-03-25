@@ -56,25 +56,36 @@ position: relative;
 	display: flex;
 	height: calc(100vh - 220px);
 	width:100vw;
-	max-width: 500px;
+	max-width: 700px;
 	margin: 0 auto;
-	background-color: red;	
 }
 .popup-box-wrapper
 {
 	height: inherit;
 	width: inherit;
 }
-.popup-page-scroll
+.popup-page-scroll-with-footer
 {
 	overflow-y: auto;
 	overflow-x: hidden;
 	
 	height: calc(100vh - 370px);
+	margin-bottom: 20px;	
+}
+.popup-page-scroll-without-footer
+{
+	overflow-y: auto;
+	overflow-x: hidden;
+	
+	height: calc(100vh - 330px);
 	margin-bottom: 20px;
 	
 }
 
+.team-top-row
+{
+	width:auto;
+}
 .chat-input-footer {
 width:100%;
 position: absolute;
@@ -201,6 +212,17 @@ position: relative;
 margin: auto;
 }
 
+.chat-channel-icon
+{
+	position: absolute;
+	left: 4px;
+	margin-top:4px;
+	width: 60px;
+	background-color:rgb(59, 59, 59);
+	border-radius: 50%;
+	border: 5px solid rgb(59, 59, 59);
+}
+
 .notification-home {
 width: calc(100% - 150px);
 max-width: 500px;
@@ -218,6 +240,7 @@ margin: auto;
 	border-radius: 50%;
 	border: 5px solid rgb(59, 59, 59);
 }
+
 
 .notification-top
 {
