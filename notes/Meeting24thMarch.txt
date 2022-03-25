@@ -13,3 +13,16 @@ Notifications
 Upgrades:
 
 Spend Action Point on Fan ClubFan Club
+
+
+Signals:
+Player is part of galaxy / fanclub
+Signals selection page
+Signal messaging page
+Icons
+Profanity
+Time detection
+Message list check
+
+Last Signal Visible On Dance Floor:
+Icons
