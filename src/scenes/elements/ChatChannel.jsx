@@ -6,13 +6,13 @@ const ChatChannel = (channelName, imageURL) => {
             <div class="box has-text-black is-size-6 chat-channel-box">
                 <div>
                     <h3>{channelName} <span>
-                        <button>Open</button>
+                        <button id="chat-channel-button-open" class="button is-primary is-small">&gt;</button>
                     </span></h3>
                     
                 </div>
             </div>
             <div class="chat-channel-icon" id="notification-icon-container">
-                <img id="notification-icon" src={imageURL}></img>
+                <img id="channel-icon" src={imageURL}></img>
             </div>
         </div>
     )

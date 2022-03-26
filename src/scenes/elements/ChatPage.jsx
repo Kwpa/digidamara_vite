@@ -10,17 +10,23 @@ const ChatPage = () => {
             <nav class="level is-mobile">
               <div class="level-left">
                 <div class="level-item has-text-centered">
-                  <h1 class="title has-text-black">Chat</h1>
+                  <div class="chat-channel-container" id="channel-icon-container">
+                    <img id="channel-icon"></img>
+                  </div>
+                  <button id="chat-channel-button-return" class="button is-warning chat-channel-button-return">&lt;</button>
+                  <h1 id="chat-channel-title" class="title has-text-black">Chat</h1>
                 </div>
               </div>
             </nav>
             <div style="position: absolute; right:7px; top: 7px;">
               <img id="close-chat-page-button" class="hdrftr-icon" src="/assets/black_icons/icon_cross_black.png" style=""></img>
             </div>
-            <div id="chat-container" class="popup-page-scroll-with-footer">
+              <div id="chat-container" class="popup-page-scroll-with-footer">
             </div>
-            <input id="chat-input"></input>
-            <button id="chat-submit-button" class="button">Submit</button>
+            <div class="chat-input-container">
+              <input id="chat-input" class="input chat-input-element"></input>
+              <button id="chat-submit-button" class="button chat-input-submit-button is-primary">Submit</button>
+            </div>
           </div>
           <div id="chat-channels">
             <nav class="level is-mobile">

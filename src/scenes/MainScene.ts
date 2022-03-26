@@ -60,7 +60,12 @@ export default class MainScene extends Phaser.Scene {
   videoTileContainer!: HTMLElement;
   storeMatchReferece!: StorageObjects;
 
+  chatChannelOpen!: HTMLElement;
+  chatChannels!: HTMLElement;
   chatSubmitButton!: HTMLElement;
+  chatChannelTitle!: HTMLElement;
+  chatChannelIcon!: HTMLImageElement;
+  returnToChatChannelsButton!: HTMLElement;
   settingsHeaderButton!: HTMLElement;
   chatFooterButton!: HTMLElement;
   voteFooterButton!: HTMLElement;
@@ -606,22 +611,7 @@ export default class MainScene extends Phaser.Scene {
           "v_005_choiceOne": 0,
           "v_005_choiceTwo": 0,
           "v_006_choiceOne": 0,
-          "v_006_choiceTwo": 0,
-          "c_001Member": 1,
-          "c_002Member": 1,
-          "c_003Member": 1,
-          "c_012Member": 0,
-          "c_005Member": 0,
-          "c_004Member": 0,
-          "c_006Member": 0,
-          "c_007Member": 0,
-          "c_008Member": 0,
-          "c_009Member": 0,
-          "c_010Member": 0,
-          "c_011Member": 0,
-          "c_013Member": 0,
-          "c_014Member": 0
-
+          "v_006_choiceTwo": 0
         }
       ));
 
@@ -652,9 +642,15 @@ export default class MainScene extends Phaser.Scene {
     }
     else
     {
-      var channels = await this.GetGroupsFromAccount();
+      var channels = await this.GetGroupsFromAccount("names");
       this.localState.AddChatChannels(channels);
     }
+    
+    var channelIds = await this.GetGroupsFromAccount("ids") as string[];
+    channelIds.forEach((channelId)=>{
+      
+      this.JoinGroupChat(socket, channelId);
+    })
 
     await this.SetupChatChannelsAndPages();
     await this.SetupTeamProfiles(socket);
@@ -1058,10 +1054,16 @@ export default class MainScene extends Phaser.Scene {
 
     const chatPage = this.add.dom(width / 2, height / 2, ChatPage() as HTMLElement);
     chatPage.setVisible(false);
+    this.chatChannelOpen = document.getElementById('chat-channel-open') as HTMLElement;
+    this.chatChannels = document.getElementById('chat-channels') as HTMLElement;
     this.chatSubmitButton = document.getElementById('chat-submit-button') as HTMLElement;
     this.chatMessageContainer = document.getElementById('chat-container') as HTMLElement;
     this.closeChatPageButton = chatPage.getChildByID('close-chat-page-button') as HTMLElement;
     this.closeChatChannelsPageButton = chatPage.getChildByID('close-chat-channels-page-button') as HTMLInputElement;
+    this.returnToChatChannelsButton = chatPage.getChildByID('chat-channel-button-return') as HTMLInputElement;
+    this.chatChannelTitle = chatPage.getChildByID('chat-channel-title') as HTMLInputElement;
+    this.chatChannelIcon = chatPage.getChildByID('channel-icon') as HTMLImageElement;
+    
     this.messageInput = chatPage.getChildByID('chat-input') as HTMLInputElement;
     this.chatFooterButton.onclick = () => {
       chatPage.setVisible(true);
@@ -1081,19 +1083,38 @@ export default class MainScene extends Phaser.Scene {
       this.tapAreaLeft.setInteractive();
       this.tapAreaRight.setInteractive();
     }
+    this.returnToChatChannelsButton.onclick = () => {
+      this.chatChannelOpen.style.display="none";
+      this.chatChannels.style.display="block";
+    }
 
     const container = chatPage.getChildByID('chat-channel-container') as HTMLElement;
     var k = 0;
-    this.staticData.chatChannels.forEach(async (channel) => {
+    this.staticData.chatChannels.forEach((channel) => {
       
       var id = channel.id;
       if(this.localState.chatChannels.includes(id))
       {
         var src = "/assets/white_icons/" + channel.iconPath + ".png"; 
         const chatChannel = ChatChannel(channel.title, src) as HTMLElement;
+        const chatChannelOpenButton = chatChannel.querySelector("#chat-channel-button-open") as HTMLElement;
+        
+        chatChannelOpenButton.onclick = () => {
+          this.chatChannelOpen.style.display="block";
+          this.chatChannels.style.display="none";
+          this.chatChannelTitle.innerHTML = channel.title;
+          this.chatChannelIcon.src = "/assets/white_icons/" + channel.iconPath + ".png";
+          this.ReloadGroupChat(channel.id);
+        }
+        
         container.append(chatChannel);
       }
     })
+  }
+
+  async ReloadGroupChat(groupId: string)
+  {
+
   }
 
   async SetupTeamProfiles(socket: Socket) {
@@ -1473,8 +1494,6 @@ export default class MainScene extends Phaser.Scene {
           (this.imgs[this.localState.carouselPosition].img_A as Image).setTint(0xffffff);
           (this.imgs[this.localState.carouselPosition].img_B as Image).setTint(0xffffff);
           await this.AnimateOverlayChange();
-          console.log("new team " + this.localState.currentTeamID);
-          this.avatarOverlay.getChildByID("avId").innerHTML = this.localState.currentTeamID;
           this.avatarOverlayButton.innerHTML = this.staticData.teams[this.localState.carouselPosition].title;
         }
       });
@@ -1500,8 +1519,6 @@ export default class MainScene extends Phaser.Scene {
           this.avatarOverlayButton.innerHTML = this.staticData.teams[this.localState.carouselPosition].title;
 
           await this.AnimateOverlayChange();
-          console.log("new team " + this.localState.currentTeamID);
-          this.avatarOverlay.getChildByID("avId").innerHTML = this.localState.currentTeamID;
         }
       });
 
@@ -1760,17 +1777,30 @@ export default class MainScene extends Phaser.Scene {
     }
   }
 
-  async GetGroupsFromAccount()
+  async GetGroupsFromAccount(returnType: string)
   {
     var names = [] as string [];
+    var ids = [] as string [];
     var userId = (await this.client.getAccount(this.session)).user?.id as string;
     var groupList = await (await this.client.listUserGroups(this.session, userId)).user_groups as UserGroup[];
 
-    groupList.forEach(userGroup => {
-      var name = userGroup.group?.name as string;
-      names.push(name);
-    });
-    return names;
+    if(returnType == "id")
+    {
+      groupList.forEach(userGroup => {
+        var id = userGroup.group?.id as string;
+        ids.push(id);
+      });
+      return ids;
+    }
+    else if (returnType == "name")
+    {
+      groupList.forEach(userGroup => {
+        var name = userGroup.group?.name as string;
+        names.push(name);
+      });
+      return names;
+    }
+    else return [];
   }
 
   async JoinGroupChat(socket: Socket, groupname: string)
