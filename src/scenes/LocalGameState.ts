@@ -8,6 +8,7 @@ export default class LocalGameState
     maxActionPoints!: number;
     carouselPosition!: number;
     videoContentPosition!: number;
+    chatChannels!: string[];
     currentTeamID!: string;
     teamIDs!: string[];
     round: number = 0;
@@ -34,6 +35,7 @@ export default class LocalGameState
         this.voteStates = voteStates;
         this.teamStates = teamStates;    
         this.notificationHomeStringArray = [];  
+        this.chatChannels = [];
     }
 
     UpdateFromDynamicData(dynamicData)
@@ -53,6 +55,13 @@ export default class LocalGameState
     SetNotificationHomeOnScreen(set: boolean)
     {
         this.notificationHomeOnScreen = set;
+    }
+
+    AddChatChannels(channelIds: string[])
+    {
+        channelIds.forEach((id) => {
+            this.chatChannels.push(id);
+        })
     }
 
     DivideUpNotificationHomeContent(content: string)

@@ -215,12 +215,18 @@ margin: auto;
 .chat-channel-icon
 {
 	position: absolute;
-	left: 4px;
-	margin-top:4px;
+	top:0;
+	left: 15px;
 	width: 60px;
 	background-color:rgb(59, 59, 59);
 	border-radius: 50%;
 	border: 5px solid rgb(59, 59, 59);
+}
+
+.chat-channel-box
+{
+	margin-left: 100px;
+	margin-right: 20px;
 }
 
 .notification-home {

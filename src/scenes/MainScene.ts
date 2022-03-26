@@ -16,7 +16,7 @@ import ChatChannel from './elements/ChatChannel';
 
 
 import Bulma from '../node_modules/bulma/css/bulma.css';
-import { ChannelMessage, ChannelMessageList, Client, Session, Socket, StorageObject, Users, User, Match, StorageObjects, MatchData } from "@heroiclabs/nakama-js";
+import { ChannelMessage, ChannelMessageList, Client, Session, Socket, StorageObject, Users, User, Match, StorageObjects, MatchData, GroupList, Group, UserGroup } from "@heroiclabs/nakama-js";
 import collect from 'collect.js';
 import PerspectiveImagePlugin from 'phaser3-rex-plugins/plugins/perspectiveimage-plugin.js';
 import { PerspectiveCarousel } from 'phaser3-rex-plugins/plugins/perspectiveimage.js';
@@ -610,17 +610,17 @@ export default class MainScene extends Phaser.Scene {
           "c_001Member": 1,
           "c_002Member": 1,
           "c_003Member": 1,
-          "c_004Member": 1,
-          "c_005Member": 1,
-          "c_006Member": 1,
-          "c_007Member": 1,
-          "c_008Member": 1,
-          "c_009Member": 1,
-          "c_010Member": 1,
-          "c_011Member": 1,
-          "c_012Member": 1,
-          "c_013Member": 1,
-          "c_014Member": 1
+          "c_012Member": 0,
+          "c_005Member": 0,
+          "c_004Member": 0,
+          "c_006Member": 0,
+          "c_007Member": 0,
+          "c_008Member": 0,
+          "c_009Member": 0,
+          "c_010Member": 0,
+          "c_011Member": 0,
+          "c_013Member": 0,
+          "c_014Member": 0
 
         }
       ));
@@ -642,6 +642,19 @@ export default class MainScene extends Phaser.Scene {
 
     const socket = this.client.createSocket();
     await socket.connect(this.session, true);
+
+    if(newUserStorage)
+    {
+      await this.JoinGroup(this.session, this.client, "c_001");
+      await this.JoinGroup(this.session, this.client, "c_002");
+      await this.JoinGroup(this.session, this.client, "c_003");
+      this.localState.AddChatChannels(["c_001","c_002","c_003"]);
+    }
+    else
+    {
+      var channels = await this.GetGroupsFromAccount();
+      this.localState.AddChatChannels(channels);
+    }
 
     await this.SetupChatChannelsAndPages();
     await this.SetupTeamProfiles(socket);
@@ -1072,9 +1085,9 @@ export default class MainScene extends Phaser.Scene {
     const container = chatPage.getChildByID('chat-channel-container') as HTMLElement;
     var k = 0;
     this.staticData.chatChannels.forEach(async (channel) => {
+      
       var id = channel.id;
-      var getChannelSubscription = await this.ReadFromDDMLocalStorageNumber(id+"Member");
-      if(getChannelSubscription == 1)
+      if(this.localState.chatChannels.includes(id))
       {
         var src = "/assets/white_icons/" + channel.iconPath + ".png"; 
         const chatChannel = ChatChannel(channel.title, src) as HTMLElement;
@@ -1723,6 +1736,48 @@ export default class MainScene extends Phaser.Scene {
   UpdateNewsFeed(id : string)
   {
 
+  }
+
+
+  async JoinGlobalChat(socket: Socket, roomname: string)
+  {
+    const persistence = true;
+    const hidden = false;
+    const response = await socket.joinChat(roomname, 1, persistence, hidden);
+  }
+
+  async JoinGroup(session: Session, client: Client, groupName: string)
+  {
+    var cursor;
+    var groupList = await (await this.client.listGroups(this.session, groupName, cursor, 1)).groups as Group[];
+    var groupId = (groupList[0].id) as string;
+
+    var joinedGroup = await client.joinGroup(session, groupId);
+    console.info("Sent group join request", groupName);
+    if(joinedGroup)
+    {
+      console.log("Joined " + groupName);
+    }
+  }
+
+  async GetGroupsFromAccount()
+  {
+    var names = [] as string [];
+    var userId = (await this.client.getAccount(this.session)).user?.id as string;
+    var groupList = await (await this.client.listUserGroups(this.session, userId)).user_groups as UserGroup[];
+
+    groupList.forEach(userGroup => {
+      var name = userGroup.group?.name as string;
+      names.push(name);
+    });
+    return names;
+  }
+
+  async JoinGroupChat(socket: Socket, groupname: string)
+  {
+    const persistence = true;
+    const hidden = false;
+    const response = await socket.joinChat(groupname, 3, persistence, hidden);
   }
 
   async initializeChat(socket: Socket, roomname: string) {
