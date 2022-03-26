@@ -635,22 +635,29 @@ export default class MainScene extends Phaser.Scene {
 
     if(newUserStorage)
     {
-      await this.JoinGroup(this.session, this.client, "c_001");
-      await this.JoinGroup(this.session, this.client, "c_002");
-      await this.JoinGroup(this.session, this.client, "c_003");
-      this.localState.AddChatChannels(["c_001","c_002","c_003"]);
+      var c001id = await this.JoinGroup(this.session, this.client, "c_001");
+      var c002id = await this.JoinGroup(this.session, this.client, "c_002");
+      var c003id = await this.JoinGroup(this.session, this.client, "c_003");
+      this.localState.AddChatChannels(
+        {
+          "c_001":c001id,
+          "c_002":c002id,
+          "c_003":c003id
+        });
     }
     else
     {
-      var channels = await this.GetGroupsFromAccount("names");
+      var channels = await this.GetGroupsFromAccount();
       this.localState.AddChatChannels(channels);
     }
     
-    var channelIds = await this.GetGroupsFromAccount("ids") as string[];
-    channelIds.forEach((channelId)=>{
+    // use object keys to get each groupId
+    for(var key in this.localState.chatChannels)
+    {
+      var groupId = this.localState.chatChannels[key];
+      this.JoinGroupChat(socket, groupId);
+    }
       
-      this.JoinGroupChat(socket, channelId);
-    })
 
     await this.SetupChatChannelsAndPages();
     await this.SetupTeamProfiles(socket);
@@ -1093,7 +1100,7 @@ export default class MainScene extends Phaser.Scene {
     this.staticData.chatChannels.forEach((channel) => {
       
       var id = channel.id;
-      if(this.localState.chatChannels.includes(id))
+      if(this.localState.chatChannels[id] != null)
       {
         var src = "/assets/white_icons/" + channel.iconPath + ".png"; 
         const chatChannel = ChatChannel(channel.title, src) as HTMLElement;
@@ -1104,7 +1111,9 @@ export default class MainScene extends Phaser.Scene {
           this.chatChannels.style.display="none";
           this.chatChannelTitle.innerHTML = channel.title;
           this.chatChannelIcon.src = "/assets/white_icons/" + channel.iconPath + ".png";
+          this.localState.SetCurrentChatChannel(channel.id);
           this.ReloadGroupChat(channel.id);
+
         }
         
         container.append(chatChannel);
@@ -1775,32 +1784,23 @@ export default class MainScene extends Phaser.Scene {
     {
       console.log("Joined " + groupName);
     }
+
+    return groupId;
   }
 
-  async GetGroupsFromAccount(returnType: string)
+  async GetGroupsFromAccount()
   {
-    var names = [] as string [];
-    var ids = [] as string [];
     var userId = (await this.client.getAccount(this.session)).user?.id as string;
     var groupList = await (await this.client.listUserGroups(this.session, userId)).user_groups as UserGroup[];
 
-    if(returnType == "id")
-    {
-      groupList.forEach(userGroup => {
-        var id = userGroup.group?.id as string;
-        ids.push(id);
-      });
-      return ids;
-    }
-    else if (returnType == "name")
-    {
-      groupList.forEach(userGroup => {
-        var name = userGroup.group?.name as string;
-        names.push(name);
-      });
-      return names;
-    }
-    else return [];
+    var dict = {};
+    groupList.forEach(userGroup => {
+      var id = userGroup.group?.id as string;
+      var name = userGroup.group?.name as string;
+      dict[name] = id;
+    });
+    
+    return dict;
   }
 
   async JoinGroupChat(socket: Socket, groupname: string)
@@ -1810,8 +1810,59 @@ export default class MainScene extends Phaser.Scene {
     const response = await socket.joinChat(groupname, 3, persistence, hidden);
   }
 
+  GetKeyByValue(object, value) {
+    return Object.keys(object).find(key => object[key] === value);
+  }
+
   async initializeChat(socket: Socket, roomname: string) {
     //receive code is here
+
+    socket.onchannelmessage = async (message) =>{
+      
+      const key = this.GetKeyByValue(this.localState.chatChannels, message.group_id);
+
+      if(key!= null)
+      {
+        var account = await this.client.getUsers(this.session, [message.sender_id]);
+        var users = account.users as User[];
+        var avatarUrl = users[0].avatar_url as string;
+        var username = users[0].username as string;
+
+        if (message.sender_id == this.session.user_id) {
+
+          // if chat open
+          if(this.localState.GetCurrentChatChannelGroupId() == message.group_id)
+          {
+            const messageElement = ChatMessageCurrentUser(username, message.content.message, avatarUrl) as HTMLElement;
+            this.chatMessageContainer.append(messageElement);
+          }
+          else
+          {
+            // we'll show to when the chat is changed
+          }
+          
+          // last message chat bar
+          //
+        }
+        else {
+          // if chat open
+          if(this.localState.GetCurrentChatChannelGroupId() == message.group_id)
+          {
+            const messageElement = ChatMessageOtherUser(username, message.content.message, avatarUrl) as HTMLElement;
+            this.chatMessageContainer.append(messageElement);
+          }
+          else
+          {
+            // we'll show to when the chat is changed
+          }
+
+          // last message chat bar
+          //
+        }
+        this.chatMessageContainer.scrollTop = this.chatMessageContainer.scrollHeight;
+    
+      }
+    };
 
     socket.onchannelmessage = async (message) => {
       console.log("Received a message on channel: %o", message.channel_id);

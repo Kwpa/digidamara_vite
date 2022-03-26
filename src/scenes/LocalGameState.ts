@@ -8,7 +8,8 @@ export default class LocalGameState
     maxActionPoints!: number;
     carouselPosition!: number;
     videoContentPosition!: number;
-    chatChannels!: string[];
+    chatChannels!: object;
+    currentChatChannel!: string;
     currentTeamID!: string;
     teamIDs!: string[];
     round: number = 0;
@@ -57,11 +58,19 @@ export default class LocalGameState
         this.notificationHomeOnScreen = set;
     }
 
-    AddChatChannels(channelIds: string[])
+    AddChatChannels(channels: object)
     {
-        channelIds.forEach((id) => {
-            this.chatChannels.push(id);
-        })
+        this.chatChannels = channels;
+    }
+
+    GetCurrentChatChannelGroupId()
+    {
+        return this.chatChannels[this.currentChatChannel];
+    }
+
+    SetCurrentChatChannel(id: string)
+    {
+        this.currentChatChannel = id;
     }
 
     DivideUpNotificationHomeContent(content: string)
