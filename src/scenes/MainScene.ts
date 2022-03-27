@@ -668,7 +668,7 @@ export default class MainScene extends Phaser.Scene {
     await this.ReceiveMatchState(socket);
 
     var roomname = "PublicChat";
-    await this.initializeChat(socket, roomname);
+    await this.initializeChat(socket);
     await this.AddEventListeners();
     this.StartRefreshTimer();
 
@@ -1106,13 +1106,14 @@ export default class MainScene extends Phaser.Scene {
         const chatChannel = ChatChannel(channel.title, src) as HTMLElement;
         const chatChannelOpenButton = chatChannel.querySelector("#chat-channel-button-open") as HTMLElement;
         
-        chatChannelOpenButton.onclick = () => {
+        chatChannelOpenButton.onclick = async () => {
+          console.log("Open " + channel.id);
+          await this.ReloadGroupChat(channel.id);
           this.chatChannelOpen.style.display="block";
           this.chatChannels.style.display="none";
           this.chatChannelTitle.innerHTML = channel.title;
           this.chatChannelIcon.src = "/assets/white_icons/" + channel.iconPath + ".png";
           this.localState.SetCurrentChatChannel(channel.id);
-          this.ReloadGroupChat(channel.id);
 
         }
         
@@ -1123,7 +1124,8 @@ export default class MainScene extends Phaser.Scene {
 
   async ReloadGroupChat(groupId: string)
   {
-
+    this.chatMessageContainer.innerHTML = "";
+    var create = await this.CreateChatMessages(groupId);
   }
 
   async SetupTeamProfiles(socket: Socket) {
@@ -1803,18 +1805,19 @@ export default class MainScene extends Phaser.Scene {
     return dict;
   }
 
-  async JoinGroupChat(socket: Socket, groupname: string)
+  async JoinGroupChat(socket: Socket, groupId: string)
   {
     const persistence = true;
     const hidden = false;
-    const response = await socket.joinChat(groupname, 3, persistence, hidden);
+    const response = await socket.joinChat(groupId, 3, persistence, hidden);
+    console.log("join chat: " + groupId + " response.id : " + response.id);
   }
 
   GetKeyByValue(object, value) {
     return Object.keys(object).find(key => object[key] === value);
   }
 
-  async initializeChat(socket: Socket, roomname: string) {
+  async initializeChat(socket: Socket) {
     //receive code is here
 
     socket.onchannelmessage = async (message) =>{
@@ -1864,7 +1867,7 @@ export default class MainScene extends Phaser.Scene {
       }
     };
 
-    socket.onchannelmessage = async (message) => {
+    /* socket.onchannelmessage = async (message) => {
       console.log("Received a message on channel: %o", message.channel_id);
       console.log("Message content: %o", message.content);
       this.anotherTextElement.innerHTML = message.content.message;
@@ -1883,63 +1886,51 @@ export default class MainScene extends Phaser.Scene {
         this.chatMessageContainer.append(messageElement);
       }
       this.chatMessageContainer.scrollTop = this.chatMessageContainer.scrollHeight;
-    };
-
-    const persistence = true;
-    const hidden = false;
-
-    // 1 = Room, 2 = Direct Message, 3 = Group
-    console.log("About to join chat");
-    const response = await socket.joinChat(roomname, 1, persistence, hidden);
-
-    console.log("Now connected to channel id:", response.id);
-    this.CreateChatMessages(this.client, this.session, response.id);
+    }; */
 
     this.chatSubmitButton.onclick = () => {
       var message = this.messageInput.value;
       console.log("text " + message);
       if (message.length > 0) {
-        this.SendChatMessage(socket, "2..." + roomname, message);
+        var channelId = this.localState.GetCurrentChatChannelGroupId();
+        this.SendChatMessage(socket, "3."+channelId+"..", message);
         this.messageInput.value = "";
       }
     }
     //this.SendChatMessage(socket, response.id, this.session.username + " says: I think Red is the imposter!");
   }
 
-  async SendChatMessage(socket: Socket, channelId: string, message: string) {
+  async SendChatMessage(socket: Socket, groupId: string, message: string) {
     var data = { "message": message };
-    const messageAck = await socket.writeChatMessage(channelId, data);
-
-    /*     var emoteData = {
-        "emote": "point"
-        //,"emoteTarget": "<redPlayerUserId>"
-    }
-    const emoteMessageAck = await socket.writeChatMessage(channelId, emoteData);
-     */
+    const messageAck = await socket.writeChatMessage(groupId, data);
   }
 
-  async CreateChatMessages(client: Client, session: Session, channelId: string) {
+  async CreateChatMessages(chatId: string) {
     var forward = false;
-    var result: ChannelMessageList = await client.listChannelMessages(session, channelId, 10, forward);
-    result.messages?.forEach(async (message) => {
-      console.log("Message has id %o and content %o", message.message_id, message.content);
-      let getMessage: any = {};
-      getMessage = message.content;
-
-      var account = await this.client.getUsers(this.session, [message.sender_id as string]);
-      var users = account.users as User[];
-      var avatarUrl = users[0].avatar_url as string;
-      var username = users[0].username as string;
-
-      if (message.sender_id == this.session.user_id) {
-        const messageElement = ChatMessageCurrentUser(username, getMessage.message, avatarUrl) as HTMLElement; // works! but can't find the message :/
-        this.chatMessageContainer.prepend(messageElement);
-      }
-      else {
-        const messageElement = ChatMessageOtherUser(username, getMessage.message, avatarUrl) as HTMLElement; // works! but can't find the message :/
-        this.chatMessageContainer.prepend(messageElement);
-      }
-    });
+    var channelId = "3."+this.localState.chatChannels[chatId]+"..";
+    var result: ChannelMessageList = await this.client.listChannelMessages(this.session, channelId, 50, forward);
+    if(result.messages != null && result.messages.length > 0)
+    {
+      result.messages?.forEach(async (message) => {
+        console.log("Message has id %o and content %o", message.message_id, message.content);
+        let getMessage: any = {};
+        getMessage = message.content;
+  
+        var account = await this.client.getUsers(this.session, [message.sender_id as string]);
+        var users = account.users as User[];
+        var avatarUrl = users[0].avatar_url as string;
+        var username = users[0].username as string;
+  
+        if (message.sender_id == this.session.user_id) {
+          const messageElement = ChatMessageCurrentUser(username, getMessage.message, avatarUrl) as HTMLElement; // works! but can't find the message :/
+          this.chatMessageContainer.prepend(messageElement);
+        }
+        else {
+          const messageElement = ChatMessageOtherUser(username, getMessage.message, avatarUrl) as HTMLElement; // works! but can't find the message :/
+          this.chatMessageContainer.prepend(messageElement);
+        }
+      });
+    }
 
     this.chatMessageContainer.scrollTop = this.chatMessageContainer.scrollHeight + 50;
   }

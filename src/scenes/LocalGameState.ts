@@ -37,6 +37,7 @@ export default class LocalGameState
         this.teamStates = teamStates;    
         this.notificationHomeStringArray = [];  
         this.chatChannels = [];
+        this.currentChatChannel = "c_001";
     }
 
     UpdateFromDynamicData(dynamicData)
