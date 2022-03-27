@@ -269,6 +269,25 @@ position: relative;
 margin: auto;
 }
 
+.chat-user-home
+{
+	width: calc(100% - 150px);
+	max-width: 500px;
+	position: relative;
+	margin-left: auto;
+	margin-right: 5px;
+}
+.chat-other-home
+{
+	width: calc(100% - 150px);
+	max-width: 500px;
+	position: relative;
+	margin-left: 5px;
+	margin-right: auto;
+}
+
+.chat-user-icon,
+.chat-other-icon,
 .notification-icon
 {
 	position: absolute;
@@ -280,13 +299,18 @@ margin: auto;
 	border: 5px solid rgb(59, 59, 59);
 }
 
-
+.chat-other-top,
+.chat-other-bottom,
+.chat-user-top,
+.chat-user-bottom,
 .notification-top
 {
 	display: block;
 	height: 40px;
 }
 
+.chat-other-left,
+.chat-user-left,
 .notification-left
 {
 	display: block;
@@ -294,24 +318,37 @@ margin: auto;
 	padding-top: 8px;
 	padding-left: 10px;
 }
+.chat-other-right,
+.chat-user-right,
 .notification-right
 {
 	display: block;
 	float: right;
 	padding-top: 8px;
 	padding-right: 10px;
-	
+}
+.notification-right
+{	
 	animation-duration: 2000ms;
 	animation-name: "grow-and-shrink-small";
 	animation-iteration-count: infinite;
 	animation-delay: 5000ms;
 }
+.chat-other-box,
+.chat-user-box,
 .notification-box
 {
 	padding-left: 80px;
 	border-radius: 30px;
 	min-height: 74px;
 }
+
+.chat-other-box,
+.chat-user-box{
+	margin-bottom: 0;
+	overflow-wrap: break-word;
+}
+
 .notification-next,
 .notification-close
 {
@@ -319,6 +356,8 @@ margin: auto;
 	padding: 0 10px 0 10px;
 	cursor: pointer;
 }
+
+
 
 .wobble-hor-bottom {
 	-webkit-animation: wobble-hor-bottom 0.8s both;

@@ -20,6 +20,7 @@ export default class LocalGameState
     notificationHomeStringArray!: string[];
     notificationHomeContentLength!: number;
     notificationHomePosition!: number;
+    lastChatMessageUserId!: string;
 
     Init(username: string, round: number, actionPoints: number, maxActionPoints: number, sparksAwarded: number, energyRequirement: number, teamIDs : string[], voteStates, teamStates)
     {
@@ -57,6 +58,11 @@ export default class LocalGameState
     SetNotificationHomeOnScreen(set: boolean)
     {
         this.notificationHomeOnScreen = set;
+    }
+
+    SetLastChatChannelMessageUserId(userId: string)
+    {
+        this.lastChatMessageUserId = userId;
     }
 
     AddChatChannels(channels: object)

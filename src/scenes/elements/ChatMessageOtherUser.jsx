@@ -1,16 +1,29 @@
 import { h } from 'start-dom-jsx';
 
-const ChatMessageOtherUser = (username, content, imageURL) => {
+const ChatMessageOtherUser = (username, content, imageURL, timeago) => {
   return (
-    <div id="chat-message" class="chat-message-other-user box has-background-dark has-text-white is-size-6">
-      <img src={imageURL}></img>
-      <h3>
+    <div id="chat-message" class="chat-other-home">
+    <div id="chat-top" class="chat-user-top">
+      <div id="chat-username" class="chat-user-left">
+        <strong>
         {username}
-      </h3>
-      <h3>
-        {content}
-      </h3>
+          </strong>
+      </div>
     </div>
+    <div class="chat-other-icon" id="chat-icon-container">
+      <img id="chat-icon" src={imageURL}></img>
+    </div>
+    <div class="box has-background-dark chat-other-box is-size-6 mb-0 has-text-white">
+      <span id="chat-content">
+        {content}
+      </span>
+    </div>
+    <div id="chat-bottom" class="chat-other-bottom">
+      <div id="chat-time" class="chat-other-right mb-1 is-small">
+      {timeago}
+      </div>
+    </div>
+  </div>
   )
 }
 

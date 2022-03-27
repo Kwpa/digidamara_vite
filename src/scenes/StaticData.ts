@@ -82,6 +82,7 @@ export class TeamData
     barks!: BarkData[];
     items!: ItemData[];
     story!: StoryData[];
+    fanClubChannelId!: string;
     
     constructor(teamData, barks, items, story) {
         this.id = teamData.id;
@@ -94,6 +95,7 @@ export class TeamData
         this.barks = this.BarkDataToArray(barks);
         this.items = this.ItemsDataToArray(items);
         this.story = this.StoryDataToArray(story);
+        this.fanClubChannelId = teamData.fanClubChannelId;
       }
 
       BarkDataToArray(data)

@@ -22,13 +22,14 @@ import PerspectiveImagePlugin from 'phaser3-rex-plugins/plugins/perspectiveimage
 import { PerspectiveCarousel } from 'phaser3-rex-plugins/plugins/perspectiveimage.js';
 import YoutubePlayerPlugin from 'phaser3-rex-plugins/plugins/youtubeplayer-plugin.js';
 import LocalGameState, { TeamImages, TeamRenderTextures, TeamState, VoteScenarioState } from './LocalGameState';
-import StaticData, { NotificationData } from './StaticData';
+import StaticData, { ChatChannelData, NotificationData } from './StaticData';
 import RenderTexture from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/rendertexture/RenderTexture';
 import Sprite from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/sprite/Sprite';
 import Image from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/image/Image';
 import { Rectangle } from 'phaser3-rex-plugins/plugins/gameobjects/shape/shapes/geoms';
 import * as bulmaToast from 'bulma-toast';
 import DynamicData from './DynamicData';
+import {humanized_time_span} from '../utils/humanized_time_span.js';
 
 export default class MainScene extends Phaser.Scene {
 
@@ -74,6 +75,7 @@ export default class MainScene extends Phaser.Scene {
   closeSettingsPageButton!: HTMLElement;
   closeChatPageButton!: HTMLElement;
   closeChatChannelsPageButton!: HTMLElement;
+  chatChannelContainer!: HTMLElement;
   closeVotePageButton!: HTMLElement;
   closeVideoPageButton!: HTMLElement;
   closeHelpPageButton!: HTMLElement;
@@ -162,24 +164,21 @@ export default class MainScene extends Phaser.Scene {
     //this.load.on('complete', () => {this.flag = true});
   }
 
-  ShowVideo(scene: Scene, width: number, height: number, url: string)
-  {
+  ShowVideo(scene: Scene, width: number, height: number, url: string) {
     this.rexVideoPlayer = scene.add.rexYoutubePlayer( //this does work, typescript def error :/
-      -width, -height, 400, 300, 
-      { 
+      -width, -height, 400, 300,
+      {
         videoId: url,
         autoPlay: false
-      }).on('ready', () => 
-      {
-        this.rexVideoPlayer.setPosition(0,0);
+      }).on('ready', () => {
+        this.rexVideoPlayer.setPosition(0, 0);
         var playeriFrame = document.querySelectorAll('iframe')[0];
         this.videoPlayerContainer.append(playeriFrame);
-      }).on('statechange', () =>
-      {
+      }).on('statechange', () => {
         console.log("video state" + this.rexVideoPlayer.videoState);
       }
       );
-      //this.rexVideoPlayer.
+    //this.rexVideoPlayer.
   }
 
   async LoadingBar() {
@@ -283,7 +282,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   async AsyncCreate() {
-    
+
     await this.waitUntilAssetsLoaded();
     await this.LoadJSON();
     await this.delay(1200);
@@ -343,25 +342,25 @@ export default class MainScene extends Phaser.Scene {
     const videoPage = this.add.dom(width / 2, height / 2, VideoPage() as HTMLElement);
     const videoPlayerOverlay = this.add.dom(width / 2, height / 2, VideoPlayerOverlay() as HTMLElement);
     const votePage = this.add.dom(width / 2, height / 2, VotingPage() as HTMLElement);
-    this.notificationHome = this.add.dom(width / 2, 190, NotificationHome('','') as HTMLElement);
+    this.notificationHome = this.add.dom(width / 2, 190, NotificationHome('', '') as HTMLElement);
     this.avatarOverlay = this.add.dom(width / 2, height / 2, AvatarOverlay('open') as HTMLElement);
     this.overlayProgressBar = this.avatarOverlay.getChildByID("teamEnergyBar") as HTMLInputElement;
-    
+
     this.videoPlayerContainer = videoPlayerOverlay.getChildByID("video-player") as HTMLElement;
-    
+
     this.avatarOverlay.setVisible(false);
     videoPlayerOverlay.setVisible(false);
     this.notificationHome.setVisible(false);
     videoPage.setVisible(false);
     votePage.setVisible(false);
     //baseWebsite.setVisible(false);
-    
+
     //debug
     this.textElement = document.getElementById('rnd-update') as HTMLElement;
     this.anotherTextElement = document.getElementById('chat-update') as HTMLElement;
     this.textElement.hidden = true;
     this.anotherTextElement.hidden = true;
-    
+
     this.roundCounter = baseWebsite.getChildByID("round-header-value") as HTMLElement;
     this.actionPointsCounter = baseWebsite.getChildByID("ap-header-value") as HTMLElement;
     this.sparksCounter = baseWebsite.getChildByID("sparks-header-value") as HTMLElement;
@@ -377,12 +376,12 @@ export default class MainScene extends Phaser.Scene {
     this.pauseVideoPlayerButton = videoPlayerOverlay.getChildByID('video-player-button-pause') as HTMLElement;
     this.loadNextVideoPlayerButton = videoPlayerOverlay.getChildByID('video-player-button-next') as HTMLElement;
     this.loadPreviousVideoPlayerButton = videoPlayerOverlay.getChildByID('video-player-button-previous') as HTMLElement;
-    
-    
+
+
     this.avatarOverlayButton = this.avatarOverlay.getChildByID('openProfile') as HTMLElement;
     this.notificationsArea = baseWebsite.getChildByID("gameArea") as HTMLElement;
-    
-    
+
+
     this.videoFooterButton.onclick = () => {
       videoPage.setVisible(true);
       this.avatarOverlay.setVisible(false);
@@ -411,16 +410,14 @@ export default class MainScene extends Phaser.Scene {
       this.teamProfilePages[this.localState.carouselPosition].setVisible(true);
       var donateButton = this.teamProfilePages[this.localState.carouselPosition].getChildByID('donate-button') as HTMLInputElement;
       var fanClubButton = this.teamProfilePages[this.localState.carouselPosition].getChildByID('fan-club-button') as HTMLInputElement;
-      var upgradeButton = this.teamProfilePages[this.localState.carouselPosition].getChildByID('upgrade-button') as HTMLInputElement; 
+      var upgradeButton = this.teamProfilePages[this.localState.carouselPosition].getChildByID('upgrade-button') as HTMLInputElement;
 
-      if(this.localState.actionPoints == 0)
-      {
-        donateButton.setAttribute("disabled",'');
-        fanClubButton.setAttribute("disabled",'');
-        upgradeButton.setAttribute("disabled",'');
+      if (this.localState.actionPoints == 0) {
+        donateButton.setAttribute("disabled", '');
+        fanClubButton.setAttribute("disabled", '');
+        upgradeButton.setAttribute("disabled", '');
       }
-      else
-      {
+      else {
         donateButton.removeAttribute("disabled");
         fanClubButton.removeAttribute("disabled");
         upgradeButton.removeAttribute("disabled");
@@ -459,48 +456,40 @@ export default class MainScene extends Phaser.Scene {
     await this.GetLatestStaticData();
     await this.StartClientConnection();
 
-    this.ShowVideo(this, width,height, "wVVr4Jq_lMI");
+    this.ShowVideo(this, width, height, "wVVr4Jq_lMI");
   }
 
-  GetListOfActiveVideos()
-  {
-    var listOfActiveVideos : string[] = [];
-    this.staticData.videoContent.forEach((videoContent) => 
-    {
-      if(videoContent.active)
-      {
+  GetListOfActiveVideos() {
+    var listOfActiveVideos: string[] = [];
+    this.staticData.videoContent.forEach((videoContent) => {
+      if (videoContent.active) {
         listOfActiveVideos.push(videoContent.youtubeId);
       }
     });
     return listOfActiveVideos;
   }
 
-  NextVideo()
-  {
+  NextVideo() {
     var list = this.GetListOfActiveVideos();
     var index = this.localState.RollVideoContent(1, list.length);
     this.LoadCurrentVideo(index, list);
   }
 
-  LoadCurrentVideo(index : number, list)
-  {
+  LoadCurrentVideo(index: number, list) {
     this.rexVideoPlayer.load(list[index]);
   }
 
-  PreviousVideo()
-  {
+  PreviousVideo() {
     var list = this.GetListOfActiveVideos();
     var index = this.localState.RollVideoContent(-1, list.length);
     this.LoadCurrentVideo(index, list);
   }
 
-  PlayCurrentVideo()
-  {
+  PlayCurrentVideo() {
     this.rexVideoPlayer.play();
   }
 
-  PauseCurrentVideo()
-  {
+  PauseCurrentVideo() {
     this.rexVideoPlayer.pause();
   }
 
@@ -542,6 +531,15 @@ export default class MainScene extends Phaser.Scene {
     var timer = this.time.addEvent({
       delay: 30000,                // ms
       callback: this.RefreshFromDynamicData,
+      //args: [],
+      callbackScope: this,
+      loop: true
+    });
+  }
+  StartTimeAgoTimer() {
+    var timer = this.time.addEvent({
+      delay: 100000,                // ms
+      callback: this.RefreshChat,
       //args: [],
       callbackScope: this,
       loop: true
@@ -618,6 +616,7 @@ export default class MainScene extends Phaser.Scene {
       await this.client.updateAccount(this.session,
         {
           avatar_url: "https://source.boringavatars.com/marble/50/" + Math.floor(Math.random() * 100000)
+          //avatar_url: "https://sprites-as-a-service-tblytwilzq-ue.a.run.app/api/v1/sprite?q=" + Math.floor(Math.random() * 100000)
         }
       );
     }
@@ -633,31 +632,28 @@ export default class MainScene extends Phaser.Scene {
     const socket = this.client.createSocket();
     await socket.connect(this.session, true);
 
-    if(newUserStorage)
-    {
+    if (newUserStorage) {
       var c001id = await this.JoinGroup(this.session, this.client, "c_001");
       var c002id = await this.JoinGroup(this.session, this.client, "c_002");
       var c003id = await this.JoinGroup(this.session, this.client, "c_003");
       this.localState.AddChatChannels(
         {
-          "c_001":c001id,
-          "c_002":c002id,
-          "c_003":c003id
+          "c_001": c001id,
+          "c_002": c002id,
+          "c_003": c003id
         });
     }
-    else
-    {
+    else {
       var channels = await this.GetGroupsFromAccount();
       this.localState.AddChatChannels(channels);
     }
-    
+
     // use object keys to get each groupId
-    for(var key in this.localState.chatChannels)
-    {
+    for (var key in this.localState.chatChannels) {
       var groupId = this.localState.chatChannels[key];
       this.JoinGroupChat(socket, groupId);
     }
-      
+
 
     await this.SetupChatChannelsAndPages();
     await this.SetupTeamProfiles(socket);
@@ -671,6 +667,7 @@ export default class MainScene extends Phaser.Scene {
     await this.initializeChat(socket);
     await this.AddEventListeners();
     this.StartRefreshTimer();
+    this.StartTimeAgoTimer();
 
     /* var rand = Math.floor(Math.random() * 10000);
     var email = "kaiuser_" + rand + "@gmail.com";
@@ -1054,8 +1051,7 @@ export default class MainScene extends Phaser.Scene {
     //element.append(voteScenario);
   }
 
-  async SetupChatChannelsAndPages()
-  {
+  async SetupChatChannelsAndPages() {
     this.teamProfilePages = [];
     let { width, height } = this.sys.game.canvas;
 
@@ -1063,15 +1059,27 @@ export default class MainScene extends Phaser.Scene {
     chatPage.setVisible(false);
     this.chatChannelOpen = document.getElementById('chat-channel-open') as HTMLElement;
     this.chatChannels = document.getElementById('chat-channels') as HTMLElement;
-    this.chatSubmitButton = document.getElementById('chat-submit-button') as HTMLElement;
+    this.chatSubmitButton = document.getElementById('chat-submit-button') as HTMLInputElement;
     this.chatMessageContainer = document.getElementById('chat-container') as HTMLElement;
     this.closeChatPageButton = chatPage.getChildByID('close-chat-page-button') as HTMLElement;
     this.closeChatChannelsPageButton = chatPage.getChildByID('close-chat-channels-page-button') as HTMLInputElement;
     this.returnToChatChannelsButton = chatPage.getChildByID('chat-channel-button-return') as HTMLInputElement;
     this.chatChannelTitle = chatPage.getChildByID('chat-channel-title') as HTMLInputElement;
     this.chatChannelIcon = chatPage.getChildByID('channel-icon') as HTMLImageElement;
-    
+
     this.messageInput = chatPage.getChildByID('chat-input') as HTMLInputElement;
+
+    // Execute a function when the user releases a key on the keyboard
+    this.messageInput.addEventListener("keyup", (event)=> {
+      // Number 13 is the "Enter" key on the keyboard
+      if (event.key === 'Enter') {
+        // Cancel the default action, if needed
+        event.preventDefault();
+        // Trigger the button element with a click
+        this.chatSubmitButton.click();
+      }
+    });
+
     this.chatFooterButton.onclick = () => {
       chatPage.setVisible(true);
       this.avatarOverlay.setVisible(false);
@@ -1091,41 +1099,53 @@ export default class MainScene extends Phaser.Scene {
       this.tapAreaRight.setInteractive();
     }
     this.returnToChatChannelsButton.onclick = () => {
-      this.chatChannelOpen.style.display="none";
-      this.chatChannels.style.display="block";
+      this.chatChannelOpen.style.display = "none";
+      this.chatChannels.style.display = "block";
     }
 
-    const container = chatPage.getChildByID('chat-channel-container') as HTMLElement;
+    this.chatChannelContainer = chatPage.getChildByID('chat-channel-container') as HTMLElement;
     var k = 0;
     this.staticData.chatChannels.forEach((channel) => {
-      
-      var id = channel.id;
-      if(this.localState.chatChannels[id] != null)
-      {
-        var src = "/assets/white_icons/" + channel.iconPath + ".png"; 
+      this.CreateChatChannelUI(this.chatChannelContainer, channel);
+    });
+  }
+
+  CreateChatChannelUI(container: HTMLElement, channel: ChatChannelData)
+  {
+    var id = channel.id;
+    console.log("hey" + channel.id);
+    if (this.localState.chatChannels[id] != null) {
+        console.log("Make new chat channels !! ");
+        var src = "/assets/white_icons/" + channel.iconPath + ".png";
         const chatChannel = ChatChannel(channel.title, src) as HTMLElement;
         const chatChannelOpenButton = chatChannel.querySelector("#chat-channel-button-open") as HTMLElement;
-        
+
         chatChannelOpenButton.onclick = async () => {
           console.log("Open " + channel.id);
           await this.ReloadGroupChat(channel.id);
-          this.chatChannelOpen.style.display="block";
-          this.chatChannels.style.display="none";
+          this.chatChannelOpen.style.display = "block";
+          this.chatChannels.style.display = "none";
           this.chatChannelTitle.innerHTML = channel.title;
           this.chatChannelIcon.src = "/assets/white_icons/" + channel.iconPath + ".png";
           this.localState.SetCurrentChatChannel(channel.id);
 
         }
-        
+
         container.append(chatChannel);
       }
-    })
   }
 
-  async ReloadGroupChat(groupId: string)
-  {
+  async ReloadGroupChat(groupId: string) {
     this.chatMessageContainer.innerHTML = "";
     var create = await this.CreateChatMessages(groupId);
+  }
+
+  ReloadChatChannels()
+  {
+    this.chatChannelContainer.innerHTML = "";
+    this.staticData.chatChannels.forEach((channel) => {
+      this.CreateChatChannelUI(this.chatChannelContainer, channel);
+    });
   }
 
   async SetupTeamProfiles(socket: Socket) {
@@ -1135,7 +1155,7 @@ export default class MainScene extends Phaser.Scene {
     var k = 0;
     this.staticData.teams.forEach(
       (team) => {
-        
+
         var title = team.id as string;
         console.log("title: " + title);
         const data = { name: team.title, biography: team.biography };
@@ -1167,31 +1187,28 @@ export default class MainScene extends Phaser.Scene {
         var fanClubButtonContainer = teamProfile.getChildByID('fan-club-container') as HTMLElement;
         var upgradeButtonContainer = teamProfile.getChildByID('upgrade-container') as HTMLElement;
         var closeButton = teamProfile.getChildByID('close-team-page-button') as HTMLInputElement;
-        var upgradeValue = teamProfile.getChildByID("upgrade-value") as HTMLElement;            
+        var upgradeValue = teamProfile.getChildByID("upgrade-value") as HTMLElement;
         var upgradeBackground = teamProfile.getChildByID("upgrade-background-container") as HTMLElement;
         var imageContainer = teamProfile.getChildByID("image-container") as HTMLElement;
 
-        if(this.localState.teamStates[k].userInFanClub)
-        {
+        if (this.localState.teamStates[k].userInFanClub) {
           fanClubIcon.style.display = "block";
           fanClubButtonContainer.style.display = "none";
           upgradeBackground.style.display = "block";
           upgradeValue.style.display = "inline";
           upgradeValue.innerHTML = this.localState.teamStates[k].upgradeLevel.toString();
         }
-        else
-        {
+        else {
           fanClubIcon.style.display = "none";
           upgradeButtonContainer.style.display = "none";
           upgradeBackground.style.display = "none";
           upgradeValue.style.display = "none";
         }
 
-        if(this.localState.actionPoints == 0)
-        {
-          donateButton.setAttribute("disabled",'');
-          fanClubButton.setAttribute("disabled",'');
-          upgradeButton.setAttribute("disabled",'');
+        if (this.localState.actionPoints == 0) {
+          donateButton.setAttribute("disabled", '');
+          fanClubButton.setAttribute("disabled", '');
+          upgradeButton.setAttribute("disabled", '');
         }
 
         k++;
@@ -1202,11 +1219,10 @@ export default class MainScene extends Phaser.Scene {
             this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
             this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
 
-            if(this.localState.actionPoints == 0)
-            {
-              donateButton.setAttribute("disabled",'');
-              fanClubButton.setAttribute("disabled",'');
-              upgradeButton.setAttribute("disabled",'');
+            if (this.localState.actionPoints == 0) {
+              donateButton.setAttribute("disabled", '');
+              fanClubButton.setAttribute("disabled", '');
+              upgradeButton.setAttribute("disabled", '');
             }
 
             await this.WriteToDDMLocalStorage(["actionPoints", "sparks"], [this.localState.actionPoints, this.localState.sparksAwarded]);
@@ -1237,22 +1253,33 @@ export default class MainScene extends Phaser.Scene {
             this.localState.GetCurrentTeamState().JoinFanClub();
             await this.WriteToDDMLocalStorage(["actionPoints", this.localState.currentTeamID + "InFanClub"], [this.localState.actionPoints, true]);
 
-            if(this.localState.actionPoints == 0)
-            {
-              donateButton.setAttribute("disabled",'');
-              fanClubButton.setAttribute("disabled",'');
-              upgradeButton.setAttribute("disabled",'');
+            // unlock chat
+
+            var groupName = this.staticData.teams[this.localState.carouselPosition].fanClubChannelId;
+            var cId = await this.JoinGroup(this.session, this.client, groupName);
+            console.log("groupname: "+groupName + ", cid: " + cId);
+            var channels = this.localState.chatChannels;
+            channels[groupName] = cId; 
+            this.localState.AddChatChannels(channels);
+            this.JoinGroupChat(socket, cId);
+            
+            this.ReloadChatChannels();
+            //update UI
+
+            if (this.localState.actionPoints == 0) {
+              donateButton.setAttribute("disabled", '');
+              fanClubButton.setAttribute("disabled", '');
+              upgradeButton.setAttribute("disabled", '');
             }
 
-            //update UI
-         
+
             fanClubButtonContainer.style.display = "none";
             fanClubIcon.style.display = "block";
             upgradeButtonContainer.style.display = "block"
             upgradeBackground.style.display = "block";
             upgradeValue.style.display = "inline";
-        
-            this.CSSAnimation([fanClubIcon, upgradeBackground],"puff-in-center", 800);
+
+            this.CSSAnimation([fanClubIcon, upgradeBackground], "puff-in-center", 800);
             this.CSSAnimation([imageContainer], "jello-horizontal", 800);
             /* var getUserData = await localStorage.getItem("ddm_localData");
             const value = JSON.parse(getUserData as string); */
@@ -1268,15 +1295,14 @@ export default class MainScene extends Phaser.Scene {
             this.localState.UpgradeTeam(this.localState.currentTeamID);
             await this.WriteToDDMLocalStorage(["actionPoints", this.localState.currentTeamID + "UpgradeLevel"], [this.localState.actionPoints, this.localState.GetCurrentTeamState().upgradeLevel]);
 
-            if(this.localState.actionPoints == 0)
-            {
-              donateButton.setAttribute("disabled",'');
-              fanClubButton.setAttribute("disabled",'');
-              upgradeButton.setAttribute("disabled",'');
+            if (this.localState.actionPoints == 0) {
+              donateButton.setAttribute("disabled", '');
+              fanClubButton.setAttribute("disabled", '');
+              upgradeButton.setAttribute("disabled", '');
             }
 
             //update UI   
-            upgradeValue.innerHTML = this.localState.GetCurrentTeamState().upgradeLevel.toString(); 
+            upgradeValue.innerHTML = this.localState.GetCurrentTeamState().upgradeLevel.toString();
             this.CSSAnimation([imageContainer], "jello-horizontal", 800);
             this.CSSAnimation([upgradeValue, upgradeBackground], "wobble-hor-bottom", 800);
 
@@ -1305,14 +1331,13 @@ export default class MainScene extends Phaser.Scene {
   pathDummy;
   follower;
 
-  async CSSAnimation(elements: HTMLElement[], nameOfAnimationClass: string, animationLength: number)
-  {
+  async CSSAnimation(elements: HTMLElement[], nameOfAnimationClass: string, animationLength: number) {
     elements.forEach(element => {
-      element.classList.add(nameOfAnimationClass);  
+      element.classList.add(nameOfAnimationClass);
     });
     await this.delay(animationLength);
     elements.forEach(element => {
-      element.classList.remove(nameOfAnimationClass);  
+      element.classList.remove(nameOfAnimationClass);
     });
   }
 
@@ -1348,7 +1373,11 @@ export default class MainScene extends Phaser.Scene {
     this.voteChoiceTwoUser.innerHTML = this.localState.voteStates[this.localState.round - 1].choiceTwoVotesUser.toString();
     this.voteChoiceOneGlobal.innerHTML = "Total Votes: " + this.localState.voteStates[this.localState.round - 1].choiceOneVotesGlobal.toString();
     this.voteChoiceTwoGlobal.innerHTML = "Total Votes: " + this.localState.voteStates[this.localState.round - 1].choiceTwoVotesGlobal.toString();
+  }
 
+  async RefreshChat() //TODO
+  {
+    await this.ReloadGroupChat(this.localState.GetCurrentChatChannelGroupId() as string);
   }
 
   async SetupTeamAvatars() {
@@ -1646,7 +1675,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   async ReceiveMatchState(socket: Socket) {
-    socket.onmatchdata = async(result: MatchData) => {
+    socket.onmatchdata = async (result: MatchData) => {
       var content = result.data;
       switch (result.op_code) {
         case 101:
@@ -1683,8 +1712,8 @@ export default class MainScene extends Phaser.Scene {
               {
                 message: content
               }); */
-              this.DisplayNotificationHome(content);
-              this.UpdateNewsFeed(content);
+            this.DisplayNotificationHome(content);
+            this.UpdateNewsFeed(content);
           }
         default:
           console.info("User %o sent %o", result.presence.user_id, content);
@@ -1692,45 +1721,37 @@ export default class MainScene extends Phaser.Scene {
     };
   }
 
-  async DisplayNotificationHome(id : string)
-  {
-    if(this.localState.notificationHomeOnScreen)
-    {
+  async DisplayNotificationHome(id: string) {
+    if (this.localState.notificationHomeOnScreen) {
       //wait
-    } 
-    else
-    {
-      var notificationData = this.staticData.notifications.filter(p=>p.id == id)[0] as NotificationData;
-      if(notificationData != null)
-      {
+    }
+    else {
+      var notificationData = this.staticData.notifications.filter(p => p.id == id)[0] as NotificationData;
+      if (notificationData != null) {
         var character = this.notificationHome.getChildByID("notification-character") as HTMLElement;
         var icon = this.notificationHome.getChildByID("notification-icon") as HTMLImageElement;
         var title = this.notificationHome.getChildByID("notification-title") as HTMLElement;
-        var content = this.notificationHome.getChildByID("notification-content") as HTMLElement; 
+        var content = this.notificationHome.getChildByID("notification-content") as HTMLElement;
         var nextButton = this.notificationHome.getChildByID("notification-button-next") as HTMLInputElement;
         var closeButton = this.notificationHome.getChildByID("notification-button-close") as HTMLInputElement;
-      
+
         character.innerHTML = '<strong class="has-text-white">' + notificationData.character + '</strong>';
-        icon.src = "/assets/white_icons/" + notificationData.iconPath + ".png"; 
-        if(notificationData.showTitle == "TRUE")
-        {
+        icon.src = "/assets/white_icons/" + notificationData.iconPath + ".png";
+        if (notificationData.showTitle == "TRUE") {
           title.style.display = "block";
           title.innerHTML = notificationData.title;
         }
-        else
-        {
+        else {
           title.style.display = "none";
         }
         this.localState.DivideUpNotificationHomeContent(notificationData.content);
         this.localState.NextNotificationHomeContent();
         content.innerHTML = this.localState.GetCurrentNotificationHomeContent();
-        if(this.localState.notificationHomeContentLength == 1)
-        {
+        if (this.localState.notificationHomeContentLength == 1) {
           nextButton.style.display = "none";
           closeButton.style.display = "block";
         }
-        else
-        {
+        else {
           nextButton.style.display = "block";
           closeButton.style.display = "none";
         }
@@ -1740,13 +1761,11 @@ export default class MainScene extends Phaser.Scene {
         this.AnimateIconWobble();
 
         nextButton.onclick = () => {
-          if(this.localState.NextNotificationHomeContent())
-          {
+          if (this.localState.NextNotificationHomeContent()) {
             content.innerHTML = this.localState.GetCurrentNotificationHomeContent();
             this.AnimateIconWobble();
           }
-          else
-          {
+          else {
             content.innerHTML = this.localState.GetCurrentNotificationHomeContent();
             nextButton.style.display = "none";
             closeButton.style.display = "block";
@@ -1758,40 +1777,35 @@ export default class MainScene extends Phaser.Scene {
         };
       }
     }
-    
-  }
-
-  UpdateNewsFeed(id : string)
-  {
 
   }
 
+  UpdateNewsFeed(id: string) {
 
-  async JoinGlobalChat(socket: Socket, roomname: string)
-  {
+  }
+
+
+  async JoinGlobalChat(socket: Socket, roomname: string) {
     const persistence = true;
     const hidden = false;
     const response = await socket.joinChat(roomname, 1, persistence, hidden);
   }
 
-  async JoinGroup(session: Session, client: Client, groupName: string)
-  {
+  async JoinGroup(session: Session, client: Client, groupName: string) {
     var cursor;
     var groupList = await (await this.client.listGroups(this.session, groupName, cursor, 1)).groups as Group[];
     var groupId = (groupList[0].id) as string;
 
     var joinedGroup = await client.joinGroup(session, groupId);
     console.info("Sent group join request", groupName);
-    if(joinedGroup)
-    {
+    if (joinedGroup) {
       console.log("Joined " + groupName);
     }
 
     return groupId;
   }
 
-  async GetGroupsFromAccount()
-  {
+  async GetGroupsFromAccount() {
     var userId = (await this.client.getAccount(this.session)).user?.id as string;
     var groupList = await (await this.client.listUserGroups(this.session, userId)).user_groups as UserGroup[];
 
@@ -1801,12 +1815,11 @@ export default class MainScene extends Phaser.Scene {
       var name = userGroup.group?.name as string;
       dict[name] = id;
     });
-    
+
     return dict;
   }
 
-  async JoinGroupChat(socket: Socket, groupId: string)
-  {
+  async JoinGroupChat(socket: Socket, groupId: string) {
     const persistence = true;
     const hidden = false;
     const response = await socket.joinChat(groupId, 3, persistence, hidden);
@@ -1820,12 +1833,11 @@ export default class MainScene extends Phaser.Scene {
   async initializeChat(socket: Socket) {
     //receive code is here
 
-    socket.onchannelmessage = async (message) =>{
-      
+    socket.onchannelmessage = async (message) => {
+
       const key = this.GetKeyByValue(this.localState.chatChannels, message.group_id);
 
-      if(key!= null)
-      {
+      if (key != null) {
         var account = await this.client.getUsers(this.session, [message.sender_id]);
         var users = account.users as User[];
         var avatarUrl = users[0].avatar_url as string;
@@ -1834,28 +1846,32 @@ export default class MainScene extends Phaser.Scene {
         if (message.sender_id == this.session.user_id) {
 
           // if chat open
-          if(this.localState.GetCurrentChatChannelGroupId() == message.group_id)
-          {
-            const messageElement = ChatMessageCurrentUser(username, message.content.message, avatarUrl) as HTMLElement;
+          if (this.localState.GetCurrentChatChannelGroupId() == message.group_id) {
+            var timeago = this.GetTime(message.create_time as string);
+            const messageElement = ChatMessageCurrentUser(username, message.content.message, avatarUrl, timeago) as HTMLElement;
+            
+            if(this.localState.lastChatMessageUserId == message.sender_id)
+            {
+              var top = messageElement.querySelector('#chat-top') as HTMLElement;
+              top.style.display = "none";
+            }
             this.chatMessageContainer.append(messageElement);
           }
-          else
-          {
+          else {
             // we'll show to when the chat is changed
           }
-          
+
           // last message chat bar
           //
         }
         else {
           // if chat open
-          if(this.localState.GetCurrentChatChannelGroupId() == message.group_id)
-          {
-            const messageElement = ChatMessageOtherUser(username, message.content.message, avatarUrl) as HTMLElement;
+          if (this.localState.GetCurrentChatChannelGroupId() == message.group_id) {
+            var timeago = this.GetTime(message.create_time as string);
+            const messageElement = ChatMessageOtherUser(username, message.content.message, avatarUrl, timeago) as HTMLElement;
             this.chatMessageContainer.append(messageElement);
           }
-          else
-          {
+          else {
             // we'll show to when the chat is changed
           }
 
@@ -1863,7 +1879,7 @@ export default class MainScene extends Phaser.Scene {
           //
         }
         this.chatMessageContainer.scrollTop = this.chatMessageContainer.scrollHeight;
-    
+
       }
     };
 
@@ -1893,7 +1909,7 @@ export default class MainScene extends Phaser.Scene {
       console.log("text " + message);
       if (message.length > 0) {
         var channelId = this.localState.GetCurrentChatChannelGroupId();
-        this.SendChatMessage(socket, "3."+channelId+"..", message);
+        this.SendChatMessage(socket, "3." + channelId + "..", message);
         this.messageInput.value = "";
       }
     }
@@ -1905,34 +1921,105 @@ export default class MainScene extends Phaser.Scene {
     const messageAck = await socket.writeChatMessage(groupId, data);
   }
 
+  async CreateUserList(list: ChannelMessageList)
+  {
+    var userList = {};
+    list.messages?.forEach(async (message) => {
+      console.log("message time: " + new Date(message.create_time as string).toUTCString());
+      var account = await this.client.getUsers(this.session, [message.sender_id as string]);
+      var users = account.users as User[];
+      var avatarUrl = users[0].avatar_url as string;
+      var username = users[0].username as string;
+      console.log("av" + avatarUrl + "us" + username);
+      userList[message.sender_id as string] = {"avatar_url": avatarUrl, "username": username};
+      
+      console.log(userList[message.sender_id as string].avatar_url);
+    });
+    return userList;
+  }
+
   async CreateChatMessages(chatId: string) {
-    var forward = false;
-    var channelId = "3."+this.localState.chatChannels[chatId]+"..";
+    var forward = true;
+    var channelId = "3." + this.localState.chatChannels[chatId] + "..";
     var result: ChannelMessageList = await this.client.listChannelMessages(this.session, channelId, 50, forward);
-    if(result.messages != null && result.messages.length > 0)
-    {
-      result.messages?.forEach(async (message) => {
-        console.log("Message has id %o and content %o", message.message_id, message.content);
-        let getMessage: any = {};
-        getMessage = message.content;
-  
-        var account = await this.client.getUsers(this.session, [message.sender_id as string]);
-        var users = account.users as User[];
-        var avatarUrl = users[0].avatar_url as string;
-        var username = users[0].username as string;
-  
-        if (message.sender_id == this.session.user_id) {
-          const messageElement = ChatMessageCurrentUser(username, getMessage.message, avatarUrl) as HTMLElement; // works! but can't find the message :/
-          this.chatMessageContainer.prepend(messageElement);
-        }
-        else {
-          const messageElement = ChatMessageOtherUser(username, getMessage.message, avatarUrl) as HTMLElement; // works! but can't find the message :/
-          this.chatMessageContainer.prepend(messageElement);
+    
+    if (result.messages != null && result.messages.length > 0) {
+      var storeUserId = "";
+      var storeMessageCreateTime = ""; 
+      var storeUserDetails = {} as object;
+      
+      storeUserDetails = await this.CreateUserList(result);
+      await this.delay(500); //WARNING NOT FOOL PROOF!!!
+
+      /* messages.sort((a, b) => {
+
+        var aTime = new Date(a.create_time as string).getTime();
+        var bTime = new Date(b.create_time as string).getTime();
+        return aTime-bTime;
+      }); */
+
+      result.messages.forEach( async (message) => {
+        switch (message.code) {
+          case 0:
+            console.log("Message has id %o and content %o", message.message_id, message.content);
+            let getMessage: any = {};
+            getMessage = message.content;
+            var avatarUrl = storeUserDetails[message.sender_id as string].avatar_url as string;
+            var username = storeUserDetails[message.sender_id as string].username as string;
+
+            var timeago = this.GetTime(message.create_time as string);
+
+            if (message.sender_id == this.session.user_id) {
+              const messageElement = ChatMessageCurrentUser(username, getMessage.message, avatarUrl, timeago) as HTMLElement; // works! but can't find the message :/
+              var top = messageElement.querySelector('#chat-message') as HTMLElement;
+
+              if(storeUserId == message.sender_id)
+              {
+                var top = messageElement.querySelector('#chat-top') as HTMLElement;
+                top.style.display = "none";
+                /* if(storeMessageCreateTime != "") 
+                {
+                  var prev = new Date(storeMessageCreateTime).getTime();
+                  var twentyMinutesAgo = 1000*60*20;
+
+                  if(prev - twentyMinutesAgo < 0)
+                  {
+                    var bottom = messageElement.querySelector('#chat-bottom') as HTMLElement;
+                    bottom.style.display = "none";
+                  }
+                } */
+              }
+              
+              
+              this.chatMessageContainer.append(messageElement);
+            }
+            else {
+              const messageElement = ChatMessageOtherUser(username, getMessage.message, avatarUrl, timeago) as HTMLElement; // works! but can't find the message :/
+              
+              if(storeUserId == message.sender_id)
+              {
+                var top = messageElement.querySelector('#chat-top') as HTMLElement;
+                top.style.display = "none";
+              }
+              this.chatMessageContainer.append(messageElement);
+            }
+
+            storeUserId = message.sender_id as string;
+            this.localState.SetLastChatChannelMessageUserId(storeUserId);
+            storeMessageCreateTime = message.create_time as string;
+            await this.delay(100);
+            this.chatMessageContainer.scrollTop = this.chatMessageContainer.scrollHeight + 50;
+            break;
         }
       });
     }
+  }
 
-    this.chatMessageContainer.scrollTop = this.chatMessageContainer.scrollHeight + 50;
+
+  GetTime(date: string) {
+    var timeago = humanized_time_span(date);
+    console.log("Time ago: " + timeago);
+    return timeago;
   }
 
 
