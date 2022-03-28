@@ -21,6 +21,7 @@ export default class LocalGameState
     notificationHomeContentLength!: number;
     notificationHomePosition!: number;
     lastChatMessageUserId!: string;
+    danceFloorAudioTwoPlaying!: boolean;
 
     Init(username: string, round: number, actionPoints: number, maxActionPoints: number, sparksAwarded: number, energyRequirement: number, teamIDs : string[], voteStates, teamStates)
     {
@@ -39,6 +40,12 @@ export default class LocalGameState
         this.notificationHomeStringArray = [];  
         this.chatChannels = [];
         this.currentChatChannel = "c_001";
+        this.danceFloorAudioTwoPlaying = false;
+    }
+
+    DanceFloorTwoAudio(value: boolean)
+    {
+        this.danceFloorAudioTwoPlaying = value;
     }
 
     UpdateFromDynamicData(dynamicData)

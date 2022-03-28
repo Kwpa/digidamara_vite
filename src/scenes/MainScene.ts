@@ -131,6 +131,10 @@ export default class MainScene extends Phaser.Scene {
   startStarField: boolean = false;
   startCharacterGraphics: boolean = false;
 
+  danceFloorAudioOne;
+  danceFloorAudioTwo;
+
+
   receiveServerNotifications: boolean = false;
 
   webConfig;
@@ -160,6 +164,9 @@ export default class MainScene extends Phaser.Scene {
     this.load.json('chat_channels', '/assets/json/ChatChannels.json');
     this.load.json('eightpath', '/assets/json/paths/path_2.json');
     this.load.json('web_config', '/assets/json/web_config.json');
+
+    this.load.audio('danceFloorAudioOne', ['/assets/audio/DDM-DanceFloor-1.mp3']);
+    this.load.audio('danceFloorAudioTwo', ['/assets/audio/DDM-DanceFloor-2.mp3']);
 
     //this.load.on('complete', () => {this.flag = true});
   }
@@ -355,6 +362,17 @@ export default class MainScene extends Phaser.Scene {
     votePage.setVisible(false);
     //baseWebsite.setVisible(false);
 
+    //audio
+    this.danceFloorAudioOne = this.sound.add('danceFloorAudioOne', {
+      volume: 0.4,
+      loop: true,
+
+    }) as Phaser.Sound.BaseSound;
+    this.danceFloorAudioTwo = this.sound.add('danceFloorAudioTwo', {
+      volume: 0.0,
+      loop: true
+    }) as Phaser.Sound.BaseSound;
+
     //debug
     this.textElement = document.getElementById('rnd-update') as HTMLElement;
     this.anotherTextElement = document.getElementById('chat-update') as HTMLElement;
@@ -457,6 +475,67 @@ export default class MainScene extends Phaser.Scene {
     await this.StartClientConnection();
 
     this.ShowVideo(this, width, height, "wVVr4Jq_lMI");
+    
+    if (!this.sound.locked)
+    {
+      // already unlocked so play
+      this.danceFloorAudioOne.play();
+      this.danceFloorAudioTwo.play();
+
+    }
+    else
+    {
+      // wait for 'unlocked' to fire and then play
+      this.sound.once(Phaser.Sound.Events.UNLOCKED, () => {
+        this.danceFloorAudioOne.play();
+        this.danceFloorAudioTwo.play();
+      })
+    }
+  }
+
+  async FadeInOutDanceFloorAudioTwo()
+  {
+    if(!this.localState.danceFloorAudioTwoPlaying)
+    {
+      this.FadeInDanceFloorAudioTwo();
+      this.localState.DanceFloorTwoAudio(true);
+      await this.delay(1000*5);
+      this.FadeInDanceFloorAudioOne();
+      await this.delay(500);
+      this.localState.DanceFloorTwoAudio(false);
+    }
+  }
+
+  FadeInDanceFloorAudioOne()
+  {
+    this.tweens.add({
+      targets:  this.danceFloorAudioTwo,
+      volume:   0,
+      duration: 500
+    },
+    );
+    this.tweens.add({
+      targets:  this.danceFloorAudioOne,
+      volume:   0.4,
+      duration: 500
+    },
+    );
+  }
+
+  FadeInDanceFloorAudioTwo()
+  {
+    this.tweens.add({
+      targets:  this.danceFloorAudioOne,
+      volume:   0,
+      duration: 400
+    },
+    );
+    this.tweens.add({
+      targets:  this.danceFloorAudioTwo,
+      volume:   0.6,
+      duration: 400
+    },
+    );
   }
 
   GetListOfActiveVideos() {
@@ -1252,6 +1331,9 @@ export default class MainScene extends Phaser.Scene {
 
             this.localState.GetCurrentTeamState().JoinFanClub();
             await this.WriteToDDMLocalStorage(["actionPoints", this.localState.currentTeamID + "InFanClub"], [this.localState.actionPoints, true]);
+
+            // audio
+            this.FadeInOutDanceFloorAudioTwo();
 
             // unlock chat
 
