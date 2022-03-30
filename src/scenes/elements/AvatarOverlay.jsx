@@ -7,9 +7,18 @@ const AvatarOverlay = (avatarName, id) => {
         <div style="width: inherit;">
           <div id="avatar-overlay-ui" style="position: absolute; bottom: 20px; width: inherit;">
             <div class="level box has-background-dark" style="padding: 0 0 0 0; border-style: solid; border-color: white;">
-              <div class="level-item">
+              <div id="teamProgressContainer" class="level-item">
                 <img src="/assets/images/heart.png" width="50px" height="50px"></img>
                 <progress id="teamEnergyBar" class="progress is-warning" value="30" max="100" style="background: #696969;">30%</progress>
+              </div>
+              <div id="teamEliminated" class="level-item">
+                <div class="message has-text-centered is-danger">
+                  <div class="message-body">
+                    <p class="title"> 
+                    Eliminated!
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="level">

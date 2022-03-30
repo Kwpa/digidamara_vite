@@ -274,6 +274,18 @@ export default class LocalGameState
         }
         else return false;
     }
+
+    GetRandomTeamStillInCompetition()
+    {        
+        var indices = [] as number[];
+        this.teamStates.forEach((team, index)=>{
+            if(!team.eliminated)
+            {
+                indices.push(index);
+            }
+        });
+        return indices[indices.length * Math.random() | 0];
+    }
 }
 
 export class TeamRenderTextures
@@ -309,28 +321,36 @@ export class TeamImages
 export class TeamState
 {
     id!: string;
-    outOfCompetition: boolean = false;
+    eliminated: boolean = false;
     upgradeLevel: number = 0;
     energyRequirement: number = 1;
     currentEnergy: number = 0;
     userInFanClub: boolean = false;
-
-    constructor(id, outOfComp, upgradeLevel, energyReq, currentEnergy, inFanClub){
+    storyUnlocked!: object;
+   
+    constructor(id, outOfComp, upgradeLevel, energyReq, currentEnergy, inFanClub, storyUnlocked: object){
         this.id = id;
-        this.outOfCompetition = outOfComp;
-        this.upgradeLevel = upgradeLevel;
-        this.energyRequirement = energyReq;
         this.currentEnergy = currentEnergy;
+        this.eliminated = outOfComp;
+        this.upgradeLevel = upgradeLevel;
         this.userInFanClub = inFanClub;
+        this.energyRequirement = energyReq;
+        this.storyUnlocked = storyUnlocked;
     }
 
     UpdateFromDynamicData(teamDynamic: TeamState, energyRequirement:number, upgradeLevel:number, inFanClub:boolean)
     {
         this.currentEnergy=teamDynamic.currentEnergy;
-        this.outOfCompetition=teamDynamic.outOfCompetition;
+        this.eliminated=teamDynamic.eliminated;
         this.upgradeLevel=upgradeLevel;
         this.userInFanClub=inFanClub;
         this.energyRequirement = energyRequirement;
+        this.storyUnlocked = teamDynamic.storyUnlocked;
+    }
+
+    UnlockStory(storyId: string)
+    {
+        this.storyUnlocked[storyId] = true;
     }
 
     Upgrade()
@@ -341,9 +361,9 @@ export class TeamState
     {
         this.upgradeLevel += value;
     }
-    OutOfCompetition()
+    EliminateTeam()
     {
-        this.outOfCompetition=true;
+        this.eliminated=true;
     }
     SetEnergyRequirement(value: number)
     {

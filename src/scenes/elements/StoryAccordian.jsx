@@ -4,7 +4,7 @@ const StoryAccordian = (storyData) => {
   return (
     <article class="message">
       <button id="open-close-button" class="message-header accordian">
-        <span id="unlocked" class="tag">
+        <span id="textTag" class="tag">
           New!
         </span>
         <p>{storyData.title}</p>

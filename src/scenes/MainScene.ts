@@ -29,7 +29,7 @@ import Image from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/imag
 import { Rectangle } from 'phaser3-rex-plugins/plugins/gameobjects/shape/shapes/geoms';
 import * as bulmaToast from 'bulma-toast';
 import DynamicData from './DynamicData';
-import {humanized_time_span} from '../utils/humanized_time_span.js';
+import { humanized_time_span } from '../utils/humanized_time_span.js';
 
 export default class MainScene extends Phaser.Scene {
 
@@ -96,6 +96,8 @@ export default class MainScene extends Phaser.Scene {
 
   avatarOverlayButton!: HTMLElement;
   overlayProgressBar!: HTMLInputElement;
+  overlayProgressContainer!: HTMLElement;
+  overlayEliminated!: HTMLElement;
   voteContainer!: HTMLElement;
   avatarOverlay!: Phaser.GameObjects.DOMElement;
   notificationsArea!: HTMLElement;
@@ -152,6 +154,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('arrow', '/assets/images/arrow.png');
     this.load.image('star', '/assets/images/star.png');
     this.load.image('heart', '/assets/images/heart.png');
+    this.load.image('galaxy', '/assets/images/galaxy.png');
     this.load.image('spotlight', '/assets/images/spotlight2.png');
     this.load.json('voteScenarios_content', '/assets/json/VotingScenarios.json'); //https://digidamara.com/data/eng/VotingScenarios.json
     this.load.json('teams_content', '/assets/json/Teams.json');
@@ -352,7 +355,8 @@ export default class MainScene extends Phaser.Scene {
     this.notificationHome = this.add.dom(width / 2, 190, NotificationHome('', '') as HTMLElement);
     this.avatarOverlay = this.add.dom(width / 2, height / 2, AvatarOverlay('open') as HTMLElement);
     this.overlayProgressBar = this.avatarOverlay.getChildByID("teamEnergyBar") as HTMLInputElement;
-
+    this.overlayProgressContainer = this.avatarOverlay.getChildByID("teamProgressContainer") as HTMLInputElement;
+    this.overlayEliminated = this.avatarOverlay.getChildByID("teamEliminated") as HTMLInputElement;
     this.videoPlayerContainer = videoPlayerOverlay.getChildByID("video-player") as HTMLElement;
 
     this.avatarOverlay.setVisible(false);
@@ -429,16 +433,67 @@ export default class MainScene extends Phaser.Scene {
       var donateButton = this.teamProfilePages[this.localState.carouselPosition].getChildByID('donate-button') as HTMLInputElement;
       var fanClubButton = this.teamProfilePages[this.localState.carouselPosition].getChildByID('fan-club-button') as HTMLInputElement;
       var upgradeButton = this.teamProfilePages[this.localState.carouselPosition].getChildByID('upgrade-button') as HTMLInputElement;
+      var tagsActive = this.teamProfilePages[this.localState.carouselPosition].node.getElementsByClassName("tagsActive");
+      var tagsNotEnoughAP = this.teamProfilePages[this.localState.carouselPosition].node.getElementsByClassName("tagsNotEnoughAP");
+      var tagsEliminated = this.teamProfilePages[this.localState.carouselPosition].node.getElementsByClassName("tagsEliminated");
 
-      if (this.localState.actionPoints == 0) {
+      if (this.localState.GetCurrentTeamState().eliminated) {
+        donateButton.classList.remove("is-primary");
+        donateButton.classList.add("is-danger");
+        donateButton.setAttribute("disabled", '');
+        fanClubButton.classList.remove("is-primary");
+        fanClubButton.classList.add("is-danger");
+        fanClubButton.setAttribute("disabled", '');
+        upgradeButton.classList.remove("is-primary");
+        upgradeButton.classList.add("is-danger");
+        upgradeButton.setAttribute("disabled", '');
+
+        Array.from(tagsActive).forEach(element => {
+          (element as HTMLElement).style.display = "none";
+        });
+
+        Array.from(tagsNotEnoughAP).forEach(element => {
+          (element as HTMLElement).style.display = "none";
+        });
+
+        Array.from(tagsEliminated).forEach(element => {
+          (element as HTMLElement).style.display = "block";
+        });
+
+      }
+      else if (this.localState.actionPoints == 0) {
         donateButton.setAttribute("disabled", '');
         fanClubButton.setAttribute("disabled", '');
         upgradeButton.setAttribute("disabled", '');
+
+        Array.from(tagsActive).forEach(element => {
+          (element as HTMLElement).style.display = "none";
+        });
+
+        Array.from(tagsNotEnoughAP).forEach(element => {
+          (element as HTMLElement).style.display = "block";
+        });
+
+        Array.from(tagsEliminated).forEach(element => {
+          (element as HTMLElement).style.display = "none";
+        });
       }
       else {
         donateButton.removeAttribute("disabled");
         fanClubButton.removeAttribute("disabled");
         upgradeButton.removeAttribute("disabled");
+
+        Array.from(tagsActive).forEach(element => {
+          (element as HTMLElement).style.display = "block";
+        });
+
+        Array.from(tagsNotEnoughAP).forEach(element => {
+          (element as HTMLElement).style.display = "none";
+        });
+
+        Array.from(tagsEliminated).forEach(element => {
+          (element as HTMLElement).style.display = "none";
+        });
       }
 
       this.avatarOverlay.setVisible(false);
@@ -475,16 +530,14 @@ export default class MainScene extends Phaser.Scene {
     await this.StartClientConnection();
 
     this.ShowVideo(this, width, height, "wVVr4Jq_lMI");
-    
-    if (!this.sound.locked)
-    {
+
+    if (!this.sound.locked) {
       // already unlocked so play
       this.danceFloorAudioOne.play();
       this.danceFloorAudioTwo.play();
 
     }
-    else
-    {
+    else {
       // wait for 'unlocked' to fire and then play
       this.sound.once(Phaser.Sound.Events.UNLOCKED, () => {
         this.danceFloorAudioOne.play();
@@ -493,46 +546,42 @@ export default class MainScene extends Phaser.Scene {
     }
   }
 
-  async FadeInOutDanceFloorAudioTwo()
-  {
-    if(!this.localState.danceFloorAudioTwoPlaying)
-    {
+  async FadeInOutDanceFloorAudioTwo() {
+    if (!this.localState.danceFloorAudioTwoPlaying) {
       this.FadeInDanceFloorAudioTwo();
       this.localState.DanceFloorTwoAudio(true);
-      await this.delay(1000*5);
+      await this.delay(1000 * 5);
       this.FadeInDanceFloorAudioOne();
       await this.delay(500);
       this.localState.DanceFloorTwoAudio(false);
     }
   }
 
-  FadeInDanceFloorAudioOne()
-  {
+  FadeInDanceFloorAudioOne() {
     this.tweens.add({
-      targets:  this.danceFloorAudioTwo,
-      volume:   0,
+      targets: this.danceFloorAudioTwo,
+      volume: 0,
       duration: 500
     },
     );
     this.tweens.add({
-      targets:  this.danceFloorAudioOne,
-      volume:   0.4,
+      targets: this.danceFloorAudioOne,
+      volume: 0.4,
       duration: 500
     },
     );
   }
 
-  FadeInDanceFloorAudioTwo()
-  {
+  FadeInDanceFloorAudioTwo() {
     this.tweens.add({
-      targets:  this.danceFloorAudioOne,
-      volume:   0,
+      targets: this.danceFloorAudioOne,
+      volume: 0,
       duration: 400
     },
     );
     this.tweens.add({
-      targets:  this.danceFloorAudioTwo,
-      volume:   0.6,
+      targets: this.danceFloorAudioTwo,
+      volume: 0.6,
       duration: 400
     },
     );
@@ -840,18 +889,28 @@ export default class MainScene extends Phaser.Scene {
     }) as StorageObjects;
 
     var teamsStateData: TeamState[] = [];
-
+    
     getTeams.objects.forEach(team => {
-
+      
       var teamJsonString = JSON.stringify(team.value);
       var parsedJson = JSON.parse(teamJsonString);
+      console.log("parsedJSON : " + teamJsonString);
+      var storyBools = {
+        "s_001": parsedJson.s_001Unlocked,
+        "s_002": parsedJson.s_002Unlocked,
+        "s_003": parsedJson.s_003Unlocked,
+        "s_004": parsedJson.s_004Unlocked,
+        "s_005": parsedJson.s_005Unlocked,
+        "s_006": parsedJson.s_006Unlocked
+      }
       teamsStateData.push(new TeamState(
         parsedJson.id,
         parsedJson.eliminated,
         parsedJson.upgradeLevel,
         parsedJson.energyRequirement,
         parsedJson.energy,
-        parsedJson.inFanClub
+        parsedJson.inFanClub,
+        storyBools
       )
       )
     });
@@ -927,46 +986,30 @@ export default class MainScene extends Phaser.Scene {
       var teamStatic = this.staticData.teams[i];
       var teamDynamic = this.dynamicData.dynamicTeamsState[i];
       var upgradeLevel = 0;
+      var inFanClub = false;
       switch (teamStatic.id) {
         case "t_001":
           upgradeLevel = userDynamic.t_001UpgradeLevel;
-          break;
-        case "t_002":
-          upgradeLevel = userDynamic.t_002UpgradeLevel;
-          break;
-        case "t_003":
-          upgradeLevel = userDynamic.t_003UpgradeLevel;
-          break;
-        case "t_004":
-          upgradeLevel = userDynamic.t_004UpgradeLevel;
-          break;
-        case "t_005":
-          upgradeLevel = userDynamic.t_005UpgradeLevel;
-          break;
-        case "t_006":
-          upgradeLevel = userDynamic.t_006UpgradeLevel;
-          break;
-      }
-
-      var inFanClub = false;
-
-      switch (teamStatic.id) {
-        case "t_001":
           inFanClub = userDynamic.t_001InFanClub;
           break;
         case "t_002":
+          upgradeLevel = userDynamic.t_002UpgradeLevel;
           inFanClub = userDynamic.t_002InFanClub;
           break;
         case "t_003":
+          upgradeLevel = userDynamic.t_003UpgradeLevel;
           inFanClub = userDynamic.t_003InFanClub;
           break;
         case "t_004":
+          upgradeLevel = userDynamic.t_004UpgradeLevel;
           inFanClub = userDynamic.t_004InFanClub;
           break;
         case "t_005":
+          upgradeLevel = userDynamic.t_005UpgradeLevel;
           inFanClub = userDynamic.t_005InFanClub;
           break;
         case "t_006":
+          upgradeLevel = userDynamic.t_006UpgradeLevel;
           inFanClub = userDynamic.t_006InFanClub;
           break;
       }
@@ -974,11 +1017,12 @@ export default class MainScene extends Phaser.Scene {
       teamIdList.push(teamStatic.id);
       teamStateList.push(new TeamState(
         teamStatic.id,
-        teamDynamic.outOfCompetition,
+        teamDynamic.eliminated,
         upgradeLevel,
         roundDynamic.energyRequirement,
         teamDynamic.currentEnergy,
-        inFanClub
+        inFanClub,
+        teamDynamic.storyUnlocked
       ));
     }
 
@@ -1149,7 +1193,7 @@ export default class MainScene extends Phaser.Scene {
     this.messageInput = chatPage.getChildByID('chat-input') as HTMLInputElement;
 
     // Execute a function when the user releases a key on the keyboard
-    this.messageInput.addEventListener("keyup", (event)=> {
+    this.messageInput.addEventListener("keyup", (event) => {
       // Number 13 is the "Enter" key on the keyboard
       if (event.key === 'Enter') {
         // Cancel the default action, if needed
@@ -1189,29 +1233,28 @@ export default class MainScene extends Phaser.Scene {
     });
   }
 
-  CreateChatChannelUI(container: HTMLElement, channel: ChatChannelData)
-  {
+  CreateChatChannelUI(container: HTMLElement, channel: ChatChannelData) {
     var id = channel.id;
     console.log("hey" + channel.id);
     if (this.localState.chatChannels[id] != null) {
-        console.log("Make new chat channels !! ");
-        var src = "/assets/white_icons/" + channel.iconPath + ".png";
-        const chatChannel = ChatChannel(channel.title, src) as HTMLElement;
-        const chatChannelOpenButton = chatChannel.querySelector("#chat-channel-button-open") as HTMLElement;
+      console.log("Make new chat channels !! ");
+      var src = "/assets/white_icons/" + channel.iconPath + ".png";
+      const chatChannel = ChatChannel(channel.title, src) as HTMLElement;
+      const chatChannelOpenButton = chatChannel.querySelector("#chat-channel-button-open") as HTMLElement;
 
-        chatChannelOpenButton.onclick = async () => {
-          console.log("Open " + channel.id);
-          await this.ReloadGroupChat(channel.id);
-          this.chatChannelOpen.style.display = "block";
-          this.chatChannels.style.display = "none";
-          this.chatChannelTitle.innerHTML = channel.title;
-          this.chatChannelIcon.src = "/assets/white_icons/" + channel.iconPath + ".png";
-          this.localState.SetCurrentChatChannel(channel.id);
+      chatChannelOpenButton.onclick = async () => {
+        console.log("Open " + channel.id);
+        await this.ReloadGroupChat(channel.id);
+        this.chatChannelOpen.style.display = "block";
+        this.chatChannels.style.display = "none";
+        this.chatChannelTitle.innerHTML = channel.title;
+        this.chatChannelIcon.src = "/assets/white_icons/" + channel.iconPath + ".png";
+        this.localState.SetCurrentChatChannel(channel.id);
 
-        }
-
-        container.append(chatChannel);
       }
+
+      container.append(chatChannel);
+    }
   }
 
   async ReloadGroupChat(groupId: string) {
@@ -1219,8 +1262,7 @@ export default class MainScene extends Phaser.Scene {
     var create = await this.CreateChatMessages(groupId);
   }
 
-  ReloadChatChannels()
-  {
+  ReloadChatChannels() {
     this.chatChannelContainer.innerHTML = "";
     this.staticData.chatChannels.forEach((channel) => {
       this.CreateChatChannelUI(this.chatChannelContainer, channel);
@@ -1242,20 +1284,37 @@ export default class MainScene extends Phaser.Scene {
         const teamIcon = teamProfile.getChildByID('team-icon') as HTMLElement;
         teamIcon.classList.add(team.iconId);
         const container = teamProfile.getChildByID('story-container') as HTMLElement;
+        var j = 1;
         team.story.forEach((story) => {
 
           const storyAccordian = StoryAccordian(story) as HTMLElement;
+          const textTag = storyAccordian.querySelector("#textTag") as HTMLElement;
+          const storyUnlocked = this.localState.teamStates[k].storyUnlocked["s_00"+j];
+          console.log("story id : " + story.id + ". Unlocked : " + storyUnlocked);
           const mainButton = storyAccordian.querySelectorAll("#open-close-button")[0] as HTMLElement;
+          if(storyUnlocked)
+          {
+            textTag.innerHTML = "New"!;
+          }
+          else
+          {
+            textTag.innerHTML = "Locked"!;
+            mainButton.setAttribute("disabled", '');
+          }
           const collapsibleMessage = storyAccordian.querySelectorAll("#collapsible-message")[0] as HTMLElement;
           mainButton.onclick = () => {
-            if (collapsibleMessage.style.maxHeight) {
-              collapsibleMessage.style.maxHeight = null; //works as intended
-            }
-            else {
-              collapsibleMessage.style.maxHeight = collapsibleMessage.scrollHeight + "px";
+            if(storyUnlocked == true)
+            {
+              if (collapsibleMessage.style.maxHeight) {
+                collapsibleMessage.style.maxHeight = null; //works as intended
+              }
+              else {
+                collapsibleMessage.style.maxHeight = collapsibleMessage.scrollHeight + "px";
+              }
             }
           }
           container.append(storyAccordian);
+          j++;
         });
         teamProfile.setVisible(false);
         this.teamProfilePages.push(teamProfile);
@@ -1283,12 +1342,7 @@ export default class MainScene extends Phaser.Scene {
           upgradeBackground.style.display = "none";
           upgradeValue.style.display = "none";
         }
-
-        if (this.localState.actionPoints == 0) {
-          donateButton.setAttribute("disabled", '');
-          fanClubButton.setAttribute("disabled", '');
-          upgradeButton.setAttribute("disabled", '');
-        }
+        this.CheckIfOutOfPointsUI(donateButton, upgradeButton, fanClubButton, k);
 
         k++;
         donateButton.onclick = async () => {
@@ -1298,11 +1352,7 @@ export default class MainScene extends Phaser.Scene {
             this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
             this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
 
-            if (this.localState.actionPoints == 0) {
-              donateButton.setAttribute("disabled", '');
-              fanClubButton.setAttribute("disabled", '');
-              upgradeButton.setAttribute("disabled", '');
-            }
+            this.CheckIfOutOfPointsUI(donateButton, upgradeButton, fanClubButton, this.localState.carouselPosition);
 
             await this.WriteToDDMLocalStorage(["actionPoints", "sparks"], [this.localState.actionPoints, this.localState.sparksAwarded]);
 
@@ -1339,21 +1389,16 @@ export default class MainScene extends Phaser.Scene {
 
             var groupName = this.staticData.teams[this.localState.carouselPosition].fanClubChannelId;
             var cId = await this.JoinGroup(this.session, this.client, groupName);
-            console.log("groupname: "+groupName + ", cid: " + cId);
+            console.log("groupname: " + groupName + ", cid: " + cId);
             var channels = this.localState.chatChannels;
-            channels[groupName] = cId; 
+            channels[groupName] = cId;
             this.localState.AddChatChannels(channels);
             this.JoinGroupChat(socket, cId);
-            
+
             this.ReloadChatChannels();
             //update UI
 
-            if (this.localState.actionPoints == 0) {
-              donateButton.setAttribute("disabled", '');
-              fanClubButton.setAttribute("disabled", '');
-              upgradeButton.setAttribute("disabled", '');
-            }
-
+            this.CheckIfOutOfPointsUI(donateButton, upgradeButton, fanClubButton, this.localState.carouselPosition);
 
             fanClubButtonContainer.style.display = "none";
             fanClubIcon.style.display = "block";
@@ -1377,11 +1422,7 @@ export default class MainScene extends Phaser.Scene {
             this.localState.UpgradeTeam(this.localState.currentTeamID);
             await this.WriteToDDMLocalStorage(["actionPoints", this.localState.currentTeamID + "UpgradeLevel"], [this.localState.actionPoints, this.localState.GetCurrentTeamState().upgradeLevel]);
 
-            if (this.localState.actionPoints == 0) {
-              donateButton.setAttribute("disabled", '');
-              fanClubButton.setAttribute("disabled", '');
-              upgradeButton.setAttribute("disabled", '');
-            }
+            this.CheckIfOutOfPointsUI(donateButton, upgradeButton, fanClubButton, this.localState.carouselPosition);
 
             //update UI   
             upgradeValue.innerHTML = this.localState.GetCurrentTeamState().upgradeLevel.toString();
@@ -1403,6 +1444,29 @@ export default class MainScene extends Phaser.Scene {
     for (var j = 0; j < this.localState.teamStates.length; j++) {
       var teamState = this.localState.teamStates[j];
       this.SetTeamProfileProgress(teamState.currentEnergy, this.localState.roundEnergyRequirement, j);
+    }
+  }
+
+  CheckIfOutOfPointsUI(donateButton, fanClubButton, upgradeButton, index: number) {
+    var tagsActive = this.teamProfilePages[index].node.getElementsByClassName("tagsActive");
+    var tagsNotEnoughAP = this.teamProfilePages[index].node.getElementsByClassName("tagsNotEnoughAP");
+    var tagsEliminated = this.teamProfilePages[index].node.getElementsByClassName("tagsEliminated");
+    if (this.localState.actionPoints == 0) {
+      donateButton.setAttribute("disabled", '');
+      fanClubButton.setAttribute("disabled", '');
+      upgradeButton.setAttribute("disabled", '');
+
+      Array.from(tagsActive).forEach(element => {
+        (element as HTMLElement).style.display = "none";
+      });
+
+      Array.from(tagsNotEnoughAP).forEach(element => {
+        (element as HTMLElement).style.display = "block";
+      });
+
+      Array.from(tagsEliminated).forEach(element => {
+        (element as HTMLElement).style.display = "none";
+      });
     }
   }
 
@@ -1508,26 +1572,50 @@ export default class MainScene extends Phaser.Scene {
       var a_f = this.add.image(300, 300, 'atlas', 't_00' + id + '_A_flipped');
       var b = this.add.image(300, 300, 'atlas', 't_00' + id + '_B');
       var b_f = this.add.image(300, 300, 'atlas', 't_00' + id + '_B_flipped');
+      var c = this.add.image(300, 300, 'galaxy');
+
+      var front, frontFlipped, back, backFlipped;
+
+      if (this.localState.teamStates[i].eliminated) {
+        front = c;
+        frontFlipped = c;
+        back = c;
+        backFlipped = c;
+      }
+      else {
+        front = a;
+        frontFlipped = a_f;
+        back = b;
+        backFlipped = b_f;
+      }
 
       var startingColour = 0x808080;
-      if (i == 0) {
+      if (i == 0 && !this.localState.teamStates[i].eliminated) {
         startingColour = 0xffffff;
       }
       this.imgs.push(
         new TeamImages(
           't_00' + i,
-          a.setTint(startingColour),
-          a_f.setTint(0x808080),
-          b.setTint(startingColour),
-          b_f.setTint(0x808080)
+          front.setTint(startingColour),
+          frontFlipped.setTint(0x808080),
+          back.setTint(startingColour),
+          backFlipped.setTint(0x808080)
         )
       );
       var rendTex_front = this.add.renderTexture(0, 0, 600, 600);
-      rendTex_front.draw(this.imgs[i].img_A, 150, 300);
-      rendTex_front.draw(this.imgs[i].img_B, 450, 300);
       var rendTex_back = this.add.renderTexture(0, 0, 600, 600);
-      rendTex_back.draw(this.imgs[i].img_A_flipped, 150, 300);
-      rendTex_back.draw(this.imgs[i].img_B_flipped, 450, 300);
+      if (this.localState.teamStates[i].eliminated) {
+        rendTex_front.draw(this.imgs[i].img_A, 300, 300);
+        rendTex_front.draw(this.imgs[i].img_B, 1000, 1000);
+        rendTex_back.draw(this.imgs[i].img_A_flipped, 1000, 1000);
+        rendTex_back.draw(this.imgs[i].img_B_flipped, 1000, 1000);
+      }
+      else {
+        rendTex_front.draw(this.imgs[i].img_A, 150, 300);
+        rendTex_front.draw(this.imgs[i].img_B, 450, 300);
+        rendTex_back.draw(this.imgs[i].img_A_flipped, 150, 300);
+        rendTex_back.draw(this.imgs[i].img_B_flipped, 450, 300);
+      }
       rendTex_front.saveTexture('t_00' + id + '_front');
       rendTex_back.saveTexture('t_00' + id + '_back');
       this.cardTexs.push(
@@ -1539,13 +1627,20 @@ export default class MainScene extends Phaser.Scene {
       );
       var card = CreateCard(this, 't_00' + id + '_front', 't_00' + id + '_back');
       this.faces.push(card);
+
+      a.setVisible(false);
+      a_f.setVisible(false);
+      b.setVisible(false);
+      b_f.setVisible(false);
+      c.setVisible(false);
     }
     this.imgs.forEach((img) => {
       img.img_A.setVisible(false);
       img.img_A_flipped.setVisible(false);
       img.img_B.setVisible(false);
       img.img_B_flipped.setVisible(false);
-    })
+    });
+
     this.cardTexs.forEach((rt) => {
       rt.rendTex_front.setVisible(false);
       rt.rendTex_back.setVisible(false);
@@ -1599,49 +1694,12 @@ export default class MainScene extends Phaser.Scene {
 
     this.tapAreaLeft.setInteractive()
       .on('pointerdown', async (pointer, localX, localY, event) => {
-        if (this.carouselTapBool) {
-          this.carouselTapBool = false;
-          carousel.roll?.toLeft();
-
-          for (var i = 0; i < this.imgs.length; i++) {
-            var img = this.imgs[i];
-            (img.img_A as Image).setTint(0x808080);
-            (img.img_B as Image).setTint(0x808080);
-            (this.cardTexs[i].rendTex_front as RenderTexture).clear();
-            this.cardTexs[i].rendTex_front.draw(this.imgs[i].img_A, 150, 300);
-            this.cardTexs[i].rendTex_front.draw(this.imgs[i].img_B, 450, 300);
-          }
-
-          this.localState.RollCarousel(-1);
-          (this.imgs[this.localState.carouselPosition].img_A as Image).setTint(0xffffff);
-          (this.imgs[this.localState.carouselPosition].img_B as Image).setTint(0xffffff);
-          await this.AnimateOverlayChange();
-          this.avatarOverlayButton.innerHTML = this.staticData.teams[this.localState.carouselPosition].title;
-        }
+        await this.MoveCarousel(carousel, "left");
       });
 
     this.tapAreaRight.setInteractive()
       .on('pointerdown', async (pointer, localX, localY, event) => {
-        if (this.carouselTapBool) {
-          this.carouselTapBool = false;
-          carousel.roll?.toRight();
-
-          for (var i = 0; i < this.imgs.length; i++) {
-            var img = this.imgs[i];
-            (img.img_A as Image).setTint(0x808080);
-            (img.img_B as Image).setTint(0x808080);
-            (this.cardTexs[i].rendTex_front as RenderTexture).clear();
-            this.cardTexs[i].rendTex_front.draw(this.imgs[i].img_A, 150, 300);
-            this.cardTexs[i].rendTex_front.draw(this.imgs[i].img_B, 450, 300);
-          }
-
-          this.localState.RollCarousel(1);
-          (this.imgs[this.localState.carouselPosition].img_A as Image).setTint(0xffffff);
-          (this.imgs[this.localState.carouselPosition].img_B as Image).setTint(0xffffff);
-          this.avatarOverlayButton.innerHTML = this.staticData.teams[this.localState.carouselPosition].title;
-
-          await this.AnimateOverlayChange();
-        }
+        await this.MoveCarousel(carousel, "right");
       });
 
     var arrowX = Math.min(width * 0.10, 100);
@@ -1666,8 +1724,63 @@ export default class MainScene extends Phaser.Scene {
       delay: 100
     });
 
+    this.MoveCarousel(carousel, "to", this.localState.GetRandomTeamStillInCompetition());
+
     this.startCharacterGraphics = true;
     this.add.existing(carousel);
+  }
+
+  async MoveCarousel(carousel: PerspectiveCarousel, direction: string, index?: number) {
+    if (this.carouselTapBool) {
+      this.carouselTapBool = false;
+      switch (direction) {
+        case "left":
+          carousel.roll?.toLeft();
+          this.localState.RollCarousel(-1);
+          break;
+        case "right":
+          carousel.roll?.toRight();
+          this.localState.RollCarousel(1);
+          break;
+        case "to":
+          carousel.roll?.to(index as number);
+          this.localState.carouselPosition = index as number;
+          this.localState.SetCurrentTeamID();
+          break;
+      }
+
+      for (var i = 0; i < this.imgs.length; i++) {
+        var img = this.imgs[i];
+        (img.img_A as Image).setTint(0x808080);
+        (img.img_B as Image).setTint(0x808080);
+        (this.cardTexs[i].rendTex_front as RenderTexture).clear();
+        if (!this.localState.teamStates[i].eliminated) {
+          this.cardTexs[i].rendTex_front.draw(this.imgs[i].img_A, 150, 300);
+          this.cardTexs[i].rendTex_front.draw(this.imgs[i].img_B, 450, 300);
+        }
+        else {
+          this.cardTexs[i].rendTex_front.draw(this.imgs[i].img_A, 300, 270);
+        }
+      }
+      if (!this.localState.GetCurrentTeamState().eliminated) {
+        (this.imgs[this.localState.carouselPosition].img_A as Image).setTint(0xffffff);
+        (this.imgs[this.localState.carouselPosition].img_B as Image).setTint(0xffffff);
+        this.avatarOverlayButton.classList.remove("is-danger");
+        this.avatarOverlayButton.classList.add("is-primary");
+        this.overlayEliminated.style.display = "none";
+        this.overlayProgressContainer.style.display = "flex";
+      }
+      else {
+        (this.imgs[this.localState.carouselPosition].img_A as Image).setTint(0x808080);
+        (this.imgs[this.localState.carouselPosition].img_B as Image).setTint(0x808080);
+        this.avatarOverlayButton.classList.remove("is-primary");
+        this.avatarOverlayButton.classList.add("is-danger");
+        this.overlayEliminated.style.display = "block";
+        this.overlayProgressContainer.style.display = "none";
+      }
+      this.avatarOverlayButton.innerHTML = this.staticData.teams[this.localState.carouselPosition].title;
+      await this.AnimateOverlayChange();
+    }
   }
 
   StarField() {
@@ -1931,9 +2044,8 @@ export default class MainScene extends Phaser.Scene {
           if (this.localState.GetCurrentChatChannelGroupId() == message.group_id) {
             var timeago = this.GetTime(message.create_time as string);
             const messageElement = ChatMessageCurrentUser(username, message.content.message, avatarUrl, timeago) as HTMLElement;
-            
-            if(this.localState.lastChatMessageUserId == message.sender_id)
-            {
+
+            if (this.localState.lastChatMessageUserId == message.sender_id) {
               var top = messageElement.querySelector('#chat-top') as HTMLElement;
               top.style.display = "none";
             }
@@ -2003,8 +2115,7 @@ export default class MainScene extends Phaser.Scene {
     const messageAck = await socket.writeChatMessage(groupId, data);
   }
 
-  async CreateUserList(list: ChannelMessageList)
-  {
+  async CreateUserList(list: ChannelMessageList) {
     var userList = {};
     list.messages?.forEach(async (message) => {
       console.log("message time: " + new Date(message.create_time as string).toUTCString());
@@ -2013,8 +2124,8 @@ export default class MainScene extends Phaser.Scene {
       var avatarUrl = users[0].avatar_url as string;
       var username = users[0].username as string;
       console.log("av" + avatarUrl + "us" + username);
-      userList[message.sender_id as string] = {"avatar_url": avatarUrl, "username": username};
-      
+      userList[message.sender_id as string] = { "avatar_url": avatarUrl, "username": username };
+
       console.log(userList[message.sender_id as string].avatar_url);
     });
     return userList;
@@ -2024,12 +2135,12 @@ export default class MainScene extends Phaser.Scene {
     var forward = true;
     var channelId = "3." + this.localState.chatChannels[chatId] + "..";
     var result: ChannelMessageList = await this.client.listChannelMessages(this.session, channelId, 50, forward);
-    
+
     if (result.messages != null && result.messages.length > 0) {
       var storeUserId = "";
-      var storeMessageCreateTime = ""; 
+      var storeMessageCreateTime = "";
       var storeUserDetails = {} as object;
-      
+
       storeUserDetails = await this.CreateUserList(result);
       await this.delay(500); //WARNING NOT FOOL PROOF!!!
 
@@ -2040,7 +2151,7 @@ export default class MainScene extends Phaser.Scene {
         return aTime-bTime;
       }); */
 
-      result.messages.forEach( async (message) => {
+      result.messages.forEach(async (message) => {
         switch (message.code) {
           case 0:
             console.log("Message has id %o and content %o", message.message_id, message.content);
@@ -2055,8 +2166,7 @@ export default class MainScene extends Phaser.Scene {
               const messageElement = ChatMessageCurrentUser(username, getMessage.message, avatarUrl, timeago) as HTMLElement; // works! but can't find the message :/
               var top = messageElement.querySelector('#chat-message') as HTMLElement;
 
-              if(storeUserId == message.sender_id)
-              {
+              if (storeUserId == message.sender_id) {
                 var top = messageElement.querySelector('#chat-top') as HTMLElement;
                 top.style.display = "none";
                 /* if(storeMessageCreateTime != "") 
@@ -2071,15 +2181,14 @@ export default class MainScene extends Phaser.Scene {
                   }
                 } */
               }
-              
-              
+
+
               this.chatMessageContainer.append(messageElement);
             }
             else {
               const messageElement = ChatMessageOtherUser(username, getMessage.message, avatarUrl, timeago) as HTMLElement; // works! but can't find the message :/
-              
-              if(storeUserId == message.sender_id)
-              {
+
+              if (storeUserId == message.sender_id) {
                 var top = messageElement.querySelector('#chat-top') as HTMLElement;
                 top.style.display = "none";
               }
@@ -2147,7 +2256,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   update() {
-    if (this.startCharacterGraphics) this.UpdateDancers();
+    if (this.startCharacterGraphics && !this.localState.GetCurrentTeamState().eliminated) this.UpdateDancers();
     if (this.startStarField) this.UpdateStarField();
   }
 }

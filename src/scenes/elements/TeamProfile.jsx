@@ -66,9 +66,15 @@ const TeamProfile = (teamData) => {
                     <div style="display: block">
                       <button id="donate-button" class="button is-primary is-responsive" style="display: block; margin: 0 auto;">Donate</button>
                       <div style="height: 20px;"></div>
-                      <div class="tags has-addons">
+                      <div class="tags has-addons tagsActive">
                         <span class="tag is-primary">-1 AP</span>
                         <span class="tag is-warning">Give Energy, Gain Sparks</span>
+                      </div>
+                      <div style="display: none;" class="tags tagsNotEnoughAP">
+                        <span class="tag is-danger">Not enough AP</span>
+                      </div>
+                      <div style="display: none;" class="tags tagsEliminated">
+                        <span class="tag is-danger">Team eliminated</span>
                       </div>
                     </div>
                   </div>
@@ -76,9 +82,15 @@ const TeamProfile = (teamData) => {
                     <div style="display: block">
                       <button id="fan-club-button" class="button is-primary is-responsive" style="display: block; margin: 0 auto;">Join Fan Club</button>
                       <div style="height: 20px;"></div>
-                      <div class="tags has-addons">
+                      <div class="tags has-addons tagsActive">
                         <span class="tag is-primary">-1 AP</span>
                         <span class="tag is-warning">Unlocks Upgrades and Chat</span>
+                      </div>
+                      <div style="display: none;" class="tags tagsNotEnoughAP">
+                        <span class="tag is-danger">Not enough AP</span>
+                      </div>
+                      <div style="display: none;" class="tags tagsEliminated">
+                        <span class="tag is-danger">Team eliminated</span>
                       </div>
                     </div>
                   </div>
@@ -86,9 +98,15 @@ const TeamProfile = (teamData) => {
                     <div style="display: block">
                       <button id="upgrade-button" class="button is-primary is-responsive" style="display: block; margin: 0 auto;"><img src="/assets/images/upgrade.png" width="30" height="30"></img> Upgrade</button>
                       <div style="height: 20px;"></div>
-                      <div class="tags has-addons">
+                      <div style="margin: 0 auto;" class="tags has-addons tagsActive">
                         <span class="tag is-primary">-1 AP</span>
                         <span class="tag is-warning">Gain +1 Spark Per Donation</span>
+                      </div>
+                      <div style="display: none;" class="tags tagsNotEnoughAP">
+                        <span class="tag is-danger">Not enough AP</span>
+                      </div>
+                      <div style="display: none;" class="tags tagsEliminated">
+                        <span class="tag is-danger">Team eliminated</span>
                       </div>
                     </div>
                   </div>
