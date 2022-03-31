@@ -11,6 +11,7 @@ import AvatarOverlay from './elements/AvatarOverlay';
 import VideoPlayerOverlay from './elements/VideoPlayerOverlay';
 import TeamProfile from './elements/TeamProfile';
 import VotingPage from './elements/VotingPage';
+import LeaderboardPage from './elements/LeaderboardPage';
 import StoryAccordian from './elements/StoryAccordian';
 import ChatChannel from './elements/ChatChannel';
 
@@ -61,6 +62,7 @@ export default class MainScene extends Phaser.Scene {
   videoTileContainer!: HTMLElement;
   storeMatchReferece!: StorageObjects;
 
+  leaderboardPage!: Phaser.GameObjects.DOMElement;
   chatChannelOpen!: HTMLElement;
   chatChannels!: HTMLElement;
   chatSubmitButton!: HTMLElement;
@@ -69,6 +71,7 @@ export default class MainScene extends Phaser.Scene {
   returnToChatChannelsButton!: HTMLElement;
   settingsHeaderButton!: HTMLElement;
   chatFooterButton!: HTMLElement;
+  leaderboardHeaderButton!: HTMLElement;
   voteFooterButton!: HTMLElement;
   videoFooterButton!: HTMLElement;
   helpFootButton!: HTMLElement;
@@ -113,6 +116,7 @@ export default class MainScene extends Phaser.Scene {
   height!: number;
 
   carouselTapBool!: boolean;
+  mouseDownOnLeaderboardButton: boolean = false;
 
   //starfield
   distance = 300;
@@ -291,7 +295,75 @@ export default class MainScene extends Phaser.Scene {
     this.webConfig = this.cache.json.get('web_config') as object;
   }
 
+  IS_TOUCH!: boolean;
+
   async AsyncCreate() {
+
+    window.addEventListener('touchstart', () =>
+    {			
+      this.IS_TOUCH	= true;
+      
+      this.leaderboardHeaderButton.addEventListener("touchstart", ()=>{
+        addEventListener("touchmove", this.onDragTouch);
+      });
+  
+      this.leaderboardHeaderButton.onclick = () =>
+      {
+        if(!this.leaderboardIsOpen)
+        {
+          console.log("OpenTheLeaderBoard");
+          this.leaderboardPage.setY(height/2);
+          this.leaderboardHeaderButton.style.top="calc(100vh - 280px)";
+          this.leaderboardIsOpen = true;
+        }
+        else
+        {
+          console.log("CloseTheLeaderboard");
+          this.leaderboardPage.setY(-10000);
+          this.leaderboardHeaderButton.style.top="0px";
+          this.leaderboardIsOpen = false;
+        }
+      };
+      addEventListener("touchend", ()=>{
+        
+        removeEventListener("touchmove", this.onDragTouch);
+        if(!this.leaderboardIsOpen)
+        {
+            if(this.storeMouseYPosition> height/2)
+            {
+              console.log("OpenTheLeaderBoard");
+              this.leaderboardPage.setY(height/2);
+              this.leaderboardHeaderButton.style.top="calc(100vh - 280px)";
+              this.leaderboardIsOpen = true;
+            }
+            else
+            {
+              console.log("KeepClosed");
+              this.leaderboardPage.setY(-10000);
+              this.leaderboardHeaderButton.style.top="0px";
+              this.leaderboardIsOpen = false;
+            }
+        }
+        else
+        {
+          if(this.storeMouseYPosition> height/2)
+            {
+              console.log("KeepOpen");
+              this.leaderboardPage.setY(height/2);
+              this.leaderboardHeaderButton.style.top="calc(100vh - 280px)";
+              this.leaderboardIsOpen = true;
+            }
+            else
+            {
+              console.log("CloseTheLeaderboard");
+              this.leaderboardPage.setY(-10000);
+              this.leaderboardHeaderButton.style.top="0px";
+              this.leaderboardIsOpen = false;
+            }
+        }
+      });
+    }
+    );
 
     await this.waitUntilAssetsLoaded();
     await this.LoadJSON();
@@ -352,6 +424,7 @@ export default class MainScene extends Phaser.Scene {
     const videoPage = this.add.dom(width / 2, height / 2, VideoPage() as HTMLElement);
     const videoPlayerOverlay = this.add.dom(width / 2, height / 2, VideoPlayerOverlay() as HTMLElement);
     const votePage = this.add.dom(width / 2, height / 2, VotingPage() as HTMLElement);
+    this.leaderboardPage = this.add.dom(width / 2, height / 2, LeaderboardPage() as HTMLElement);
     this.notificationHome = this.add.dom(width / 2, 190, NotificationHome('', '') as HTMLElement);
     this.avatarOverlay = this.add.dom(width / 2, height / 2, AvatarOverlay('open') as HTMLElement);
     this.overlayProgressBar = this.avatarOverlay.getChildByID("teamEnergyBar") as HTMLInputElement;
@@ -359,6 +432,8 @@ export default class MainScene extends Phaser.Scene {
     this.overlayEliminated = this.avatarOverlay.getChildByID("teamEliminated") as HTMLInputElement;
     this.videoPlayerContainer = videoPlayerOverlay.getChildByID("video-player") as HTMLElement;
 
+    this.leaderboardPage.depth = -1;
+    this.leaderboardPage.setY(-10000);
     this.avatarOverlay.setVisible(false);
     videoPlayerOverlay.setVisible(false);
     this.notificationHome.setVisible(false);
@@ -398,7 +473,7 @@ export default class MainScene extends Phaser.Scene {
     this.pauseVideoPlayerButton = videoPlayerOverlay.getChildByID('video-player-button-pause') as HTMLElement;
     this.loadNextVideoPlayerButton = videoPlayerOverlay.getChildByID('video-player-button-next') as HTMLElement;
     this.loadPreviousVideoPlayerButton = videoPlayerOverlay.getChildByID('video-player-button-previous') as HTMLElement;
-
+    this.leaderboardHeaderButton = this.avatarOverlay.getChildByID('leaderboard-header-button') as HTMLElement;
 
     this.avatarOverlayButton = this.avatarOverlay.getChildByID('openProfile') as HTMLElement;
     this.notificationsArea = baseWebsite.getChildByID("gameArea") as HTMLElement;
@@ -513,6 +588,54 @@ export default class MainScene extends Phaser.Scene {
       this.PauseCurrentVideo();
     }
 
+    this.leaderboardHeaderButton.style.zIndex = "200";
+
+    if(!this.IS_TOUCH)
+    {
+      this.leaderboardHeaderButton.addEventListener("mousedown", ()=>{
+        addEventListener("mousemove", this.onDrag);
+      });
+  
+      addEventListener("mouseup", ()=>{
+        removeEventListener("mousemove", this.onDrag);
+        if(!this.leaderboardIsOpen)
+        {
+            if(this.storeMouseYPosition> height/2)
+            {
+              console.log("OpenTheLeaderBoard");
+              this.leaderboardPage.setY(height/2);
+              this.leaderboardHeaderButton.style.top="calc(100vh - 280px)";
+              this.leaderboardIsOpen = true;
+            }
+            else
+            {
+              console.log("KeepClosed");
+              this.leaderboardPage.setY(-10000);
+              this.leaderboardHeaderButton.style.top="0px";
+              this.leaderboardIsOpen = false;
+            }
+        }
+        else
+        {
+          if(this.storeMouseYPosition> height/2)
+            {
+              console.log("KeepOpen");
+              this.leaderboardPage.setY(height/2);
+              this.leaderboardHeaderButton.style.top="calc(100vh - 280px)";
+              this.leaderboardIsOpen = true;
+            }
+            else
+            {
+              console.log("CloseTheLeaderboard");
+              this.leaderboardPage.setY(-10000);
+              this.leaderboardHeaderButton.style.top="0px";
+              this.leaderboardIsOpen = false;
+            }
+        }
+      });
+    }
+
+
     this.SetVideoImages(this.videoTileContainer);
 
     this.SetupNotifications();
@@ -544,6 +667,37 @@ export default class MainScene extends Phaser.Scene {
         this.danceFloorAudioTwo.play();
       })
     }
+  }
+
+  storeMouseYPosition!: number;
+  leaderboardIsOpen!: boolean;
+
+  onDrag = (event: MouseEvent) => {
+    let getStyle = window.getComputedStyle(this.leaderboardHeaderButton);
+    let top = parseInt(getStyle.top);
+    this.leaderboardHeaderButton.style.top = `${top + event.movementY}px`;
+    this.leaderboardPage.setY(event.clientY-this.leaderboardPage.height/2);
+    this.storeMouseYPosition = event.clientY;
+  }
+
+  previousTouch!: Touch;
+
+  onDragTouch = (event: TouchEvent) => {
+    
+    const touch = event.touches[0];
+
+    if(this.previousTouch)
+    {
+      var movementY = touch.pageY - this.previousTouch.pageY;
+      let getStyle = window.getComputedStyle(this.leaderboardHeaderButton);
+      let top = parseInt(getStyle.top);
+      this.leaderboardHeaderButton.style.top = `${top + movementY}px`;
+      this.leaderboardPage.setY(touch.clientY-this.leaderboardPage.height/2);
+      this.storeMouseYPosition = touch.clientY;
+      
+    }
+
+    this.previousTouch = touch;
   }
 
   async FadeInOutDanceFloorAudioTwo() {
@@ -889,9 +1043,9 @@ export default class MainScene extends Phaser.Scene {
     }) as StorageObjects;
 
     var teamsStateData: TeamState[] = [];
-    
+
     getTeams.objects.forEach(team => {
-      
+
       var teamJsonString = JSON.stringify(team.value);
       var parsedJson = JSON.parse(teamJsonString);
       console.log("parsedJSON : " + teamJsonString);
@@ -1289,22 +1443,19 @@ export default class MainScene extends Phaser.Scene {
 
           const storyAccordian = StoryAccordian(story) as HTMLElement;
           const textTag = storyAccordian.querySelector("#textTag") as HTMLElement;
-          const storyUnlocked = this.localState.teamStates[k].storyUnlocked["s_00"+j];
+          const storyUnlocked = this.localState.teamStates[k].storyUnlocked["s_00" + j];
           console.log("story id : " + story.id + ". Unlocked : " + storyUnlocked);
           const mainButton = storyAccordian.querySelectorAll("#open-close-button")[0] as HTMLElement;
-          if(storyUnlocked)
-          {
+          if (storyUnlocked) {
             textTag.innerHTML = "New"!;
           }
-          else
-          {
+          else {
             textTag.innerHTML = "Locked"!;
             mainButton.setAttribute("disabled", '');
           }
           const collapsibleMessage = storyAccordian.querySelectorAll("#collapsible-message")[0] as HTMLElement;
           mainButton.onclick = () => {
-            if(storyUnlocked == true)
-            {
+            if (storyUnlocked == true) {
               if (collapsibleMessage.style.maxHeight) {
                 collapsibleMessage.style.maxHeight = null; //works as intended
               }

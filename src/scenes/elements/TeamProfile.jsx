@@ -7,7 +7,7 @@ const TeamProfile = (teamData) => {
         <div class="box popup-box-wrapper">
           <nav class="level is-mobile">
             <div class="level-left">
-              <div class="level-item has-text-centered" style="max-width: 90%;">
+              <div class="level-item has-text-centered">
                 <h1 class="title has-text-black">{teamData.name}</h1>
               </div>
             </div>

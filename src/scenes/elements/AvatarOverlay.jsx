@@ -5,6 +5,11 @@ const AvatarOverlay = (avatarName, id) => {
     <div>
       <div class="ov-container">
         <div style="width: inherit;">
+          <div id="slideDownContainer" class="slide-down-container">
+            <button id="leaderboard-header-button" class="button">
+              <img src=""></img>
+            </button>
+          </div>
           <div id="avatar-overlay-ui" style="position: absolute; bottom: 20px; width: inherit;">
             <div class="level box has-background-dark" style="padding: 0 0 0 0; border-style: solid; border-color: white;">
               <div id="teamProgressContainer" class="level-item">
