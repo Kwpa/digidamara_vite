@@ -1,7 +1,6 @@
 {
-    "hostname": "96.30.134.139",
-    "localhostname": "127.0.0.1",
-    "remotehostname": "bitter-chipmunk-54.loca.lt",
+    "remotehostname": "96.30.134.139",
+    "hostname": "127.0.0.1",
     "port":"7350",
     "ssl": false
 }

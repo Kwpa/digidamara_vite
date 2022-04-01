@@ -1,5 +1,6 @@
 import Phaser, { Scene, Tweens } from 'phaser';
-import BaseWebsite from './elements/BaseWebsite';
+import Header from './elements/Header';
+import Footer from './elements/Footer';
 import ChatPage from './elements/ChatPage';
 import VideoPage from './elements/VideoPage';
 import ChatMessageOtherUser from './elements/ChatMessageOtherUser';
@@ -12,9 +13,10 @@ import VideoPlayerOverlay from './elements/VideoPlayerOverlay';
 import TeamProfile from './elements/TeamProfile';
 import VotingPage from './elements/VotingPage';
 import LeaderboardPage from './elements/LeaderboardPage';
+import LeaderboardRow from './elements/LeaderboardRow';
 import StoryAccordian from './elements/StoryAccordian';
 import ChatChannel from './elements/ChatChannel';
-
+import SlideDownButton from './elements/SlideDownButton';
 
 import Bulma from '../node_modules/bulma/css/bulma.css';
 import { ChannelMessage, ChannelMessageList, Client, Session, Socket, StorageObject, Users, User, Match, StorageObjects, MatchData, GroupList, Group, UserGroup } from "@heroiclabs/nakama-js";
@@ -63,6 +65,7 @@ export default class MainScene extends Phaser.Scene {
   storeMatchReferece!: StorageObjects;
 
   leaderboardPage!: Phaser.GameObjects.DOMElement;
+  slideDownButton!: Phaser.GameObjects.DOMElement;
   chatChannelOpen!: HTMLElement;
   chatChannels!: HTMLElement;
   chatSubmitButton!: HTMLElement;
@@ -103,7 +106,6 @@ export default class MainScene extends Phaser.Scene {
   overlayEliminated!: HTMLElement;
   voteContainer!: HTMLElement;
   avatarOverlay!: Phaser.GameObjects.DOMElement;
-  notificationsArea!: HTMLElement;
   videoPlayerContainer!: HTMLElement;
   notificationHome!: Phaser.GameObjects.DOMElement;
 
@@ -128,6 +130,11 @@ export default class MainScene extends Phaser.Scene {
   xx!: number[];
   yy!: number[];
   zz!: number[];
+
+  storeMouseYPosition: number = 0;
+  leaderboardIsOpen: boolean = false;
+
+  depthLayers: object = { gameLayer: 0, background: 0, foreground: 1, overlay: 2, slideDownPage: 3, headerFooter: 4, curtains: 4, slideDownButton: 5, notifications: 6 };
 
   //avatarRenderTextures
   avatarRenderTextures;
@@ -265,6 +272,7 @@ export default class MainScene extends Phaser.Scene {
     console.log('load Main Scene');
     this.logo = this.add.image(width / 2, height / 2 - 200, 'logo');
     this.logo.scale = Math.min(((0.8 * width) / 512), 1.5);
+    this.IS_TOUCH = 0;
     this.AsyncCreate();
   }
 
@@ -295,106 +303,187 @@ export default class MainScene extends Phaser.Scene {
     this.webConfig = this.cache.json.get('web_config') as object;
   }
 
-  IS_TOUCH!: boolean;
+  IS_TOUCH!: number;
+
+
+  SetupLeaderboardForMouse()
+  {
+    this.leaderboardHeaderButton.addEventListener("mousedown", () => {
+      console.log("mousedown");
+      addEventListener("mousemove", this.onDrag);
+    });
+
+    //this.SetupClickSlideDownButton();
+
+    addEventListener("mouseup", () => {
+      console.log("mouseup");
+      removeEventListener("mousemove", this.onDrag);
+      this.SetPositionOfLeaderBoardAndSlideDownButton();
+    });
+  }
+
+  onFirstMouseDown(e: MouseEvent)
+  {
+    console.log("touch = " + this.IS_TOUCH);
+
+      this.IS_TOUCH = 1 as number;
+      this.SetupLeaderboardForMouse();
+  }
+
+  SetupLeaderboardForTouch()
+  {
+    this.leaderboardHeaderButton.addEventListener("touchstart", () => {
+      addEventListener("touchmove", this.onDragTouch);
+    });
+
+    this.SetupTouchSlideDownButton();
+
+    addEventListener("touchend", () => {
+
+      removeEventListener("touchmove", this.onDragTouch);
+    });
+  }
+
+  onFirstTouchDown(e: TouchEvent)
+  {
+    if(this.IS_TOUCH==0)
+    {
+      this.IS_TOUCH = 2;
+      this.SetupLeaderboardForTouch();
+      window.removeEventListener('touchstart',this.onFirstTouchDown);
+      window.removeEventListener('mousedown',this.onFirstMouseDown);
+    }
+  }
+
+  SetupClickSlideDownButton() {
+    this.leaderboardHeaderButton.onclick = () => {
+
+      if (!this.leaderboardIsOpen) {
+        console.log("OpenTheLeaderBoard");
+        this.leaderboardPage.setY(this.height / 2);
+        this.leaderboardHeaderButton.style.top = "calc(100vh - 260px)";
+        this.leaderboardIsOpen = true;
+      }
+      else {
+        console.log("CloseTheLeaderboard");
+        this.leaderboardPage.setY(-10000);
+        this.leaderboardHeaderButton.style.top = "0px";
+        this.leaderboardIsOpen = false;
+      }
+    };
+  }
+
+  SetupTouchSlideDownButton() {
+    this.leaderboardHeaderButton.onclick = () => {
+
+      if (!this.leaderboardIsOpen) {
+        console.log("OpenTheLeaderBoard");
+        this.leaderboardPage.setY(this.height / 2);
+        this.leaderboardHeaderButton.style.top = "calc(100vh - 260px)";
+        this.leaderboardIsOpen = true;
+      }
+      else {
+        console.log("CloseTheLeaderboard");
+        this.leaderboardPage.setY(-10000);
+        this.leaderboardHeaderButton.style.top = "0px";
+        this.leaderboardIsOpen = false;
+      }
+    };
+  }
+
+  SetPositionOfLeaderBoardAndSlideDownButton() {
+    console.log("leaderboard is open? " + this.leaderboardIsOpen + ", Y? " + this.storeMouseYPosition + ", Height? " + this.height);
+    if (!this.leaderboardIsOpen) {
+      if (this.storeMouseYPosition > this.height / 2) {
+        console.log("OpenTheLeaderBoard");
+        this.leaderboardPage.setY(this.height / 2 - 16);
+        this.leaderboardHeaderButton.style.top = "calc(100vh - 258px)";
+        this.leaderboardIsOpen = true;
+      }
+      else {
+        console.log("KeepClosed");
+        this.leaderboardPage.setY(-10000);
+        this.leaderboardHeaderButton.style.top = "0px";
+        this.leaderboardIsOpen = false;
+      }
+    }
+    else {
+      if (this.storeMouseYPosition > this.height / 2) {
+        console.log("KeepOpen");
+        this.leaderboardPage.setY(this.height / 2 - 16);
+        this.leaderboardHeaderButton.style.top = "calc(100vh - 258px)";
+        this.leaderboardIsOpen = true;
+      }
+      else {
+        console.log("CloseTheLeaderboard");
+        this.leaderboardPage.setY(-10000);
+        this.leaderboardHeaderButton.style.top = "0px";
+        this.leaderboardIsOpen = false;
+      }
+    }
+  }
+
+  onDrag = (event: MouseEvent) => {
+    let getStyle = window.getComputedStyle(this.leaderboardHeaderButton);
+    let top = parseInt(getStyle.top);
+    this.leaderboardHeaderButton.style.top = `${event.clientY-112}px`;
+    this.leaderboardPage.setY(event.clientY - this.leaderboardPage.height / 2);
+    this.storeMouseYPosition = event.clientY;
+    console.log("drag " + event.clientY);
+  }
+
+  previousTouch!: Touch;
+
+  onDragTouch = (event: TouchEvent) => {
+
+    const touch = event.touches[0];
+
+    if (this.previousTouch) {
+      var movementY = touch.pageY - this.previousTouch.pageY;
+      let getStyle = window.getComputedStyle(this.leaderboardHeaderButton);
+      let top = parseInt(getStyle.top);
+      this.leaderboardHeaderButton.style.top = `${top + movementY}px`;
+      this.leaderboardPage.setY(touch.clientY - this.leaderboardPage.height / 2);
+      this.storeMouseYPosition = touch.clientY;
+
+    }
+
+    this.previousTouch = touch;
+  }
 
   async AsyncCreate() {
-
-    window.addEventListener('touchstart', () =>
-    {			
-      this.IS_TOUCH	= true;
-      
-      this.leaderboardHeaderButton.addEventListener("touchstart", ()=>{
-        addEventListener("touchmove", this.onDragTouch);
-      });
-  
-      this.leaderboardHeaderButton.onclick = () =>
-      {
-        if(!this.leaderboardIsOpen)
-        {
-          console.log("OpenTheLeaderBoard");
-          this.leaderboardPage.setY(height/2);
-          this.leaderboardHeaderButton.style.top="calc(100vh - 280px)";
-          this.leaderboardIsOpen = true;
-        }
-        else
-        {
-          console.log("CloseTheLeaderboard");
-          this.leaderboardPage.setY(-10000);
-          this.leaderboardHeaderButton.style.top="0px";
-          this.leaderboardIsOpen = false;
-        }
-      };
-      addEventListener("touchend", ()=>{
-        
-        removeEventListener("touchmove", this.onDragTouch);
-        if(!this.leaderboardIsOpen)
-        {
-            if(this.storeMouseYPosition> height/2)
-            {
-              console.log("OpenTheLeaderBoard");
-              this.leaderboardPage.setY(height/2);
-              this.leaderboardHeaderButton.style.top="calc(100vh - 280px)";
-              this.leaderboardIsOpen = true;
-            }
-            else
-            {
-              console.log("KeepClosed");
-              this.leaderboardPage.setY(-10000);
-              this.leaderboardHeaderButton.style.top="0px";
-              this.leaderboardIsOpen = false;
-            }
-        }
-        else
-        {
-          if(this.storeMouseYPosition> height/2)
-            {
-              console.log("KeepOpen");
-              this.leaderboardPage.setY(height/2);
-              this.leaderboardHeaderButton.style.top="calc(100vh - 280px)";
-              this.leaderboardIsOpen = true;
-            }
-            else
-            {
-              console.log("CloseTheLeaderboard");
-              this.leaderboardPage.setY(-10000);
-              this.leaderboardHeaderButton.style.top="0px";
-              this.leaderboardIsOpen = false;
-            }
-        }
-      });
-    }
-    );
-
+ 
     await this.waitUntilAssetsLoaded();
     await this.LoadJSON();
     await this.delay(1200);
     //console.log(this.cache.json);
-    let { width, height } = this.sys.game.canvas;
+    this.width = this.sys.game.canvas.width;
+    this.height = this.sys.game.canvas.height;
 
     const leftCurtain = this.add.graphics();
     const rightCurtain = this.add.graphics();
-    const dots = Math.floor(height / 50);
+    const dots = Math.floor(this.height / 50);
     leftCurtain.fillStyle(0x545454, 1);
-    leftCurtain.fillRect(0, 0, width / 2, height);
+    leftCurtain.fillRect(0, 0, this.width / 2, this.height);
     leftCurtain.fillStyle(0x2a2a2a);
-    leftCurtain.fillRect(width / 2 - 3, 0, 3, height);
+    leftCurtain.fillRect(this.width / 2 - 3, 0, 3, this.height);
     for (var i = 0; i < dots; i++) {
-      leftCurtain.fillCircle(width / 2 - 10, i * height / dots, 4);
+      leftCurtain.fillCircle(this.width / 2 - 10, i * this.height / dots, 4);
     }
-    leftCurtain.depth = 2;
+    leftCurtain.depth = this.depthLayers["curtains"];
     rightCurtain.fillStyle(0x545454, 1);
-    rightCurtain.fillRect(width / 2, 0, width / 2, height);
+    rightCurtain.fillRect(this.width / 2, 0, this.width / 2, this.height);
     rightCurtain.fillStyle(0x2a2a2a);
-    rightCurtain.fillRect(width / 2, 0, 3, height);
+    rightCurtain.fillRect(this.width / 2, 0, 3, this.height);
     for (var i = 0; i < dots; i++) {
-      rightCurtain.fillCircle(width / 2 + 10, i * height / dots, 4);
+      rightCurtain.fillCircle(this.width / 2 + 10, i * this.height / dots, 4);
     }
-    rightCurtain.depth = 2;
+    rightCurtain.depth = this.depthLayers["curtains"];
 
     var leftCurtainTween = this.tweens.add(
       {
         targets: leftCurtain,
-        x: -width,
+        x: -this.width,
         duration: 2200,
         ease: 'Quad.easeIn',
         yoyo: false,
@@ -406,7 +495,7 @@ export default class MainScene extends Phaser.Scene {
     var rightCurtainTween = this.tweens.add(
       {
         targets: rightCurtain,
-        x: width,
+        x: this.width,
         duration: 2200,
         ease: 'Quad.easeIn',
         yoyo: false,
@@ -420,26 +509,32 @@ export default class MainScene extends Phaser.Scene {
     game.style.setProperty('position', 'absolute');
     game.style.setProperty('z-index', '-1');
 
-    const baseWebsite = this.add.dom(width / 2, height / 2, BaseWebsite() as HTMLElement);
-    const videoPage = this.add.dom(width / 2, height / 2, VideoPage() as HTMLElement);
-    const videoPlayerOverlay = this.add.dom(width / 2, height / 2, VideoPlayerOverlay() as HTMLElement);
-    const votePage = this.add.dom(width / 2, height / 2, VotingPage() as HTMLElement);
-    this.leaderboardPage = this.add.dom(width / 2, height / 2, LeaderboardPage() as HTMLElement);
-    this.notificationHome = this.add.dom(width / 2, 190, NotificationHome('', '') as HTMLElement);
-    this.avatarOverlay = this.add.dom(width / 2, height / 2, AvatarOverlay('open') as HTMLElement);
+    const header = this.add.dom(this.width / 2, this.height / 2, Header() as HTMLElement);
+    const footer = this.add.dom(this.width / 2, this.height / 2, Footer() as HTMLElement);
+    header.depth = this.depthLayers["headerFooter"];
+    footer.depth = this.depthLayers["headerFooter"];
+
+    const videoPage = this.add.dom(this.width / 2, this.height / 2, VideoPage() as HTMLElement);
+    const videoPlayerOverlay = this.add.dom(this.width / 2, this.height / 2, VideoPlayerOverlay() as HTMLElement);
+    const votePage = this.add.dom(this.width / 2, this.height / 2, VotingPage() as HTMLElement);
+    const slideDownButton = this.add.dom(this.width / 2, this.height / 2, SlideDownButton() as HTMLElement);
+    slideDownButton.depth = this.depthLayers["slideDownButton"];
+
+    this.leaderboardPage = this.add.dom(this.width / 2, this.height / 2, LeaderboardPage() as HTMLElement);
+    this.notificationHome = this.add.dom(this.width / 2, 190, NotificationHome('', '') as HTMLElement);
+    this.avatarOverlay = this.add.dom(this.width / 2, this.height / 2, AvatarOverlay('open') as HTMLElement);
     this.overlayProgressBar = this.avatarOverlay.getChildByID("teamEnergyBar") as HTMLInputElement;
     this.overlayProgressContainer = this.avatarOverlay.getChildByID("teamProgressContainer") as HTMLInputElement;
     this.overlayEliminated = this.avatarOverlay.getChildByID("teamEliminated") as HTMLInputElement;
     this.videoPlayerContainer = videoPlayerOverlay.getChildByID("video-player") as HTMLElement;
 
-    this.leaderboardPage.depth = -1;
+    this.leaderboardPage.depth = this.depthLayers["slideDownPage"];;
     this.leaderboardPage.setY(-10000);
     this.avatarOverlay.setVisible(false);
     videoPlayerOverlay.setVisible(false);
     this.notificationHome.setVisible(false);
     videoPage.setVisible(false);
     votePage.setVisible(false);
-    //baseWebsite.setVisible(false);
 
     //audio
     this.danceFloorAudioOne = this.sound.add('danceFloorAudioOne', {
@@ -452,18 +547,12 @@ export default class MainScene extends Phaser.Scene {
       loop: true
     }) as Phaser.Sound.BaseSound;
 
-    //debug
-    this.textElement = document.getElementById('rnd-update') as HTMLElement;
-    this.anotherTextElement = document.getElementById('chat-update') as HTMLElement;
-    this.textElement.hidden = true;
-    this.anotherTextElement.hidden = true;
-
-    this.roundCounter = baseWebsite.getChildByID("round-header-value") as HTMLElement;
-    this.actionPointsCounter = baseWebsite.getChildByID("ap-header-value") as HTMLElement;
-    this.sparksCounter = baseWebsite.getChildByID("sparks-header-value") as HTMLElement;
-    this.chatFooterButton = document.getElementById('chat-footer-button') as HTMLElement;
-    this.videoFooterButton = document.getElementById('video-footer-button') as HTMLElement;
-    this.voteFooterButton = document.getElementById('vote-footer-button') as HTMLElement;
+    this.roundCounter = header.getChildByID("round-header-value") as HTMLElement;
+    this.actionPointsCounter = header.getChildByID("ap-header-value") as HTMLElement;
+    this.sparksCounter = header.getChildByID("sparks-header-value") as HTMLElement;
+    this.chatFooterButton = footer.getChildByID('chat-footer-button') as HTMLElement;
+    this.videoFooterButton = footer.getChildByID('video-footer-button') as HTMLElement;
+    this.voteFooterButton = footer.getChildByID('vote-footer-button') as HTMLElement;
     this.closeVideoPageButton = videoPage.getChildByID('close-video-page-button') as HTMLElement;
     this.closeVotePageButton = votePage.getChildByID('close-voting-page-button') as HTMLElement;
     this.voteContainer = votePage.getChildByID('vote-container') as HTMLElement;
@@ -473,10 +562,9 @@ export default class MainScene extends Phaser.Scene {
     this.pauseVideoPlayerButton = videoPlayerOverlay.getChildByID('video-player-button-pause') as HTMLElement;
     this.loadNextVideoPlayerButton = videoPlayerOverlay.getChildByID('video-player-button-next') as HTMLElement;
     this.loadPreviousVideoPlayerButton = videoPlayerOverlay.getChildByID('video-player-button-previous') as HTMLElement;
-    this.leaderboardHeaderButton = this.avatarOverlay.getChildByID('leaderboard-header-button') as HTMLElement;
+    this.leaderboardHeaderButton = slideDownButton.getChildByID('leaderboard-header-button') as HTMLElement;
 
     this.avatarOverlayButton = this.avatarOverlay.getChildByID('openProfile') as HTMLElement;
-    this.notificationsArea = baseWebsite.getChildByID("gameArea") as HTMLElement;
 
 
     this.videoFooterButton.onclick = () => {
@@ -588,71 +676,25 @@ export default class MainScene extends Phaser.Scene {
       this.PauseCurrentVideo();
     }
 
-    this.leaderboardHeaderButton.style.zIndex = "200";
-
-    if(!this.IS_TOUCH)
-    {
-      this.leaderboardHeaderButton.addEventListener("mousedown", ()=>{
-        addEventListener("mousemove", this.onDrag);
-      });
-  
-      addEventListener("mouseup", ()=>{
-        removeEventListener("mousemove", this.onDrag);
-        if(!this.leaderboardIsOpen)
-        {
-            if(this.storeMouseYPosition> height/2)
-            {
-              console.log("OpenTheLeaderBoard");
-              this.leaderboardPage.setY(height/2);
-              this.leaderboardHeaderButton.style.top="calc(100vh - 280px)";
-              this.leaderboardIsOpen = true;
-            }
-            else
-            {
-              console.log("KeepClosed");
-              this.leaderboardPage.setY(-10000);
-              this.leaderboardHeaderButton.style.top="0px";
-              this.leaderboardIsOpen = false;
-            }
-        }
-        else
-        {
-          if(this.storeMouseYPosition> height/2)
-            {
-              console.log("KeepOpen");
-              this.leaderboardPage.setY(height/2);
-              this.leaderboardHeaderButton.style.top="calc(100vh - 280px)";
-              this.leaderboardIsOpen = true;
-            }
-            else
-            {
-              console.log("CloseTheLeaderboard");
-              this.leaderboardPage.setY(-10000);
-              this.leaderboardHeaderButton.style.top="0px";
-              this.leaderboardIsOpen = false;
-            }
-        }
-      });
-    }
-
-
     this.SetVideoImages(this.videoTileContainer);
 
     this.SetupNotifications();
 
     //-----------------------------
 
-    const spotlight = this.add.image(width / 2, height / 2, 'spotlight');
+    const spotlight = this.add.image(this.width / 2, this.height / 2, 'spotlight');
     spotlight.setAlpha(0.4);
-    spotlight.scaleY = height / 500;
-    spotlight.scaleX = Math.max(1, width / 1000);
+    spotlight.scaleY = this.height / 500;
+    spotlight.scaleX = Math.max(1, this.width / 1000);
 
     this.StarField();
 
     await this.GetLatestStaticData();
     await this.StartClientConnection();
 
-    this.ShowVideo(this, width, height, "wVVr4Jq_lMI");
+    this.ShowVideo(this, this.width, this.height, "wVVr4Jq_lMI");
+
+    this.SetupLeaderboardForMouse();
 
     if (!this.sound.locked) {
       // already unlocked so play
@@ -667,37 +709,6 @@ export default class MainScene extends Phaser.Scene {
         this.danceFloorAudioTwo.play();
       })
     }
-  }
-
-  storeMouseYPosition!: number;
-  leaderboardIsOpen!: boolean;
-
-  onDrag = (event: MouseEvent) => {
-    let getStyle = window.getComputedStyle(this.leaderboardHeaderButton);
-    let top = parseInt(getStyle.top);
-    this.leaderboardHeaderButton.style.top = `${top + event.movementY}px`;
-    this.leaderboardPage.setY(event.clientY-this.leaderboardPage.height/2);
-    this.storeMouseYPosition = event.clientY;
-  }
-
-  previousTouch!: Touch;
-
-  onDragTouch = (event: TouchEvent) => {
-    
-    const touch = event.touches[0];
-
-    if(this.previousTouch)
-    {
-      var movementY = touch.pageY - this.previousTouch.pageY;
-      let getStyle = window.getComputedStyle(this.leaderboardHeaderButton);
-      let top = parseInt(getStyle.top);
-      this.leaderboardHeaderButton.style.top = `${top + movementY}px`;
-      this.leaderboardPage.setY(touch.clientY-this.leaderboardPage.height/2);
-      this.storeMouseYPosition = touch.clientY;
-      
-    }
-
-    this.previousTouch = touch;
   }
 
   async FadeInOutDanceFloorAudioTwo() {
@@ -1013,7 +1024,7 @@ export default class MainScene extends Phaser.Scene {
   async GetLatestDynamicData() {
     var getUserData = await localStorage.getItem("ddm_localData");
     var parsedUserData = JSON.parse(getUserData as string);
-    console.log(parsedUserData);
+    
     var getTeams = await this.client.readStorageObjects(this.session, {
       "object_ids": [{
         "collection": "teams",
@@ -1048,7 +1059,7 @@ export default class MainScene extends Phaser.Scene {
 
       var teamJsonString = JSON.stringify(team.value);
       var parsedJson = JSON.parse(teamJsonString);
-      console.log("parsedJSON : " + teamJsonString);
+      
       var storyBools = {
         "s_001": parsedJson.s_001Unlocked,
         "s_002": parsedJson.s_002Unlocked,
@@ -1389,15 +1400,15 @@ export default class MainScene extends Phaser.Scene {
 
   CreateChatChannelUI(container: HTMLElement, channel: ChatChannelData) {
     var id = channel.id;
-    console.log("hey" + channel.id);
+    
     if (this.localState.chatChannels[id] != null) {
-      console.log("Make new chat channels !! ");
+      
       var src = "/assets/white_icons/" + channel.iconPath + ".png";
       const chatChannel = ChatChannel(channel.title, src) as HTMLElement;
       const chatChannelOpenButton = chatChannel.querySelector("#chat-channel-button-open") as HTMLElement;
 
       chatChannelOpenButton.onclick = async () => {
-        console.log("Open " + channel.id);
+        
         await this.ReloadGroupChat(channel.id);
         this.chatChannelOpen.style.display = "block";
         this.chatChannels.style.display = "none";
@@ -1423,6 +1434,14 @@ export default class MainScene extends Phaser.Scene {
     });
   }
 
+  SetupLeaderboard()
+  {
+    const rowContainer = this.leaderboardPage.getChildByID("leaderboard-rows-container");
+    this.localState.teamStates.forEach(()=>{
+    
+    });
+  }
+
   async SetupTeamProfiles(socket: Socket) {
     this.teamProfilePages = [];
     let { width, height } = this.sys.game.canvas;
@@ -1432,7 +1451,7 @@ export default class MainScene extends Phaser.Scene {
       (team) => {
 
         var title = team.id as string;
-        console.log("title: " + title);
+        
         const data = { name: team.title, biography: team.biography };
         const teamProfile = this.add.dom(width / 2, height / 2, TeamProfile(data) as HTMLElement);
         const teamIcon = teamProfile.getChildByID('team-icon') as HTMLElement;
@@ -1444,7 +1463,7 @@ export default class MainScene extends Phaser.Scene {
           const storyAccordian = StoryAccordian(story) as HTMLElement;
           const textTag = storyAccordian.querySelector("#textTag") as HTMLElement;
           const storyUnlocked = this.localState.teamStates[k].storyUnlocked["s_00" + j];
-          console.log("story id : " + story.id + ". Unlocked : " + storyUnlocked);
+          
           const mainButton = storyAccordian.querySelectorAll("#open-close-button")[0] as HTMLElement;
           if (storyUnlocked) {
             textTag.innerHTML = "New"!;
@@ -1540,7 +1559,7 @@ export default class MainScene extends Phaser.Scene {
 
             var groupName = this.staticData.teams[this.localState.carouselPosition].fanClubChannelId;
             var cId = await this.JoinGroup(this.session, this.client, groupName);
-            console.log("groupname: " + groupName + ", cid: " + cId);
+            
             var channels = this.localState.chatChannels;
             channels[groupName] = cId;
             this.localState.AddChatChannels(channels);
@@ -1833,10 +1852,10 @@ export default class MainScene extends Phaser.Scene {
     tapAreaRightArrow.scale = cappedWidth / (32 * 4);
     tapAreaLeftArrow.flipX = true;
 
-    this.tapAreaLeft.depth = 1;
-    tapAreaLeftArrow.depth = 1;
-    this.tapAreaRight.depth = 1;
-    tapAreaRightArrow.depth = 1;
+    this.tapAreaLeft.depth = this.depthLayers["foreground"];;
+    tapAreaLeftArrow.depth = this.depthLayers["foreground"];;
+    this.tapAreaRight.depth = this.depthLayers["foreground"];;
+    tapAreaRightArrow.depth = this.depthLayers["foreground"];;
 
     carousel.roll?.setDuration(300);
     carousel.roll?.on('complete', () => {
@@ -2102,7 +2121,7 @@ export default class MainScene extends Phaser.Scene {
           closeButton.style.display = "none";
         }
 
-        this.notificationHome.setDepth(100);
+        this.notificationHome.depth = this.depthLayers["notifications"];
         this.notificationHome.setVisible(true);
         this.AnimateIconWobble();
 

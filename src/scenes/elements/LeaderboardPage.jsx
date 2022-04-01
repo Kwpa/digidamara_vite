@@ -3,12 +3,12 @@ import { h } from 'start-dom-jsx';
 const LeaderboardPage = () => {
   return (
     <div>
-      <div class="popup-page">
+      <div class="popup-page-leaderboard">
         <div class="box popup-box-wrapper">
           <nav class="level is-mobile">
             <div class="level-left">
               <div class="level-item has-text-centered">
-                <h1 class="title has-text-black">Ranking</h1>
+                <h1 class="title has-text-black">Today's Ranking</h1>
               </div>
             </div>
           </nav>
