@@ -70,36 +70,52 @@ height: calc(100vh - 240px);
 
 .leaderboard-row
 {
-	width: 90%;
+	width: 700px;
 	display: flex;
+	position: relative;
+	flex-flow: row wrap;
+
+}
+.leaderboard-row-fixed-elements
+{
+	width: 700px;
+	display: flex;
+	position: relative;
+	flex-flow: row wrap;
 }
 .leaderboard-team-icon
 {
 	flex: 1;
 }
-.leaderboard-winning-icon
+.leaderboard-winning-icon-container
 {
-	
+	position: absolute;
+	display: none;
 }
-.leaderboard-eliminated-icon
+.leaderboard-eliminated-icon-container
 {
-	
+	position: absolute;
+	display: none;
 }
-.leaderboard-team-name
+.leaderboard-team-title
 {
 	flex: 3;
+	width: fit-content;
 }
 .leaderboard-energy-remaining
 {
 	flex: 1;
+	width: fit-content;
 }
 .leaderboard-total-fan-count
 {
 	flex: 1;
+	width: fit-content;
 }
 .leaderboard-user-upgrade-count
 {
 	flex: 1;
+	width: fit-content;
 }
 
 .vp-container {
@@ -154,6 +170,14 @@ position: relative;
 	height: calc(100vh - 330px);
 	margin-bottom: 20px;
 	
+}
+.popup-page-scroll-with-tablerow
+{
+	overflow-y: auto;
+	overflow-x: auto;
+	
+	height: calc(100vh - 500px);
+	margin-top: 50px;
 }
 .team-top-row
 {

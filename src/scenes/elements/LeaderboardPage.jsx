@@ -12,13 +12,32 @@ const LeaderboardPage = () => {
               </div>
             </div>
           </nav>
-          <div class="popup-page-scroll-without-footer">
-            <p>Hi</p>
+          <div class="leaderboard-row-fixed-elements">
+            <div class="leaderboard-team-icon" id="leaderboard-icon-container">
+              <img id="chat-icon" src=""></img>
+            </div>
+            <div class="leaderboard-team-title">
+              Name
+            </div>
+            <div class="leaderboard-energy-remaining">
+              Energy
+            </div>
+            <div class="leaderboard-total-fan-count">
+              Fan
+            </div>
+            <div class="leaderboard-user-upgrade-count">
+              Your Upgrades
+            </div>
+            </div>
+            <div class="popup-page-scroll-with-tablerow">
+              <div id="leaderboard-rows-container">
+
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  )
+      )
 }
 
-export default LeaderboardPage
+      export default LeaderboardPage

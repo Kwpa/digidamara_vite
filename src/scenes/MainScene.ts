@@ -950,6 +950,7 @@ export default class MainScene extends Phaser.Scene {
 
     await this.SetupChatChannelsAndPages();
     await this.SetupTeamProfiles(socket);
+    this.SetupLeaderboard();
     await this.SetupTeamAvatars();
     await this.SetupVotePage(socket);
 
@@ -1437,8 +1438,13 @@ export default class MainScene extends Phaser.Scene {
   SetupLeaderboard()
   {
     const rowContainer = this.leaderboardPage.getChildByID("leaderboard-rows-container");
+    var k = 0;
     this.localState.teamStates.forEach(()=>{
-    
+      var title = this.staticData.teams[k].title;
+      var iconPath = this.staticData.teams[k].iconId;
+      const row = LeaderboardRow(title, iconPath) as HTMLElement;
+      rowContainer.append(row);
+      k++;
     });
   }
 
