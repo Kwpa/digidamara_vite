@@ -91,6 +91,8 @@ export default class MainScene extends Phaser.Scene {
   loadNextVideoPlayerButton!: HTMLElement;
   loadPreviousVideoPlayerButton!: HTMLElement;
 
+  leaderboardRows!: HTMLElement[];
+
   roundCounter!: HTMLElement;
   actionPointsCounter!: HTMLElement;
   sparksCounter!: HTMLElement;
@@ -504,6 +506,8 @@ export default class MainScene extends Phaser.Scene {
         onComplete: () => { this.avatarOverlay.setVisible(true); }
       }
     );
+
+    this.leaderboardRows = [];
 
     const game = document.getElementsByTagName('canvas')[0];
     game.style.setProperty('position', 'absolute');
@@ -1056,6 +1060,7 @@ export default class MainScene extends Phaser.Scene {
 
     var teamsStateData: TeamState[] = [];
 
+    var k = 0;
     getTeams.objects.forEach(team => {
 
       var teamJsonString = JSON.stringify(team.value);
@@ -1071,6 +1076,8 @@ export default class MainScene extends Phaser.Scene {
       }
       teamsStateData.push(new TeamState(
         parsedJson.id,
+        k,
+        "",
         parsedJson.eliminated,
         parsedJson.upgradeLevel,
         parsedJson.energyRequirement,
@@ -1079,7 +1086,9 @@ export default class MainScene extends Phaser.Scene {
         storyBools
       )
       )
-    });
+      k++;
+    }
+    );
 
     var getRoundTrack = await this.client.readStorageObjects(this.session, {
       "object_ids": [{
@@ -1183,6 +1192,8 @@ export default class MainScene extends Phaser.Scene {
       teamIdList.push(teamStatic.id);
       teamStateList.push(new TeamState(
         teamStatic.id,
+        i,
+        teamStatic.title,
         teamDynamic.eliminated,
         upgradeLevel,
         roundDynamic.energyRequirement,
@@ -1443,9 +1454,80 @@ export default class MainScene extends Phaser.Scene {
       var title = this.staticData.teams[k].title;
       var iconPath = this.staticData.teams[k].iconId;
       const row = LeaderboardRow(title, iconPath) as HTMLElement;
+      this.leaderboardRows.push(row);
       rowContainer.append(row);
       k++;
     });
+    this.UpdateLeaderboard();
+    this.OrderLeaderboard();
+  }
+
+  UpdateLeaderboard()
+  {
+    var k = 0;
+    this.leaderboardRows.forEach(
+      (row) => {
+        const energyElement = row.querySelector('#leaderboard-row-energy') as HTMLElement;
+        const fansElement = row.querySelector('#leaderboard-row-fans') as HTMLElement;
+        const upgradesElement = row.querySelector('#leaderboard-row-upgrades') as HTMLElement;
+
+        var energy, fans, upgrades = "";
+        var teamState = this.localState.teamStates[k] as TeamState;
+        if(this.localState.teamStates[k].eliminated)
+        {
+          energy = "-";
+          fans = teamState.totalNumberOfFans.toString();
+          upgrades = teamState.upgradeLevel.toString();
+        }
+        else
+        {
+          energy = (teamState.currentEnergy).toString();
+          fans = teamState.totalNumberOfFans.toString();
+          upgrades = teamState.upgradeLevel.toString();
+        }
+
+        energyElement.innerHTML = energy;
+        fansElement.innerHTML = fans;
+        upgradesElement.innerHTML = upgrades;
+      
+        k++;
+      }
+    )
+  }
+
+  OrderLeaderboard()
+  {
+    this.localState.SetLeaderboardStatus();
+    var rowBoundingBoxes = [] as DOMRect[];
+    this.leaderboardRows.forEach(
+      (row) =>
+      {
+        rowBoundingBoxes.push(row.getBoundingClientRect());
+      }
+    );
+    var l = 0;
+    this.leaderboardRows.forEach(
+      (row) =>
+      {
+        const newBoxIndex = this.localState.teamStates[l].leaderboardPosition;
+        console.log("where is " + this.localState.teamStates[l].title + " going " + newBoxIndex);
+        const newBox = rowBoundingBoxes[newBoxIndex];
+        const oldBox = rowBoundingBoxes[l];
+        var deltaX = oldBox.left - newBox.left;
+        var deltaY = oldBox.top - newBox.top;
+        console.log("dX " + deltaX + " dY " + deltaY);
+        l++;
+        requestAnimationFrame(()=>{
+          row.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+          row.style.transition = 'transform 0s';
+
+          requestAnimationFrame( () => {
+            row.style.transform  = '';
+            row.style.transition = 'transform 500ms';
+          });
+        });
+      }
+    );
   }
 
   async SetupTeamProfiles(socket: Socket) {
@@ -1695,6 +1777,9 @@ export default class MainScene extends Phaser.Scene {
     this.voteChoiceTwoUser.innerHTML = this.localState.voteStates[this.localState.round - 1].choiceTwoVotesUser.toString();
     this.voteChoiceOneGlobal.innerHTML = "Total Votes: " + this.localState.voteStates[this.localState.round - 1].choiceOneVotesGlobal.toString();
     this.voteChoiceTwoGlobal.innerHTML = "Total Votes: " + this.localState.voteStates[this.localState.round - 1].choiceTwoVotesGlobal.toString();
+    
+    this.UpdateLeaderboard();
+    this.OrderLeaderboard();
   }
 
   async RefreshChat() //TODO

@@ -22,6 +22,7 @@ export default class LocalGameState
     notificationHomePosition!: number;
     lastChatMessageUserId!: string;
     danceFloorAudioTwoPlaying!: boolean;
+    leaderboardStatus!: number[];
 
     Init(username: string, round: number, actionPoints: number, maxActionPoints: number, sparksAwarded: number, energyRequirement: number, teamIDs : string[], voteStates, teamStates)
     {
@@ -41,6 +42,7 @@ export default class LocalGameState
         this.chatChannels = [];
         this.currentChatChannel = "c_001";
         this.danceFloorAudioTwoPlaying = false;
+        this.leaderboardStatus = [];
     }
 
     DanceFloorTwoAudio(value: boolean)
@@ -286,6 +288,40 @@ export default class LocalGameState
         });
         return indices[indices.length * Math.random() | 0];
     }
+
+    SetLeaderboardStatus()
+    {
+        this.leaderboardStatus = [];
+        const orderedLeaderboard = this.teamStates.sort(
+            (teamA,teamB) =>
+            {
+                return teamB.currentEnergy - teamA.currentEnergy ||
+                teamA.title.localeCompare(teamB.title);
+            }
+        );
+
+        var k = 0;
+        orderedLeaderboard.forEach((team) => {
+            team.leaderboardPosition = k;
+            k++;
+        })
+
+        this.teamStates = orderedLeaderboard.sort(
+            (teamA, teamB) => {
+                return teamA.index - teamB.index;
+            }
+        )
+        
+        /* 
+        for(var i = 0; i< this.teamStates.length; i++)
+        {
+            var teamState = this.teamStates[i];
+            var newIndex = orderedLeaderboard[i].leaderboardPosition;
+            console.log("i : " + i + " and newIndex : " + newIndex);
+            teamState.leaderboardPosition = newIndex;
+        } */
+        
+    }
 }
 
 export class TeamRenderTextures
@@ -321,15 +357,21 @@ export class TeamImages
 export class TeamState
 {
     id!: string;
+    index!: number;
+    title!: string;
     eliminated: boolean = false;
     upgradeLevel: number = 0;
     energyRequirement: number = 1;
     currentEnergy: number = 0;
     userInFanClub: boolean = false;
     storyUnlocked!: object;
+    totalNumberOfFans: number = 0;
+    leaderboardPosition: number = 0;
    
-    constructor(id, outOfComp, upgradeLevel, energyReq, currentEnergy, inFanClub, storyUnlocked: object){
+    constructor(id, index, title, outOfComp, upgradeLevel, energyReq, currentEnergy, inFanClub, storyUnlocked: object){
         this.id = id;
+        this.index = index,
+        this.title = title;
         this.currentEnergy = currentEnergy;
         this.eliminated = outOfComp;
         this.upgradeLevel = upgradeLevel;
