@@ -33,6 +33,7 @@ import { Rectangle } from 'phaser3-rex-plugins/plugins/gameobjects/shape/shapes/
 import * as bulmaToast from 'bulma-toast';
 import DynamicData from './DynamicData';
 import { humanized_time_span } from '../utils/humanized_time_span.js';
+import NakaChannelMessage from './NakaChannelMessage';
 
 export default class MainScene extends Phaser.Scene {
 
@@ -932,12 +933,11 @@ export default class MainScene extends Phaser.Scene {
     if (newUserStorage) {
       var c001id = await this.JoinGroup(this.session, this.client, "c_001");
       var c002id = await this.JoinGroup(this.session, this.client, "c_002");
-      var c003id = await this.JoinGroup(this.session, this.client, "c_003");
+      //var c003id = await this.JoinGroup(this.session, this.client, "c_003");
       this.localState.AddChatChannels(
         {
           "c_001": c001id,
-          "c_002": c002id,
-          "c_003": c003id
+          "c_002": c002id
         });
     }
     else {
@@ -950,7 +950,6 @@ export default class MainScene extends Phaser.Scene {
       var groupId = this.localState.chatChannels[key];
       this.JoinGroupChat(socket, groupId);
     }
-
 
     await this.SetupChatChannelsAndPages();
     await this.SetupTeamProfiles(socket);
@@ -1510,12 +1509,12 @@ export default class MainScene extends Phaser.Scene {
       (row) =>
       {
         const newBoxIndex = this.localState.teamStates[l].leaderboardPosition;
-        console.log("where is " + this.localState.teamStates[l].title + " going " + newBoxIndex);
+        
         const newBox = rowBoundingBoxes[newBoxIndex];
         const oldBox = rowBoundingBoxes[l];
         var deltaX = oldBox.left - newBox.left;
         var deltaY = oldBox.top - newBox.top;
-        console.log("dX " + deltaX + " dY " + deltaY);
+        
         l++;
         requestAnimationFrame(()=>{
           row.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
@@ -2384,18 +2383,49 @@ export default class MainScene extends Phaser.Scene {
       var users = account.users as User[];
       var avatarUrl = users[0].avatar_url as string;
       var username = users[0].username as string;
-      console.log("av" + avatarUrl + "us" + username);
       userList[message.sender_id as string] = { "avatar_url": avatarUrl, "username": username };
-
-      console.log(userList[message.sender_id as string].avatar_url);
     });
+    userList["Promoter"] = {avatar_url: "", username: "Promoter"};
     return userList;
+  }
+
+  GenerateNotificationChannelMessages()
+  {
+    var notificationsSeen = [{id: "n_001", createdAt: "2022-01-30T16:22:07Z", userId: "Promoter", username: "Promoter"},{id: "n_002", createdAt: "2023-01-31T16:22:07Z", userId: "Promoter", username: "Promoter"}] as object[];
+    var channelNotifications = [] as ChannelMessage[];
+    notificationsSeen.forEach(
+      (data) =>{
+        console.log(data.id);
+        const id = data.id; //it is there
+        const createdAt = data.createdAt; //it is there
+        const userId = data.userId;
+        const username = data.username;
+        const notificationMessage = new NakaChannelMessage();
+        const content = this.staticData.notifications.find(p=>p.id==id)?.content as string;
+        notificationMessage.content = {message: content, button: true};
+        notificationMessage.create_time = createdAt;
+        notificationMessage.sender_id = userId;
+        notificationMessage.username = username;
+        notificationMessage.code = 0;
+        channelNotifications.push(notificationMessage);
+      }
+    )
+    return channelNotifications;
   }
 
   async CreateChatMessages(chatId: string) {
     var forward = true;
     var channelId = "3." + this.localState.chatChannels[chatId] + "..";
     var result: ChannelMessageList = await this.client.listChannelMessages(this.session, channelId, 50, forward);
+    
+    if(result.messages?.length!= 0)
+    {
+      var messages = result.messages as ChannelMessage[];
+      console.log(messages[0].create_time + " message made, converted is  : " + new Date(messages[0].create_time as string).toUTCString());
+    }
+
+    
+    //if(chat)
 
     if (result.messages != null && result.messages.length > 0) {
       var storeUserId = "";
@@ -2403,6 +2433,20 @@ export default class MainScene extends Phaser.Scene {
       var storeUserDetails = {} as object;
 
       storeUserDetails = await this.CreateUserList(result);
+      if(chatId == "c_001")
+      {
+        console.log("notifications!!!!!!!!!!!!!");
+        this.GenerateNotificationChannelMessages().forEach(
+          (notification)=>{
+            result.messages?.push(notification);
+          }
+        )
+
+        result.messages?.sort((messageA, messageB) => 
+        {
+          return new Date(messageA.create_time as string).getTime() - new Date(messageB.create_time as string).getTime();
+        })
+      }
       await this.delay(500); //WARNING NOT FOOL PROOF!!!
 
       /* messages.sort((a, b) => {
@@ -2415,7 +2459,8 @@ export default class MainScene extends Phaser.Scene {
       result.messages.forEach(async (message) => {
         switch (message.code) {
           case 0:
-            console.log("Message has id %o and content %o", message.message_id, message.content);
+            console.log("Message has id %o and content" +  message.content, message.message_id);
+            
             let getMessage: any = {};
             getMessage = message.content;
             var avatarUrl = storeUserDetails[message.sender_id as string].avatar_url as string;

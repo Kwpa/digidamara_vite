@@ -769,84 +769,84 @@ max-height: 0;
 }
 
 .t001-a-icon {
-	background: url('../assets/test_avatars/avatar_atlas_100.png') no-repeat 0 0;
+	background: url('../public/assets/test_avatars/avatar_atlas_100.png') no-repeat 0 0;
 	width: 128px;
 	height: 128px;
     margin: 0 auto;
     background-size: 600%;
 }
 .t001-b-icon {
-	background: url('../assets/test_avatars/avatar_atlas_100.png') no-repeat -256px 0;
+	background: url('../public/assets/test_avatars/avatar_atlas_100.png') no-repeat -256px 0;
 	width: 128px;
 	height: 128px;
     margin: 0 auto;
     background-size: 600%;
 }
 .t002-a-icon {
-	background: url('../assets/test_avatars/avatar_atlas_100.png') no-repeat -512px 0;
+	background: url('../public/assets/test_avatars/avatar_atlas_100.png') no-repeat -512px 0;
 	width: 128px;
 	height: 128px;
     margin: 0 auto;
     background-size: 600%;
 }
 .t002-b-icon {
-	background: url('../assets/test_avatars/avatar_atlas_100.png') no-repeat 0 -128px;
+	background: url('../public/assets/test_avatars/avatar_atlas_100.png') no-repeat 0 -128px;
 	width: 128px;
 	height: 128px;
     margin: 0 auto;
     background-size: 600%;
 }
 .t003-a-icon {
-	background: url('../assets/test_avatars/avatar_atlas_100.png') no-repeat -256px -128px;
+	background: url('../public/assets/test_avatars/avatar_atlas_100.png') no-repeat -256px -128px;
 	width: 128px;
 	height: 128px;
     margin: 0 auto;
     background-size: 600%;
 }
 .t003-b-icon {
-	background: url('../assets/test_avatars/avatar_atlas_100.png') no-repeat -512px -128px;
+	background: url('../public/assets/test_avatars/avatar_atlas_100.png') no-repeat -512px -128px;
 	width: 128px;
 	height: 128px;
     margin: 0 auto;
     background-size: 600%;
 }
 .t004-a-icon {
-	background: url('../assets/test_avatars/avatar_atlas_100.png') no-repeat 0 -256px;
+	background: url('../public/assets/test_avatars/avatar_atlas_100.png') no-repeat 0 -256px;
 	width: 128px;
 	height: 128px;
     margin: 0 auto;
     background-size: 600%;
 }
 .t004-b-icon {
-	background: url('../assets/test_avatars/avatar_atlas_100.png') no-repeat -256px -256px;
+	background: url('../public/assets/test_avatars/avatar_atlas_100.png') no-repeat -256px -256px;
 	width: 128px;
 	height: 128px;
     margin: 0 auto;
     background-size: 600%;
 }
 .t005-a-icon {
-	background: url('../assets/test_avatars/avatar_atlas_100.png') no-repeat -512px -256px;
+	background: url('../public/assets/test_avatars/avatar_atlas_100.png') no-repeat -512px -256px;
 	width: 128px;
 	height: 128px;
     margin: 0 auto;
     background-size: 600%;
 }
 .t005-b-icon {
-	background: url('../assets/test_avatars/avatar_atlas_100.png') no-repeat 0 -384px;
+	background: url('../public/assets/test_avatars/avatar_atlas_100.png') no-repeat 0 -384px;
 	width: 128px;
 	height: 128px;
     margin: 0 auto;
     background-size: 600%;
 }
 .t006-a-icon {
-	background: url('../assets/test_avatars/avatar_atlas_100.png') no-repeat -256px -384px;
+	background: url('../public/assets/test_avatars/avatar_atlas_100.png') no-repeat -256px -384px;
 	width: 128px;
 	height: 128px;
     margin: 0 auto;
     background-size: 600%;
 }
 .t006-b-icon {
-	background: url('../assets/test_avatars/avatar_atlas_100.png') no-repeat -512px -384px;
+	background: url('../public/assets/test_avatars/avatar_atlas_100.png') no-repeat -512px -384px;
 	width: 128px;
 	height: 128px;
     margin: 0 auto;

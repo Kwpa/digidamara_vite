@@ -1,0 +1,14 @@
+console - NEEDS SSL
+http server - NEEDS SSL may need 
+gRPC
+gRPC console
+
+standard ports (need to be HTTPS)
+
+Access code
+
+Use 8443
+
+Clearing history on devices (local storage) 
+
+Work towards Full SSL on the server (we're actually using it!)
