@@ -1,5 +1,24 @@
 import DynamicData from "./DynamicData";
 
+export class AppState {
+    // Create new instances of the same class as static attributes
+    static LoadingScreen = new AppState("LoadingScreen");
+    static AppOpen = new AppState("AppOpen");
+    static CurtainsClosed = new AppState("CurtainsClosed");
+    static CurtainsOpen = new AppState("CurtainsOpen");
+    static ShowEliminations = new AppState("CurtainsOpen");
+    static FirstVisitTodayNotifications = new AppState("FirstVisitTodayNotifications");
+    static NormalPlay = new AppState("NormalPlay");
+    static ViewVideo = new AppState("ViewVideo");
+    static RestMode = new AppState("RestMode");
+    static WebsiteDown = new AppState("WebsiteDown");
+  
+    name = "";
+    constructor(name) {
+      this.name = name
+    }
+  }
+
 export default class LocalGameState
 {
     username!: string;
@@ -23,6 +42,24 @@ export default class LocalGameState
     lastChatMessageUserId!: string;
     danceFloorAudioTwoPlaying!: boolean;
     leaderboardStatus!: number[];
+
+    appHasLoaded: boolean = false;
+    firstVisitTodayWithCurtainsClosed: boolean = false;
+    curtainsOpen: boolean = false;
+    firstVisitTodayWithCurtainsOpen: boolean = false;
+
+    appState!: AppState;
+
+    StartAppState()
+    {
+        this.appState = AppState.LoadingScreen;
+    }
+
+    UpdateAppState(state: AppState)
+    {
+        this.appState = state;
+        console.log(state.name.toUpperCase());
+    }
 
     Init(username: string, round: number, actionPoints: number, maxActionPoints: number, sparksAwarded: number, energyRequirement: number, teamIDs : string[], voteStates, teamStates)
     {

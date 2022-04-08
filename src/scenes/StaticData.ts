@@ -176,6 +176,9 @@ export class NotificationData
     content!: string;
     encryption!: number;
     delay!: number;
+    type!: string;
+    round!: number;
+    order!: number;
 
     constructor(notification) {
         this.id = notification.id;
@@ -186,6 +189,9 @@ export class NotificationData
         this.content = notification.content;
         this.encryption = notification.encryption;
         this.delay = notification.delay;
+        this.type = notification.type;
+        this.round = notification.round;
+        this.order = notification.order;
       }
 }
 

@@ -24,7 +24,7 @@ import collect from 'collect.js';
 import PerspectiveImagePlugin from 'phaser3-rex-plugins/plugins/perspectiveimage-plugin.js';
 import { PerspectiveCarousel } from 'phaser3-rex-plugins/plugins/perspectiveimage.js';
 import YoutubePlayerPlugin from 'phaser3-rex-plugins/plugins/youtubeplayer-plugin.js';
-import LocalGameState, { TeamImages, TeamRenderTextures, TeamState, VoteScenarioState } from './LocalGameState';
+import LocalGameState, { AppState, TeamImages, TeamRenderTextures, TeamState, VoteScenarioState } from './LocalGameState';
 import StaticData, { ChatChannelData, NotificationData } from './StaticData';
 import RenderTexture from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/rendertexture/RenderTexture';
 import Sprite from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/sprite/Sprite';
@@ -162,6 +162,10 @@ export default class MainScene extends Phaser.Scene {
 
   preload() {
     //this.load.crossOrigin = "Anonymous";
+    this.localState = new LocalGameState();
+    this.localState.StartAppState();
+    this.localState.UpdateAppState(AppState.LoadingScreen);
+
     this.LoadingBar();
 
     this.load.atlas('atlas', '/assets/test_avatars/avatar_atlas.png', ' /assets/json/avatar_atlas.json');
@@ -212,7 +216,6 @@ export default class MainScene extends Phaser.Scene {
     var progressBox = this.add.graphics();
     progressBox.fillStyle(0x222222, 0.8);
     progressBox.fillRect(width / 2 - (160), height / 2 - (10), 320, 50);
-
 
     var loadingText = this.make.text({
       x: width / 2,
@@ -266,6 +269,7 @@ export default class MainScene extends Phaser.Scene {
       assetText.destroy();
       this.logo.destroy();
       this.assetsLoaded = true;
+      this.localState.UpdateAppState(AppState.AppOpen);
     });
   }
 
@@ -458,7 +462,9 @@ export default class MainScene extends Phaser.Scene {
  
     await this.waitUntilAssetsLoaded();
     await this.LoadJSON();
+    this.localState.UpdateAppState(AppState.CurtainsClosed);
     await this.delay(1200);
+    this.localState.UpdateAppState(AppState.CurtainsOpen);
     //console.log(this.cache.json);
     this.width = this.sys.game.canvas.width;
     this.height = this.sys.game.canvas.height;
@@ -876,6 +882,7 @@ export default class MainScene extends Phaser.Scene {
     var username = account.user?.username as string;
 
     if (newUserStorage) {
+
       localStorage.setItem('ddm_localData', JSON.stringify(
         {
           "deviceId": deviceId,
@@ -907,7 +914,15 @@ export default class MainScene extends Phaser.Scene {
           "v_005_choiceOne": 0,
           "v_005_choiceTwo": 0,
           "v_006_choiceOne": 0,
-          "v_006_choiceTwo": 0
+          "v_006_choiceTwo": 0,
+          "notificationsTriggered": {
+            
+          },
+          appHasLoaded: false,
+          firstVisitTodayWithCurtainsClosed: true,
+          curtainsOpen: false,
+          firstVisitTodayWithCurtainsOpen: true,
+          appState: not
         }
       ));
 
@@ -939,6 +954,17 @@ export default class MainScene extends Phaser.Scene {
           "c_001": c001id,
           "c_002": c002id
         });
+      
+      const nTrig = {};
+      this.staticData.notifications.forEach(
+        (notification)=>{
+          if(notification.type == "scheduled" || notification.type == "any") 
+          {
+            nTrig[notification.id] = {seen: false};
+          }
+        }
+      );
+      this.WriteToDDMLocalStorage(["notificationsTriggered"], [nTrig]);
     }
     else {
       var channels = await this.GetGroupsFromAccount();
@@ -1007,8 +1033,6 @@ export default class MainScene extends Phaser.Scene {
         //const playVideo = videoTile
       }
     )
-
-
   }
 
   async AddEventListeners() {
@@ -1147,7 +1171,6 @@ export default class MainScene extends Phaser.Scene {
   }
 
   async SetupLocalState(username: string) {
-    this.localState = new LocalGameState();
 
     var teamIdList: string[] = [];
     var teamStateList: TeamState[] = [];
