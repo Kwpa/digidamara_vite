@@ -463,9 +463,14 @@ export default class MainScene extends Phaser.Scene {
     await this.waitUntilAssetsLoaded();
     await this.LoadJSON();
     this.localState.UpdateAppState(AppState.CurtainsClosed);
+    //var firstTimeTodayCurtainsClosed = await this.ReadFromDDMLocalStorageBoolean("firstVisitTodayWithCurtainsClosed");
+
+    //show initial info - requires a rethink
+
     await this.delay(1200);
     this.localState.UpdateAppState(AppState.CurtainsOpen);
-    //console.log(this.cache.json);
+
+    //console.log(this.cache.json);1
     this.width = this.sys.game.canvas.width;
     this.height = this.sys.game.canvas.height;
 
@@ -719,6 +724,55 @@ export default class MainScene extends Phaser.Scene {
         this.danceFloorAudioOne.play();
         this.danceFloorAudioTwo.play();
       })
+    } 
+
+    var firstTimeTodayOpen = await this.ReadFromDDMLocalStorageBoolean("firstVisitTodayWithCurtainsOpen");
+    if(firstTimeTodayOpen)
+    {
+      console.log("firstVisitTodayWithCurtainsOpen");
+      await this.CallNotificationsForTheDay();
+    }
+  }
+
+  dailyNotificationCount: number = 0;
+  dailyNotificationTotal: number = 0;
+
+  async CallNotificationsForTheDay()
+  {
+    var todaysNotifications = this.staticData.notifications.filter(p=> p.round == this.localState.round);
+    console.log("**** round: " + this.localState.round + " todaysnotifications: " + todaysNotifications.length);
+
+    var orderedNotifications = todaysNotifications.sort(
+      (notificationA, notificationB) => {
+        return notificationA.order - notificationB.order;
+      }
+    );
+
+    var notificationsState = await this.ReadFromDDMLocalStorage("notificationsState");
+    
+    orderedNotifications.forEach(
+      (notification)=>{
+        var seen = notificationsState[notification.id].seen;
+        if(seen == false)
+        {
+          this.dailyNotificationTotal++;
+          console.log("****2");
+          this.QueueNotificationHome(notification.id);
+        }
+      }
+    )
+    await this.DisplayQueuedNotification(1000);
+  }
+
+  async DisplayQueuedNotification(delay: number)
+  {
+    if(this.queuedNotificationList.length > 0)
+    {
+      console.log("****3");
+      var id = this.queuedNotificationList[0];
+      await this.delay(delay);
+      this.DisplayNotificationHome(id);
+      this.UnqueueFirstNotificationHome();
     }
   }
 
@@ -915,14 +969,11 @@ export default class MainScene extends Phaser.Scene {
           "v_005_choiceTwo": 0,
           "v_006_choiceOne": 0,
           "v_006_choiceTwo": 0,
-          "notificationsTriggered": {
+          "notificationsState": {
             
           },
-          appHasLoaded: false,
           firstVisitTodayWithCurtainsClosed: true,
-          curtainsOpen: false,
-          firstVisitTodayWithCurtainsOpen: true,
-          appState: not
+          firstVisitTodayWithCurtainsOpen: true
         }
       ));
 
@@ -958,13 +1009,13 @@ export default class MainScene extends Phaser.Scene {
       const nTrig = {};
       this.staticData.notifications.forEach(
         (notification)=>{
-          if(notification.type == "scheduled" || notification.type == "any") 
+          if(notification.type == "arrivetoday") 
           {
             nTrig[notification.id] = {seen: false};
           }
         }
       );
-      this.WriteToDDMLocalStorage(["notificationsTriggered"], [nTrig]);
+      await this.WriteToDDMLocalStorage(["notificationsState"], [nTrig]);
     }
     else {
       var channels = await this.GetGroupsFromAccount();
@@ -1785,6 +1836,18 @@ export default class MainScene extends Phaser.Scene {
     return json[key] as number;
   }
 
+  async ReadFromDDMLocalStorage(key: string) {
+    const data = await localStorage.getItem('ddm_localData');
+    const json = JSON.parse(data as string);
+    return json[key] as object;
+  }
+
+  async ReadFromDDMLocalStorageBoolean(key: string) {
+    const data = await localStorage.getItem('ddm_localData');
+    const json = JSON.parse(data as string);
+    return json[key] as boolean;
+  }
+
   async RefreshFromDynamicData() {
     console.log("refresh");
     await this.GetLatestDynamicData();
@@ -2191,7 +2254,6 @@ export default class MainScene extends Phaser.Scene {
                 message: content
               }); */
             this.DisplayNotificationHome(content);
-            this.UpdateNewsFeed(content);
           }
         default:
           console.info("User %o sent %o", result.presence.user_id, content);
@@ -2202,6 +2264,7 @@ export default class MainScene extends Phaser.Scene {
   async DisplayNotificationHome(id: string) {
     if (this.localState.notificationHomeOnScreen) {
       //wait
+      this.QueueNotificationHome(id);
     }
     else {
       var notificationData = this.staticData.notifications.filter(p => p.id == id)[0] as NotificationData;
@@ -2250,19 +2313,49 @@ export default class MainScene extends Phaser.Scene {
             this.AnimateIconWobble();
           }
         };
-        closeButton.onclick = () => {
+        closeButton.onclick = async() => {
           this.notificationHome.setVisible(false);
+          var notificationsState = (await this.ReadFromDDMLocalStorage("notificationsState") as object);
+          console.log("is this seen now?" + id + " : " +  notificationsState[id].seen);
+          const character = this.staticData.notifications.find(p=>p.id==id)?.character as string;
+          notificationsState[id] = {
+            seen: true,
+            createdAt: new Date(Date.now()).toISOString(),
+            userId: character,
+            username: character
+          };
+
+          await this.WriteToDDMLocalStorage(["notificationsState"], [notificationsState]);
+          console.log("is this seen now?" + id + " : " +  notificationsState[id].seen);
+          const type = this.staticData.notifications.find(p=>p.id == id)?.type as string;
+          if(type=="arrivetoday")
+          {
+            this.dailyNotificationCount++;
+          }
+    
+          if(this.dailyNotificationCount == this.dailyNotificationTotal)
+          {
+            await this.WriteToDDMLocalStorage(["firstVisitTodayWithCurtainsOpen"], [false]);
+          }
+          this.DisplayQueuedNotification(400);
         };
       }
     }
 
   }
 
-  UpdateNewsFeed(id: string) {
+  queuedNotificationList: string[] = [];
 
+  QueueNotificationHome(id: string)
+  {
+    this.queuedNotificationList.push(id);
   }
 
-
+  UnqueueFirstNotificationHome()
+  {
+    this.queuedNotificationList.shift();
+  }
+  
   async JoinGlobalChat(socket: Socket, roomname: string) {
     const persistence = true;
     const hidden = false;
@@ -2408,18 +2501,49 @@ export default class MainScene extends Phaser.Scene {
       var username = users[0].username as string;
       userList[message.sender_id as string] = { "avatar_url": avatarUrl, "username": username };
     });
-    userList["Promoter"] = {avatar_url: "", username: "Promoter"};
+    this.staticData.notifications.forEach(
+      (notification)=>{
+        userList[notification.character] = {avatar_url: notification.iconPath, username: notification.character};
+      }
+    )
     return userList;
   }
 
-  GenerateNotificationChannelMessages()
+  CreateNotificationSeenLocalStorage()
   {
-    var notificationsSeen = [{id: "n_001", createdAt: "2022-01-30T16:22:07Z", userId: "Promoter", username: "Promoter"},{id: "n_002", createdAt: "2023-01-31T16:22:07Z", userId: "Promoter", username: "Promoter"}] as object[];
+    /* var storeObject = {
+      id: "a",
+      createdAt: "",
+      userId: "",
+      username: ""
+    };
+    this.WriteToDDMLocalStorage([],[storeObject]); */
+  }
+
+  async GenerateNotificationChannelMessages()
+  {
+    var notificationsState = await this.ReadFromDDMLocalStorage("notificationsState") as object;
+    var notificationsSeen = [] as string[];
+    Object.keys(notificationsState).forEach(
+      (key)=>{
+        if(notificationsState[key].seen == true)
+        {
+          console.log("key " + key);
+          notificationsSeen.push(key)
+        }
+        else{
+          console.log("no key " + notificationsState[key].seen);
+        }
+      }
+    );
+
+    //var notificationsSeen = [{id: "n_001", createdAt: "2022-01-30T16:22:07Z", userId: "Promoter", username: "Promoter"},{id: "n_002", createdAt: "2023-01-31T16:22:07Z", userId: "Promoter", username: "Promoter"}] as object[];
     var channelNotifications = [] as ChannelMessage[];
     notificationsSeen.forEach(
-      (data) =>{
-        console.log(data.id);
-        const id = data.id; //it is there
+      (key) =>{
+        var data = notificationsState[key];
+        console.log("data ID " + key + " "+ data.userId);
+        const id = key; //it is there
         const createdAt = data.createdAt; //it is there
         const userId = data.userId;
         const username = data.username;
@@ -2459,7 +2583,8 @@ export default class MainScene extends Phaser.Scene {
       if(chatId == "c_001")
       {
         console.log("notifications!!!!!!!!!!!!!");
-        this.GenerateNotificationChannelMessages().forEach(
+        var list = await this.GenerateNotificationChannelMessages();
+        list.forEach(
           (notification)=>{
             result.messages?.push(notification);
           }
