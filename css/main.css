@@ -31,6 +31,17 @@ iframe {
 	padding: 20px 20px 20px 20px;
 }
 
+.video-player-overlay
+{
+	
+}
+
+.video-player-overlay-modal
+{
+	width: 100%;
+	margin: 0 0 0 0;
+}
+
 body {
 	margin: 0;
 	background: transparent;
@@ -372,7 +383,7 @@ margin: auto;
 }
 
 .notification-home {
-width: calc(100% - 150px);
+width: calc(100% - 50px);
 max-width: 500px;
 position: relative;
 margin: auto;
@@ -382,6 +393,7 @@ margin: auto;
 {
 	width: calc(100% - 150px);
 	max-width: 500px;
+	min-width: 280px;
 	position: relative;
 	margin-left: auto;
 	margin-right: 5px;
@@ -390,6 +402,7 @@ margin: auto;
 {
 	width: calc(100% - 150px);
 	max-width: 500px;
+	min-width: 280px;
 	position: relative;
 	margin-left: 5px;
 	margin-right: auto;
@@ -466,7 +479,15 @@ margin: auto;
 	cursor: pointer;
 }
 
-
+.notification-button-watch-latest-video,
+.notification-button-fan-club-chat,
+.notification-button-todays-vote
+{
+	display: none;
+	margin: 0 auto;
+	margin-top: 10px;
+	width: 100%;
+}
 
 .wobble-hor-bottom {
 	-webkit-animation: wobble-hor-bottom 0.8s both;

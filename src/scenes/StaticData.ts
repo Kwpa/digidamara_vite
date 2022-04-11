@@ -179,6 +179,7 @@ export class NotificationData
     type!: string;
     round!: number;
     order!: number;
+    buttonType!: string;
 
     constructor(notification) {
         this.id = notification.id;
@@ -192,6 +193,7 @@ export class NotificationData
         this.type = notification.type;
         this.round = notification.round;
         this.order = notification.order;
+        this.buttonType = notification.buttonType;
       }
 }
 

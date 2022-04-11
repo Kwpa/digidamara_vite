@@ -2,7 +2,6 @@ import Phaser, { Scene, Tweens } from 'phaser';
 import Header from './elements/Header';
 import Footer from './elements/Footer';
 import ChatPage from './elements/ChatPage';
-import VideoPage from './elements/VideoPage';
 import ChatMessageOtherUser from './elements/ChatMessageOtherUser';
 import ChatMessageCurrentUser from './elements/ChatMessageCurrentUser';
 import NotificationHome from './elements/NotificationHome';
@@ -53,7 +52,9 @@ export default class MainScene extends Phaser.Scene {
   chatChannels_data!: object;
 
   teamProfilePages!: Phaser.GameObjects.DOMElement[];
-  chatPages!: Phaser.GameObjects.DOMElement[];
+  chatPage!: Phaser.GameObjects.DOMElement;
+  votePage!: Phaser.GameObjects.DOMElement;
+  videoPlayerOverlay!: Phaser.GameObjects.DOMElement;
   session!: Session;
   client!: Client;
   match!: Match;
@@ -62,7 +63,6 @@ export default class MainScene extends Phaser.Scene {
   messageInput!: HTMLInputElement;
   danceFloor!: HTMLElement;
   chatMessageContainer!: HTMLElement;
-  videoTileContainer!: HTMLElement;
   storeMatchReferece!: StorageObjects;
 
   leaderboardPage!: Phaser.GameObjects.DOMElement;
@@ -137,7 +137,7 @@ export default class MainScene extends Phaser.Scene {
   storeMouseYPosition: number = 0;
   leaderboardIsOpen: boolean = false;
 
-  depthLayers: object = { gameLayer: 0, background: 0, foreground: 1, overlay: 2, slideDownPage: 3, headerFooter: 4, curtains: 4, slideDownButton: 5, notifications: 6 };
+  depthLayers: object = { gameLayer: 0, background: 0, foreground: 1, overlay: 2, slideDownPage: 3, headerFooter: 4, curtains: 4, slideDownButton: 5, notifications: 6, videoPlayer: 7 };
 
   //avatarRenderTextures
   avatarRenderTextures;
@@ -194,7 +194,7 @@ export default class MainScene extends Phaser.Scene {
 
   ShowVideo(scene: Scene, width: number, height: number, url: string) {
     this.rexVideoPlayer = scene.add.rexYoutubePlayer( //this does work, typescript def error :/
-      -width, -height, 400, 300,
+      -width, -height, Math.min(Math.max(width*0.5, 360)), Math.min(Math.max(width*0.5*0.5625, 360*0.5625)),
       {
         videoId: url,
         autoPlay: false
@@ -313,8 +313,7 @@ export default class MainScene extends Phaser.Scene {
   IS_TOUCH!: number;
 
 
-  SetupLeaderboardForMouse()
-  {
+  SetupLeaderboardForMouse() {
     this.leaderboardHeaderButton.addEventListener("mousedown", () => {
       console.log("mousedown");
       addEventListener("mousemove", this.onDrag);
@@ -329,16 +328,14 @@ export default class MainScene extends Phaser.Scene {
     });
   }
 
-  onFirstMouseDown(e: MouseEvent)
-  {
+  onFirstMouseDown(e: MouseEvent) {
     console.log("touch = " + this.IS_TOUCH);
 
-      this.IS_TOUCH = 1 as number;
-      this.SetupLeaderboardForMouse();
+    this.IS_TOUCH = 1 as number;
+    this.SetupLeaderboardForMouse();
   }
 
-  SetupLeaderboardForTouch()
-  {
+  SetupLeaderboardForTouch() {
     this.leaderboardHeaderButton.addEventListener("touchstart", () => {
       addEventListener("touchmove", this.onDragTouch);
     });
@@ -351,14 +348,12 @@ export default class MainScene extends Phaser.Scene {
     });
   }
 
-  onFirstTouchDown(e: TouchEvent)
-  {
-    if(this.IS_TOUCH==0)
-    {
+  onFirstTouchDown(e: TouchEvent) {
+    if (this.IS_TOUCH == 0) {
       this.IS_TOUCH = 2;
       this.SetupLeaderboardForTouch();
-      window.removeEventListener('touchstart',this.onFirstTouchDown);
-      window.removeEventListener('mousedown',this.onFirstMouseDown);
+      window.removeEventListener('touchstart', this.onFirstTouchDown);
+      window.removeEventListener('mousedown', this.onFirstMouseDown);
     }
   }
 
@@ -433,7 +428,7 @@ export default class MainScene extends Phaser.Scene {
   onDrag = (event: MouseEvent) => {
     let getStyle = window.getComputedStyle(this.leaderboardHeaderButton);
     let top = parseInt(getStyle.top);
-    this.leaderboardHeaderButton.style.top = `${event.clientY-112}px`;
+    this.leaderboardHeaderButton.style.top = `${event.clientY - 112}px`;
     this.leaderboardPage.setY(event.clientY - this.leaderboardPage.height / 2);
     this.storeMouseYPosition = event.clientY;
     console.log("drag " + event.clientY);
@@ -459,7 +454,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   async AsyncCreate() {
- 
+
     await this.waitUntilAssetsLoaded();
     await this.LoadJSON();
     this.localState.UpdateAppState(AppState.CurtainsClosed);
@@ -530,9 +525,9 @@ export default class MainScene extends Phaser.Scene {
     header.depth = this.depthLayers["headerFooter"];
     footer.depth = this.depthLayers["headerFooter"];
 
-    const videoPage = this.add.dom(this.width / 2, this.height / 2, VideoPage() as HTMLElement);
-    const videoPlayerOverlay = this.add.dom(this.width / 2, this.height / 2, VideoPlayerOverlay() as HTMLElement);
-    const votePage = this.add.dom(this.width / 2, this.height / 2, VotingPage() as HTMLElement);
+    this.videoPlayerOverlay = this.add.dom(this.width / 2, this.height / 2, VideoPlayerOverlay() as HTMLElement);
+    this.videoPlayerOverlay.setDepth(this.depthLayers["videoPlayer"]);
+    this.votePage = this.add.dom(this.width / 2, this.height / 2, VotingPage() as HTMLElement);
     const slideDownButton = this.add.dom(this.width / 2, this.height / 2, SlideDownButton() as HTMLElement);
     slideDownButton.depth = this.depthLayers["slideDownButton"];
 
@@ -542,15 +537,14 @@ export default class MainScene extends Phaser.Scene {
     this.overlayProgressBar = this.avatarOverlay.getChildByID("teamEnergyBar") as HTMLInputElement;
     this.overlayProgressContainer = this.avatarOverlay.getChildByID("teamProgressContainer") as HTMLInputElement;
     this.overlayEliminated = this.avatarOverlay.getChildByID("teamEliminated") as HTMLInputElement;
-    this.videoPlayerContainer = videoPlayerOverlay.getChildByID("video-player") as HTMLElement;
+    this.videoPlayerContainer = this.videoPlayerOverlay.getChildByID("video-player") as HTMLElement;
 
     this.leaderboardPage.depth = this.depthLayers["slideDownPage"];;
     this.leaderboardPage.setY(-10000);
     this.avatarOverlay.setVisible(false);
-    videoPlayerOverlay.setVisible(false);
+    this.videoPlayerOverlay.setVisible(false);
     this.notificationHome.setVisible(false);
-    videoPage.setVisible(false);
-    votePage.setVisible(false);
+    this.votePage.setVisible(false);
 
     //audio
     this.danceFloorAudioOne = this.sound.add('danceFloorAudioOne', {
@@ -569,46 +563,35 @@ export default class MainScene extends Phaser.Scene {
     this.chatFooterButton = footer.getChildByID('chat-footer-button') as HTMLElement;
     this.videoFooterButton = footer.getChildByID('video-footer-button') as HTMLElement;
     this.voteFooterButton = footer.getChildByID('vote-footer-button') as HTMLElement;
-    this.closeVideoPageButton = videoPage.getChildByID('close-video-page-button') as HTMLElement;
-    this.closeVotePageButton = votePage.getChildByID('close-voting-page-button') as HTMLElement;
-    this.voteContainer = votePage.getChildByID('vote-container') as HTMLElement;
-    this.videoTileContainer = videoPage.getChildByID('video-container') as HTMLElement;
-    //this.closeVideoPlayerButton = videoPlayerOverlay.getChildByID('video-player-button-close') as HTMLElement;
-    this.playVideoPlayerButton = videoPlayerOverlay.getChildByID('video-player-button-play') as HTMLElement;
-    this.pauseVideoPlayerButton = videoPlayerOverlay.getChildByID('video-player-button-pause') as HTMLElement;
-    this.loadNextVideoPlayerButton = videoPlayerOverlay.getChildByID('video-player-button-next') as HTMLElement;
-    this.loadPreviousVideoPlayerButton = videoPlayerOverlay.getChildByID('video-player-button-previous') as HTMLElement;
+    this.closeVideoPageButton = this.videoPlayerOverlay.getChildByID('close-video-page-button') as HTMLElement;
+    this.closeVotePageButton = this.votePage.getChildByID('close-voting-page-button') as HTMLElement;
+    this.voteContainer = this.votePage.getChildByID('vote-container') as HTMLElement;
+    this.closeVideoPlayerButton = this.videoPlayerOverlay.getChildByID('video-overlay-button-close') as HTMLElement;
+    this.playVideoPlayerButton = this.videoPlayerOverlay.getChildByID('video-player-button-play') as HTMLElement;
+    this.pauseVideoPlayerButton = this.videoPlayerOverlay.getChildByID('video-player-button-pause') as HTMLElement;
+    this.loadNextVideoPlayerButton = this.videoPlayerOverlay.getChildByID('video-player-button-next') as HTMLElement;
+    this.loadPreviousVideoPlayerButton = this.videoPlayerOverlay.getChildByID('video-player-button-previous') as HTMLElement;
     this.leaderboardHeaderButton = slideDownButton.getChildByID('leaderboard-header-button') as HTMLElement;
 
     this.avatarOverlayButton = this.avatarOverlay.getChildByID('openProfile') as HTMLElement;
 
-
-    this.videoFooterButton.onclick = () => {
-      videoPage.setVisible(true);
-      this.avatarOverlay.setVisible(false);
+    this.voteFooterButton.onclick = () => {
+      this.SetPage("votePage");
       this.tapAreaLeft.removeInteractive();
       this.tapAreaRight.removeInteractive();
     }
-    this.closeVideoPageButton.onclick = () => {
-      videoPage.setVisible(false);
-      this.avatarOverlay.setVisible(true);
+    this.closeVideoPlayerButton.onclick = () => {
+      this.SetPage("avatarOverlay");
       this.tapAreaLeft.setInteractive();
       this.tapAreaRight.setInteractive();
     }
-    this.voteFooterButton.onclick = () => {
-      votePage.setVisible(true);
-      this.avatarOverlay.setVisible(false);
-      this.tapAreaLeft.removeInteractive();
-      this.tapAreaRight.removeInteractive();
-    }
     this.closeVotePageButton.onclick = () => {
-      votePage.setVisible(false);
-      this.avatarOverlay.setVisible(true);
+      this.SetPage("avatarOverlay");
       this.tapAreaLeft.setInteractive();
       this.tapAreaRight.setInteractive();
     }
     this.avatarOverlayButton.onclick = () => {
-      this.teamProfilePages[this.localState.carouselPosition].setVisible(true);
+      this.SetPage("teamProfile");
       var donateButton = this.teamProfilePages[this.localState.carouselPosition].getChildByID('donate-button') as HTMLInputElement;
       var fanClubButton = this.teamProfilePages[this.localState.carouselPosition].getChildByID('fan-club-button') as HTMLInputElement;
       var upgradeButton = this.teamProfilePages[this.localState.carouselPosition].getChildByID('upgrade-button') as HTMLInputElement;
@@ -675,7 +658,6 @@ export default class MainScene extends Phaser.Scene {
         });
       }
 
-      this.avatarOverlay.setVisible(false);
       this.tapAreaLeft.removeInteractive();
       this.tapAreaRight.removeInteractive();
     }
@@ -691,8 +673,6 @@ export default class MainScene extends Phaser.Scene {
     this.pauseVideoPlayerButton.onclick = () => {
       this.PauseCurrentVideo();
     }
-
-    this.SetVideoImages(this.videoTileContainer);
 
     this.SetupNotifications();
 
@@ -724,11 +704,10 @@ export default class MainScene extends Phaser.Scene {
         this.danceFloorAudioOne.play();
         this.danceFloorAudioTwo.play();
       })
-    } 
+    }
 
     var firstTimeTodayOpen = await this.ReadFromDDMLocalStorageBoolean("firstVisitTodayWithCurtainsOpen");
-    if(firstTimeTodayOpen)
-    {
+    if (firstTimeTodayOpen) {
       console.log("firstVisitTodayWithCurtainsOpen");
       await this.CallNotificationsForTheDay();
     }
@@ -737,9 +716,8 @@ export default class MainScene extends Phaser.Scene {
   dailyNotificationCount: number = 0;
   dailyNotificationTotal: number = 0;
 
-  async CallNotificationsForTheDay()
-  {
-    var todaysNotifications = this.staticData.notifications.filter(p=> p.round == this.localState.round);
+  async CallNotificationsForTheDay() {
+    var todaysNotifications = this.staticData.notifications.filter(p => p.round == this.localState.round);
     console.log("**** round: " + this.localState.round + " todaysnotifications: " + todaysNotifications.length);
 
     var orderedNotifications = todaysNotifications.sort(
@@ -749,12 +727,11 @@ export default class MainScene extends Phaser.Scene {
     );
 
     var notificationsState = await this.ReadFromDDMLocalStorage("notificationsState");
-    
+
     orderedNotifications.forEach(
-      (notification)=>{
+      (notification) => {
         var seen = notificationsState[notification.id].seen;
-        if(seen == false)
-        {
+        if (seen == false) {
           this.dailyNotificationTotal++;
           console.log("****2");
           this.QueueNotificationHome(notification.id);
@@ -764,10 +741,8 @@ export default class MainScene extends Phaser.Scene {
     await this.DisplayQueuedNotification(1000);
   }
 
-  async DisplayQueuedNotification(delay: number)
-  {
-    if(this.queuedNotificationList.length > 0)
-    {
+  async DisplayQueuedNotification(delay: number) {
+    if (this.queuedNotificationList.length > 0) {
       console.log("****3");
       var id = this.queuedNotificationList[0];
       await this.delay(delay);
@@ -970,7 +945,7 @@ export default class MainScene extends Phaser.Scene {
           "v_006_choiceOne": 0,
           "v_006_choiceTwo": 0,
           "notificationsState": {
-            
+
           },
           firstVisitTodayWithCurtainsClosed: true,
           firstVisitTodayWithCurtainsOpen: true
@@ -993,7 +968,7 @@ export default class MainScene extends Phaser.Scene {
     await this.GetLatestDynamicData();
     await this.SetupLocalState(username);
 
-    const socket = this.client.createSocket();
+    const socket = this.client.createSocket(this.webConfig.ssl);
     await socket.connect(this.session, true);
 
     if (newUserStorage) {
@@ -1005,13 +980,12 @@ export default class MainScene extends Phaser.Scene {
           "c_001": c001id,
           "c_002": c002id
         });
-      
+
       const nTrig = {};
       this.staticData.notifications.forEach(
-        (notification)=>{
-          if(notification.type == "arrivetoday") 
-          {
-            nTrig[notification.id] = {seen: false};
+        (notification) => {
+          if (notification.type == "arrivetoday") {
+            nTrig[notification.id] = { seen: false };
           }
         }
       );
@@ -1054,38 +1028,6 @@ export default class MainScene extends Phaser.Scene {
 
   }
 
-  SetVideoImages(element: HTMLElement) {
-    var videoJson =
-    {
-      "object":
-        [
-          {
-            "videoTitle": "Video One",
-            "videoID": "D3Fcrq9WlOo",
-            "thumbnailURL": "/assets/test_avatars/avatar_cushionimp.png"
-          },
-          {
-            "videoTitle": "Video Two",
-            "videoID": "3dgx7EU66fQ",
-            "thumbnailURL": "/assets/test_avatars/avatar_cushionimp.png"
-          },
-          {
-            "videoTitle": "Video Live",
-            "videoID": "gw6tsyftLRo",
-            "thumbnailURL": "/assets/test_avatars/avatar_cushionimp.png"
-          }
-        ]
-    }
-
-    videoJson.object.forEach(
-      (video) => {
-        const videoTile = VideoTile(video.videoTitle, video.thumbnailURL, video.videoID) as HTMLElement;
-        element.append(videoTile);
-        //const playVideo = videoTile
-      }
-    )
-  }
-
   async AddEventListeners() {
     this.game.events.addListener(Phaser.Core.Events.FOCUS, this.OnFocus, this);
     this.game.events.addListener(Phaser.Core.Events.BLUR, this.OnBlur, this);
@@ -1103,7 +1045,7 @@ export default class MainScene extends Phaser.Scene {
   async GetLatestDynamicData() {
     var getUserData = await localStorage.getItem("ddm_localData");
     var parsedUserData = JSON.parse(getUserData as string);
-    
+
     var getTeams = await this.client.readStorageObjects(this.session, {
       "object_ids": [{
         "collection": "teams",
@@ -1139,7 +1081,7 @@ export default class MainScene extends Phaser.Scene {
 
       var teamJsonString = JSON.stringify(team.value);
       var parsedJson = JSON.parse(teamJsonString);
-      
+
       var storyBools = {
         "s_001": parsedJson.s_001Unlocked,
         "s_002": parsedJson.s_002Unlocked,
@@ -1428,19 +1370,19 @@ export default class MainScene extends Phaser.Scene {
     this.teamProfilePages = [];
     let { width, height } = this.sys.game.canvas;
 
-    const chatPage = this.add.dom(width / 2, height / 2, ChatPage() as HTMLElement);
-    chatPage.setVisible(false);
+    this.chatPage = this.add.dom(width / 2, height / 2, ChatPage() as HTMLElement);
+    this.chatPage.setVisible(false);
     this.chatChannelOpen = document.getElementById('chat-channel-open') as HTMLElement;
     this.chatChannels = document.getElementById('chat-channels') as HTMLElement;
     this.chatSubmitButton = document.getElementById('chat-submit-button') as HTMLInputElement;
     this.chatMessageContainer = document.getElementById('chat-container') as HTMLElement;
-    this.closeChatPageButton = chatPage.getChildByID('close-chat-page-button') as HTMLElement;
-    this.closeChatChannelsPageButton = chatPage.getChildByID('close-chat-channels-page-button') as HTMLInputElement;
-    this.returnToChatChannelsButton = chatPage.getChildByID('chat-channel-button-return') as HTMLInputElement;
-    this.chatChannelTitle = chatPage.getChildByID('chat-channel-title') as HTMLInputElement;
-    this.chatChannelIcon = chatPage.getChildByID('channel-icon') as HTMLImageElement;
+    this.closeChatPageButton = this.chatPage.getChildByID('close-chat-page-button') as HTMLElement;
+    this.closeChatChannelsPageButton = this.chatPage.getChildByID('close-chat-channels-page-button') as HTMLInputElement;
+    this.returnToChatChannelsButton = this.chatPage.getChildByID('chat-channel-button-return') as HTMLInputElement;
+    this.chatChannelTitle = this.chatPage.getChildByID('chat-channel-title') as HTMLInputElement;
+    this.chatChannelIcon = this.chatPage.getChildByID('channel-icon') as HTMLImageElement;
 
-    this.messageInput = chatPage.getChildByID('chat-input') as HTMLInputElement;
+    this.messageInput = this.chatPage.getChildByID('chat-input') as HTMLInputElement;
 
     // Execute a function when the user releases a key on the keyboard
     this.messageInput.addEventListener("keyup", (event) => {
@@ -1454,20 +1396,17 @@ export default class MainScene extends Phaser.Scene {
     });
 
     this.chatFooterButton.onclick = () => {
-      chatPage.setVisible(true);
-      this.avatarOverlay.setVisible(false);
+      this.SetPage("chatPage");
       this.tapAreaLeft.removeInteractive();
       this.tapAreaRight.removeInteractive();
     }
     this.closeChatPageButton.onclick = () => {
-      chatPage.setVisible(false);
-      this.avatarOverlay.setVisible(true);
+      this.SetPage("avatarOverlay");
       this.tapAreaLeft.setInteractive();
       this.tapAreaRight.setInteractive();
     }
     this.closeChatChannelsPageButton.onclick = () => {
-      chatPage.setVisible(false);
-      this.avatarOverlay.setVisible(true);
+      this.SetPage("avatarOverlay");
       this.tapAreaLeft.setInteractive();
       this.tapAreaRight.setInteractive();
     }
@@ -1476,7 +1415,7 @@ export default class MainScene extends Phaser.Scene {
       this.chatChannels.style.display = "block";
     }
 
-    this.chatChannelContainer = chatPage.getChildByID('chat-channel-container') as HTMLElement;
+    this.chatChannelContainer = this.chatPage.getChildByID('chat-channel-container') as HTMLElement;
     var k = 0;
     this.staticData.chatChannels.forEach((channel) => {
       this.CreateChatChannelUI(this.chatChannelContainer, channel);
@@ -1485,15 +1424,15 @@ export default class MainScene extends Phaser.Scene {
 
   CreateChatChannelUI(container: HTMLElement, channel: ChatChannelData) {
     var id = channel.id;
-    
+
     if (this.localState.chatChannels[id] != null) {
-      
+
       var src = "/assets/white_icons/" + channel.iconPath + ".png";
       const chatChannel = ChatChannel(channel.title, src) as HTMLElement;
       const chatChannelOpenButton = chatChannel.querySelector("#chat-channel-button-open") as HTMLElement;
 
       chatChannelOpenButton.onclick = async () => {
-        
+
         await this.ReloadGroupChat(channel.id);
         this.chatChannelOpen.style.display = "block";
         this.chatChannels.style.display = "none";
@@ -1519,11 +1458,10 @@ export default class MainScene extends Phaser.Scene {
     });
   }
 
-  SetupLeaderboard()
-  {
+  SetupLeaderboard() {
     const rowContainer = this.leaderboardPage.getChildByID("leaderboard-rows-container");
     var k = 0;
-    this.localState.teamStates.forEach(()=>{
+    this.localState.teamStates.forEach(() => {
       var title = this.staticData.teams[k].title;
       var iconPath = this.staticData.teams[k].iconId;
       const row = LeaderboardRow(title, iconPath) as HTMLElement;
@@ -1535,8 +1473,7 @@ export default class MainScene extends Phaser.Scene {
     this.OrderLeaderboard();
   }
 
-  UpdateLeaderboard()
-  {
+  UpdateLeaderboard() {
     var k = 0;
     this.leaderboardRows.forEach(
       (row) => {
@@ -1546,14 +1483,12 @@ export default class MainScene extends Phaser.Scene {
 
         var energy, fans, upgrades = "";
         var teamState = this.localState.teamStates[k] as TeamState;
-        if(this.localState.teamStates[k].eliminated)
-        {
+        if (this.localState.teamStates[k].eliminated) {
           energy = "-";
           fans = teamState.totalNumberOfFans.toString();
           upgrades = teamState.upgradeLevel.toString();
         }
-        else
-        {
+        else {
           energy = (teamState.currentEnergy).toString();
           fans = teamState.totalNumberOfFans.toString();
           upgrades = teamState.upgradeLevel.toString();
@@ -1562,40 +1497,37 @@ export default class MainScene extends Phaser.Scene {
         energyElement.innerHTML = energy;
         fansElement.innerHTML = fans;
         upgradesElement.innerHTML = upgrades;
-      
+
         k++;
       }
     )
   }
 
-  OrderLeaderboard()
-  {
+  OrderLeaderboard() {
     this.localState.SetLeaderboardStatus();
     var rowBoundingBoxes = [] as DOMRect[];
     this.leaderboardRows.forEach(
-      (row) =>
-      {
+      (row) => {
         rowBoundingBoxes.push(row.getBoundingClientRect());
       }
     );
     var l = 0;
     this.leaderboardRows.forEach(
-      (row) =>
-      {
+      (row) => {
         const newBoxIndex = this.localState.teamStates[l].leaderboardPosition;
-        
+
         const newBox = rowBoundingBoxes[newBoxIndex];
         const oldBox = rowBoundingBoxes[l];
         var deltaX = oldBox.left - newBox.left;
         var deltaY = oldBox.top - newBox.top;
-        
+
         l++;
-        requestAnimationFrame(()=>{
+        requestAnimationFrame(() => {
           row.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
           row.style.transition = 'transform 0s';
 
-          requestAnimationFrame( () => {
-            row.style.transform  = '';
+          requestAnimationFrame(() => {
+            row.style.transform = '';
             row.style.transition = 'transform 500ms';
           });
         });
@@ -1612,7 +1544,7 @@ export default class MainScene extends Phaser.Scene {
       (team) => {
 
         var title = team.id as string;
-        
+
         const data = { name: team.title, biography: team.biography };
         const teamProfile = this.add.dom(width / 2, height / 2, TeamProfile(data) as HTMLElement);
         const teamIcon = teamProfile.getChildByID('team-icon') as HTMLElement;
@@ -1624,7 +1556,7 @@ export default class MainScene extends Phaser.Scene {
           const storyAccordian = StoryAccordian(story) as HTMLElement;
           const textTag = storyAccordian.querySelector("#textTag") as HTMLElement;
           const storyUnlocked = this.localState.teamStates[k].storyUnlocked["s_00" + j];
-          
+
           const mainButton = storyAccordian.querySelectorAll("#open-close-button")[0] as HTMLElement;
           if (storyUnlocked) {
             textTag.innerHTML = "New"!;
@@ -1720,7 +1652,7 @@ export default class MainScene extends Phaser.Scene {
 
             var groupName = this.staticData.teams[this.localState.carouselPosition].fanClubChannelId;
             var cId = await this.JoinGroup(this.session, this.client, groupName);
-            
+
             var channels = this.localState.chatChannels;
             channels[groupName] = cId;
             this.localState.AddChatChannels(channels);
@@ -1765,8 +1697,7 @@ export default class MainScene extends Phaser.Scene {
         }
 
         closeButton.onclick = () => {
-          teamProfile.setVisible(false);
-          this.avatarOverlay.setVisible(true);
+          this.SetPage("avatarOverlay");
           this.tapAreaLeft.setInteractive();
           this.tapAreaRight.setInteractive();
         }
@@ -1862,7 +1793,7 @@ export default class MainScene extends Phaser.Scene {
     this.voteChoiceTwoUser.innerHTML = this.localState.voteStates[this.localState.round - 1].choiceTwoVotesUser.toString();
     this.voteChoiceOneGlobal.innerHTML = "Total Votes: " + this.localState.voteStates[this.localState.round - 1].choiceOneVotesGlobal.toString();
     this.voteChoiceTwoGlobal.innerHTML = "Total Votes: " + this.localState.voteStates[this.localState.round - 1].choiceTwoVotesGlobal.toString();
-    
+
     this.UpdateLeaderboard();
     this.OrderLeaderboard();
   }
@@ -2017,6 +1948,9 @@ export default class MainScene extends Phaser.Scene {
       })*/
 
     const carousel = new PerspectiveCarousel(this, data) as PerspectiveCarousel;
+    if(width < 450) {
+      carousel.setScale(2/3, 2/3);
+    }
     this.tapAreaLeft = this.add.rectangle(0, height / 2, width / 3, height - 240, 0x6666, 0);
     this.tapAreaRight = this.add.rectangle(width, height / 2, width / 3, height - 240, 0x6666, 0);
     var cappedWidth = width;
@@ -2275,6 +2209,11 @@ export default class MainScene extends Phaser.Scene {
         var content = this.notificationHome.getChildByID("notification-content") as HTMLElement;
         var nextButton = this.notificationHome.getChildByID("notification-button-next") as HTMLInputElement;
         var closeButton = this.notificationHome.getChildByID("notification-button-close") as HTMLInputElement;
+        var watchLatestVideoButton = this.notificationHome.getChildByID("notification-button-watch-latest-video") as HTMLInputElement;
+        var viewTodaysVoteButton = this.notificationHome.getChildByID("notification-button-todays-vote") as HTMLInputElement;
+        var viewFanClubChat = this.notificationHome.getChildByID("notification-button-fan-club-chat") as HTMLInputElement;
+
+
 
         character.innerHTML = '<strong class="has-text-white">' + notificationData.character + '</strong>';
         icon.src = "/assets/white_icons/" + notificationData.iconPath + ".png";
@@ -2287,10 +2226,38 @@ export default class MainScene extends Phaser.Scene {
         }
         this.localState.DivideUpNotificationHomeContent(notificationData.content);
         this.localState.NextNotificationHomeContent();
-        content.innerHTML = this.localState.GetCurrentNotificationHomeContent();
+        content.prepend(this.localState.GetCurrentNotificationHomeContent());
         if (this.localState.notificationHomeContentLength == 1) {
           nextButton.style.display = "none";
           closeButton.style.display = "block";
+
+          switch (notificationData.buttonType) {
+            case "watch_latest_video":
+              watchLatestVideoButton.style.display = "block";
+              viewFanClubChat.style.display = "none";
+              viewTodaysVoteButton.style.display = "none";
+              break;
+
+            case "view_todays_vote":
+              watchLatestVideoButton.style.display = "none";
+              viewFanClubChat.style.display = "none";
+              viewTodaysVoteButton.style.display = "block";
+
+              break;
+
+            case "view_fan_club_chat":
+              watchLatestVideoButton.style.display = "none";
+              viewFanClubChat.style.display = "block";
+              viewTodaysVoteButton.style.display = "none";
+
+              break;
+
+            default:
+              watchLatestVideoButton.style.display = "none";
+              viewFanClubChat.style.display = "none";
+              viewTodaysVoteButton.style.display = "none";
+              break;
+          }
         }
         else {
           nextButton.style.display = "block";
@@ -2310,52 +2277,135 @@ export default class MainScene extends Phaser.Scene {
             content.innerHTML = this.localState.GetCurrentNotificationHomeContent();
             nextButton.style.display = "none";
             closeButton.style.display = "block";
+
+            switch (notificationData.buttonType) {
+              case "watch_latest_video":
+                watchLatestVideoButton.style.display = "block";
+                viewTodaysVoteButton.style.display = "none";
+                break;
+
+              case "view_todays_vote":
+                watchLatestVideoButton.style.display = "none";
+                viewTodaysVoteButton.style.display = "block";
+                break;
+
+              default:
+                watchLatestVideoButton.style.display = "none";
+                viewTodaysVoteButton.style.display = "none";
+                break;
+            }
+
             this.AnimateIconWobble();
           }
         };
-        closeButton.onclick = async() => {
-          this.notificationHome.setVisible(false);
-          var notificationsState = (await this.ReadFromDDMLocalStorage("notificationsState") as object);
-          console.log("is this seen now?" + id + " : " +  notificationsState[id].seen);
-          const character = this.staticData.notifications.find(p=>p.id==id)?.character as string;
-          notificationsState[id] = {
-            seen: true,
-            createdAt: new Date(Date.now()).toISOString(),
-            userId: character,
-            username: character
-          };
-
-          await this.WriteToDDMLocalStorage(["notificationsState"], [notificationsState]);
-          console.log("is this seen now?" + id + " : " +  notificationsState[id].seen);
-          const type = this.staticData.notifications.find(p=>p.id == id)?.type as string;
-          if(type=="arrivetoday")
-          {
-            this.dailyNotificationCount++;
-          }
-    
-          if(this.dailyNotificationCount == this.dailyNotificationTotal)
-          {
-            await this.WriteToDDMLocalStorage(["firstVisitTodayWithCurtainsOpen"], [false]);
-          }
-          this.DisplayQueuedNotification(400);
+        closeButton.onclick = async () => {
+          await this.CloseNotification(id);
+        };
+        watchLatestVideoButton.onclick = async () => {
+          await this.CloseNotification(id);
+          this.SetPage("videoOverlay");
+        };
+        viewFanClubChat.onclick = async () => {
+          await this.CloseNotification(id);
+          this.chatChannelOpen.style.display = "none";
+          this.chatChannels.style.display = "block";
+          this.SetPage("chatPage");
+        };
+        viewTodaysVoteButton.onclick = async () => {
+          await this.CloseNotification(id);
+          this.SetPage("votePage");
         };
       }
     }
 
   }
 
+  SetPage(pageName: string) {
+    switch (pageName) {
+      case "votePage":
+        this.SetActiveOnPages(true, false, false, false, false);
+        break;
+      case "chatPage":
+        this.SetActiveOnPages(false, true, false, false, false);
+        break;
+      case "videoOverlay":
+        this.SetActiveOnPages(false, false, true, false, false);
+        break;
+      case "avatarOverlay":
+        this.SetActiveOnPages(false, false, false, true, false);
+        break;
+      case "teamProfile":
+        this.SetActiveOnPages(false, false, false, false, true);
+        break;
+      case "helpPage":
+        break;
+      case "settingsPage":
+        break;
+    }
+  }
+
+  SetActiveOnPages(votePage: boolean, chatPage: boolean, videoOverlay: boolean, avatarOverlay: boolean, teamProfile: boolean) {
+    this.votePage.setVisible(votePage);
+    this.chatPage.setVisible(chatPage);
+    this.videoPlayerOverlay.setVisible(videoOverlay);
+    this.avatarOverlay.setVisible(avatarOverlay);
+
+    if (teamProfile) {
+      for (var index = 0; index < this.teamProfilePages.length; index++) {
+        const element = this.teamProfilePages[index];
+        if (index == this.localState.carouselPosition) {
+          element.setVisible(true);
+        }
+        else {
+          element.setVisible(false);
+        }
+      }
+    }
+    else {
+      this.teamProfilePages.forEach(
+        (el) => {
+          el.setVisible(false);
+        }
+      )
+    }
+
+  }
+
+  async CloseNotification(id: string) {
+    this.notificationHome.setVisible(false);
+    var notificationsState = (await this.ReadFromDDMLocalStorage("notificationsState") as object);
+    console.log("is this seen now?" + id + " : " + notificationsState[id].seen);
+    const character = this.staticData.notifications.find(p => p.id == id)?.character as string;
+    notificationsState[id] = {
+      seen: true,
+      createdAt: new Date(Date.now()).toISOString(),
+      userId: character,
+      username: character
+    };
+
+    await this.WriteToDDMLocalStorage(["notificationsState"], [notificationsState]);
+    console.log("is this seen now?" + id + " : " + notificationsState[id].seen);
+    const type = this.staticData.notifications.find(p => p.id == id)?.type as string;
+    if (type == "arrivetoday") {
+      this.dailyNotificationCount++;
+    }
+
+    if (this.dailyNotificationCount == this.dailyNotificationTotal) {
+      await this.WriteToDDMLocalStorage(["firstVisitTodayWithCurtainsOpen"], [false]);
+    }
+    this.DisplayQueuedNotification(400);
+  }
+
   queuedNotificationList: string[] = [];
 
-  QueueNotificationHome(id: string)
-  {
+  QueueNotificationHome(id: string) {
     this.queuedNotificationList.push(id);
   }
 
-  UnqueueFirstNotificationHome()
-  {
+  UnqueueFirstNotificationHome() {
     this.queuedNotificationList.shift();
   }
-  
+
   async JoinGlobalChat(socket: Socket, roomname: string) {
     const persistence = true;
     const hidden = false;
@@ -2502,15 +2552,14 @@ export default class MainScene extends Phaser.Scene {
       userList[message.sender_id as string] = { "avatar_url": avatarUrl, "username": username };
     });
     this.staticData.notifications.forEach(
-      (notification)=>{
-        userList[notification.character] = {avatar_url: notification.iconPath, username: notification.character};
+      (notification) => {
+        userList[notification.character] = { avatar_url: notification.iconPath, username: notification.character };
       }
     )
     return userList;
   }
 
-  CreateNotificationSeenLocalStorage()
-  {
+  CreateNotificationSeenLocalStorage() {
     /* var storeObject = {
       id: "a",
       createdAt: "",
@@ -2520,18 +2569,16 @@ export default class MainScene extends Phaser.Scene {
     this.WriteToDDMLocalStorage([],[storeObject]); */
   }
 
-  async GenerateNotificationChannelMessages()
-  {
+  async GenerateNotificationChannelMessages() {
     var notificationsState = await this.ReadFromDDMLocalStorage("notificationsState") as object;
     var notificationsSeen = [] as string[];
     Object.keys(notificationsState).forEach(
-      (key)=>{
-        if(notificationsState[key].seen == true)
-        {
+      (key) => {
+        if (notificationsState[key].seen == true) {
           console.log("key " + key);
           notificationsSeen.push(key)
         }
-        else{
+        else {
           console.log("no key " + notificationsState[key].seen);
         }
       }
@@ -2540,16 +2587,16 @@ export default class MainScene extends Phaser.Scene {
     //var notificationsSeen = [{id: "n_001", createdAt: "2022-01-30T16:22:07Z", userId: "Promoter", username: "Promoter"},{id: "n_002", createdAt: "2023-01-31T16:22:07Z", userId: "Promoter", username: "Promoter"}] as object[];
     var channelNotifications = [] as ChannelMessage[];
     notificationsSeen.forEach(
-      (key) =>{
+      (key) => {
         var data = notificationsState[key];
-        console.log("data ID " + key + " "+ data.userId);
+        console.log("data ID " + key + " " + data.userId);
         const id = key; //it is there
         const createdAt = data.createdAt; //it is there
         const userId = data.userId;
         const username = data.username;
         const notificationMessage = new NakaChannelMessage();
-        const content = this.staticData.notifications.find(p=>p.id==id)?.content as string;
-        notificationMessage.content = {message: content, button: true};
+        const content = this.staticData.notifications.find(p => p.id == id)?.content as string;
+        notificationMessage.content = { message: content, button: true };
         notificationMessage.create_time = createdAt;
         notificationMessage.sender_id = userId;
         notificationMessage.username = username;
@@ -2564,14 +2611,13 @@ export default class MainScene extends Phaser.Scene {
     var forward = true;
     var channelId = "3." + this.localState.chatChannels[chatId] + "..";
     var result: ChannelMessageList = await this.client.listChannelMessages(this.session, channelId, 50, forward);
-    
-    if(result.messages?.length!= 0)
-    {
+
+    if (result.messages?.length != 0) {
       var messages = result.messages as ChannelMessage[];
       console.log(messages[0].create_time + " message made, converted is  : " + new Date(messages[0].create_time as string).toUTCString());
     }
 
-    
+
     //if(chat)
 
     if (result.messages != null && result.messages.length > 0) {
@@ -2580,18 +2626,16 @@ export default class MainScene extends Phaser.Scene {
       var storeUserDetails = {} as object;
 
       storeUserDetails = await this.CreateUserList(result);
-      if(chatId == "c_001")
-      {
+      if (chatId == "c_001") {
         console.log("notifications!!!!!!!!!!!!!");
         var list = await this.GenerateNotificationChannelMessages();
         list.forEach(
-          (notification)=>{
+          (notification) => {
             result.messages?.push(notification);
           }
         )
 
-        result.messages?.sort((messageA, messageB) => 
-        {
+        result.messages?.sort((messageA, messageB) => {
           return new Date(messageA.create_time as string).getTime() - new Date(messageB.create_time as string).getTime();
         })
       }
@@ -2607,8 +2651,8 @@ export default class MainScene extends Phaser.Scene {
       result.messages.forEach(async (message) => {
         switch (message.code) {
           case 0:
-            console.log("Message has id %o and content" +  message.content, message.message_id);
-            
+            console.log("Message has id %o and content" + message.content, message.message_id);
+
             let getMessage: any = {};
             getMessage = message.content;
             var avatarUrl = storeUserDetails[message.sender_id as string].avatar_url as string;

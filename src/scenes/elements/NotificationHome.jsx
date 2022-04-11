@@ -22,6 +22,9 @@ const NotificationHome = (notification, imageURL) => {
         <h3 id="notification-content">
           {notification.content}
         </h3>
+        <button id="notification-button-watch-latest-video" class="button notification-button-watch-latest-video is-primary">WATCH LATEST VIDEO</button>
+        <button id="notification-button-todays-vote" class="button notification-button-todays-vote is-primary">VIEW TODAY'S VOTE</button>
+        <button id="notification-button-fan-club-chat" class="button notification-button-fan-club-chat is-primary">VIEW FAN CLUB CHAT</button>
       </div>
     </div>
   )

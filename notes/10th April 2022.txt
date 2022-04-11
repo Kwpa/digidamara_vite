@@ -1,0 +1,14 @@
+Adam has edited the docker compose file
+
+Build - use any CPU
+Publish - overrides for Linux 64
+
+Server stuff in /srv
+
+when transferring to SSL, needed to debug from the minified version by:
+beautifying index.js of the dist build
+finding out that connecting to sockets was the issue
+check documentation to find out if the SSL needs to be set somehow
+used createSocket(true) to do it!
+Rebuild, upload 
+
