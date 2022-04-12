@@ -40,7 +40,7 @@ const ChatPage = () => {
             <div style="position: absolute; right:7px; top: 7px;">
               <img id="close-chat-channels-page-button" class="hdrftr-icon" src="/assets/black_icons/icon_cross_black.png" style=""></img>
             </div>
-            <div id="chat-channel-container" class="popup-page-scroll-with-footer">
+            <div id="chat-channel-container" class="popup-page-scroll-without-footer">
             </div>
           </div>
         </div>

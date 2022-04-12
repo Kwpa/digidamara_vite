@@ -1,0 +1,11 @@
+Had an error on the website - didn't know if it was because of lcoal storage or not:
+
+> learned that I can hook up my android phone to Andorid Debug Bridge!
+> https://raygun.com/blog/debug-android-chrome/
+> Had to install SDK for fairphone (number 29 - Android 10)
+> Had to set up developer options on phone
+> Had to use the right type of cable ;) usb c data not power cable needed
+> Learned to use CMD in the folder path bar to open .exe folder in console! use adb start-server
+> at chrome://inspect/#devices i could access the tabs via Chrome DevTools  
+ 
+

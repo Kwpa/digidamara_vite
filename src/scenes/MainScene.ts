@@ -166,6 +166,9 @@ export default class MainScene extends Phaser.Scene {
 
   preload() {
     //this.load.crossOrigin = "Anonymous";
+    let vh = window.innerHeight * 0.01;
+    // Then we set the value in the --vh custom property to the root of the document
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
     this.localState = new LocalGameState();
     this.localState.StartAppState();
     this.localState.UpdateAppState(AppState.LoadingScreen);

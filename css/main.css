@@ -221,6 +221,7 @@ position: relative;
 	overflow-x: hidden;
 	
 	height: calc(100vh - 370px);
+	height: calc(var(--vh, 1vh) * 100 - 395px);
 	margin-bottom: 15px;	
 }
 .popup-page-scroll-without-footer
@@ -229,6 +230,7 @@ position: relative;
 	overflow-x: hidden;
 	
 	height: calc(100vh - 330px);
+	height: calc(var(--vh, 1vh) * 100 - 355px);
 	margin-bottom: 20px;
 	
 }
