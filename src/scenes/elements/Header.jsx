@@ -9,35 +9,30 @@ const Header = () => {
           <div class="level-item has-text-centered">
             <span>
               <h1 class="heading has-text-centered has-text-white">Round</h1>
-              <img class="hdrftr-icon" src="/assets/white_icons/icon_day_white.png"></img>
+              <h1 id="round-header-value" class="title is-size-2 has-text-white">-</h1>
             </span>
             <span>
-              <h1 id="round-header-value" class="title is-size-2 has-text-white">-</h1>
             </span>
           </div>
           <div class="level-item has-text-centered">
             <span>
-              <h1 class="heading has-text-centered has-text-white">Action Points</h1>
-              <img class="hdrftr-icon" src="/assets/white_icons/icon_actionpoints_white.png"></img>
-            </span>
-            <span>
+              <h1 class="heading has-text-centered has-text-white">AP</h1>
+              <img class="hdrftr-icon" src="/assets/white_icons/icon_actionpoints_white.png" style="display:none"></img>
               <h1 id="ap-header-value" class="title is-size-2 has-text-white">-</h1>
             </span>
           </div>
           <div class="level-item has-text-centered">
             <span>
               <h1 class="heading has-text-centered has-text-white">Sparks</h1>
-              <img class="hdrftr-icon" src="/assets/white_icons/icon_sparks_white.png"></img>
-            </span>
-            <span>
+              <img class="hdrftr-icon" src="/assets/white_icons/icon_sparks_white.png" style="display:none"></img>
               <h1 id="sparks-header-value" class="title is-size-2 has-text-white">-</h1>
             </span>
           </div>
           <div class="level-item has-text-centered">
-            <span>
-              <h1 class="heading has-text-centered has-text-warning">Settings</h1>
-              <img class="hdrftr-icon" src="/assets/white_icons/icon_cog_white.png"></img>
-            </span>
+            <div id="help-header-button" class="has-background-dark" style="padding: 0px;">
+              <h1 class="heading has-text-centered has-text-white">Help</h1>
+              <img class="hdrftr-icon" src="/assets/white_icons/icon_help_white.png"></img>
+            </div>
           </div>
         </nav>
       </div>

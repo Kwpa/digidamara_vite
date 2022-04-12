@@ -27,4 +27,4 @@ Import-Csv "public\assets\csv\VideoContent.csv" | ConvertTo-Json | Set-Content -
 Invoke-WebRequest "https://docs.google.com/spreadsheets/d/1gdqnvbIQByJ_ukNYsLmbQBCnNSLgCzplQkRgaSPO72c/gviz/tq?tqx=out:csv&sheet=ChatChannels" -OutFile "public\assets\csv\ChatChannels.csv"
 Import-Csv "public\assets\csv\ChatChannels.csv" | ConvertTo-Json | Set-Content -Path "public\assets\json\ChatChannels.json"
 
-sftp -b ftp_scripts\sftpScript_jsonFiles.txt -P 18765 u1122-rivlkpske2gg@digidamara.com
+sftp -b ftp_scripts\sftpScript_jsonFiles.txt -P 18765 u1122-rivlkpske2gg@35.214.125.183

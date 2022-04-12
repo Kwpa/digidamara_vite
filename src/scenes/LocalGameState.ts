@@ -216,6 +216,12 @@ export default class LocalGameState
         return this.videoContentPosition;
     }
 
+    LatestVideoContent(activeVideoCount: number)
+    {
+        this.videoContentPosition = activeVideoCount-1;
+        return this.videoContentPosition;
+    }
+
     GainActionPoints(amount: number)
     {
         var newAmount = this.actionPoints + amount;  

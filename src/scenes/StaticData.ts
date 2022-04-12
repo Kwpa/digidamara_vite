@@ -208,7 +208,14 @@ export class VideoContentData
         this.id = videoContent.id;
         this.title = videoContent.title;
         this.youtubeId = videoContent.youtubeId;
-        this.active = videoContent.active;
+        if(videoContent.active == "TRUE")
+        {
+            this.active = true;
+        }
+        else
+        {
+            this.active = false;
+        }
       }
 }
 

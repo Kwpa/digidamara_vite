@@ -31,15 +31,26 @@ iframe {
 	padding: 20px 20px 20px 20px;
 }
 
-.video-player-overlay
+.video-player-buttons
 {
-	
+	margin-top: 15px;
 }
 
 .video-player-overlay-modal
 {
-	width: 100%;
-	margin: 0 0 0 0;
+	position: relative;
+	top: 50%;
+	float: none;
+	-webkit-transform: translateY(-50%);
+	transform: translateY(-50%);
+	width: calc(70%);
+	min-width: 380px;
+	min-height: 380px;
+}
+
+.video-badge, .chat-badge, .vote-badge
+{
+	display: none;
 }
 
 body {
@@ -57,12 +68,6 @@ body {
 padding-top: 120px;
 padding-bottom: 120px;
 height: 100%;
-}
-
-.ov-container {
-position: relative;
-width: 300px;
-height: calc(100vh - 240px);
 }
 
 .slide-down-button-container {
@@ -89,6 +94,47 @@ height: calc(100vh - 240px);
 {
 	vertical-align:middle;
 	pointer-events: none;
+}
+.energy-img
+{
+	vertical-align:middle;
+	pointer-events: none;
+	
+}
+.energy-donated-number
+{
+	display: none;
+	text-align: center;
+	height: 30px;
+}
+.team-progress-bar
+{
+	background: #696969;
+	margin-left: 35px;
+}
+.energy-img-container
+{
+	position: absolute;
+	left:0;
+	top:-5px;
+}
+.team-progress-container
+{
+	margin: 0 auto;	
+	margin-top: 10px;
+	padding-bottom: 0px;
+	position: relative;
+	width: 100%;
+}
+.team-panel
+{
+	border: 3px solid white;
+}
+.team-panel-block
+{
+	padding-bottom: 0px;
+	padding-top: 10px;
+	height: 45px;
 }
 
 .leaderboard-row
@@ -258,13 +304,24 @@ position: fixed;
 }
 
 .fixed-header {
-top: calc(-50vh + 55px);
+	left: 0;
+	top: 0;
 }
 
 .fixed-footer {
-bottom: calc(50vh - 55px);
+	left: 0;
+	bottom: 0;
+}
+.ov-container {
+	left: 0;
+	bottom: 75px;
+	width: 300px;
 }
 
+.team-eliminated
+{
+	margin: 0 auto;
+}
 .fixed-button-footer {
 width: auto;
 position: fixed;
@@ -526,10 +583,6 @@ width: 100%;
 .vote-container {
 height: 70%;
 width: 100%;
-}
-
-.avatar-overlay {
-top: 25vh;
 }
 
 button.accordian {

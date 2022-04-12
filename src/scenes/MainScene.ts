@@ -2,6 +2,8 @@ import Phaser, { Scene, Tweens } from 'phaser';
 import Header from './elements/Header';
 import Footer from './elements/Footer';
 import ChatPage from './elements/ChatPage';
+import HelpPage from './elements/HelpPage';
+import SettingsPage from './elements/SettingsPage';
 import ChatMessageOtherUser from './elements/ChatMessageOtherUser';
 import ChatMessageCurrentUser from './elements/ChatMessageCurrentUser';
 import NotificationHome from './elements/NotificationHome';
@@ -54,6 +56,9 @@ export default class MainScene extends Phaser.Scene {
   teamProfilePages!: Phaser.GameObjects.DOMElement[];
   chatPage!: Phaser.GameObjects.DOMElement;
   votePage!: Phaser.GameObjects.DOMElement;
+  leaderboardPage!: Phaser.GameObjects.DOMElement;
+  helpPage!: Phaser.GameObjects.DOMElement;
+  settingsPage!: Phaser.GameObjects.DOMElement;
   videoPlayerOverlay!: Phaser.GameObjects.DOMElement;
   session!: Session;
   client!: Client;
@@ -65,7 +70,6 @@ export default class MainScene extends Phaser.Scene {
   chatMessageContainer!: HTMLElement;
   storeMatchReferece!: StorageObjects;
 
-  leaderboardPage!: Phaser.GameObjects.DOMElement;
   slideDownButton!: Phaser.GameObjects.DOMElement;
   chatChannelOpen!: HTMLElement;
   chatChannels!: HTMLElement;
@@ -73,25 +77,25 @@ export default class MainScene extends Phaser.Scene {
   chatChannelTitle!: HTMLElement;
   chatChannelIcon!: HTMLImageElement;
   returnToChatChannelsButton!: HTMLElement;
-  settingsHeaderButton!: HTMLElement;
+  settingsFooterButton!: HTMLElement;
   chatFooterButton!: HTMLElement;
   leaderboardHeaderButton!: HTMLElement;
   voteFooterButton!: HTMLElement;
   videoFooterButton!: HTMLElement;
-  helpFootButton!: HTMLElement;
+  helpHeaderButton!: HTMLElement;
   closeSettingsPageButton!: HTMLElement;
   closeChatPageButton!: HTMLElement;
   closeChatChannelsPageButton!: HTMLElement;
   chatChannelContainer!: HTMLElement;
   closeVotePageButton!: HTMLElement;
-  closeVideoPageButton!: HTMLElement;
   closeHelpPageButton!: HTMLElement;
   closeVideoPlayerButton!: HTMLElement;
   playVideoPlayerButton!: HTMLElement;
   pauseVideoPlayerButton!: HTMLElement;
   loadNextVideoPlayerButton!: HTMLElement;
   loadPreviousVideoPlayerButton!: HTMLElement;
-
+  currentVideoTitle!: HTMLElement;
+  
   leaderboardRows!: HTMLElement[];
 
   roundCounter!: HTMLElement;
@@ -194,7 +198,7 @@ export default class MainScene extends Phaser.Scene {
 
   ShowVideo(scene: Scene, width: number, height: number, url: string) {
     this.rexVideoPlayer = scene.add.rexYoutubePlayer( //this does work, typescript def error :/
-      -width, -height, Math.min(Math.max(width*0.5, 360)), Math.min(Math.max(width*0.5*0.5625, 360*0.5625)),
+      -width, -height, Math.max(width*0.7, 360), Math.max((width*0.7*0.5625), 360*0.5625),
       {
         videoId: url,
         autoPlay: false
@@ -520,31 +524,35 @@ export default class MainScene extends Phaser.Scene {
     game.style.setProperty('position', 'absolute');
     game.style.setProperty('z-index', '-1');
 
-    const header = this.add.dom(this.width / 2, this.height / 2, Header() as HTMLElement);
-    const footer = this.add.dom(this.width / 2, this.height / 2, Footer() as HTMLElement);
+    const header = this.add.dom(this.width / 2, 55, Header() as HTMLElement);
+    const footer = this.add.dom(this.width / 2, 55, Footer() as HTMLElement);
     header.depth = this.depthLayers["headerFooter"];
     footer.depth = this.depthLayers["headerFooter"];
 
     this.videoPlayerOverlay = this.add.dom(this.width / 2, this.height / 2, VideoPlayerOverlay() as HTMLElement);
     this.videoPlayerOverlay.setDepth(this.depthLayers["videoPlayer"]);
     this.votePage = this.add.dom(this.width / 2, this.height / 2, VotingPage() as HTMLElement);
+    this.helpPage = this.add.dom(this.width / 2, this.height / 2, HelpPage() as HTMLElement);
+    this.settingsPage = this.add.dom(this.width / 2, this.height / 2, SettingsPage() as HTMLElement);
     const slideDownButton = this.add.dom(this.width / 2, this.height / 2, SlideDownButton() as HTMLElement);
     slideDownButton.depth = this.depthLayers["slideDownButton"];
 
     this.leaderboardPage = this.add.dom(this.width / 2, this.height / 2, LeaderboardPage() as HTMLElement);
     this.notificationHome = this.add.dom(this.width / 2, 190, NotificationHome('', '') as HTMLElement);
-    this.avatarOverlay = this.add.dom(this.width / 2, this.height / 2, AvatarOverlay('open') as HTMLElement);
+    this.avatarOverlay = this.add.dom(this.width / 2, 0, AvatarOverlay('open') as HTMLElement);
     this.overlayProgressBar = this.avatarOverlay.getChildByID("teamEnergyBar") as HTMLInputElement;
     this.overlayProgressContainer = this.avatarOverlay.getChildByID("teamProgressContainer") as HTMLInputElement;
     this.overlayEliminated = this.avatarOverlay.getChildByID("teamEliminated") as HTMLInputElement;
     this.videoPlayerContainer = this.videoPlayerOverlay.getChildByID("video-player") as HTMLElement;
-
+    this.currentVideoTitle = this.videoPlayerOverlay.getChildByID("video-player-overlay-title") as HTMLElement;
     this.leaderboardPage.depth = this.depthLayers["slideDownPage"];;
     this.leaderboardPage.setY(-10000);
     this.avatarOverlay.setVisible(false);
     this.videoPlayerOverlay.setVisible(false);
     this.notificationHome.setVisible(false);
     this.votePage.setVisible(false);
+    this.helpPage.setVisible(false);
+    this.settingsPage.setVisible(false);
 
     //audio
     this.danceFloorAudioOne = this.sound.add('danceFloorAudioOne', {
@@ -563,7 +571,8 @@ export default class MainScene extends Phaser.Scene {
     this.chatFooterButton = footer.getChildByID('chat-footer-button') as HTMLElement;
     this.videoFooterButton = footer.getChildByID('video-footer-button') as HTMLElement;
     this.voteFooterButton = footer.getChildByID('vote-footer-button') as HTMLElement;
-    this.closeVideoPageButton = this.videoPlayerOverlay.getChildByID('close-video-page-button') as HTMLElement;
+    this.helpHeaderButton = header.getChildByID('help-header-button') as HTMLElement;
+    this.settingsFooterButton = footer.getChildByID('settings-footer-button') as HTMLElement;
     this.closeVotePageButton = this.votePage.getChildByID('close-voting-page-button') as HTMLElement;
     this.voteContainer = this.votePage.getChildByID('vote-container') as HTMLElement;
     this.closeVideoPlayerButton = this.videoPlayerOverlay.getChildByID('video-overlay-button-close') as HTMLElement;
@@ -572,7 +581,8 @@ export default class MainScene extends Phaser.Scene {
     this.loadNextVideoPlayerButton = this.videoPlayerOverlay.getChildByID('video-player-button-next') as HTMLElement;
     this.loadPreviousVideoPlayerButton = this.videoPlayerOverlay.getChildByID('video-player-button-previous') as HTMLElement;
     this.leaderboardHeaderButton = slideDownButton.getChildByID('leaderboard-header-button') as HTMLElement;
-
+    this.closeHelpPageButton = this.helpPage.getChildByID('close-help-page-button') as HTMLElement;
+    this.closeSettingsPageButton = this.settingsPage.getChildByID('close-settings-page-button') as HTMLElement;
     this.avatarOverlayButton = this.avatarOverlay.getChildByID('openProfile') as HTMLElement;
 
     this.voteFooterButton.onclick = () => {
@@ -580,7 +590,35 @@ export default class MainScene extends Phaser.Scene {
       this.tapAreaLeft.removeInteractive();
       this.tapAreaRight.removeInteractive();
     }
+    this.settingsFooterButton.onclick = () => {
+      this.SetPage("settingsPage");
+      this.tapAreaLeft.removeInteractive();
+      this.tapAreaRight.removeInteractive();
+    }
+    this.helpHeaderButton.onclick = () => {
+      this.SetPage("helpPage");
+      this.tapAreaLeft.removeInteractive();
+      this.tapAreaRight.removeInteractive();
+    }
+    this.videoFooterButton.onclick = () => {
+      this.SetPage("videoOverlay");
+      this.FadeOutDanceFloorAudio();
+      this.tapAreaLeft.removeInteractive();
+      this.tapAreaRight.removeInteractive();
+    }
     this.closeVideoPlayerButton.onclick = () => {
+      this.FadeInDanceFloorAudioOne();
+      this.PauseCurrentVideo();
+      this.SetPage("avatarOverlay");
+      this.tapAreaLeft.setInteractive();
+      this.tapAreaRight.setInteractive();
+    }
+    this.closeHelpPageButton.onclick = () => {
+      this.SetPage("avatarOverlay");
+      this.tapAreaLeft.setInteractive();
+      this.tapAreaRight.setInteractive();
+    }
+    this.closeSettingsPageButton.onclick = () => {
       this.SetPage("avatarOverlay");
       this.tapAreaLeft.setInteractive();
       this.tapAreaRight.setInteractive();
@@ -792,6 +830,21 @@ export default class MainScene extends Phaser.Scene {
     );
   }
 
+  FadeOutDanceFloorAudio() {
+    this.tweens.add({
+      targets: this.danceFloorAudioOne,
+      volume: 0,
+      duration: 400
+    },
+    );
+    this.tweens.add({
+      targets: this.danceFloorAudioTwo,
+      volume: 0,
+      duration: 400
+    },
+    );
+  }
+
   GetListOfActiveVideos() {
     var listOfActiveVideos: string[] = [];
     this.staticData.videoContent.forEach((videoContent) => {
@@ -805,6 +858,7 @@ export default class MainScene extends Phaser.Scene {
   NextVideo() {
     var list = this.GetListOfActiveVideos();
     var index = this.localState.RollVideoContent(1, list.length);
+    this.currentVideoTitle.innerHTML = this.staticData.videoContent[index].title;
     this.LoadCurrentVideo(index, list);
   }
 
@@ -815,6 +869,7 @@ export default class MainScene extends Phaser.Scene {
   PreviousVideo() {
     var list = this.GetListOfActiveVideos();
     var index = this.localState.RollVideoContent(-1, list.length);
+    this.currentVideoTitle.innerHTML = this.staticData.videoContent[index].title;
     this.LoadCurrentVideo(index, list);
   }
 
@@ -2302,7 +2357,12 @@ export default class MainScene extends Phaser.Scene {
           await this.CloseNotification(id);
         };
         watchLatestVideoButton.onclick = async () => {
+          this.FadeOutDanceFloorAudio();
           await this.CloseNotification(id);
+          var list = this.GetListOfActiveVideos();
+          this.localState.LatestVideoContent(list.length);
+          this.currentVideoTitle.innerHTML = this.staticData.videoContent[this.localState.videoContentPosition].title;
+          this.LoadCurrentVideo(this.localState.videoContentPosition, list);
           this.SetPage("videoOverlay");
         };
         viewFanClubChat.onclick = async () => {
@@ -2317,34 +2377,35 @@ export default class MainScene extends Phaser.Scene {
         };
       }
     }
-
   }
 
   SetPage(pageName: string) {
     switch (pageName) {
       case "votePage":
-        this.SetActiveOnPages(true, false, false, false, false);
+        this.SetActiveOnPages(true, false, false, false, false, false, false);
         break;
       case "chatPage":
-        this.SetActiveOnPages(false, true, false, false, false);
+        this.SetActiveOnPages(false, true, false, false, false, false, false);
         break;
       case "videoOverlay":
-        this.SetActiveOnPages(false, false, true, false, false);
+        this.SetActiveOnPages(false, false, true, false, false, false, false);
         break;
       case "avatarOverlay":
-        this.SetActiveOnPages(false, false, false, true, false);
+        this.SetActiveOnPages(false, false, false, true, false, false, false);
         break;
       case "teamProfile":
-        this.SetActiveOnPages(false, false, false, false, true);
+        this.SetActiveOnPages(false, false, false, false, true, false, false);
         break;
       case "helpPage":
+        this.SetActiveOnPages(false, false, false, false, false, true, false);
         break;
       case "settingsPage":
+        this.SetActiveOnPages(false, false, false, false, false, false, true);
         break;
     }
   }
 
-  SetActiveOnPages(votePage: boolean, chatPage: boolean, videoOverlay: boolean, avatarOverlay: boolean, teamProfile: boolean) {
+  SetActiveOnPages(votePage: boolean, chatPage: boolean, videoOverlay: boolean, avatarOverlay: boolean, teamProfile: boolean, helpPage: boolean, settingsPage: boolean) {
     this.votePage.setVisible(votePage);
     this.chatPage.setVisible(chatPage);
     this.videoPlayerOverlay.setVisible(videoOverlay);
@@ -2368,6 +2429,9 @@ export default class MainScene extends Phaser.Scene {
         }
       )
     }
+
+    this.helpPage.setVisible(helpPage);
+    this.settingsPage.setVisible(settingsPage);
 
   }
 

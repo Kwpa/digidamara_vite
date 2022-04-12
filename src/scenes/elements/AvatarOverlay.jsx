@@ -2,29 +2,27 @@ import { h } from 'start-dom-jsx';
 
 const AvatarOverlay = (avatarName, id) => {
   return (
-    <div>
-      <div class="ov-container">
-        <div style="width: inherit;">
-          <div id="avatar-overlay-ui" style="position: absolute; bottom: 20px; width: inherit;">
-            <div class="level box has-background-dark" style="padding: 0 0 0 0; border-style: solid; border-color: white;">
-              <div id="teamProgressContainer" class="level-item">
-                <img src="/assets/images/heart.png" width="50px" height="50px"></img>
-                <progress id="teamEnergyBar" class="progress is-warning" value="30" max="100" style="background: #696969;">30%</progress>
-              </div>
-              <div id="teamEliminated" class="level-item">
-                <div class="message has-text-centered is-danger">
-                  <div class="message-body">
-                    <p class="title"> 
-                    Eliminated!
-                    </p>
-                  </div>
-                </div>
-              </div>
+
+    <div class="ov-container">
+      <div id="avatar-overlay-ui">
+        <div class="panel is-primary team-panel">
+          <button id="openProfile" class="button is-fullwidth has-text-centered panel-heading">
+            {avatarName}
+          </button>
+          <div class="panel-block has-background-dark team-panel-block" style="margin-bottom: 0px">
+            <div id="teamEliminated" class="has-text-centered has-background-danger team-eliminated" >
+                <p>
+                  Eliminated!
+                </p>
             </div>
-            <div class="level">
-              <div class="level-item">
-                <button id="openProfile" class="button is-primary">{avatarName}</button>
+            <div id="teamProgressContainer" class="team-progress-container">
+              <div class="energy-img-container">
+                <img class="energy-img" src="/assets/white_icons/icon_energy_white_32.png"></img>
               </div>
+              <progress id="teamEnergyBar" class="progress is-warning team-progress-bar" value="30" max="100">30%</progress>
+              <span class="energy-donated-number">
+                10/100
+              </span>
             </div>
           </div>
         </div>

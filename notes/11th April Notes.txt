@@ -1,0 +1,18 @@
+Flexible 
+Nakama is not secure
+Console app
+
+uses workers (hidden) generating code to do things we could write
+
+we could use a secure tunnel from the middle service thru to the vm
+
+utlitiy scripts made to run server 
+
+start 
+run server, send log to log file
+get processid
+kill - processId
+
+systemctl vs systemd linux (depnds on distribution) create service 
+
+docker starts nakama automatically
