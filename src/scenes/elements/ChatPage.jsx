@@ -2,7 +2,8 @@ import { h } from 'start-dom-jsx';
 
 const ChatPage = () => {
   return (
-    <div>
+    
+
       <div class="popup-page">
         <div class="box popup-box-wrapper">
           <div id="chat-channel-open" style="display: none;">
@@ -44,8 +45,8 @@ const ChatPage = () => {
           </div>
         </div>
       </div>
-    </div>
   )
 }
+    
 
 export default ChatPage

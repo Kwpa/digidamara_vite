@@ -187,16 +187,6 @@ height: 100%;
 	width: fit-content;
 }
 
-.vp-container {
-position: relative;
-width: 500px;
-height: calc(100vh - 240px);
-}
-.ch-container {
-position: relative;
-width: 100vw;
-height: calc(100vh - 240px);
-}
 .chat-page {
 width: 100%;
 height: 100%;
@@ -205,11 +195,18 @@ margin: auto;
 position: relative;
 }
 .popup-page {	
-	display: flex;
-	height: calc(100vh - 220px);
-	width:100vw;
+	
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	width: 100%;
+}
+.popup-box-wrapper
+{
 	max-width: 700px;
 	margin: 0 auto;
+	height: 100%;
+	position: relative;
 }
 .popup-page-leaderboard {	
 	display: flex;
@@ -217,11 +214,6 @@ position: relative;
 	width:100vw;
 	max-width: 700px;
 	margin: 0 auto;
-}
-.popup-box-wrapper
-{
-	height: inherit;
-	width: inherit;
 }
 .popup-page-scroll-with-footer
 {
@@ -283,7 +275,8 @@ width: calc(100% - 120px);
 }
 
 .chat-channel-button-return{
-	margin-right: 90px;
+	
+	margin-right: 20px;
 }
 
 .chat-submit-button {
@@ -313,6 +306,7 @@ position: fixed;
 	bottom: 0;
 }
 .ov-container {
+	position: fixed;
 	left: 0;
 	bottom: 75px;
 	width: 300px;
@@ -424,6 +418,7 @@ margin: auto;
 
 .chat-channel-container
 {
+	display: none;
 	position: absolute;
 	top:10px;
 	left: 80px;
@@ -576,11 +571,6 @@ width: fit-content
 }
 
 .video-container {
-height: 70%;
-width: 100%;
-}
-
-.vote-container {
 height: 70%;
 width: 100%;
 }

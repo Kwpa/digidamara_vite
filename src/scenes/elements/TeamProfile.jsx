@@ -2,7 +2,7 @@ import { h } from 'start-dom-jsx';
 
 const TeamProfile = (teamData) => {
   return (
-    <div>
+    
       <div class="popup-page">
         <div class="box popup-box-wrapper">
           <nav class="level is-mobile">
@@ -132,7 +132,7 @@ const TeamProfile = (teamData) => {
           </div>
         </div>
       </div>
-    </div>
+    
   )
 }
 

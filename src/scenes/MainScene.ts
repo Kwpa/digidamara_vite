@@ -531,9 +531,9 @@ export default class MainScene extends Phaser.Scene {
 
     this.videoPlayerOverlay = this.add.dom(this.width / 2, this.height / 2, VideoPlayerOverlay() as HTMLElement);
     this.videoPlayerOverlay.setDepth(this.depthLayers["videoPlayer"]);
-    this.votePage = this.add.dom(this.width / 2, this.height / 2, VotingPage() as HTMLElement);
-    this.helpPage = this.add.dom(this.width / 2, this.height / 2, HelpPage() as HTMLElement);
-    this.settingsPage = this.add.dom(this.width / 2, this.height / 2, SettingsPage() as HTMLElement);
+    this.votePage = this.add.dom(0, 0, VotingPage() as HTMLElement);
+    this.helpPage = this.add.dom(0, 0, HelpPage() as HTMLElement);
+    this.settingsPage = this.add.dom(0, 0, SettingsPage() as HTMLElement);
     const slideDownButton = this.add.dom(this.width / 2, this.height / 2, SlideDownButton() as HTMLElement);
     slideDownButton.depth = this.depthLayers["slideDownButton"];
 
@@ -1422,10 +1422,10 @@ export default class MainScene extends Phaser.Scene {
   }
 
   async SetupChatChannelsAndPages() {
-    this.teamProfilePages = [];
+    
     let { width, height } = this.sys.game.canvas;
 
-    this.chatPage = this.add.dom(width / 2, height / 2, ChatPage() as HTMLElement);
+    this.chatPage = this.add.dom(0, 0, ChatPage() as HTMLElement);
     this.chatPage.setVisible(false);
     this.chatChannelOpen = document.getElementById('chat-channel-open') as HTMLElement;
     this.chatChannels = document.getElementById('chat-channels') as HTMLElement;
@@ -1601,7 +1601,7 @@ export default class MainScene extends Phaser.Scene {
         var title = team.id as string;
 
         const data = { name: team.title, biography: team.biography };
-        const teamProfile = this.add.dom(width / 2, height / 2, TeamProfile(data) as HTMLElement);
+        const teamProfile = this.add.dom(0, 0, TeamProfile(data) as HTMLElement);
         const teamIcon = teamProfile.getChildByID('team-icon') as HTMLElement;
         teamIcon.classList.add(team.iconId);
         const container = teamProfile.getChildByID('story-container') as HTMLElement;
