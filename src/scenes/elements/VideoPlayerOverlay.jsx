@@ -5,18 +5,24 @@ const VideoPlayerOverlay = (avatarName, id) => {
     <div class="modal video-player-overlay">
       <div class="modal-background"></div>
       <div class="modal-content video-player-overlay-modal">
-        <div class="box">
-        <nav class="level is-mobile">
+        <div class="box" style="position: relative;">
+          <nav class="level is-mobile">
             <div class="level-left">
               <div class="level-item has-text-centered">
                 <span>
                   <h1 id="video-player-overlay-title" class="title has-text-black">Video Content</h1>
                 </span>
-                
+
               </div>
             </div>
           </nav>
+          <div style="position: absolute; right:7px; top: 17px;">
+            <img id="video-overlay-button-close" class="hdrftr-icon" src="/assets/black_icons/icon_cross_black.png" style=""></img>
+          </div>
           <div id="video-player" class="iframe-container">
+          </div>
+          <div>
+            <h1 class="subtitle is-5">Please use Youtube's Fullscreen Mode + Headphones</h1>
           </div>
           <div class="level is-mobile video-player-buttons">
             <div class="level-item">
@@ -42,7 +48,6 @@ const VideoPlayerOverlay = (avatarName, id) => {
           </div>
         </div>
       </div>
-      <button id="video-overlay-button-close" class="modal-close is-large" aria-label="close"></button>
     </div>
   )
 }
