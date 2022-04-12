@@ -7,38 +7,26 @@
     },
     {
         "id":  "vc_002",
-        "title":  "Vote 1 Video",
+        "title":  "Day One Roundup",
         "youtubeId":  "_X3HzUjptvc",
         "active":  "TRUE"
     },
     {
         "id":  "vc_003",
-        "title":  "Vote 2 Video",
+        "title":  "Day Two Roundup",
         "youtubeId":  "wVVr4Jq_lMI",
         "active":  "FALSE"
     },
     {
         "id":  "vc_004",
-        "title":  "Vote 3 Video",
+        "title":  "Day Three Roundup",
         "youtubeId":  "_X3HzUjptvc",
-        "active":  "FALSE"
-    },
-    {
-        "id":  "vc_005",
-        "title":  "Vote 4 Video",
-        "youtubeId":  "wVVr4Jq_lMI",
         "active":  "FALSE"
     },
     {
         "id":  "vc_006",
         "title":  "The Twist Video",
         "youtubeId":  "_X3HzUjptvc",
-        "active":  "FALSE"
-    },
-    {
-        "id":  "vc_007",
-        "title":  "Vote 5 Video",
-        "youtubeId":  "wVVr4Jq_lMI",
         "active":  "FALSE"
     },
     {
