@@ -2,8 +2,6 @@ import { h } from 'start-dom-jsx';
 
 const ChatPage = () => {
   return (
-    
-
       <div class="popup-page">
         <div class="box popup-box-wrapper">
           <div id="chat-channel-open" style="display: none;">
@@ -14,12 +12,12 @@ const ChatPage = () => {
                   <div class="chat-channel-container" id="channel-icon-container">
                     <img id="channel-icon"></img>
                   </div>
-                  <button id="chat-channel-button-return" class="button is-warning chat-channel-button-return">&lt;</button>
+                  <button id="chat-channel-button-return" class="button is-primary chat-channel-button-return">&lt;</button>
                   <h1 id="chat-channel-title" class="title has-text-black">Chat</h1>
                 </div>
               </div>
             </nav>
-            <div style="position: absolute; right:7px; top: 7px;">
+            <div style="position: absolute; right:7px; top: 37px;">
               <img id="close-chat-page-button" class="hdrftr-icon" src="/assets/black_icons/icon_cross_black.png" style=""></img>
             </div>
               <div id="chat-container" class="popup-page-scroll-with-footer">
@@ -37,7 +35,7 @@ const ChatPage = () => {
                 </div>
               </div>
             </nav>
-            <div style="position: absolute; right:7px; top: 7px;">
+            <div style="position: absolute; right:7px; top: 37px;">
               <img id="close-chat-channels-page-button" class="hdrftr-icon" src="/assets/black_icons/icon_cross_black.png" style=""></img>
             </div>
             <div id="chat-channel-container" class="popup-page-scroll-without-footer">

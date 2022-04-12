@@ -11,10 +11,10 @@ const SettingsPage = () => {
             </div>
           </div>
         </nav>
-        <div style="position: absolute; right:7px; top: 7px;">
+        <div style="position: absolute; right:7px; top: 37px;">
           <img id="close-settings-page-button" class="hdrftr-icon" src="/assets/black_icons/icon_cross_black.png" style=""></img>
         </div>
-        <div class="popup-page-scroll-with-footer">
+        <div class="popup-page-scroll-without-footer">
         </div>
       </div>
     </div>

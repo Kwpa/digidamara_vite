@@ -21,7 +21,7 @@ const VideoPlayerOverlay = (avatarName, id) => {
           <div class="level is-mobile video-player-buttons">
             <div class="level-item">
               <button id="video-player-button-previous" class="button is-warning">
-                Previous
+                Prev
               </button>
             </div>
             <div class="level-item">

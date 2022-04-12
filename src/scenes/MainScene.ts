@@ -201,7 +201,7 @@ export default class MainScene extends Phaser.Scene {
 
   ShowVideo(scene: Scene, width: number, height: number, url: string) {
     this.rexVideoPlayer = scene.add.rexYoutubePlayer( //this does work, typescript def error :/
-      -width, -height, Math.max(width*0.7, 360), Math.max((width*0.7*0.5625), 360*0.5625),
+      -width, -height, Math.min(Math.max(width*0.7, 360),1000), Math.min(Math.max((width*0.7*0.5625), 360*0.5625),562),
       {
         videoId: url,
         autoPlay: false
@@ -321,25 +321,30 @@ export default class MainScene extends Phaser.Scene {
 
 
   SetupLeaderboardForMouse() {
-    this.leaderboardHeaderButton.addEventListener("mousedown", () => {
+    /* this.leaderboardHeaderButton.addEventListener("mousedown", () => {
       console.log("mousedown");
       addEventListener("mousemove", this.onDrag);
     });
-
-    //this.SetupClickSlideDownButton();
 
     addEventListener("mouseup", () => {
       console.log("mouseup");
       removeEventListener("mousemove", this.onDrag);
       this.SetPositionOfLeaderBoardAndSlideDownButton();
-    });
+    }); */
+
+    this.leaderboardHeaderButton.onclick = () => {
+
+      this.SetPositionOfLeaderBoardAndSlideDownButton()
+    }
   }
 
+
+
   onFirstMouseDown(e: MouseEvent) {
-    console.log("touch = " + this.IS_TOUCH);
+    /* console.log("touch = " + this.IS_TOUCH);
 
     this.IS_TOUCH = 1 as number;
-    this.SetupLeaderboardForMouse();
+    this.SetupLeaderboardForMouse(); */
   }
 
   SetupLeaderboardForTouch() {
@@ -356,12 +361,12 @@ export default class MainScene extends Phaser.Scene {
   }
 
   onFirstTouchDown(e: TouchEvent) {
-    if (this.IS_TOUCH == 0) {
+    /* if (this.IS_TOUCH == 0) {
       this.IS_TOUCH = 2;
       this.SetupLeaderboardForTouch();
       window.removeEventListener('touchstart', this.onFirstTouchDown);
       window.removeEventListener('mousedown', this.onFirstMouseDown);
-    }
+    } */
   }
 
   SetupClickSlideDownButton() {
@@ -403,32 +408,32 @@ export default class MainScene extends Phaser.Scene {
   SetPositionOfLeaderBoardAndSlideDownButton() {
     console.log("leaderboard is open? " + this.leaderboardIsOpen + ", Y? " + this.storeMouseYPosition + ", Height? " + this.height);
     if (!this.leaderboardIsOpen) {
-      if (this.storeMouseYPosition > this.height / 2) {
+      //if (this.storeMouseYPosition > this.height / 2) {
         console.log("OpenTheLeaderBoard");
         this.leaderboardPage.setY(this.height / 2 - 16);
         this.leaderboardHeaderButton.style.top = "calc(100vh - 258px)";
         this.leaderboardIsOpen = true;
-      }
+      /* }
       else {
         console.log("KeepClosed");
         this.leaderboardPage.setY(-10000);
         this.leaderboardHeaderButton.style.top = "0px";
         this.leaderboardIsOpen = false;
-      }
+      } */
     }
     else {
-      if (this.storeMouseYPosition > this.height / 2) {
+      /* if (this.storeMouseYPosition > this.height / 2) {
         console.log("KeepOpen");
         this.leaderboardPage.setY(this.height / 2 - 16);
         this.leaderboardHeaderButton.style.top = "calc(100vh - 258px)";
         this.leaderboardIsOpen = true;
       }
-      else {
+      else { */
         console.log("CloseTheLeaderboard");
         this.leaderboardPage.setY(-10000);
         this.leaderboardHeaderButton.style.top = "0px";
         this.leaderboardIsOpen = false;
-      }
+      //}
     }
   }
 
@@ -877,7 +882,12 @@ export default class MainScene extends Phaser.Scene {
   }
 
   PlayCurrentVideo() {
-    this.rexVideoPlayer.play();
+    /* var playeriFrame = document.querySelectorAll('iframe')[0];
+    var requestFullScreen = playeriFrame.requestFullscreen || playeriFrame.mozRequestFullScreen || playeriFrame.webkitRequestFullscreen;
+    if (requestFullScreen) {
+      requestFullScreen.bind(playeriFrame)();
+    } */
+      this.rexVideoPlayer.play();
   }
 
   PauseCurrentVideo() {
