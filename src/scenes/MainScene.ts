@@ -1910,7 +1910,7 @@ export default class MainScene extends Phaser.Scene {
 
   async RefreshChat() //TODO
   {
-    await this.ReloadGroupChat(this.localState.GetCurrentChatChannelGroupId() as string);
+    await this.ReloadGroupChat(this.localState.currentChatChannel);
   }
 
   async SetupTeamAvatars() {
@@ -2746,6 +2746,8 @@ export default class MainScene extends Phaser.Scene {
   async CreateChatMessages(chatId: string) {
     var forward = true;
     var channelId = "3." + this.localState.chatChannels[chatId] + "..";
+    this.localState.chatChannels
+    console.log(chatId + "" + this.localState.chatChannels[chatId]);
     var result: ChannelMessageList = await this.client.listChannelMessages(this.session, channelId, 50, forward);
 
     if (result.messages?.length != 0) {
