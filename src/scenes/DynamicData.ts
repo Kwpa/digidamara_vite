@@ -10,6 +10,7 @@ export default class DynamicData
     constructor(teams,user,round, votes){
         this.dynamicTeamsState = teams;
         this.dynamicUserState = user;
+        
         this.dynamicRoundState = round;
         this.dynamicVoteScenariosState = votes;
     }

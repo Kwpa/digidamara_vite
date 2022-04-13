@@ -116,8 +116,7 @@ const TeamProfile = (teamData) => {
                 <div style="flex: 1; margin-right: 20px;">
                   <div class="divider">Biography</div>
                   <div class="box">
-                    <div class="content">
-                      {teamData.biography}
+                    <div id="team-profile-content" class="content">
                     </div>
                   </div>
                 </div>

@@ -17,6 +17,7 @@ const VotingPage = (voteData) => {
         </div>
         <div id="vote-container" class="popup-page-scroll-without-footer">
         </div>
+        
       </div>
     </div>
 

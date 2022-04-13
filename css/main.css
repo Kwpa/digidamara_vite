@@ -127,7 +127,8 @@ height: 100%;
 	position: relative;
 	width: 100%;
 }
-.team-panel
+.team-panel,
+.notification-top
 {
 	border: 3px solid white;
 }

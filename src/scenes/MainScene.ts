@@ -112,6 +112,7 @@ export default class MainScene extends Phaser.Scene {
   overlayProgressContainer!: HTMLElement;
   overlayEliminated!: HTMLElement;
   voteContainer!: HTMLElement;
+  voteDynamicContainer!: HTMLElement;
   avatarOverlay!: Phaser.GameObjects.DOMElement;
   videoPlayerContainer!: HTMLElement;
   notificationHome!: Phaser.GameObjects.DOMElement;
@@ -583,6 +584,7 @@ export default class MainScene extends Phaser.Scene {
     this.settingsFooterButton = footer.getChildByID('settings-footer-button') as HTMLElement;
     this.closeVotePageButton = this.votePage.getChildByID('close-voting-page-button') as HTMLElement;
     this.voteContainer = this.votePage.getChildByID('vote-container') as HTMLElement;
+    this.voteDynamicContainer = this.votePage.getChildByID('vote-dynamic-container') as HTMLElement;
     this.closeVideoPlayerButton = this.videoPlayerOverlay.getChildByID('video-overlay-button-close') as HTMLElement;
     this.playVideoPlayerButton = this.videoPlayerOverlay.getChildByID('video-player-button-play') as HTMLElement;
     this.pauseVideoPlayerButton = this.videoPlayerOverlay.getChildByID('video-player-button-pause') as HTMLElement;
@@ -764,6 +766,7 @@ export default class MainScene extends Phaser.Scene {
 
   async CallNotificationsForTheDay() {
     var todaysNotifications = this.staticData.notifications.filter(p => p.round == this.localState.round);
+    todaysNotifications = todaysNotifications.filter(p => p.type == "arrivetoday");
     console.log("**** round: " + this.localState.round + " todaysnotifications: " + todaysNotifications.length);
 
     var orderedNotifications = todaysNotifications.sort(
@@ -773,9 +776,10 @@ export default class MainScene extends Phaser.Scene {
     );
 
     var notificationsState = await this.ReadFromDDMLocalStorage("notificationsState");
-
+    
     orderedNotifications.forEach(
       (notification) => {
+        console.log("notification: " + notification.id);
         var seen = notificationsState[notification.id].seen;
         if (seen == false) {
           this.dailyNotificationTotal++;
@@ -1053,6 +1057,7 @@ export default class MainScene extends Phaser.Scene {
       this.staticData.notifications.forEach(
         (notification) => {
           if (notification.type == "arrivetoday") {
+            console.log(notification.id);
             nTrig[notification.id] = { seen: false };
           }
         }
@@ -1297,13 +1302,23 @@ export default class MainScene extends Phaser.Scene {
     this.GetSystemUsers();
     //}
 
-    //store and reload action points from localstorage
-
+    
     var actionPoints = await this.ReadFromDDMLocalStorageNumber("actionPoints");
     var sparks = await this.ReadFromDDMLocalStorageNumber("sparks");
-
+    
     this.localState.Init(username, this.dynamicData.dynamicRoundState.round, actionPoints, 5, sparks, this.dynamicData.dynamicRoundState.energyRequirement, teamIdList, voteStateList, teamStateList);
+    
+    if (this.localState.UpdateFromDynamicData(roundDynamic)) {
+      await this.WriteToDDMLocalStorage(["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
+      //trigger new round
 
+      await this.TriggerNewRound();
+
+    }
+    else {
+      await this.WriteToDDMLocalStorage(["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
+    }
+    
     this.actionPointsCounter.innerHTML = (await this.ReadFromDDMLocalStorageNumber("actionPoints")).toString();
     this.sparksCounter.innerHTML = (await this.ReadFromDDMLocalStorageNumber("sparks")).toString();
     this.roundCounter.innerHTML = this.localState.round.toString();
@@ -1352,11 +1367,22 @@ export default class MainScene extends Phaser.Scene {
     if (this.localState.UpdateFromDynamicData(roundDynamic)) {
       await this.WriteToDDMLocalStorage(["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
       //trigger new round
+
+      await this.TriggerNewRound();
+      this.CallNotificationsForTheDay();
+
     }
     else {
       await this.WriteToDDMLocalStorage(["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
     }
 
+  }
+
+  async TriggerNewRound()
+  {
+      this.localState.SetActionPointsToMax();
+      this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
+      await this.WriteToDDMLocalStorage(["actionPoints", "firstVisitTodayWithCurtainsOpen"], [this.localState.maxActionPoints, true]);      
   }
 
   async SetupVotePage(socket: Socket) {
@@ -1615,6 +1641,8 @@ export default class MainScene extends Phaser.Scene {
 
         const data = { name: team.title, biography: team.biography };
         const teamProfile = this.add.dom(0, 0, TeamProfile(data) as HTMLElement);
+        var content = teamProfile.getChildByID("team-profile-content") as HTMLElement;
+        content.innerHTML = team.biography;
         const teamIcon = teamProfile.getChildByID('team-icon') as HTMLElement;
         teamIcon.classList.add(team.iconId);
         const container = teamProfile.getChildByID('story-container') as HTMLElement;

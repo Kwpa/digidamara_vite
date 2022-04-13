@@ -159,12 +159,6 @@ export default class LocalGameState
         return this.teamStates[this.carouselPosition];
     }
 
-    GetRound()
-    {
-        this.round = 2;
-        return this.round;
-    }
-
     HaveSparks()
     {
         if(this.sparksAwarded > 0)
