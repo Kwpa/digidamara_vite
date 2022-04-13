@@ -2376,7 +2376,7 @@ export default class MainScene extends Phaser.Scene {
 
               break;
 
-            default:
+            case "none":
               watchLatestVideoButton.style.display = "none";
               viewFanClubChat.style.display = "none";
               viewTodaysVoteButton.style.display = "none";
@@ -2386,6 +2386,9 @@ export default class MainScene extends Phaser.Scene {
         else {
           nextButton.style.display = "block";
           closeButton.style.display = "none";
+          watchLatestVideoButton.style.display = "none";
+              viewFanClubChat.style.display = "none";
+              viewTodaysVoteButton.style.display = "none";
         }
 
         this.notificationHome.depth = this.depthLayers["notifications"];
