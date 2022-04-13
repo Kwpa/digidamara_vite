@@ -5,12 +5,12 @@
         "round":  "1",
         "order":  "0",
         "delay":  "1",
-        "buttonType":  "none",
-        "character":  "THE PROMOTER",
-        "iconPath":  "icon_thepromoter",
-        "title":  "Introduction",
-        "showTitle":  "FALSE",
-        "content":  "Welcome back to Digidamara - who will YOU choose to birth the new universe?!\nYour final 6 teams need energy to keep dancing! \nThe team with the lowest energy at the end of each day will be eliminated!",
+        "buttonType":  "watch_latest_video",
+        "character":  "SPACE STATION",
+        "iconPath":  "icon_thespacestation",
+        "title":  "Intro",
+        "showTitle":  "TRUE",
+        "content":  "Space Station here! Please watch this introductory broadcast!",
         "encryption":  "0"
     },
     {
@@ -20,18 +20,32 @@
         "order":  "1",
         "delay":  "1",
         "buttonType":  "none",
-        "character":  "SPACE STATION ",
+        "character":  "THE PROMOTER",
         "iconPath":  "icon_thepromoter",
+        "title":  "Welcome",
+        "showTitle":  "TRUE",
+        "content":  "Welcome back to Digidamara - who will YOU choose to birth the new universe?!\nYour final 6 teams need energy to keep dancing! \nThe team with the lowest energy at the end of each day will be eliminated!",
+        "encryption":  "0"
+    },
+    {
+        "id":  "n_003",
+        "type":  "arrivetoday",
+        "round":  "1",
+        "order":  "2",
+        "delay":  "1",
+        "buttonType":  "none",
+        "character":  "SPACE STATION",
+        "iconPath":  "icon_thespacestation",
         "title":  "How to Play",
         "showTitle":  "TRUE",
         "content":  "Thank you for joining us Spectators.\nYou can donate energy to teams using your action points.\nEvery time you spend an action point, you gain a spark.\nSparks can be used in our voting booth. For more instructions go to the Help section.",
         "encryption":  "0"
     },
     {
-        "id":  "n_003",
+        "id":  "n_004",
         "type":  "dynamic",
         "round":  "1",
-        "order":  "2",
+        "order":  "3",
         "delay":  "1",
         "buttonType":  "none",
         "character":  "THE PROMOTER",
@@ -42,7 +56,7 @@
         "encryption":  "0"
     },
     {
-        "id":  "n_004",
+        "id":  "n_005",
         "type":  "dynamic",
         "round":  "1",
         "order":  "0",
@@ -56,21 +70,21 @@
         "encryption":  "0"
     },
     {
-        "id":  "n_005",
+        "id":  "n_006",
         "type":  "dynamic",
         "round":  "1",
         "order":  "1",
         "delay":  "1",
         "buttonType":  "none",
-        "character":  "SPACE STATION ",
-        "iconPath":  "icon_thepromoter",
+        "character":  "SPACE STATION",
+        "iconPath":  "icon_thespacestation",
         "title":  "Entering Rest Mode",
         "showTitle":  "TRUE",
         "content":  "Thank you Spectators for your input.\nSystems sleep. \nSignal returns \\\\ 12pm Atlantic Space Time.",
         "encryption":  "0"
     },
     {
-        "id":  "n_006",
+        "id":  "n_007",
         "type":  "arrivetoday",
         "round":  "2",
         "order":  "0",
@@ -84,21 +98,21 @@
         "encryption":  "0"
     },
     {
-        "id":  "n_007",
+        "id":  "n_008",
         "type":  "arrivetoday",
         "round":  "2",
         "order":  "1",
         "delay":  "1",
         "buttonType":  "none",
-        "character":  "SPACE STATION ",
-        "iconPath":  "icon_thepromoter",
+        "character":  "SPACE STATION",
+        "iconPath":  "icon_thespacestation",
         "title":  "System Reactivated",
         "showTitle":  "TRUE",
         "content":  "Welcome Spectators\nTeam Results: eliminated team is x\nVote Outcome: Ideal x",
         "encryption":  "0"
     },
     {
-        "id":  "n_008",
+        "id":  "n_009",
         "type":  "arrivetoday",
         "round":  "2",
         "order":  "2",
@@ -112,21 +126,21 @@
         "encryption":  "0"
     },
     {
-        "id":  "n_009",
+        "id":  "n_010",
         "type":  "dynamic",
         "round":  "2",
         "order":  "0",
         "delay":  "1",
         "buttonType":  "none",
-        "character":  "SPACE STATION ",
-        "iconPath":  "icon_thepromoter",
+        "character":  "SPACE STATION",
+        "iconPath":  "icon_thespacestation",
         "title":  "Reminder",
         "showTitle":  "FALSE",
         "content":  "Join a team fanclub to gain the ability to upgrade.\nUpgrading a team gives you more sparks when you donate energy to that team.",
         "encryption":  "0"
     },
     {
-        "id":  "n_010",
+        "id":  "n_011",
         "type":  "dynamic",
         "round":  "2",
         "order":  "0",
@@ -140,7 +154,7 @@
         "encryption":  "0"
     },
     {
-        "id":  "n_011",
+        "id":  "n_012",
         "type":  "dynamic",
         "round":  "2",
         "order":  "0",
@@ -154,7 +168,7 @@
         "encryption":  "0"
     },
     {
-        "id":  "n_012",
+        "id":  "n_013",
         "type":  "dynamic",
         "round":  "2",
         "order":  "0",
@@ -168,7 +182,7 @@
         "encryption":  "0"
     },
     {
-        "id":  "n_013",
+        "id":  "n_014",
         "type":  "dynamic",
         "round":  "2",
         "order":  "0",
@@ -182,17 +196,17 @@
         "encryption":  "0"
     },
     {
-        "id":  "n_014",
+        "id":  "n_015",
         "type":  "dynamic",
         "round":  "2",
         "order":  "0",
         "delay":  "1",
         "buttonType":  "none",
-        "character":  "SPACE STATION ",
-        "iconPath":  "icon_thepromoter",
+        "character":  "SPACE STATION",
+        "iconPath":  "icon_thespacestation",
         "title":  "Entering Rest Mode",
         "showTitle":  "TRUE",
         "content":  "Thank you Spectators for your input.\nSystems sleep. \nSignal returns \\\\ 12pm Atlantic Space Time.",
-        "encryption":  ""
+        "encryption":  "0"
     }
 ]

@@ -1,39 +1,40 @@
 "id","type","round","order","delay","buttonType","character","iconPath","title","showTitle","content","encryption"
-"n_001","arrivetoday","1","0","1","none","THE PROMOTER","icon_thepromoter","Introduction","FALSE","Welcome back to Digidamara - who will YOU choose to birth the new universe?!
+"n_001","arrivetoday","1","0","1","watch_latest_video","SPACE STATION","icon_thespacestation","Intro","TRUE","Space Station here! Please watch this introductory broadcast!","0"
+"n_002","arrivetoday","1","1","1","none","THE PROMOTER","icon_thepromoter","Welcome","TRUE","Welcome back to Digidamara - who will YOU choose to birth the new universe?!
 Your final 6 teams need energy to keep dancing! 
 The team with the lowest energy at the end of each day will be eliminated!","0"
-"n_002","arrivetoday","1","1","1","none","SPACE STATION ","icon_thepromoter","How to Play","TRUE","Thank you for joining us Spectators.
+"n_003","arrivetoday","1","2","1","none","SPACE STATION","icon_thespacestation","How to Play","TRUE","Thank you for joining us Spectators.
 You can donate energy to teams using your action points.
 Every time you spend an action point, you gain a spark.
 Sparks can be used in our voting booth. For more instructions go to the Help section.","0"
-"n_003","dynamic","1","2","1","none","THE PROMOTER","icon_thepromoter","Vote Now!","TRUE","How are you doing you wonderful beings?
+"n_004","dynamic","1","3","1","none","THE PROMOTER","icon_thepromoter","Vote Now!","TRUE","How are you doing you wonderful beings?
 Supporting your favourite team until the end?
 Don't forget to vote! We can't build the new universe without you!","0"
-"n_004","dynamic","1","0","1","none","THE PROMOTER","icon_thepromoter","Goodnight","TRUE","What an amazing day of competition! Their life and death are in your hands!
+"n_005","dynamic","1","0","1","none","THE PROMOTER","icon_thepromoter","Goodnight","TRUE","What an amazing day of competition! Their life and death are in your hands!
 So dance until your side hurts, say I love you to those you love. For tomorrow may never come
 at least not in the way you expect it. Goodnight.","0"
-"n_005","dynamic","1","1","1","none","SPACE STATION ","icon_thepromoter","Entering Rest Mode","TRUE","Thank you Spectators for your input.
+"n_006","dynamic","1","1","1","none","SPACE STATION","icon_thespacestation","Entering Rest Mode","TRUE","Thank you Spectators for your input.
 Systems sleep. 
 Signal returns \\ 12pm Atlantic Space Time.","0"
-"n_006","arrivetoday","2","0","7","none","THE PROMOTER","icon_thepromoter","New Day","TRUE","Tune in, tune on, tune out, tune off and explode - it's DIGIDAMARA!!! 
+"n_007","arrivetoday","2","0","7","none","THE PROMOTER","icon_thepromoter","New Day","TRUE","Tune in, tune on, tune out, tune off and explode - it's DIGIDAMARA!!! 
 If not 100% satisfied - go get another version of satisfaction! 
 Let's see where our contestants are today ","0"
-"n_007","arrivetoday","2","1","1","none","SPACE STATION ","icon_thepromoter","System Reactivated","TRUE","Welcome Spectators
+"n_008","arrivetoday","2","1","1","none","SPACE STATION","icon_thespacestation","System Reactivated","TRUE","Welcome Spectators
 Team Results: eliminated team is x
 Vote Outcome: Ideal x","0"
-"n_008","arrivetoday","2","2","1","none","THE PROMOTER","icon_thepromoter","Sad to see them go","FALSE","Sad to see them go, 50 bajillion clickhours danced!
+"n_009","arrivetoday","2","2","1","none","THE PROMOTER","icon_thepromoter","Sad to see them go","FALSE","Sad to see them go, 50 bajillion clickhours danced!
 You voted for that Ideal eh? How interesting.
 Tune in to see how your choice plays out in today's Round Up at 3pm Atlantic Space time!","0"
-"n_009","dynamic","2","0","1","none","SPACE STATION ","icon_thepromoter","Reminder","FALSE","Join a team fanclub to gain the ability to upgrade.
+"n_010","dynamic","2","0","1","none","SPACE STATION","icon_thespacestation","Reminder","FALSE","Join a team fanclub to gain the ability to upgrade.
 Upgrading a team gives you more sparks when you donate energy to that team.","0"
-"n_010","dynamic","2","0","1","none","THE PROMOTER","icon_thepromoter","Round Up Imminent","TRUE","Tune in soon for our first Round Up of the action!
+"n_011","dynamic","2","0","1","none","THE PROMOTER","icon_thepromoter","Round Up Imminent","TRUE","Tune in soon for our first Round Up of the action!
 Remember you can stay up to date on all the wizbang hootenanny in the Video section","0"
-"n_011","dynamic","2","0","1","watch_latest_video","THE PROMOTER","icon_thepromoter","Incoming Round Up","TRUE","","0"
-"n_012","dynamic","2","0","1","none","THE PROMOTER","icon_thepromoter","Reminder","FALSE","Competing for the biggest prize ever known - the universe!
+"n_012","dynamic","2","0","1","watch_latest_video","THE PROMOTER","icon_thepromoter","Incoming Round Up","TRUE","","0"
+"n_013","dynamic","2","0","1","none","THE PROMOTER","icon_thepromoter","Reminder","FALSE","Competing for the biggest prize ever known - the universe!
 Don't they deserve your support? Get those actions out there and those sparks a'poppin!","0"
-"n_013","dynamic","2","0","1","none","THE PROMOTER","icon_thepromoter","Goodnight","FALSE","Well folks that's another day of competition wrapped up in a nice bow.
+"n_014","dynamic","2","0","1","none","THE PROMOTER","icon_thepromoter","Goodnight","FALSE","Well folks that's another day of competition wrapped up in a nice bow.
 Our transmission is breaking up as we swing behind the liquid darkness field of our partner moon
 See you on the other side","0"
-"n_014","dynamic","2","0","1","none","SPACE STATION ","icon_thepromoter","Entering Rest Mode","TRUE","Thank you Spectators for your input.
+"n_015","dynamic","2","0","1","none","SPACE STATION","icon_thespacestation","Entering Rest Mode","TRUE","Thank you Spectators for your input.
 Systems sleep. 
-Signal returns \\ 12pm Atlantic Space Time.",""
+Signal returns \\ 12pm Atlantic Space Time.","0"

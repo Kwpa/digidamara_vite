@@ -22,7 +22,7 @@ const ChatPage = () => {
             </div>
               <div id="chat-container" class="popup-page-scroll-with-footer">
             </div>
-            <div class="chat-input-container">
+            <div id="chat-input-container" class="chat-input-container">
               <input id="chat-input" class="input chat-input-element"></input>
               <button id="chat-submit-button" class="button chat-input-submit-button is-primary">Submit</button>
             </div>

@@ -2,14 +2,14 @@
     {
         "id":  "vc_001",
         "title":  "Intro Video",
-        "youtubeId":  "wVVr4Jq_lMI",
+        "youtubeId":  "V4naZsMulGk",
         "active":  "TRUE"
     },
     {
         "id":  "vc_002",
         "title":  "Day One Roundup",
         "youtubeId":  "_X3HzUjptvc",
-        "active":  "TRUE"
+        "active":  "FALSE"
     },
     {
         "id":  "vc_003",

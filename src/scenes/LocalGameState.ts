@@ -118,6 +118,7 @@ export default class LocalGameState
 
     GetCurrentChatChannelGroupId()
     {
+        console.log(this.chatChannels[this.currentChatChannel]);
         return this.chatChannels[this.currentChatChannel];
     }
 

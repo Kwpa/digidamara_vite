@@ -127,6 +127,7 @@ export default class MainScene extends Phaser.Scene {
 
   carouselTapBool!: boolean;
   mouseDownOnLeaderboardButton: boolean = false;
+  newRound: boolean = false; 
 
   //starfield
   distance = 300;
@@ -1188,8 +1189,24 @@ export default class MainScene extends Phaser.Scene {
     }) as StorageObjects;
 
     var roundStorageObject = collect(getRoundTrack.objects).first();
+
+    
     var jsonString = JSON.stringify(roundStorageObject.value);
     var roundObject = JSON.parse(jsonString);
+    
+    
+
+    if(roundObject.round == parsedUserData.round)
+    {
+      //we're on the same round
+    }
+    else
+    {
+      if(roundObject.round > parsedUserData.round)
+      {
+        this.newRound = true;
+      }
+    }
 
     var getVotes = await this.client.readStorageObjects(this.session, {
       "object_ids": [{
@@ -1306,14 +1323,14 @@ export default class MainScene extends Phaser.Scene {
     var actionPoints = await this.ReadFromDDMLocalStorageNumber("actionPoints");
     var sparks = await this.ReadFromDDMLocalStorageNumber("sparks");
     
+    
     this.localState.Init(username, this.dynamicData.dynamicRoundState.round, actionPoints, 5, sparks, this.dynamicData.dynamicRoundState.energyRequirement, teamIdList, voteStateList, teamStateList);
     
-    if (this.localState.UpdateFromDynamicData(roundDynamic)) {
+    if (this.newRound) {
       await this.WriteToDDMLocalStorage(["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
       //trigger new round
 
       await this.TriggerNewRound();
-
     }
     else {
       await this.WriteToDDMLocalStorage(["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
@@ -1575,22 +1592,19 @@ export default class MainScene extends Phaser.Scene {
         const fansElement = row.querySelector('#leaderboard-row-fans') as HTMLElement;
         const upgradesElement = row.querySelector('#leaderboard-row-upgrades') as HTMLElement;
 
-        var energy, fans, upgrades = "";
+        var energy = "";
         var teamState = this.localState.teamStates[k] as TeamState;
         if (this.localState.teamStates[k].eliminated) {
           energy = "-";
-          fans = teamState.totalNumberOfFans.toString();
-          upgrades = teamState.upgradeLevel.toString();
+          
         }
         else {
           energy = (teamState.currentEnergy).toString();
-          fans = teamState.totalNumberOfFans.toString();
-          upgrades = teamState.upgradeLevel.toString();
+          
         }
 
         energyElement.innerHTML = energy;
-        fansElement.innerHTML = fans;
-        upgradesElement.innerHTML = upgrades;
+        
 
         k++;
       }
@@ -2308,7 +2322,7 @@ export default class MainScene extends Phaser.Scene {
         var watchLatestVideoButton = this.notificationHome.getChildByID("notification-button-watch-latest-video") as HTMLInputElement;
         var viewTodaysVoteButton = this.notificationHome.getChildByID("notification-button-todays-vote") as HTMLInputElement;
         var viewFanClubChat = this.notificationHome.getChildByID("notification-button-fan-club-chat") as HTMLInputElement;
-
+        var box = this.notificationHome.getChildByID("notification-box") as HTMLElement;
 
 
         character.innerHTML = '<strong class="has-text-white">' + notificationData.character + '</strong>';
@@ -2320,8 +2334,22 @@ export default class MainScene extends Phaser.Scene {
         else {
           title.style.display = "none";
         }
+
+        if(notificationData.character == "SPACE STATION")
+        {
+          box.classList.remove("has-background-warning");
+          box.classList.add("has-background-info");
+          box.classList.add("has-text-white");
+        }
+        else{
+          box.classList.remove("has-background-info");
+          box.classList.add("has-background-warning");
+          box.classList.remove("has-text-white");
+        }
+
         this.localState.DivideUpNotificationHomeContent(notificationData.content);
         this.localState.NextNotificationHomeContent();
+        content.innerHTML = "";
         content.prepend(this.localState.GetCurrentNotificationHomeContent());
         if (this.localState.notificationHomeContentLength == 1) {
           nextButton.style.display = "none";
@@ -2729,10 +2757,14 @@ export default class MainScene extends Phaser.Scene {
       var storeUserId = "";
       var storeMessageCreateTime = "";
       var storeUserDetails = {} as object;
+      var input = this.chatPage.getChildByID('chat-input-container') as HTMLElement;
 
       storeUserDetails = await this.CreateUserList(result);
       if (chatId == "c_001") {
+
         console.log("notifications!!!!!!!!!!!!!");
+        input.style.visibility="hidden";
+        
         var list = await this.GenerateNotificationChannelMessages();
         list.forEach(
           (notification) => {
@@ -2743,6 +2775,9 @@ export default class MainScene extends Phaser.Scene {
         result.messages?.sort((messageA, messageB) => {
           return new Date(messageA.create_time as string).getTime() - new Date(messageB.create_time as string).getTime();
         })
+      }
+      else{
+        input.style.visibility="visible";
       }
       await this.delay(500); //WARNING NOT FOOL PROOF!!!
 

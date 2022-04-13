@@ -19,8 +19,6 @@ const LeaderboardPage = () => {
                   <th>Rank</th>
                   <th>Team</th>
                   <th>Energy</th>
-                  <th>Fans</th>
-                  <th>Your Upgrades</th>
                 </tr>
               </thead>
               <tbody id = "leaderboard-rows-container">
