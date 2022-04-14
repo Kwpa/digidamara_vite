@@ -108,7 +108,7 @@
         "iconPath":  "icon_thespacestation",
         "title":  "System Reactivated",
         "showTitle":  "TRUE",
-        "content":  "Welcome Spectators\nTeam Results: eliminated team is x\nVote Outcome: Ideal x",
+        "content":  "Welcome Spectators\nEliminated team: the Eeksums, Babes and Bass!\nTop team: Grunter!\nVote Outcome: Ideal of Affection!",
         "encryption":  "0"
     },
     {
@@ -122,7 +122,7 @@
         "iconPath":  "icon_thepromoter",
         "title":  "Sad to see them go",
         "showTitle":  "FALSE",
-        "content":  "Sad to see them go, 50 bajillion clickhours danced!\nYou voted for that Ideal eh? How interesting.\nTune in to see how your choice plays out in today\u0027s Round Up at 3pm Atlantic Space time!",
+        "content":  "Sad to see them go, 50 bajillion clickhours danced!\nYou voted for that Ideal eh? Oh you darlings!\nRemember to tune in to see how this choice plays out in today\u0027s Round Up at 3pm Atlantic Space time!",
         "encryption":  "0"
     },
     {
@@ -207,6 +207,20 @@
         "title":  "Entering Rest Mode",
         "showTitle":  "TRUE",
         "content":  "Thank you Spectators for your input.\nSystems sleep. \nSignal returns \\\\ 12pm Atlantic Space Time.",
+        "encryption":  "0"
+    },
+    {
+        "id":  "n_016",
+        "type":  "arrivetoday",
+        "round":  "2",
+        "order":  "3",
+        "delay":  "1",
+        "buttonType":  "none",
+        "character":  "SPACE STATION",
+        "iconPath":  "icon_thespacestation",
+        "title":  "Story Unlocked!",
+        "showTitle":  "TRUE",
+        "content":  "Alert: New data files unlocked for all surviving teams!",
         "encryption":  "0"
     }
 ]

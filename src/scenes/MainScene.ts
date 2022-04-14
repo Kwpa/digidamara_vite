@@ -54,6 +54,8 @@ export default class MainScene extends Phaser.Scene {
   chatChannels_data!: object;
 
   teamProfilePages!: Phaser.GameObjects.DOMElement[];
+  header!: Phaser.GameObjects.DOMElement;
+  footer!: Phaser.GameObjects.DOMElement;
   chatPage!: Phaser.GameObjects.DOMElement;
   votePage!: Phaser.GameObjects.DOMElement;
   leaderboardPage!: Phaser.GameObjects.DOMElement;
@@ -201,6 +203,55 @@ export default class MainScene extends Phaser.Scene {
     //this.load.on('complete', () => {this.flag = true});
   }
 
+  keyboardOn: boolean = false;
+  storeHeightSize: number = 0;
+
+  SetResizeListener()
+  {
+    this.storeHeightSize = window.innerHeight;
+    console.log("STORED HEIGHT::: " + this.storeHeightSize); 
+
+    window.addEventListener("resize", (e) => {
+      var deviceType = this.GetDeviceType();
+      var newHeight = window.innerHeight;
+      console.log("STORED HEIGHT::: " + this.storeHeightSize + " NEW HEIGHT::: " + newHeight);
+      switch(deviceType)
+      {
+        case "tablet":
+        case "mobile":
+          if(!this.keyboardOn)
+          {
+            if(newHeight < this.storeHeightSize-40)
+            {
+              console.log("turn on keyboard");
+              document.documentElement.style.setProperty('overflow', 'auto'); 
+              const metaViewport = document.querySelector('meta[name=viewport]') as Element;
+              metaViewport.setAttribute('content', 'height=' + this.height + 'px, width=device-width, initial-scale=1.0');
+              this.footer.setVisible(false);
+              this.storeHeightSize = newHeight;
+              this.keyboardOn = true;
+            }
+          }
+          else
+          {
+            if(newHeight > this.storeHeightSize+40)
+            {
+              console.log("turn off keyboard");
+              const metaViewport = document.querySelector('meta[name=viewport]') as Element;
+              metaViewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0');
+              this.footer.setVisible(true);
+              this.keyboardOn = false;
+              this.storeHeightSize = newHeight;
+            }
+          }
+          break;
+        case "desktop": 
+          console.log("desktop");
+          break;
+      }
+    });
+  }
+
   ShowVideo(scene: Scene, width: number, height: number, url: string) {
     this.rexVideoPlayer = scene.add.rexYoutubePlayer( //this does work, typescript def error :/
       -width, -height, Math.min(Math.max(width*0.7, 360),1000), Math.min(Math.max((width*0.7*0.5625), 360*0.5625),562),
@@ -285,6 +336,7 @@ export default class MainScene extends Phaser.Scene {
   create() //to tackle - server code and setup for typescript!
   {
     var { width, height } = this.sys.game.canvas;
+    this.SetResizeListener();
     console.log('load Main Scene');
     this.logo = this.add.image(width / 2, height / 2 - 200, 'logo');
     this.logo.scale = Math.min(((0.8 * width) / 512), 1.5);
@@ -534,10 +586,10 @@ export default class MainScene extends Phaser.Scene {
     game.style.setProperty('position', 'absolute');
     game.style.setProperty('z-index', '-1');
 
-    const header = this.add.dom(this.width / 2, 55, Header() as HTMLElement);
-    const footer = this.add.dom(this.width / 2, 55, Footer() as HTMLElement);
-    header.depth = this.depthLayers["headerFooter"];
-    footer.depth = this.depthLayers["headerFooter"];
+    this.header = this.add.dom(this.width / 2, 55, Header() as HTMLElement);
+    this.footer = this.add.dom(this.width / 2, 55, Footer() as HTMLElement);
+    this.header.depth = this.depthLayers["headerFooter"];
+    this.footer.depth = this.depthLayers["headerFooter"];
 
     this.videoPlayerOverlay = this.add.dom(this.width / 2, this.height / 2, VideoPlayerOverlay() as HTMLElement);
     this.videoPlayerOverlay.setDepth(this.depthLayers["videoPlayer"]);
@@ -575,14 +627,14 @@ export default class MainScene extends Phaser.Scene {
       loop: true
     }) as Phaser.Sound.BaseSound;
 
-    this.roundCounter = header.getChildByID("round-header-value") as HTMLElement;
-    this.actionPointsCounter = header.getChildByID("ap-header-value") as HTMLElement;
-    this.sparksCounter = header.getChildByID("sparks-header-value") as HTMLElement;
-    this.chatFooterButton = footer.getChildByID('chat-footer-button') as HTMLElement;
-    this.videoFooterButton = footer.getChildByID('video-footer-button') as HTMLElement;
-    this.voteFooterButton = footer.getChildByID('vote-footer-button') as HTMLElement;
-    this.helpHeaderButton = header.getChildByID('help-header-button') as HTMLElement;
-    this.settingsFooterButton = footer.getChildByID('settings-footer-button') as HTMLElement;
+    this.roundCounter = this.header.getChildByID("round-header-value") as HTMLElement;
+    this.actionPointsCounter = this.header.getChildByID("ap-header-value") as HTMLElement;
+    this.sparksCounter = this.header.getChildByID("sparks-header-value") as HTMLElement;
+    this.chatFooterButton = this.footer.getChildByID('chat-footer-button') as HTMLElement;
+    this.videoFooterButton = this.footer.getChildByID('video-footer-button') as HTMLElement;
+    this.voteFooterButton = this.footer.getChildByID('vote-footer-button') as HTMLElement;
+    this.helpHeaderButton = this.header.getChildByID('help-header-button') as HTMLElement;
+    this.settingsFooterButton = this.footer.getChildByID('settings-footer-button') as HTMLElement;
     this.closeVotePageButton = this.votePage.getChildByID('close-voting-page-button') as HTMLElement;
     this.voteContainer = this.votePage.getChildByID('vote-container') as HTMLElement;
     this.voteDynamicContainer = this.votePage.getChildByID('vote-dynamic-container') as HTMLElement;
@@ -1073,7 +1125,7 @@ export default class MainScene extends Phaser.Scene {
     // use object keys to get each groupId
     for (var key in this.localState.chatChannels) {
       var groupId = this.localState.chatChannels[key];
-      this.JoinGroupChat(socket, groupId);
+      await this.JoinGroupChat(socket, groupId);
     }
 
     await this.SetupChatChannelsAndPages();
@@ -1528,12 +1580,12 @@ export default class MainScene extends Phaser.Scene {
 
     this.chatChannelContainer = this.chatPage.getChildByID('chat-channel-container') as HTMLElement;
     var k = 0;
-    this.staticData.chatChannels.forEach((channel) => {
-      this.CreateChatChannelUI(this.chatChannelContainer, channel);
+    this.staticData.chatChannels.forEach(async (channel) => {
+      await this.CreateChatChannelUI(this.chatChannelContainer, channel);
     });
   }
 
-  CreateChatChannelUI(container: HTMLElement, channel: ChatChannelData) {
+  async CreateChatChannelUI(container: HTMLElement, channel: ChatChannelData) {
     var id = channel.id;
 
     if (this.localState.chatChannels[id] != null) {
@@ -1544,12 +1596,12 @@ export default class MainScene extends Phaser.Scene {
 
       chatChannelOpenButton.onclick = async () => {
 
-        await this.ReloadGroupChat(channel.id);
         this.chatChannelOpen.style.display = "block";
         this.chatChannels.style.display = "none";
         this.chatChannelTitle.innerHTML = channel.title;
         this.chatChannelIcon.src = "/assets/white_icons/" + channel.iconPath + ".png";
         this.localState.SetCurrentChatChannel(channel.id);
+        await this.ReloadGroupChat(channel.id);
 
       }
 
@@ -1562,10 +1614,10 @@ export default class MainScene extends Phaser.Scene {
     var create = await this.CreateChatMessages(groupId);
   }
 
-  ReloadChatChannels() {
+  async ReloadChatChannels() {
     this.chatChannelContainer.innerHTML = "";
-    this.staticData.chatChannels.forEach((channel) => {
-      this.CreateChatChannelUI(this.chatChannelContainer, channel);
+    this.staticData.chatChannels.forEach(async (channel) => {
+      await this.CreateChatChannelUI(this.chatChannelContainer, channel);
     });
   }
 
@@ -1641,6 +1693,18 @@ export default class MainScene extends Phaser.Scene {
         });
       }
     );
+  }
+
+  GetDeviceType()
+  {
+    const ua = navigator.userAgent;
+    if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+        return "tablet";
+    }
+    else if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
+        return "mobile";
+    }
+    return "desktop";
   }
 
   async SetupTeamProfiles(socket: Socket) {
@@ -1768,7 +1832,7 @@ export default class MainScene extends Phaser.Scene {
             this.localState.AddChatChannels(channels);
             this.JoinGroupChat(socket, cId);
 
-            this.ReloadChatChannels();
+            await this.ReloadChatChannels();
             //update UI
 
             this.CheckIfOutOfPointsUI(donateButton, upgradeButton, fanClubButton, this.localState.carouselPosition);

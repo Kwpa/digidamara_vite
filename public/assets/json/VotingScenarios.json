@@ -2,7 +2,7 @@
     {
         "id":  "v_001",
         "title":  "A Golden Opportunity",
-        "description":  "Let\u0027s start the finals off right! Vote for an Ideal that represents all you fantastic intergalactic spectators out there!\n(You\u0027ll find out the results tomorrow)\n",
+        "description":  "Let\u0027s start the finals off right! Vote for an Ideal that represents all you fantastic intergalactic spectators out there!\n(You\u0027ll find out the results tomorrow)",
         "choiceOne_title":  "Ideal of Affection",
         "choiceOne_description":  "Reaching out to others is a natural part of your daily routine!",
         "choiceOne_consequences":  "What a lovely bunch you are! This Ideal of Affection will be brought through into the next universe!",
@@ -12,14 +12,14 @@
     },
     {
         "id":  "v_002",
-        "title":  "Master Gauri + \nMaster Refilwe \n[Cushcush]\n",
-        "description":  "The Cushcush Galaxy is descending into chaotic nebula storms. Inhabitants are celebrating the end of a way of life, and await in anticipation of what will come.\n\nBefore the galaxy succumbs to this crisis, which of the following Ideals should guide the inhabitants in the final moments?\n\n(You\u0027ll find out the results tomorrow)\n\n",
-        "choiceOne_title":  "Ideal of Attunement",
-        "choiceOne_description":  "An alignment, a yearning, a tuning fork?",
-        "choiceOne_consequences":  "Beaming result to Cushcush, reply in 24 space hours...",
-        "choiceTwo_title":  "Ideal of Impermanence",
-        "choiceTwo_description":  "...to let go of your fear and need for control...",
-        "choiceTwo_consequences":  "Beaming result to Cushcush, reply in 24 space hours..."
+        "title":  "Babe + Bas\n[Bobbleon]\n",
+        "description":  "Eeekcoin takes a tumble as all power sources shut down. A sweeping wave of spirituality hits the galaxy, with some praying to unknown gods and others losing their wits in the streets.\n\nBefore the galaxy succumbs to this crisis, which of the following Ideals should guide the inhabitants in the final moments?\n\n(You\u0027ll find out the results tomorrow)",
+        "choiceOne_title":  "Ideal of Playfulness",
+        "choiceOne_description":  "Is it time to change the game?",
+        "choiceOne_consequences":  "Beaming result to Bobbleon, reply in 24 space hours...",
+        "choiceTwo_title":  "Ideal of Prestige",
+        "choiceTwo_description":  "Best of the best, worst of the worst, at the end of the universe who comes out first?",
+        "choiceTwo_consequences":  "Beaming result to Bobbleon, reply in 24 space hours..."
     },
     {
         "id":  "v_003",
@@ -56,14 +56,14 @@
     },
     {
         "id":  "v_006",
-        "title":  "Babe + Bas\n[Bobbleon]\n",
-        "description":  "Eeekcoin takes a tumble as all power sources shut down. A sweeping wave of spirituality hits the galaxy, with some praying to unknown gods and others losing their wits in the streets.\n\nBefore the galaxy succumbs to this crisis, which of the following Ideals should guide the inhabitants in the final moments?\n\n(You\u0027ll find out the results tomorrow)\n",
-        "choiceOne_title":  "Ideal of Playfulness",
-        "choiceOne_description":  "a thing",
-        "choiceOne_consequences":  "Beaming result to Bobbleon, reply in 24 space hours...",
-        "choiceTwo_title":  "Ideal of Prestige",
-        "choiceTwo_description":  "a thing",
-        "choiceTwo_consequences":  "Beaming result to Bobbleon, reply in 24 space hours..."
+        "title":  "Master Gauri + \nMaster Refilwe \n[Cushcush]\n",
+        "description":  "The Cushcush Galaxy is descending into chaotic nebula storms. Inhabitants are celebrating the end of a way of life, and await in anticipation of what will come.\n\nBefore the galaxy succumbs to this crisis, which of the following Ideals should guide the inhabitants in the final moments?\n\n(You\u0027ll find out the results tomorrow)\n\n",
+        "choiceOne_title":  "Ideal of Attunement",
+        "choiceOne_description":  "An alignment, a yearning, a tuning fork?",
+        "choiceOne_consequences":  "Beaming result to Cushcush, reply in 24 space hours...",
+        "choiceTwo_title":  "Ideal of Impermanence",
+        "choiceTwo_description":  "...to let go of your fear and need for control...",
+        "choiceTwo_consequences":  "Beaming result to Cushcush, reply in 24 space hours..."
     },
     {
         "id":  "v_007",

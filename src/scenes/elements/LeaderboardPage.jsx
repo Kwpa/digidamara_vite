@@ -4,7 +4,7 @@ const LeaderboardPage = () => {
   return (
     <div>
       <div class="popup-page-leaderboard">
-        <div class="box popup-box-wrapper">
+        <div class="box popup-box-wrapper has-background-warning">
           <nav class="level is-mobile">
             <div class="level-left">
               <div class="level-item has-text-centered">

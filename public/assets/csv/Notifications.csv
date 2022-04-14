@@ -20,11 +20,12 @@ Signal returns \\ 12pm Atlantic Space Time.","0"
 If not 100% satisfied - go get another version of satisfaction! 
 Let's see where our contestants are today ","0"
 "n_008","arrivetoday","2","1","1","none","SPACE STATION","icon_thespacestation","System Reactivated","TRUE","Welcome Spectators
-Team Results: eliminated team is x
-Vote Outcome: Ideal x","0"
+Eliminated team: the Eeksums, Babes and Bass!
+Top team: Grunter!
+Vote Outcome: Ideal of Affection!","0"
 "n_009","arrivetoday","2","2","1","none","THE PROMOTER","icon_thepromoter","Sad to see them go","FALSE","Sad to see them go, 50 bajillion clickhours danced!
-You voted for that Ideal eh? How interesting.
-Tune in to see how your choice plays out in today's Round Up at 3pm Atlantic Space time!","0"
+You voted for that Ideal eh? Oh you darlings!
+Remember to tune in to see how this choice plays out in today's Round Up at 3pm Atlantic Space time!","0"
 "n_010","dynamic","2","0","1","none","SPACE STATION","icon_thespacestation","Reminder","FALSE","Join a team fanclub to gain the ability to upgrade.
 Upgrading a team gives you more sparks when you donate energy to that team.","0"
 "n_011","dynamic","2","0","1","none","THE PROMOTER","icon_thepromoter","Round Up Imminent","TRUE","Tune in soon for our first Round Up of the action!
@@ -38,3 +39,4 @@ See you on the other side","0"
 "n_015","dynamic","2","0","1","none","SPACE STATION","icon_thespacestation","Entering Rest Mode","TRUE","Thank you Spectators for your input.
 Systems sleep. 
 Signal returns \\ 12pm Atlantic Space Time.","0"
+"n_016","arrivetoday","2","3","1","none","SPACE STATION","icon_thespacestation","Story Unlocked!","TRUE","Alert: New data files unlocked for all surviving teams!","0"

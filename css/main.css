@@ -10,6 +10,9 @@
 body{
 	font-family: 'Pixellari';
 }
+body{
+	overscroll-behavior-y: contain;
+}
 button{
 	font-family: 'Pixellari';
 }
