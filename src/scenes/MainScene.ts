@@ -2811,7 +2811,7 @@ export default class MainScene extends Phaser.Scene {
     var forward = true;
     var channelId = "3." + this.localState.chatChannels[chatId] + "..";
     this.localState.chatChannels
-    console.log(chatId + "" + this.localState.chatChannels[chatId]);
+    console.log(chatId + ": " + this.localState.chatChannels[chatId]);
     var result: ChannelMessageList = await this.client.listChannelMessages(this.session, channelId, 50, forward);
 
     if (result.messages?.length != 0) {
@@ -2910,6 +2910,8 @@ export default class MainScene extends Phaser.Scene {
             break;
         }
       });
+
+      console.log("messages loaded");
     }
   }
 

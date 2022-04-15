@@ -6,17 +6,22 @@ Managed to find a way to access the nakama database, message table and delete th
 
 Each time we reset the storage, we may need to set sql_safe_updates to false on the database.
 
+
 How to access message table in nakama database:
 
-1) Go to Docker Console > click CLI button on the nakama-cockroachdb-1 container
+1) A)
+    Go to Docker Console > click CLI button on the nakama-cockroachdb-1 container
+1) B)
+    Or if on a server, ssh into the server, then type: docker exec -it nakama_cockroachdb_1 /bin/bash 
+    Note: type ctrl+C to get out of SQL, and type exit 
 2) In terminal type: cockroach sql --insecure
 You are now in the SQL client.
 3) Type: USE nakama;
 to access the database. (to find database names, can use: SHOW DATABASES;)
-4) Type: SELECT * FROM message (to find table names, can use: SHOW TABLES;)
+4) Type: SELECT * FROM message; (to find table names, can use: SHOW TABLES;)
 You can now see all the messages.
 5) Type: SET sql_safe_updates TO false;
 This unlocks safeguards to allow you delete all entries.
-6) Type: DELETE FROM message
+6) Type: DELETE FROM message;
 This will delete ALL messages!
 7) Or.... type: DELETE FROM message WHERE stream_label='PublicChat';
