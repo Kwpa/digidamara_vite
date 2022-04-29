@@ -192,11 +192,8 @@ export default class LocalGameState
 
     HaveSpentSparksOnTodaysDynamicVote(choice: number)
     {
-        if(this.round == 5)
-        {
-            var array = this.dynamicVoteState.userVotes.filter(p=>p>0);
-            return array.length > 0;
-        }
+        var array = this.dynamicVoteState.userVotes.filter(p=>p>0);
+        return array.length > 0;
     }
     
     SetCurrentTeamID()

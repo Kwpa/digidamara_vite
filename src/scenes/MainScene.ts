@@ -1506,8 +1506,6 @@ export default class MainScene extends Phaser.Scene {
     var todaysScenarioState = this.localState.voteStates[this.localState.round - 1];
     var todaysScenarioDynamicState = this.localState.dynamicVoteState;
 
-    
-
     if(this.localState.round == 5)
     {
       const dynamicVoteScenario = VoteScenario() as HTMLElement; //have to append into somewhere
@@ -2444,14 +2442,14 @@ export default class MainScene extends Phaser.Scene {
 
     console.log("send vote!!!! " + scenarioId + " " + choiceIndex + " " + value);
 
-    await socket.sendMatchState(this.match.match_id, 2, { "scenarioId": scenarioId, "option": choiceIndex, "votes": value }); //
+    await socket.sendMatchState(this.match.match_id, 2, { "scenarioId": scenarioId, "option": choiceIndex, "votes": value, "dynamic": false}); //
   }
 
   async SendDynamicVoteMatchState(socket: Socket, scenarioId: string, choiceIndex: number, value: number) {
 
     console.log("send vote!!!! " + scenarioId + " " + choiceIndex + " " + value);
 
-    await socket.sendMatchState(this.match.match_id, 2, { "scenarioId": scenarioId, "option": choiceIndex, "votes": value }); //
+    await socket.sendMatchState(this.match.match_id, 2, { "scenarioId": scenarioId, "option": choiceIndex, "votes": value, "dynamic": true }); //
   }
 
   async ReceiveMatchState(socket: Socket) {
@@ -2460,8 +2458,8 @@ export default class MainScene extends Phaser.Scene {
       switch (result.op_code) {
         case 101:
           this.RefreshFromDynamicData();
-          this.localState.SetActionPointsToMax();
-          await this.WriteToDDMLocalStorage(["actionPoints"], [this.localState.maxActionPoints]);
+          // this.localState.SetActionPointsToMax();
+          // await this.WriteToDDMLocalStorage(["actionPoints"], [this.localState.maxActionPoints]);
           console.log("User " + result.presence.username + " refreshed for a new round");
           break;
         case 1:
