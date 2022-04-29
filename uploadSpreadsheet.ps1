@@ -18,6 +18,9 @@ Import-Csv "public\assets\csv\Notifications.csv" | ConvertTo-Json | Set-Content 
 Invoke-WebRequest "https://docs.google.com/spreadsheets/d/1gdqnvbIQByJ_ukNYsLmbQBCnNSLgCzplQkRgaSPO72c/gviz/tq?tqx=out:csv&sheet=VotingScenarios" -OutFile "public\assets\csv\VotingScenarios.csv"
 Import-Csv "public\assets\csv\VotingScenarios.csv" | ConvertTo-Json | Set-Content -Path "public\assets\json\VotingScenarios.json"
 
+Invoke-WebRequest "https://docs.google.com/spreadsheets/d/1gdqnvbIQByJ_ukNYsLmbQBCnNSLgCzplQkRgaSPO72c/gviz/tq?tqx=out:csv&sheet=DynamicVoteOptions" -OutFile "public\assets\csv\DynamicVoteOptions.csv"
+Import-Csv "public\assets\csv\DynamicVoteOptions.csv" | ConvertTo-Json | Set-Content -Path "public\assets\json\DynamicVoteOptions.json"
+
 Invoke-WebRequest "https://docs.google.com/spreadsheets/d/1gdqnvbIQByJ_ukNYsLmbQBCnNSLgCzplQkRgaSPO72c/gviz/tq?tqx=out:csv&sheet=Labels" -OutFile "public\assets\csv\Labels.csv"
 Import-Csv "public\assets\csv\Labels.csv" | ConvertTo-Json | Set-Content -Path "public\assets\json\Labels.json"
 

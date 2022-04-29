@@ -1,0 +1,50 @@
+[
+    {
+        "id":  "dv_001",
+        "title":  "Dynamic Vote Round 5 Option 1",
+        "description":  "Take to the stars",
+        "consequences":  "Damn",
+        "round":  "5",
+        "active":  "FALSE"
+    },
+    {
+        "id":  "dv_002",
+        "title":  "Dynamic Vote Round 5 Option 2",
+        "description":  "Destroy the universe",
+        "consequences":  "What",
+        "round":  "5",
+        "active":  "FALSE"
+    },
+    {
+        "id":  "dv_003",
+        "title":  "Dynamic Vote Round 5 Option 3",
+        "description":  "Milk the cow",
+        "consequences":  "I can\u0027t",
+        "round":  "5",
+        "active":  "FALSE"
+    },
+    {
+        "id":  "dv_004",
+        "title":  "Dynamic Vote Round 5 Option 4",
+        "description":  "Ride the rooster",
+        "consequences":  "You did it",
+        "round":  "5",
+        "active":  "FALSE"
+    },
+    {
+        "id":  "dv_005",
+        "title":  "Dynamic Vote Round 5 Option 5",
+        "description":  "Consume the cheese",
+        "consequences":  "Explosive",
+        "round":  "5",
+        "active":  "FALSE"
+    },
+    {
+        "id":  "dv_006",
+        "title":  "Dynamic Vote Round 5 Option 6",
+        "description":  "Give up all hope",
+        "consequences":  "Subtle",
+        "round":  "5",
+        "active":  "FALSE"
+    }
+]

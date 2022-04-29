@@ -34,6 +34,7 @@ export default class LocalGameState
     round: number = 0;
     roundEnergyRequirement!: number;
     voteStates!: VoteScenarioState[];
+    dynamicVoteState!: DynamicVoteScenarioState;
     teamStates!: TeamState[];
     notificationHomeOnScreen: boolean = false;
     notificationHomeStringArray!: string[];
@@ -61,7 +62,7 @@ export default class LocalGameState
         console.log(state.name.toUpperCase());
     }
 
-    Init(username: string, round: number, actionPoints: number, maxActionPoints: number, sparksAwarded: number, energyRequirement: number, teamIDs : string[], voteStates, teamStates)
+    Init(username: string, round: number, actionPoints: number, maxActionPoints: number, sparksAwarded: number, energyRequirement: number, teamIDs : string[], voteStates, dynamicVoteState, teamStates)
     {
         this.actionPoints = actionPoints;
         this.sparksAwarded = sparksAwarded;
@@ -74,6 +75,7 @@ export default class LocalGameState
         this.teamIDs = teamIDs;
         this.SetCurrentTeamID()
         this.voteStates = voteStates;
+        this.dynamicVoteState = dynamicVoteState;
         this.teamStates = teamStates;    
         this.notificationHomeStringArray = [];  
         this.chatChannels = [];
@@ -173,7 +175,9 @@ export default class LocalGameState
     }
     HaveSpentSparksOnTodaysVote(choice: number)
     {
+        
         if(choice==0){
+            
             return this.voteStates[this.round-1].choiceOneVotesUser > 0; 
         }
         else if (choice==1)
@@ -186,6 +190,15 @@ export default class LocalGameState
         }
     }
 
+    HaveSpentSparksOnTodaysDynamicVote(choice: number)
+    {
+        if(this.round == 5)
+        {
+            var array = this.dynamicVoteState.userVotes.filter(p=>p>0);
+            return array.length > 0;
+        }
+    }
+    
     SetCurrentTeamID()
     {
         this.currentTeamID = this.teamIDs[this.carouselPosition];
@@ -533,6 +546,52 @@ export class VoteScenarioState
         else
         {
             this.winnerIndex = 2;
+        }
+    }
+}
+
+export class DynamicVoteScenarioState
+{
+    id: string = "";
+    userVotes: number[] = [];
+    globalVotes: number[] = [];
+    winnerIndex: number = -1;
+
+    constructor(id: string, user, global, winner){
+        this.id = id;
+        this.userVotes = user;
+        this.globalVotes = global;
+        this.winnerIndex = winner;
+    }
+
+    UpdateFromDynamicData(users, global)
+    {
+        this.userVotes = users;
+        this.globalVotes = global;
+    }
+
+    IncreaseVote(choiceIndex: number)
+    {
+        this.userVotes[choiceIndex]++;
+        this.globalVotes[choiceIndex]++;
+    }
+    DecreaseVote(choiceIndex: number)
+    {
+        this.userVotes[choiceIndex] = Math.max(this.userVotes[choiceIndex],0);
+        this.globalVotes[choiceIndex] = Math.max(this.globalVotes[choiceIndex],0);
+    }
+    EvaluateWinner()
+    {
+        var reorderGlobalVotes = this.globalVotes.sort((choiceA, choiceB)=>{
+            return choiceA-choiceB;
+        })
+        if(reorderGlobalVotes[0] == reorderGlobalVotes[1])
+        {
+            this.winnerIndex = -1;
+        }
+        else{
+            var maxVal = Math.max(...reorderGlobalVotes);
+            this.winnerIndex = reorderGlobalVotes.indexOf(maxVal);
         }
     }
 }

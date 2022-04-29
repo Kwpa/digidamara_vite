@@ -3,19 +3,22 @@ export default class StaticData
     teams!: TeamData[];
     notifications!: NotificationData[];
     voteScenarios!: VoteScenarioData[];
+    dynamicVoteOptions!: DynamicVoteOptionData[];
     appLabels!: AppLabelData[];
     videoContent!: VideoContentData[];
     chatChannels!: ChatChannelData[];
 
-    Init(teams_data, barks_data, items_data, story_data, notifications_data, voteScenarios_data, appLabels_data, videoContent_data, chatChannel_data)
+    Init(teams_data, barks_data, items_data, story_data, notifications_data, voteScenarios_data, dynamicVoteOptions_data, appLabels_data, videoContent_data, chatChannel_data)
     {
         console.log("INIT STATIC");
         this.teams = [];
         this.notifications = [];
         this.voteScenarios = [];
+        this.dynamicVoteOptions = [];
         this.appLabels = [];
         this.videoContent = [];
         this.chatChannels = [];
+
         //console.log(story_data[0].teamId + " " + teams_data[0].id);
          
         for(var k in teams_data)
@@ -33,6 +36,10 @@ export default class StaticData
         for(var k in voteScenarios_data)
         {
             this.voteScenarios.push(new VoteScenarioData(voteScenarios_data[k]));
+        }
+        for(var k in dynamicVoteOptions_data)
+        {
+            this.dynamicVoteOptions.push(new DynamicVoteOptionData(dynamicVoteOptions_data[k]));
         }
         for(var k in appLabels_data)
         {
@@ -257,6 +264,32 @@ export class VoteScenarioData
         this.choiceTwo_description = votingScenarioData.choiceTwo_description;
         this.choiceTwo_consequence = votingScenarioData.choiceTwo_consequence;
       }
+}
+
+export class DynamicVoteOptionData
+{
+    id!: string;
+    title!: string;
+    description!: string;
+    consequence!: string;
+    round!: string;
+    active!: boolean;
+
+    constructor(voteOptionData) {
+        this.id = voteOptionData.id;
+        this.title = voteOptionData.title
+        this.description = voteOptionData.description;
+        this.consequence = voteOptionData.consequence;
+        this.round = voteOptionData.round;
+        if(voteOptionData.scenario_id == "TRUE")
+        {
+            this.active = true;
+        }
+        else
+        {
+            this.active = false;
+        }
+    }
 }
 
 export class AppLabelData

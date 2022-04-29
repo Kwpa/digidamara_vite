@@ -9,6 +9,7 @@ put Items.json
 put Story.json
 put Notifications.json
 put VotingScenarios.json
+put DynamicVoteOptions.json
 put Labels.json
 put VideoContent.json
 put ChatChannels.json
