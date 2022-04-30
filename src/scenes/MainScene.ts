@@ -19,7 +19,8 @@ import StoryAccordian from './elements/StoryAccordian';
 import ChatChannel from './elements/ChatChannel';
 import SlideDownButton from './elements/SlideDownButton';
 import VoteOption from './elements/VoteOption';
-import DynamicVoteScenario from './elements/VoteOption';
+import DynamicVoteScenario from './elements/DynamicVoteScenario';
+
 
 import Bulma from '../node_modules/bulma/css/bulma.css';
 import { ChannelMessage, ChannelMessageList, Client, Session, Socket, StorageObject, Users, User, Match, StorageObjects, MatchData, GroupList, Group, UserGroup } from "@heroiclabs/nakama-js";
@@ -35,6 +36,7 @@ import Image from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/imag
 import { Rectangle } from 'phaser3-rex-plugins/plugins/gameobjects/shape/shapes/geoms';
 import * as bulmaToast from 'bulma-toast';
 import DynamicData from './DynamicData';
+import VoteChoiceHTML from './VoteChoiceHTML';
 import { humanized_time_span } from '../utils/humanized_time_span.js';
 import NakaChannelMessage from './NakaChannelMessage';
 
@@ -43,6 +45,7 @@ export default class MainScene extends Phaser.Scene {
   localState!: LocalGameState;
   staticData!: StaticData;
   dynamicData!: DynamicData;
+  dynamicVoteChoicesHTML!: VoteChoiceHTML[];
   getSystemUsers!: User[];
 
   teams_data!: object;
@@ -117,7 +120,7 @@ export default class MainScene extends Phaser.Scene {
   overlayProgressContainer!: HTMLElement;
   overlayEliminated!: HTMLElement;
   voteContainer!: HTMLElement;
-  voteDynamicContainer!: HTMLElement;
+  
   avatarOverlay!: Phaser.GameObjects.DOMElement;
   videoPlayerContainer!: HTMLElement;
   notificationHome!: Phaser.GameObjects.DOMElement;
@@ -642,7 +645,6 @@ export default class MainScene extends Phaser.Scene {
     this.settingsFooterButton = this.footer.getChildByID('settings-footer-button') as HTMLElement;
     this.closeVotePageButton = this.votePage.getChildByID('close-voting-page-button') as HTMLElement;
     this.voteContainer = this.votePage.getChildByID('vote-container') as HTMLElement;
-    this.voteDynamicContainer = this.votePage.getChildByID('vote-dynamic-container') as HTMLElement;
     this.closeVideoPlayerButton = this.videoPlayerOverlay.getChildByID('video-overlay-button-close') as HTMLElement;
     this.playVideoPlayerButton = this.videoPlayerOverlay.getChildByID('video-player-button-play') as HTMLElement;
     this.pauseVideoPlayerButton = this.videoPlayerOverlay.getChildByID('video-player-button-pause') as HTMLElement;
@@ -790,6 +792,8 @@ export default class MainScene extends Phaser.Scene {
     spotlight.scaleX = Math.max(1, this.width / 1000);
 
     this.StarField();
+
+    this.SetupDynamicVoteChoices();
 
     await this.GetLatestStaticData();
     await this.StartClientConnection();
@@ -970,6 +974,11 @@ export default class MainScene extends Phaser.Scene {
       this.videoContent_data,
       this.chatChannels_data
     );
+  }
+
+  SetupDynamicVoteChoices()
+  {
+    this.dynamicVoteChoices = [];
   }
 
   async GetSystemUsers() {
@@ -1403,8 +1412,6 @@ export default class MainScene extends Phaser.Scene {
       var vote = new VoteScenarioState(voteState.id, choiceOne, choiceTwo, voteState.choiceOneVotesGlobal, voteState.choiceOneVotesGlobal, voteState.winnerIndex);
       voteStateList.push(vote);
     }
-
-    //todo : here! 
     
       var voteDynamicState = this.dynamicData.d_dynamicVoteOptionsState;
       var userChoices = await this.ReadFromDDMLocalStorageNumber(this.dynamicData.d_dynamicVoteOptionsState.id);
@@ -1508,7 +1515,7 @@ export default class MainScene extends Phaser.Scene {
 
     if(this.localState.round == 5)
     {
-      const dynamicVoteScenario = VoteScenario() as HTMLElement; //have to append into somewhere
+      const dynamicVoteScenario = DynamicVoteScenario() as HTMLElement; //have to append into somewhere
       const dynamicVoteScenarioTitle = dynamicVoteScenario.querySelector('#' + "dynamic-vote-scenario-title") as HTMLElement;
       const dynamicVoteScenarioContent = dynamicVoteScenario.querySelector('#' + "dynamic-vote-scenario-content") as HTMLElement;
       const dynamicVoteScenarioOptions = dynamicVoteScenario.querySelector('#' + "dynamic-vote-scenario-options") as HTMLElement;
@@ -1524,9 +1531,12 @@ export default class MainScene extends Phaser.Scene {
         } as object;
         const createOption = VoteOption(optionData) as HTMLElement;
         const optionTotalCount = createOption.querySelector("#total-count") as HTMLElement;
-        const optionChoiceSubtract = createOption.querySelector("#choice-subtract") as HTMLInputElement;
         const optionChoiceCount = createOption.querySelector("#choice-count") as HTMLInputElement;
+        const optionChoiceSubtract = createOption.querySelector("#choice-subtract") as HTMLInputElement;
         const optionChoiceAdd = createOption.querySelector("#choice-add") as HTMLInputElement;
+
+        //create the html references
+        this.dynamicVoteChoicesHTML.push(new VoteChoiceHTML(createOption, optionTotalCount, optionChoiceCount, optionChoiceSubtract, optionChoiceAdd));
 
         optionChoiceCount.innerHTML = todaysScenarioDynamicState.userVotes[count].toString();
         optionTotalCount.innerHTML = "Total Votes: " + todaysScenarioDynamicState.globalVotes[count].toString();
@@ -1572,6 +1582,7 @@ export default class MainScene extends Phaser.Scene {
         dynamicVoteScenarioOptions.append(createOption);  
         count++;
       });
+      this.voteContainer.innerHTML = "";
       this.voteContainer.append(dynamicVoteScenario);
     }
     else
@@ -2081,14 +2092,22 @@ export default class MainScene extends Phaser.Scene {
     this.roundCounter.innerHTML = this.localState.round.toString();
     this.SetOverlayProgress(this.localState.GetCurrentTeamState().currentEnergy, this.localState.roundEnergyRequirement);
 
-    if() // todo! if round five, just update based on dynamic
-
-    this.voteChoiceOneUser.innerHTML = this.localState.voteStates[this.localState.round - 1].choiceOneVotesUser.toString();
-    this.voteChoiceTwoUser.innerHTML = this.localState.voteStates[this.localState.round - 1].choiceTwoVotesUser.toString();
-    this.voteChoiceOneGlobal.innerHTML = "Total Votes: " + this.localState.voteStates[this.localState.round - 1].choiceOneVotesGlobal.toString();
-    this.voteChoiceTwoGlobal.innerHTML = "Total Votes: " + this.localState.voteStates[this.localState.round - 1].choiceTwoVotesGlobal.toString();
-
-
+    // todo! if round five, just update based on dynamic
+    if(this.localState.round == 5)
+    {
+      this.dynamicVoteChoicesHTML.forEach(
+        (element)=>{
+          element.optionTotalCount.innerHTML = this.localState.dynamicVoteState.globalVotes[this.localState.round - 1].toString();
+          element.optionCount.innerHTML = this.localState.dynamicVoteState.userVotes[this.localState.round - 1].toString();
+      })
+    } 
+    else
+    {
+      this.voteChoiceOneUser.innerHTML = this.localState.voteStates[this.localState.round - 1].choiceOneVotesUser.toString();
+      this.voteChoiceTwoUser.innerHTML = this.localState.voteStates[this.localState.round - 1].choiceTwoVotesUser.toString();
+      this.voteChoiceOneGlobal.innerHTML = "Total Votes: " + this.localState.voteStates[this.localState.round - 1].choiceOneVotesGlobal.toString();
+      this.voteChoiceTwoGlobal.innerHTML = "Total Votes: " + this.localState.voteStates[this.localState.round - 1].choiceTwoVotesGlobal.toString();
+    }
 
     this.UpdateLeaderboard();
     this.OrderLeaderboard();

@@ -1,0 +1,4 @@
+matchstate hander passes off the vote depending on if it is dynamic or not
+server then counts up the info
+
+question: do we need to update vote count and energy across all active users when match state occurs?
