@@ -12,6 +12,50 @@
     },
     {
         "id":  "v_002",
+        "title":  "- copy eliminated team here",
+        "description":  "- copy eliminated team here",
+        "choiceOne_title":  "- copy eliminated team here",
+        "choiceOne_description":  "- copy eliminated team here",
+        "choiceOne_consequences":  "- copy eliminated team here",
+        "choiceTwo_title":  "- copy eliminated team here",
+        "choiceTwo_description":  "- copy eliminated team here",
+        "choiceTwo_consequences":  "- copy eliminated team here"
+    },
+    {
+        "id":  "v_003",
+        "title":  "- copy eliminated team here",
+        "description":  "- copy eliminated team here",
+        "choiceOne_title":  "- copy eliminated team here",
+        "choiceOne_description":  "- copy eliminated team here",
+        "choiceOne_consequences":  "- copy eliminated team here",
+        "choiceTwo_title":  "- copy eliminated team here",
+        "choiceTwo_description":  "- copy eliminated team here",
+        "choiceTwo_consequences":  "- copy eliminated team here"
+    },
+    {
+        "id":  "v_004",
+        "title":  "- copy eliminated team here",
+        "description":  "- copy eliminated team here",
+        "choiceOne_title":  "- copy eliminated team here",
+        "choiceOne_description":  "- copy eliminated team here",
+        "choiceOne_consequences":  "- copy eliminated team here",
+        "choiceTwo_title":  "- copy eliminated team here",
+        "choiceTwo_description":  "- copy eliminated team here",
+        "choiceTwo_consequences":  "- copy eliminated team here"
+    },
+    {
+        "id":  "v_005",
+        "title":  "What do you think we should do?",
+        "description":  "The audience has spoken! These are the possible options:",
+        "choiceOne_title":  "- see dynamic vote options",
+        "choiceOne_description":  "- see dynamic vote options",
+        "choiceOne_consequences":  "- see dynamic vote options",
+        "choiceTwo_title":  "- see dynamic vote options",
+        "choiceTwo_description":  "- see dynamic vote options",
+        "choiceTwo_consequences":  "- see dynamic vote options"
+    },
+    {
+        "id":  "v_006",
         "title":  "Babe + Bas\n[Bobbleon]\n",
         "description":  "Eeekcoin takes a tumble as all power sources shut down. A sweeping wave of spirituality hits the galaxy, with some praying to unknown gods and others losing their wits in the streets.\n\nBefore the galaxy succumbs to this crisis, which of the following Ideals should guide the inhabitants in the final moments?\n\n(You\u0027ll find out the results tomorrow)",
         "choiceOne_title":  "Ideal of Playfulness",
@@ -22,7 +66,7 @@
         "choiceTwo_consequences":  "Beaming result to Bobbleon, reply in 24 space hours..."
     },
     {
-        "id":  "v_003",
+        "id":  "v_007",
         "title":  "Formation 16 + \nFormation 17\n[Apex]\n",
         "description":  "The Apex Galaxy has fallen to a mysterious illness called the Throx. The societies of hundreds of planets fracture in a myriad of ways, from denying it to valiantly fighting it at all costs.\n\nBefore the galaxy succumbs to this crisis, which of the following Ideals should guide the inhabitants in the final moments?\n\n(You\u0027ll find out the results tomorrow)\n",
         "choiceOne_title":  "Ideal of Consensus",
@@ -33,7 +77,7 @@
         "choiceTwo_consequences":  "Beaming result to Apex, reply in 24 space hours..."
     },
     {
-        "id":  "v_004",
+        "id":  "v_008",
         "title":  "Twill + Kitt\n[The Unknown]\n",
         "description":  "Riots are taking place at all major trade ports into The Unknown Galaxy after it has been discovered that the transport of essential zipunits has been poisoning workers and the major producers refuse to offer protections. Smugglers are taking advantage of the disruption.\n\nBefore the galaxy succumbs to this crisis, which of the following Ideals should guide the inhabitants in the final moments?\n\n(You\u0027ll find out the results tomorrow)\n",
         "choiceOne_title":  "Ideal of Invention",
@@ -44,7 +88,7 @@
         "choiceTwo_consequences":  "Beaming result toThe Unknown, reply in 24 space hours..."
     },
     {
-        "id":  "v_005",
+        "id":  "v_009",
         "title":  "Grunter\n[Gorgplain]\n",
         "description":  "The Gorgplain galaxy has reached the tipping point after its inhabitants consume the last reservoirs of an essential nourishing element, Gorglium. The looting of satellite asteroids commences, and solar neighborhoods react by forming protective militia.\n\nBefore the galaxy succumbs to this crisis, which of the following Ideals should guide the inhabitants in the final moments?\n\n(You\u0027ll find out the results tomorrow)\n",
         "choiceOne_title":  "Ideal of Autonomy",
@@ -55,7 +99,7 @@
         "choiceTwo_consequences":  "Beaming result to Gorgplain, reply in 24 space hours..."
     },
     {
-        "id":  "v_006",
+        "id":  "v_010",
         "title":  "Master Gauri + \nMaster Refilwe \n[Cushcush]\n",
         "description":  "The Cushcush Galaxy is descending into chaotic nebula storms. Inhabitants are celebrating the end of a way of life, and await in anticipation of what will come.\n\nBefore the galaxy succumbs to this crisis, which of the following Ideals should guide the inhabitants in the final moments?\n\n(You\u0027ll find out the results tomorrow)\n\n",
         "choiceOne_title":  "Ideal of Attunement",
@@ -66,7 +110,7 @@
         "choiceTwo_consequences":  "Beaming result to Cushcush, reply in 24 space hours..."
     },
     {
-        "id":  "v_007",
+        "id":  "v_011",
         "title":  "Enther + Aurum\n[Deep Innks]",
         "description":  "A nearby fleet of pirates destroy the Great Typewriter, cutting off the galaxy\u0027s source of great knowledge. Some give up and sink into the depths of deep time while others hide in whispers.\n\nBefore the galaxy succumbs to this crisis, which of the following Ideals should guide the inhabitants in the final moments?\n\n(You\u0027ll find out the results tomorrow)",
         "choiceOne_title":  "Ideal of Beauty",

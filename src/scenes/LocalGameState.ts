@@ -62,7 +62,7 @@ export default class LocalGameState
         console.log(state.name.toUpperCase());
     }
 
-    Init(username: string, round: number, actionPoints: number, maxActionPoints: number, sparksAwarded: number, energyRequirement: number, teamIDs : string[], voteStates, dynamicVoteState, teamStates)
+    Init(username: string, round: number, actionPoints: number, maxActionPoints: number, sparksAwarded: number, energyRequirement: number, teamIDs : string[], voteStates, dynamicVoteState : DynamicVoteScenarioState, teamStates)
     {
         this.actionPoints = actionPoints;
         this.sparksAwarded = sparksAwarded;
@@ -76,6 +76,7 @@ export default class LocalGameState
         this.SetCurrentTeamID()
         this.voteStates = voteStates;
         this.dynamicVoteState = dynamicVoteState;
+        console.log("dyna mo : " + this.dynamicVoteState.globalVotes);
         this.teamStates = teamStates;    
         this.notificationHomeStringArray = [];  
         this.chatChannels = [];
@@ -192,6 +193,14 @@ export default class LocalGameState
 
     HaveSpentSparksOnTodaysDynamicVote(choice: number)
     {
+        console.log("what is " + this.dynamicVoteState.userVotes);
+        if(Array.isArray(this.dynamicVoteState.userVotes))
+        {
+            console.log("is array");
+        }
+        else{
+            console.log("is not array");
+        }
         var array = this.dynamicVoteState.userVotes.filter(p=>p>0);
         return array.length > 0;
     }
@@ -558,11 +567,13 @@ export class DynamicVoteScenarioState
         this.id = id;
         this.userVotes = user;
         this.globalVotes = global;
+        console.log("set this list - " + this.globalVotes);
         this.winnerIndex = winner;
     }
 
     UpdateFromDynamicData(users, global)
     {
+        console.log("Update from Dynamic Data");
         this.userVotes = users;
         this.globalVotes = global;
     }
@@ -574,8 +585,8 @@ export class DynamicVoteScenarioState
     }
     DecreaseVote(choiceIndex: number)
     {
-        this.userVotes[choiceIndex] = Math.max(this.userVotes[choiceIndex],0);
-        this.globalVotes[choiceIndex] = Math.max(this.globalVotes[choiceIndex],0);
+        this.userVotes[choiceIndex] = Math.max(this.userVotes[choiceIndex]-1,0);
+        this.globalVotes[choiceIndex] = Math.max(this.globalVotes[choiceIndex]-1,0);
     }
     EvaluateWinner()
     {
