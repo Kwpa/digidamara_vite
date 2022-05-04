@@ -46,6 +46,7 @@ export default class MainScene extends Phaser.Scene {
   staticData!: StaticData;
   dynamicData!: DynamicData;
   dynamicVoteChoicesHTML!: VoteChoiceHTML[];
+  socket!: Socket;
   getSystemUsers!: User[];
 
   teams_data!: object;
@@ -120,6 +121,7 @@ export default class MainScene extends Phaser.Scene {
   overlayProgressContainer!: HTMLElement;
   overlayEliminated!: HTMLElement;
   voteContainer!: HTMLElement;
+  waitForDynamicVotes!: HTMLElement;
   
   avatarOverlay!: Phaser.GameObjects.DOMElement;
   videoPlayerContainer!: HTMLElement;
@@ -1113,8 +1115,8 @@ export default class MainScene extends Phaser.Scene {
     await this.GetLatestDynamicData();
     await this.SetupLocalState(username);
 
-    const socket = this.client.createSocket(this.webConfig.ssl);
-    await socket.connect(this.session, true);
+    this.socket = this.client.createSocket(this.webConfig.ssl);
+    await this.socket.connect(this.session, true);
 
     if (newUserStorage) {
       var c001id = await this.JoinGroup(this.session, this.client, "c_001");
@@ -1145,20 +1147,20 @@ export default class MainScene extends Phaser.Scene {
     // use object keys to get each groupId
     for (var key in this.localState.chatChannels) {
       var groupId = this.localState.chatChannels[key];
-      await this.JoinGroupChat(socket, groupId);
+      await this.JoinGroupChat(this.socket, groupId);
     }
 
     await this.SetupChatChannelsAndPages();
-    await this.SetupTeamProfiles(socket);
+    await this.SetupTeamProfiles(this.socket);
     this.SetupLeaderboard();
     await this.SetupTeamAvatars();
-    await this.SetupVotePage(socket);
+    await this.SetupVotePage(this.socket);
 
-    await this.JoinMatch(socket);
-    await this.ReceiveMatchState(socket);
+    await this.JoinMatch(this.socket);
+    await this.ReceiveMatchState(this.socket);
 
     var roomname = "PublicChat";
-    await this.initializeChat(socket);
+    await this.initializeChat(this.socket);
     await this.AddEventListeners();
     this.StartRefreshTimer();
     this.StartTimeAgoTimer();
@@ -1438,7 +1440,7 @@ export default class MainScene extends Phaser.Scene {
     var sparks = await this.ReadFromDDMLocalStorageNumber("sparks");
     
     
-    this.localState.Init(username, this.dynamicData.dynamicRoundState.round, actionPoints, 5, sparks, this.dynamicData.dynamicRoundState.energyRequirement, teamIdList, voteStateList, voteDynamicState, teamStateList);
+    this.localState.Init(username, this.dynamicData.dynamicRoundState.round, this.dynamicData.dynamicRoundState.showDynamicVotes, actionPoints, 5, sparks, this.dynamicData.dynamicRoundState.energyRequirement, teamIdList, voteStateList, voteDynamicState, teamStateList);
     
     if (this.newRound) {
       await this.WriteToDDMLocalStorage(["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
@@ -1523,92 +1525,26 @@ export default class MainScene extends Phaser.Scene {
 
     var todaysScenario = this.staticData.voteScenarios[this.localState.round - 1];
     var todaysScenarioState = this.localState.voteStates[this.localState.round - 1];
-    
+    this.waitForDynamicVotes = this.votePage.getChildByID("wait-for-dynamic-votes") as HTMLElement;
+    var waitTitle = this.votePage.getChildByID("wait-for-dynamic-votes-title") as HTMLElement;
+    var waitContent = this.votePage.getChildByID("wait-for-dynamic-votes-content") as HTMLElement;
+    waitTitle.innerHTML = this.GetLabel("l_wait_title") as string;
+    waitContent.innerHTML = this.GetLabel("l_wait_content") as string;
     // todo figure out why we don't get uservotes
     const todaysScenarioDynamicState = this.localState.dynamicVoteState;
-    console.log("winnderdinner " + todaysScenarioDynamicState.winnerIndex);
-
-    if(this.localState.round == 5)
+    
+    if(this.localState.round == 5 && this.localState.showDynamicVoteOptions == true)
     {
-      const dynamicVoteScenario = DynamicVoteScenario() as HTMLElement; //have to append into somewhere
-      const dynamicVoteScenarioTitle = dynamicVoteScenario.querySelector('#' + "dynamic-vote-scenario-title") as HTMLElement;
-      const dynamicVoteScenarioContent = dynamicVoteScenario.querySelector('#' + "dynamic-vote-scenario-content") as HTMLElement;
-      const dynamicVoteScenarioOptions = dynamicVoteScenario.querySelector('#' + "dynamic-vote-scenario-options") as HTMLElement;
-
-      dynamicVoteScenarioTitle.innerHTML = todaysScenario.title;
-      dynamicVoteScenarioContent.innerHTML = todaysScenario.description;
-      var count = 0;
-
-      this.staticData.dynamicVoteOptions.forEach((option) =>{
-        const optionData = {
-          title: option.title,
-          description: option.description 
-        } as object;
-        const createOption = VoteOption(optionData) as HTMLElement;
-        const optionTotalCount = createOption.querySelector("#total-count") as HTMLElement;
-        const optionChoiceCount = createOption.querySelector("#choice-count") as HTMLInputElement;
-        const optionChoiceSubtract = createOption.querySelector("#choice-subtract") as HTMLInputElement;
-        const optionChoiceAdd = createOption.querySelector("#choice-add") as HTMLInputElement;
-        optionChoiceSubtract.setAttribute("vote_id", count.toString());
-        optionChoiceAdd.setAttribute("vote_id", count.toString());
-
-        //create the html references
-        this.dynamicVoteChoicesHTML.push(new VoteChoiceHTML(createOption, optionTotalCount, optionChoiceCount, optionChoiceSubtract, optionChoiceAdd));
-
-        optionChoiceCount.innerHTML = todaysScenarioDynamicState.userVotes[count].toString();
-        optionTotalCount.innerHTML = "Total Votes: " + todaysScenarioDynamicState.globalVotes[count].toString();
-        
-        optionChoiceSubtract.onclick = async (el) => {
-          var vote_id = el.currentTarget?.getAttribute("vote_id") as string;
-          var vote_id_val = parseInt(vote_id);
-          
-          if (this.localState.HaveSpentSparksOnTodaysDynamicVote(vote_id_val)) {
-            this.localState.dynamicVoteState.DecreaseVote(vote_id_val);
-            this.localState.GainSparks(1);
-            await this.WriteToDDMLocalStorage(["sparks"], [this.localState.sparksAwarded]);
-            
-            //get local data
-            const localVoteData = await this.ReadFromDDMLocalStorage("dynamicVote") as object;
-            //add a property if if doesn't exist / otherwise update it
-            localVoteData["users"][vote_id_val] = this.localState.dynamicVoteState.userVotes[vote_id_val];
-            await this.WriteToDDMLocalStorage(["dynamicVote"], [localVoteData]);
-            
-            this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
-            optionChoiceCount.innerHTML = this.localState.dynamicVoteState.userVotes[vote_id_val].toString();
-            optionTotalCount.innerHTML = "Total Votes: " + this.localState.dynamicVoteState.globalVotes[vote_id_val].toString();
-            this.SendDynamicVoteMatchState(socket, "dynamicVote", vote_id_val, -1);
-          }
-        };
-        
-        optionChoiceAdd.onclick = async (el) => {
-          var vote_id = el.currentTarget?.getAttribute("vote_id") as string;
-          var vote_id_val = parseInt(vote_id);
-          if (this.localState.HaveSparks()) {
-            this.localState.dynamicVoteState.IncreaseVote(vote_id_val);
-            this.localState.SpendSparks(1);
-            await this.WriteToDDMLocalStorage(["sparks"], [this.localState.sparksAwarded]);
-            
-            //get local data
-            const localVoteData = await this.ReadFromDDMLocalStorage("dynamicVote") as object;
-            //add a property if if doesn't exist / otherwise update it
-            localVoteData["users"][vote_id_val] = this.localState.dynamicVoteState.userVotes[vote_id_val];
-            await this.WriteToDDMLocalStorage(["dynamicVote"], [localVoteData]);
-            
-            this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
-            optionChoiceCount.innerHTML = this.localState.dynamicVoteState.userVotes[vote_id_val].toString();
-            optionTotalCount.innerHTML = "Total Votes: " + this.localState.dynamicVoteState.globalVotes[vote_id_val].toString();
-            this.SendDynamicVoteMatchState(socket, "dynamicVote", vote_id_val, 1);
-          }
-        };
-
-        dynamicVoteScenarioOptions.append(createOption);  
-        count++;
-      });
-      this.voteContainer.innerHTML = "";
-      this.voteContainer.append(dynamicVoteScenario);
+      this.HideWaitingForDynamicVotes();
+      await this.CreateDynamicVotes(todaysScenario, todaysScenarioDynamicState);
+    }
+    else if(this.localState.round == 5 && this.localState.showDynamicVoteOptions == false)
+    {
+      this.ShowWaitingForDynamicVotes();
     }
     else
     {
+      this.HideWaitingForDynamicVotes();
       var voteScenario = VoteScenario(todaysScenario) as HTMLElement;
       this.voteChoiceOneUser = voteScenario.querySelector('#' + "choiceOne") as HTMLElement;
       this.voteChoiceTwoUser = voteScenario.querySelector('#' + "choiceTwo") as HTMLElement;
@@ -1616,8 +1552,6 @@ export default class MainScene extends Phaser.Scene {
       this.voteChoiceTwoGlobal = voteScenario.querySelector('#' + "choice-two-total-count") as HTMLElement;
       this.voteChoiceOneUser.innerHTML = todaysScenarioState.choiceOneVotesUser.toString();
       this.voteChoiceTwoUser.innerHTML = todaysScenarioState.choiceTwoVotesUser.toString();
-
-      console.log(todaysScenarioState);
 
       this.voteChoiceOneGlobal.innerHTML = "Total Votes: " + todaysScenarioState.choiceOneVotesGlobal.toString();
       this.voteChoiceTwoGlobal.innerHTML = "Total Votes: " + todaysScenarioState.choiceTwoVotesGlobal.toString();
@@ -1678,6 +1612,104 @@ export default class MainScene extends Phaser.Scene {
       this.voteContainer.append(voteScenario);
       //element.append(voteScenario);
     }
+  }
+
+  ShowWaitingForDynamicVotes()
+  {
+    this.voteContainer.innerHTML = "";
+    this.waitForDynamicVotes.style.display = "block";
+  }
+
+  HideWaitingForDynamicVotes()
+  {
+    this.voteContainer.innerHTML = "";
+    this.waitForDynamicVotes.style.display = "none";
+  }
+
+  async CreateDynamicVotes(todaysScenario, todaysScenarioDynamicState)
+  {
+    const dynamicVoteScenario = DynamicVoteScenario() as HTMLElement; //have to append into somewhere
+    const dynamicVoteScenarioTitle = dynamicVoteScenario.querySelector('#' + "dynamic-vote-scenario-title") as HTMLElement;
+    const dynamicVoteScenarioContent = dynamicVoteScenario.querySelector('#' + "dynamic-vote-scenario-content") as HTMLElement;
+    const dynamicVoteScenarioOptions = dynamicVoteScenario.querySelector('#' + "dynamic-vote-scenario-options") as HTMLElement;
+
+    dynamicVoteScenarioTitle.innerHTML = todaysScenario.title;
+    dynamicVoteScenarioContent.innerHTML = todaysScenario.description;
+    var count = 0;
+
+    this.staticData.dynamicVoteOptions.forEach((option) =>{
+      const optionData = {
+        title: option.title,
+        description: option.description 
+      } as object;
+      const createOption = VoteOption(optionData) as HTMLElement;
+      console.log(createOption);
+      const optionTotalCount = createOption.querySelector("#total-count") as HTMLElement;
+      const optionChoiceCount = createOption.querySelector("#choice-count") as HTMLElement;
+      const optionChoiceSubtract = createOption.querySelector("#choice-subtract") as HTMLInputElement;
+      const optionChoiceAdd = createOption.querySelector("#choice-add") as HTMLInputElement;
+      optionChoiceSubtract.setAttribute("vote_id", count.toString());
+      optionChoiceAdd.setAttribute("vote_id", count.toString()); 
+
+      //create the html references
+      this.dynamicVoteChoicesHTML.push(new VoteChoiceHTML(createOption, optionTotalCount, optionChoiceCount, optionChoiceSubtract, optionChoiceAdd));
+      
+      optionTotalCount.innerHTML = "Total Votes: " + todaysScenarioDynamicState.globalVotes[count].toString();
+      optionChoiceCount.innerHTML = todaysScenarioDynamicState.userVotes[count].toString();
+      
+      optionChoiceSubtract.onclick = async (el) => {
+        var vote_id = el.currentTarget?.getAttribute("vote_id") as string;
+        var vote_id_val = parseInt(vote_id);
+        
+        if (this.localState.HaveSpentSparksOnTodaysDynamicVote(vote_id_val)) {
+          this.localState.dynamicVoteState.DecreaseVote(vote_id_val);
+          this.localState.GainSparks(1);
+          await this.WriteToDDMLocalStorage(["sparks"], [this.localState.sparksAwarded]);
+          
+          //get local data
+          const localVoteData = await this.ReadFromDDMLocalStorage("dynamicVote") as object;
+          //add a property if if doesn't exist / otherwise update it
+          localVoteData["users"][vote_id_val] = this.localState.dynamicVoteState.userVotes[vote_id_val];
+          await this.WriteToDDMLocalStorage(["dynamicVote"], [localVoteData]);
+          
+          this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
+          optionChoiceCount.innerHTML = this.localState.dynamicVoteState.userVotes[vote_id_val].toString();
+          optionTotalCount.innerHTML = "Total Votes: " + this.localState.dynamicVoteState.globalVotes[vote_id_val].toString();
+          this.SendDynamicVoteMatchState(socket, "dynamicVote", vote_id_val, -1);
+        }
+      };
+      
+      optionChoiceAdd.onclick = async (el) => {
+        var vote_id = el.currentTarget?.getAttribute("vote_id") as string;
+        var vote_id_val = parseInt(vote_id);
+        if (this.localState.HaveSparks()) {
+          this.localState.dynamicVoteState.IncreaseVote(vote_id_val);
+          this.localState.SpendSparks(1);
+          await this.WriteToDDMLocalStorage(["sparks"], [this.localState.sparksAwarded]);
+          
+          //get local data
+          const localVoteData = await this.ReadFromDDMLocalStorage("dynamicVote") as object;
+          //add a property if if doesn't exist / otherwise update it
+          localVoteData["users"][vote_id_val] = this.localState.dynamicVoteState.userVotes[vote_id_val];
+          await this.WriteToDDMLocalStorage(["dynamicVote"], [localVoteData]);
+          
+          this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
+          optionChoiceCount.innerHTML = this.localState.dynamicVoteState.userVotes[vote_id_val].toString();
+          optionTotalCount.innerHTML = "Total Votes: " + this.localState.dynamicVoteState.globalVotes[vote_id_val].toString();
+          this.SendDynamicVoteMatchState(socket, "dynamicVote", vote_id_val, 1);
+        }
+      };
+
+      dynamicVoteScenarioOptions.append(createOption);  
+      count++;
+    });
+    this.voteContainer.innerHTML = "";
+    this.voteContainer.append(dynamicVoteScenario);
+  }
+
+  GetLabel(id: string)
+  {
+    return this.staticData.appLabels.find(p=>p.id == id)?.content;
   }
 
   async SetupChatChannelsAndPages() {
@@ -2106,6 +2138,8 @@ export default class MainScene extends Phaser.Scene {
 
   async RefreshFromDynamicData() {
     console.log("refresh");
+    this.load.json('dynamicVoteOptions_content', '/assets/json/DynamicVoteOptions.json');
+    var storePrevShowDynamicVotesValue = this.localState.showDynamicVoteOptions;
     await this.GetLatestDynamicData();
     await this.ReloadLocalState();
     await this.WriteToDDMLocalStorage(["actionPoints", "energyRequirement", "round"], [this.localState.actionPoints, this.localState.roundEnergyRequirement, this.localState.round]);
@@ -2117,16 +2151,30 @@ export default class MainScene extends Phaser.Scene {
     // todo! if round five, just update based on dynamic
     if(this.localState.round == 5)
     {
-      var count = 0;
-      this.dynamicVoteChoicesHTML.forEach(
-        (element)=>{
-          console.log("testig : " + count);
-          var voteVal = this.localState.dynamicVoteState.globalVotes[count];
-          console.log("voteVAL = " + this.localState.dynamicVoteState.globalVotes);
-          element.optionTotalCount.innerHTML = "Total Votes: " + this.localState.dynamicVoteState.globalVotes[count].toString();
-          element.optionCount.innerHTML = this.localState.dynamicVoteState.userVotes[count].toString();
-          count++;
-      })
+      const todaysScenario = this.staticData.voteScenarios[this.localState.round - 1];
+      const todaysScenarioDynamicState = this.localState.dynamicVoteState;
+      if(this.localState.showDynamicVoteOptions == true && storePrevShowDynamicVotesValue == false)
+      {
+        this.HideWaitingForDynamicVotes();
+        await this.CreateDynamicVotes(todaysScenario,todaysScenarioDynamicState);
+      }
+      else if(this.localState.showDynamicVoteOptions == true && storePrevShowDynamicVotesValue == true)
+      {
+        var count = 0;
+        this.dynamicVoteChoicesHTML.forEach(
+          (element)=>{
+            console.log("testig : " + count);
+            var voteVal = this.localState.dynamicVoteState.globalVotes[count];
+            console.log("voteVAL = " + this.localState.dynamicVoteState.globalVotes);
+            element.optionTotalCount.innerHTML = "Total Votes: " + this.localState.dynamicVoteState.globalVotes[count].toString();
+            element.optionCount.innerHTML = this.localState.dynamicVoteState.userVotes[count].toString();
+            count++;
+        })
+      }
+      else
+      {
+        // don't update nothing!
+      }
     } 
     else
     {

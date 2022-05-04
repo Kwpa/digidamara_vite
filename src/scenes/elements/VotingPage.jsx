@@ -15,8 +15,13 @@ const VotingPage = (voteData) => {
         <div style="position: absolute; right:7px; top: 37px;">
           <img id="close-voting-page-button" class="hdrftr-icon" src="/assets/black_icons/icon_cross_black.png" style=""></img>
         </div>
+        <div id="wait-for-dynamic-votes">
+          <h1 id="wait-for-dynamic-votes-title"></h1>
+          <h2 id="wait-for-dynamic-votes-content"></h2>
+        </div>
         <div id="vote-container" class="popup-page-scroll-without-footer">
         </div>
+        
         
       </div>
     </div>
