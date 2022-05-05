@@ -529,10 +529,71 @@ export default class MainScene extends Phaser.Scene {
     this.previousTouch = touch;
   }
 
+  storeDeviceId!: string;
+  hasValidActivationCode: boolean = false;
+  hasValidStoredDeviceId: boolean = false;
+  emailQueryVar: string = "";
+  activationCodeQueryVar: string = "";
+
   async AsyncCreate() {
 
+    const params = new Proxy(new URLSearchParams(window.location.search), {
+      get: (searchParams, prop) => searchParams.get(prop as string),
+    });
+    // Get the value of "some_key" in eg "https://example.com/?some_key=some_value"
+    this.emailQueryVar = params["email"]; // "some_value"
+    //let usernameQueryVar = params["username"]; 
+    this.activationCodeQueryVar = params["activationCode"]; 
+    
+    if(this.emailQueryVar == null || this.emailQueryVar == undefined || this.emailQueryVar == "")
+    {
+      this.hasValidActivationCode = false;
+      console.log("no email value");
+    }
+    else
+    {
+      if(true) // activationCodeQueryVar is valid
+      {
+        this.hasValidActivationCode = true;
+        console.log("have an email value");
+      }  
+    }
+
+    
     await this.waitUntilAssetsLoaded();
     await this.LoadJSON();
+    await this.GetLatestStaticData();
+
+    if(!this.hasValidActivationCode)
+    {
+      // do you have a device id?
+      try {
+        const key = await localStorage.getItem('ddm_localData');
+        console.log("deviceId: " + key);
+        const value = JSON.parse(key as string);
+  
+        if (value !== null){
+          this.storeDeviceId = value.deviceId as string;
+          this.hasValidStoredDeviceId = true;
+          console.log("I have a valid device id");
+        }
+        else
+        {
+          console.log("I DON'T have a valid device id");
+          this.hasValidStoredDeviceId = false;
+        }
+      }
+      catch (error) {
+        console.log("An error occurred: %o", error);
+      }
+    }
+
+    if(!this.hasValidStoredDeviceId && !this.hasValidActivationCode)
+    {
+      console.log("I DON'T have a valid device id or a valid activation code");
+      return;
+    }
+
     this.localState.UpdateAppState(AppState.CurtainsClosed);
     //var firstTimeTodayCurtainsClosed = await this.ReadFromDDMLocalStorageBoolean("firstVisitTodayWithCurtainsClosed");
 
@@ -797,7 +858,6 @@ export default class MainScene extends Phaser.Scene {
 
     this.SetupDynamicVoteChoices();
 
-    await this.GetLatestStaticData();
     await this.StartClientConnection();
 
     this.ShowVideo(this, this.width, this.height, "wVVr4Jq_lMI");
@@ -1029,24 +1089,27 @@ export default class MainScene extends Phaser.Scene {
     var create = true;
     var newUserStorage = false;
 
-    try {
-      const key = await localStorage.getItem('ddm_localData');
-      console.log("deviceId: " + key);
-      const value = JSON.parse(key as string);
+    //if we have a code, its valid, and we don't have a device id yet:
+    if(this.hasValidActivationCode && !this.hasValidStoredDeviceId)
+    {
+      this.session = await this.client.authenticateEmail(this.emailQueryVar, this.activationCodeQueryVar); //username already set by dotnet client
+      deviceId = Phaser.Utils.String.UUID() as string;
+      console.log("made it to here");
+      var link = await this.client.linkDevice(this.session, {id: deviceId});
+      newUserStorage = true;
+    }
+    else if (this.hasValidStoredDeviceId){
+      deviceId = this.storeDeviceId;
+      try
+      {
+        this.session = await this.client.authenticateDevice(deviceId, false);
+      }
+      catch(error){
+        console.log("error" + error);
+      }
+      newUserStorage = false;
+    }
 
-      if (value == null) {
-        deviceId = Phaser.Utils.String.UUID() as string;
-        newUserStorage = true;
-      }
-      else {
-        deviceId = value.deviceId as string;
-      }
-    }
-    catch (error) {
-      console.log("An error occurred: %o", error);
-    }
-    var rand = Math.floor(Math.random() * 100000);
-    this.session = await this.client.authenticateDevice(deviceId, create);
     console.info("Successfully authenticated:", this.session);
 
     var account = await this.client.getAccount(this.session);
@@ -2138,7 +2201,13 @@ export default class MainScene extends Phaser.Scene {
 
   async RefreshFromDynamicData() {
     console.log("refresh");
+
     this.load.json('dynamicVoteOptions_content', '/assets/json/DynamicVoteOptions.json');
+    this.dynamicVoteOptions_data = this.cache.json.get('dynamicVoteOptions_content') as object;
+    this.staticData.UpdateDynamicVoteOptions(this.dynamicVoteOptions_data);
+
+    //todo - the same update for notifications
+
     var storePrevShowDynamicVotesValue = this.localState.showDynamicVoteOptions;
     await this.GetLatestDynamicData();
     await this.ReloadLocalState();

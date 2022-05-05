@@ -54,6 +54,14 @@ export default class StaticData
             this.chatChannels.push(new ChatChannelData(chatChannel_data[k]));
         }
     }
+
+    UpdateDynamicVoteOptions(dynamicVoteOptions_data)
+    {
+        for(var k in dynamicVoteOptions_data)
+        {
+            this.dynamicVoteOptions[k].UpdateDynamicVoteData(dynamicVoteOptions_data[k]);
+        }
+    }
 }
 
 export class BarkData
@@ -276,6 +284,23 @@ export class DynamicVoteOptionData
     active!: boolean;
 
     constructor(voteOptionData) {
+        this.id = voteOptionData.id;
+        this.title = voteOptionData.title
+        this.description = voteOptionData.description;
+        this.consequence = voteOptionData.consequence;
+        this.round = voteOptionData.round;
+        if(voteOptionData.scenario_id == "TRUE")
+        {
+            this.active = true;
+        }
+        else
+        {
+            this.active = false;
+        }
+    }
+
+    UpdateDynamicVoteData(voteOptionData)
+    {
         this.id = voteOptionData.id;
         this.title = voteOptionData.title
         this.description = voteOptionData.description;
