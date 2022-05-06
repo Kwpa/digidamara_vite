@@ -2719,6 +2719,7 @@ export default class MainScene extends Phaser.Scene {
 
         character.innerHTML = '<strong class="has-text-white">' + notificationData.character + '</strong>';
         icon.src = "/assets/white_icons/" + notificationData.iconPath;
+        
         if (notificationData.showTitle == "TRUE") {
           title.style.display = "block";
           title.innerHTML = notificationData.title;
@@ -3092,7 +3093,7 @@ export default class MainScene extends Phaser.Scene {
       var users = account.users as User[];
       var avatarUrl = users[0].avatar_url as string;
       var username = users[0].username as string;
-      userList[message.sender_id as string] = { "avatar_url": this.whiteIconPath+avatarUrl, "username": username };
+      userList[message.sender_id as string] = { "avatar_url": avatarUrl, "username": username };
     });
     this.staticData.notifications.forEach(
       (notification) => {

@@ -12,8 +12,8 @@ const NotificationHome = (notification, imageURL) => {
           <div id="notification-button-close" class="notification-close"> Close </div>
         </div>
       </div>
-      <div class="notification-icon" id="notification-icon-container">
-        <img id="notification-icon" class="notification-icon" src={imageURL}></img>
+      <div class="notification-icon-container" id="notification-icon-container">
+        <img id="notification-icon" class="notification-icon-image" src={imageURL}></img>
       </div>
       <div id="notification-box" class="box notification-box has-background-warning is-size-6">
         <h3 id="notification-title" class="is-size-4">

@@ -11,7 +11,7 @@ const ChatMessageCurrentUser = (username, content, imageURL, timeago, iconStyle)
       </div>
     </div>
     <div class="chat-user-icon" id="chat-icon-container" style={iconStyle}>
-      <img class="chat-icon" id="chat-icon" src={imageURL}></img>
+      <img class="chat-icon-image" id="chat-icon" src={imageURL}></img>
     </div>
     <div class="box has-background-primary chat-user-box is-size-6 mb-0 has-text-white">
       <span id="chat-content">

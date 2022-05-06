@@ -418,6 +418,7 @@ margin: auto;
 
 .chat-channel-icon
 {
+	box-sizing: content-box;
 	position: absolute;
 	top:0;
 	left: 15px;
@@ -474,7 +475,7 @@ margin: auto;
 
 .chat-user-icon,
 .chat-other-icon,
-.notification-icon
+.notification-icon-container
 {
 	box-sizing: content-box;
 	position: absolute;
@@ -537,12 +538,15 @@ margin: auto;
 	overflow-wrap: break-word;
 }
 
-.chat-icon
-.channel-icon
+.chat-icon-image,
+.channel-icon-image,
+.notification-icon-image
 {
 	width: 100%;
+	height: 100%;
 	object-fit: contain;
 }
+
 .notification-next,
 .notification-close
 {
