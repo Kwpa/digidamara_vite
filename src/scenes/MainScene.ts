@@ -56,9 +56,12 @@ export default class MainScene extends Phaser.Scene {
   notifications_data!: object;
   voteScenarios_data!: object;
   dynamicVoteOptions_data!: object;
+  colours_data!: object;
   labels_data!: object;
   videoContent_data!: object;
   chatChannels_data!: object;
+
+  whiteIconPath: string = "/assets/white_icons/";
 
   teamProfilePages!: Phaser.GameObjects.DOMElement[];
   header!: Phaser.GameObjects.DOMElement;
@@ -205,6 +208,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.json('eightpath', '/assets/json/paths/path_2.json');
     this.load.json('web_config', '/assets/json/web_config.json');
     this.load.json('dynamicVoteOptions_content', '/assets/json/DynamicVoteOptions.json');
+    this.load.json('colours_content', '/assets/json/Colours.json');
 
     this.load.audio('danceFloorAudioOne', ['/assets/audio/DDM-DanceFloor-1.mp3']);
     this.load.audio('danceFloorAudioTwo', ['/assets/audio/DDM-DanceFloor-2.mp3']);
@@ -379,6 +383,7 @@ export default class MainScene extends Phaser.Scene {
     this.videoContent_data = this.cache.json.get('video_content') as object;
     this.chatChannels_data = this.cache.json.get('chat_channels') as object;
     this.webConfig = this.cache.json.get('web_config') as object;
+    this.colours_data = this.cache.json.get("colours_content") as object;
   }
 
   IS_TOUCH!: number;
@@ -552,11 +557,38 @@ export default class MainScene extends Phaser.Scene {
     }
     else
     {
-      if(true) // activationCodeQueryVar is valid
+      var noLocalStorage = false; 
+      var lastEmail = await this.ReadFromDDMLocalStorage("email") as object;
+      if(lastEmail == undefined)
       {
-        this.hasValidActivationCode = true;
-        console.log("have an email value");
-      }  
+        noLocalStorage = true;
+      }
+      if(noLocalStorage)
+      {
+        if(true) // activationCodeQueryVar is valid
+        {
+          await this.WriteToDDMLocalStorage(["email"], [this.emailQueryVar])
+          this.hasValidActivationCode = true;
+          console.log("have an email value");
+        }  
+      }
+      else
+      {
+        if(this.emailQueryVar == lastEmail["email"] as string)
+        {
+          this.hasValidActivationCode = false;
+          console.log("have previous email");
+        }
+        else
+        {
+          if(true) // activationCodeQueryVar is valid
+          {
+            await this.WriteToDDMLocalStorage(["email"], [this.emailQueryVar])
+            this.hasValidActivationCode = true;
+            console.log("have an email value");
+          }  
+        }
+      }
     }
 
     
@@ -1034,7 +1066,8 @@ export default class MainScene extends Phaser.Scene {
       this.dynamicVoteOptions_data,
       this.labels_data,
       this.videoContent_data,
-      this.chatChannels_data
+      this.chatChannels_data,
+      this.colours_data
     );
   }
 
@@ -1097,6 +1130,7 @@ export default class MainScene extends Phaser.Scene {
       console.log("made it to here");
       var link = await this.client.linkDevice(this.session, {id: deviceId});
       newUserStorage = true;
+      await this.WriteToDDMLocalStorage(["email"],[{email: this.emailQueryVar}]);
     }
     else if (this.hasValidStoredDeviceId){
       deviceId = this.storeDeviceId;
@@ -1119,6 +1153,7 @@ export default class MainScene extends Phaser.Scene {
 
       localStorage.setItem('ddm_localData', JSON.stringify(
         {
+          "email" : "",
           "deviceId": deviceId,
           "username": username,
           "actionPoints": 5,
@@ -1162,12 +1197,12 @@ export default class MainScene extends Phaser.Scene {
         }
       ));
 
-      await this.client.updateAccount(this.session,
-        {
-          avatar_url: "https://source.boringavatars.com/marble/50/" + Math.floor(Math.random() * 100000)
-          //avatar_url: "https://sprites-as-a-service-tblytwilzq-ue.a.run.app/api/v1/sprite?q=" + Math.floor(Math.random() * 100000)
-        }
-      );
+      // await this.client.updateAccount(this.session,
+      //   {
+      //     avatar_url: "https://source.boringavatars.com/marble/50/" + Math.floor(Math.random() * 100000)
+      //     //avatar_url: "https://sprites-as-a-service-tblytwilzq-ue.a.run.app/api/v1/sprite?q=" + Math.floor(Math.random() * 100000)
+      //   }
+      // );
     }
 
     console.info("Successfully authenticated:", this.session);
@@ -1738,7 +1773,7 @@ export default class MainScene extends Phaser.Scene {
           this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
           optionChoiceCount.innerHTML = this.localState.dynamicVoteState.userVotes[vote_id_val].toString();
           optionTotalCount.innerHTML = "Total Votes: " + this.localState.dynamicVoteState.globalVotes[vote_id_val].toString();
-          this.SendDynamicVoteMatchState(socket, "dynamicVote", vote_id_val, -1);
+          this.SendDynamicVoteMatchState(this.socket, "dynamicVote", vote_id_val, -1);
         }
       };
       
@@ -1759,7 +1794,7 @@ export default class MainScene extends Phaser.Scene {
           this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
           optionChoiceCount.innerHTML = this.localState.dynamicVoteState.userVotes[vote_id_val].toString();
           optionTotalCount.innerHTML = "Total Votes: " + this.localState.dynamicVoteState.globalVotes[vote_id_val].toString();
-          this.SendDynamicVoteMatchState(socket, "dynamicVote", vote_id_val, 1);
+          this.SendDynamicVoteMatchState(this.socket, "dynamicVote", vote_id_val, 1);
         }
       };
 
@@ -1836,7 +1871,8 @@ export default class MainScene extends Phaser.Scene {
 
     if (this.localState.chatChannels[id] != null) {
 
-      var src = "/assets/white_icons/" + channel.iconPath + ".png";
+
+      var src = "/assets/team_emblems/" + channel.iconPath;
       const chatChannel = ChatChannel(channel.title, src) as HTMLElement;
       const chatChannelOpenButton = chatChannel.querySelector("#chat-channel-button-open") as HTMLElement;
 
@@ -2682,7 +2718,7 @@ export default class MainScene extends Phaser.Scene {
 
 
         character.innerHTML = '<strong class="has-text-white">' + notificationData.character + '</strong>';
-        icon.src = "/assets/white_icons/" + notificationData.iconPath + ".png";
+        icon.src = "/assets/white_icons/" + notificationData.iconPath;
         if (notificationData.showTitle == "TRUE") {
           title.style.display = "block";
           title.innerHTML = notificationData.title;
@@ -2946,22 +2982,37 @@ export default class MainScene extends Phaser.Scene {
   async initializeChat(socket: Socket) {
     //receive code is here
 
+    
     socket.onchannelmessage = async (message) => {
-
+      
       const key = this.GetKeyByValue(this.localState.chatChannels, message.group_id);
-
+      
       if (key != null) {
         var account = await this.client.getUsers(this.session, [message.sender_id]);
         var users = account.users as User[];
         var avatarUrl = users[0].avatar_url as string;
         var username = users[0].username as string;
+        
+        var styleString = "";
+        if(username == "SPACE STATION" || username == "THE PROMOTER")
+        {
+          styleString = "background-color: " + "#000000" + ";";
+        }
+        else
+        {
+          var number = parseInt(avatarUrl.split("=")[1] as string);
+          console.log("number " + number);            
+          var hexColor = "#" + this.staticData.colours[number].hexCode;
+          styleString = "background-color: " + hexColor + ";";
+        }
+
 
         if (message.sender_id == this.session.user_id) {
 
           // if chat open
           if (this.localState.GetCurrentChatChannelGroupId() == message.group_id) {
             var timeago = this.GetTime(message.create_time as string);
-            const messageElement = ChatMessageCurrentUser(username, message.content.message, avatarUrl, timeago) as HTMLElement;
+            const messageElement = ChatMessageCurrentUser(username, message.content.message, this.whiteIconPath+avatarUrl, timeago, styleString) as HTMLElement;
 
             if (this.localState.lastChatMessageUserId == message.sender_id) {
               var top = messageElement.querySelector('#chat-top') as HTMLElement;
@@ -2980,7 +3031,7 @@ export default class MainScene extends Phaser.Scene {
           // if chat open
           if (this.localState.GetCurrentChatChannelGroupId() == message.group_id) {
             var timeago = this.GetTime(message.create_time as string);
-            const messageElement = ChatMessageOtherUser(username, message.content.message, avatarUrl, timeago) as HTMLElement;
+            const messageElement = ChatMessageOtherUser(username, message.content.message, this.whiteIconPath+avatarUrl, timeago, styleString) as HTMLElement;
             this.chatMessageContainer.append(messageElement);
           }
           else {
@@ -3041,7 +3092,7 @@ export default class MainScene extends Phaser.Scene {
       var users = account.users as User[];
       var avatarUrl = users[0].avatar_url as string;
       var username = users[0].username as string;
-      userList[message.sender_id as string] = { "avatar_url": avatarUrl, "username": username };
+      userList[message.sender_id as string] = { "avatar_url": this.whiteIconPath+avatarUrl, "username": username };
     });
     this.staticData.notifications.forEach(
       (notification) => {
@@ -3157,12 +3208,27 @@ export default class MainScene extends Phaser.Scene {
             let getMessage: any = {};
             getMessage = message.content;
             var avatarUrl = storeUserDetails[message.sender_id as string].avatar_url as string;
+
             var username = storeUserDetails[message.sender_id as string].username as string;
+            var styleString = "";
+            console.log("username : : " + username);
+            if(username == "SPACE STATION" || username == "THE PROMOTER")
+            {
+              styleString = "background-color: " + "#000000" + ";";
+            }
+            else
+            {
+              var number = parseInt(avatarUrl.split("=")[1] as string);
+              console.log("number " + number);            
+              var hexColor = "#" + this.staticData.colours[number].hexCode;
+              styleString = "background-color: " + hexColor + ";";
+            }
+            
 
             var timeago = this.GetTime(message.create_time as string);
 
             if (message.sender_id == this.session.user_id) {
-              const messageElement = ChatMessageCurrentUser(username, getMessage.message, avatarUrl, timeago) as HTMLElement; // works! but can't find the message :/
+              const messageElement = ChatMessageCurrentUser(username, getMessage.message, this.whiteIconPath+avatarUrl, timeago, styleString) as HTMLElement; // works! but can't find the message :/
               var top = messageElement.querySelector('#chat-message') as HTMLElement;
 
               if (storeUserId == message.sender_id) {
@@ -3185,7 +3251,7 @@ export default class MainScene extends Phaser.Scene {
               this.chatMessageContainer.append(messageElement);
             }
             else {
-              const messageElement = ChatMessageOtherUser(username, getMessage.message, avatarUrl, timeago) as HTMLElement; // works! but can't find the message :/
+              const messageElement = ChatMessageOtherUser(username, getMessage.message, this.whiteIconPath+avatarUrl, timeago, styleString) as HTMLElement; // works! but can't find the message :/
 
               if (storeUserId == message.sender_id) {
                 var top = messageElement.querySelector('#chat-top') as HTMLElement;

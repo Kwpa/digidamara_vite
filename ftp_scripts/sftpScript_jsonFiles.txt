@@ -13,4 +13,5 @@ put DynamicVoteOptions.json
 put Labels.json
 put VideoContent.json
 put ChatChannels.json
+put Colours.json
 bye

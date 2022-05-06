@@ -421,7 +421,8 @@ margin: auto;
 	position: absolute;
 	top:0;
 	left: 15px;
-	width: 60px;
+	width: 54px;
+	height: 54px;
 	background-color:rgb(59, 59, 59);
 	border-radius: 50%;
 	border: 5px solid rgb(59, 59, 59);
@@ -475,10 +476,12 @@ margin: auto;
 .chat-other-icon,
 .notification-icon
 {
+	box-sizing: content-box;
 	position: absolute;
 	left: 4px;
 	margin-top:4px;
-	width: 60px;
+	width: 54px;
+	height: 54px;
 	background-color:rgb(59, 59, 59);
 	border-radius: 50%;
 	border: 5px solid rgb(59, 59, 59);
@@ -534,6 +537,12 @@ margin: auto;
 	overflow-wrap: break-word;
 }
 
+.chat-icon
+.channel-icon
+{
+	width: 100%;
+	object-fit: contain;
+}
 .notification-next,
 .notification-close
 {

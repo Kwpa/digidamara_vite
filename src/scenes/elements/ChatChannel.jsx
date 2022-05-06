@@ -12,7 +12,7 @@ const ChatChannel = (channelName, imageURL) => {
                 </div>
             </div>
             <div class="chat-channel-icon" id="notification-icon-container">
-                <img id="channel-icon" src={imageURL}></img>
+                <img id="channel-icon" class="channel-icon" src={imageURL}></img>
             </div>
         </div>
     )
