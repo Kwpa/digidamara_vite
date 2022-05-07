@@ -2624,9 +2624,8 @@ export default class MainScene extends Phaser.Scene {
       console.log("match_id" + this.match.match_id);
     }
     else {
-      var createMatch = await socket.createMatch();
-      this.match = await socket.joinMatch(createMatch.match_id);
-      console.log("match_id" + this.match.match_id);
+      // TODO Activate rest/maintenance mode here
+      console.warn("No active match found");
     }
   }
 
