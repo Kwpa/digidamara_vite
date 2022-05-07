@@ -57,7 +57,7 @@ export default class StaticData
         }
         for(var k in colours_data)
         {
-            console.log(colours_data[k]);
+            //console.log(colours_data[k]);
             this.colours.push(new ColoursData(colours_data[k]));
         }
     }
