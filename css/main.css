@@ -97,6 +97,9 @@ height: 100%;
 }
 .trophy-img
 {
+	margin-top: 4px;
+	width: 24px;
+	height: 24px;
 	vertical-align:middle;
 	pointer-events: none;
 }
@@ -338,11 +341,27 @@ max-width: 750px;
 margin: 0 auto;
 }
 
+
+.header-level-item
+{
+
+}
+
+
 .hdrftr-icon {
-width: 48px;
-height: 48px;
+width: 36px;
+height: 36px;
 margin-left: 10px;
 margin-right: 10px;
+}
+
+.hdr-icon
+{
+ margin-top: 0px;
+}
+.ftr-icon
+{
+	margin-bottom: 5px;
 }
 
 .badger {

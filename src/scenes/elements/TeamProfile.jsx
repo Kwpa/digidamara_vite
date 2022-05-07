@@ -25,16 +25,16 @@ const TeamProfile = (teamData) => {
                     </div>
                   </figure>
                   <div id="fan-club-icon" style="position: absolute; top:0; left:0;">
-                    <img src="/assets/images/fan.png" width="50" height="50"></img>
+                    <img src="/assets/ui_icons/icon_UI_fan_transparent_36px.png" width="54" height="54"></img>
                   </div>
                   <div id="upgrade-background-container" style="position: absolute; top:0; right:0;">
-                    <img src="/assets/images/upgrade.png" width="50" height="50"></img>
+                    <img src="/assets/ui_icons/icon_UI_upgrade_transparent_36px.png" width="54" height="54"></img>
                   </div>
                   <div style="position: absolute; 
                     top:0; 
                     right:0; 
-                    width: 50px; 
-                    height:50px; 
+                    width: 54px; 
+                    height: 54px; 
                     position: absolute;">
                     <div id="upgrade-value-container" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
                       <h1 id="upgrade-value">0</h1>
@@ -96,7 +96,7 @@ const TeamProfile = (teamData) => {
                   </div>
                   <div id="upgrade-container" class="level-item is-centered">
                     <div style="display: block">
-                      <button id="upgrade-button" class="button is-primary is-responsive" style="display: block; margin: 0 auto;"><img src="/assets/images/upgrade.png" width="30" height="30"></img> Upgrade</button>
+                      <button id="upgrade-button" class="button is-primary is-responsive" style="display: block; margin: 0 auto;"><img src="/assets/ui_icons/icon_UI_upgrade_transparent_36px.png" width="30" height="30"></img> Upgrade</button>
                       <div style="height: 20px;"></div>
                       <div style="margin: 0 auto;" class="tags has-addons tagsActive">
                         <span class="tag is-primary">-1 AP</span>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hello Bulma!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.0/js/all.js"></script>
+  </head>
+  
+  
+  <body>
+    <div class="level is-mobile">
+      <div class="level-item">
+        <div>
+          <h1 class="heading has-text-centered">
+            DAYS LEFT
+          </h1>
+          
+          <span>
+            <i class="fa fa-phone fa-1x is-size-3 has-text-centered"></i><span class="is-size-3 has-text-centered"> 4</span>
+          </span>  
+        </div>
+      </div>
+      <div class="level-item">
+        <div>
+          <h1 class="heading has-text-centered">
+            DAYS LEFT
+          </h1>
+          
+          <h1 class="is-size-3 has-text-centered">
+            <i class="fa fa-phone fa-1x"></i> 4
+          </h1>  
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

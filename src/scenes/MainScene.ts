@@ -1552,7 +1552,7 @@ export default class MainScene extends Phaser.Scene {
     
     this.actionPointsCounter.innerHTML = (await this.ReadFromDDMLocalStorageNumber("actionPoints")).toString();
     this.sparksCounter.innerHTML = (await this.ReadFromDDMLocalStorageNumber("sparks")).toString();
-    this.roundCounter.innerHTML = this.localState.round.toString();
+    this.roundCounter.innerHTML = (6-this.localState.round).toString();
 
     this.avatarOverlayButton.innerHTML = this.staticData.teams[this.localState.carouselPosition].title;
 
@@ -2250,7 +2250,7 @@ export default class MainScene extends Phaser.Scene {
     await this.WriteToDDMLocalStorage(["actionPoints", "energyRequirement", "round"], [this.localState.actionPoints, this.localState.roundEnergyRequirement, this.localState.round]);
 
     this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
-    this.roundCounter.innerHTML = this.localState.round.toString();
+    this.roundCounter.innerHTML = (6-this.localState.round).toString();
     this.SetOverlayProgress(this.localState.GetCurrentTeamState().currentEnergy, this.localState.roundEnergyRequirement);
 
     // todo! if round five, just update based on dynamic

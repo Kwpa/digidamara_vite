@@ -17,7 +17,7 @@ const AvatarOverlay = (avatarName, id) => {
             </div>
             <div id="teamProgressContainer" class="team-progress-container">
               <div class="energy-img-container">
-                <img class="energy-img" src="/assets/white_icons/icon_energy_white_32.png"></img>
+                <img class="energy-img" src="/assets/ui_icons/icon_UI_energy_outline_transparent_32px.png"></img>
               </div>
               <progress id="teamEnergyBar" class="progress is-warning team-progress-bar" value="30" max="100">30%</progress>
               <span class="energy-donated-number">
