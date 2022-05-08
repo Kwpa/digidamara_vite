@@ -32,6 +32,7 @@ export default class LocalGameState
     currentTeamID!: string;
     teamIDs!: string[];
     round: number = 0;
+    endOfShowDateTime!: string; 
     showDynamicVoteOptions: boolean = false;
     roundEnergyRequirement!: number;
     voteStates!: VoteScenarioState[];
@@ -63,11 +64,12 @@ export default class LocalGameState
         console.log(state.name.toUpperCase());
     }
 
-    Init(username: string, round: number, showDynamicVoteOptions: boolean, actionPoints: number, maxActionPoints: number, sparksAwarded: number, energyRequirement: number, teamIDs : string[], voteStates, dynamicVoteState : DynamicVoteScenarioState, teamStates)
+    Init(username: string, round: number, endOfShowDateTime: string, showDynamicVoteOptions: boolean, actionPoints: number, maxActionPoints: number, sparksAwarded: number, energyRequirement: number, teamIDs : string[], voteStates, dynamicVoteState : DynamicVoteScenarioState, teamStates)
     {
         this.actionPoints = actionPoints;
         this.sparksAwarded = sparksAwarded;
         this.round = round;
+        this.endOfShowDateTime = endOfShowDateTime;
         this.showDynamicVoteOptions = showDynamicVoteOptions;
         this.username = username;
         this.maxActionPoints = maxActionPoints;

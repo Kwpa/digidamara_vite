@@ -42,5 +42,9 @@
     {
         "id":  "l_wait_content",
         "content":  "Return at 6pm ADT to vote on the big things!"
+    },
+    {
+        "id":  "l_landing_page",
+        "content":  "\u003cp\u003eSome text here\u003cp\u003e\n\u003cp\u003eMore text here\u003c/p\u003e"
     }
 ]

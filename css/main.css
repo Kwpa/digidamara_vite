@@ -52,6 +52,14 @@ iframe {
 	min-height: 380px;
 }
 
+.landing-page
+{
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	width: 100%;
+}
+
 .video-badge, .chat-badge, .vote-badge
 {
 	display: none;

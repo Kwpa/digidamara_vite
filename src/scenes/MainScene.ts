@@ -20,6 +20,7 @@ import ChatChannel from './elements/ChatChannel';
 import SlideDownButton from './elements/SlideDownButton';
 import VoteOption from './elements/VoteOption';
 import DynamicVoteScenario from './elements/DynamicVoteScenario';
+import LandingPage from './elements/LandingPage';
 
 
 import Bulma from '../node_modules/bulma/css/bulma.css';
@@ -60,10 +61,12 @@ export default class MainScene extends Phaser.Scene {
   labels_data!: object;
   videoContent_data!: object;
   chatChannels_data!: object;
+  
 
   whiteIconPath: string = "/assets/white_icons/";
 
   teamProfilePages!: Phaser.GameObjects.DOMElement[];
+  landingPage!: Phaser.GameObjects.DOMElement; 
   header!: Phaser.GameObjects.DOMElement;
   footer!: Phaser.GameObjects.DOMElement;
   chatPage!: Phaser.GameObjects.DOMElement;
@@ -623,6 +626,7 @@ export default class MainScene extends Phaser.Scene {
     if(!this.hasValidStoredDeviceId && !this.hasValidActivationCode)
     {
       console.log("I DON'T have a valid device id or a valid activation code");
+      this.ShowLandingPage();
       return;
     }
 
@@ -886,6 +890,9 @@ export default class MainScene extends Phaser.Scene {
     spotlight.scaleY = this.height / 500;
     spotlight.scaleX = Math.max(1, this.width / 1000);
 
+
+    
+
     this.StarField();
 
     this.SetupDynamicVoteChoices();
@@ -915,6 +922,50 @@ export default class MainScene extends Phaser.Scene {
       console.log("firstVisitTodayWithCurtainsOpen");
       await this.CallNotificationsForTheDay();
     }
+  }
+
+  ShowLandingPage()
+  {
+    var innerHTML = this.GetLabel("l_landing_page") as string;
+    const landingPage = this.add.dom(0, 0, LandingPage(innerHTML) as HTMLElement);
+  }
+
+  StartTimeLeftTiner() {
+    var timer = this.time.addEvent({
+      delay: 1000,                // ms
+      callback: this.TimeLeftTimer,
+      //args: [],
+      callbackScope: this,
+      loop: true
+    });
+  }
+
+  MillisecondsToTime(duration) {
+    var milliseconds = Math.floor((duration % 1000) / 100);
+    var seconds = Math.floor((duration / 1000) % 60);
+    var minutes = Math.floor((duration / (1000 * 60)) % 60);
+    var hours = Math.floor((duration / (1000 * 60 * 60)));
+
+    var hoursString = hours.toString();
+    var minutesString = (minutes < 10) ? "0" + minutes : minutes;
+    var secondsString = (seconds < 10) ? "0" + seconds : seconds;
+
+    if(hours >= 10)
+    {
+      return hoursString + ":" + minutesString;  
+    }
+    else
+    {
+        return hoursString + ":" + minutesString + ":" + secondsString;
+    }
+
+  }
+
+  TimeLeftTimer()
+  {
+    var timeRange = new Date(this.localState.endOfShowDateTime).getTime() - new Date(Date.now()).getTime();
+    timeRange = Math.max(timeRange,0);
+    this.roundCounter.innerHTML = this.MillisecondsToTime(timeRange);
   }
 
   dailyNotificationCount: number = 0;
@@ -1262,6 +1313,7 @@ export default class MainScene extends Phaser.Scene {
     await this.AddEventListeners();
     this.StartRefreshTimer();
     this.StartTimeAgoTimer();
+    this.StartTimeLeftTiner();
 
     /* var rand = Math.floor(Math.random() * 10000);
     var email = "kaiuser_" + rand + "@gmail.com";
@@ -1538,7 +1590,7 @@ export default class MainScene extends Phaser.Scene {
     var sparks = await this.ReadFromDDMLocalStorageNumber("sparks");
     
     
-    this.localState.Init(username, this.dynamicData.dynamicRoundState.round, this.dynamicData.dynamicRoundState.showDynamicVotes, actionPoints, 5, sparks, this.dynamicData.dynamicRoundState.energyRequirement, teamIdList, voteStateList, voteDynamicState, teamStateList);
+    this.localState.Init(username, this.dynamicData.dynamicRoundState.round, this.dynamicData.dynamicRoundState.endOfShowDateTime, this.dynamicData.dynamicRoundState.showDynamicVotes, actionPoints, 5, sparks, this.dynamicData.dynamicRoundState.energyRequirement, teamIdList, voteStateList, voteDynamicState, teamStateList);
     
     if (this.newRound) {
       await this.WriteToDDMLocalStorage(["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
@@ -1552,7 +1604,9 @@ export default class MainScene extends Phaser.Scene {
     
     this.actionPointsCounter.innerHTML = (await this.ReadFromDDMLocalStorageNumber("actionPoints")).toString();
     this.sparksCounter.innerHTML = (await this.ReadFromDDMLocalStorageNumber("sparks")).toString();
-    this.roundCounter.innerHTML = (6-this.localState.round).toString();
+    //this.roundCounter.innerHTML = (6-this.localState.round).toString();
+
+    
 
     this.avatarOverlayButton.innerHTML = this.staticData.teams[this.localState.carouselPosition].title;
 
@@ -2250,7 +2304,7 @@ export default class MainScene extends Phaser.Scene {
     await this.WriteToDDMLocalStorage(["actionPoints", "energyRequirement", "round"], [this.localState.actionPoints, this.localState.roundEnergyRequirement, this.localState.round]);
 
     this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
-    this.roundCounter.innerHTML = (6-this.localState.round).toString();
+    //this.roundCounter.innerHTML = (6-this.localState.round).toString();
     this.SetOverlayProgress(this.localState.GetCurrentTeamState().currentEnergy, this.localState.roundEnergyRequirement);
 
     // todo! if round five, just update based on dynamic
@@ -3276,10 +3330,15 @@ export default class MainScene extends Phaser.Scene {
 
   GetTime(date: string) {
     var timeago = humanized_time_span(date);
-    console.log("Time ago: " + timeago);
+    console.log("Time ago: " + date + " " + timeago);
     return timeago;
   }
 
+  /* GetTime(date: string) {
+    var timeago = humanized_time_span(date);
+    console.log("Time ago: " + timeago);
+    return timeago;
+  } */
 
   UpdateStarField() {
     this.starFieldTexture.clear();
