@@ -1572,7 +1572,7 @@ export default class MainScene extends Phaser.Scene {
       var voteState = this.dynamicData.voteScenariosState[i];
       var choiceOne = await this.ReadFromDDMLocalStorageNumber(this.dynamicData.voteScenariosState[i].id + "_choiceOne");
       var choiceTwo = await this.ReadFromDDMLocalStorageNumber(this.dynamicData.voteScenariosState[i].id + "_choiceTwo");
-      var vote = new VoteScenarioState(voteState.id, choiceOne, choiceTwo, voteState.choiceOneVotesGlobal, voteState.choiceOneVotesGlobal, voteState.winnerIndex);
+      var vote = new VoteScenarioState(voteState.id, choiceOne, choiceTwo, voteState.choiceOneVotesGlobal, voteState.choiceTwoVotesGlobal, voteState.winnerIndex);
       voteStateList.push(vote);
     }
     
