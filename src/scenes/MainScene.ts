@@ -44,6 +44,7 @@ import { humanized_time_span } from '../utils/humanized_time_span.js';
 import NakaChannelMessage from './NakaChannelMessage';
 import Shepherd from 'shepherd.js';
 import 'shepherd.js/dist/css/shepherd.css';
+import AudioManager from '../AudioManager';
 
 export default class MainScene extends Phaser.Scene {
 
@@ -187,8 +188,11 @@ export default class MainScene extends Phaser.Scene {
   webConfig;
   rexVideoPlayer;
 
+  audioManager: AudioManager;
+
   constructor() {
     super('MainScene');
+    this.audioManager = new AudioManager(this);
   }
 
   preload() {
@@ -223,8 +227,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.json('dynamicVoteOptions_content', '/assets/json/DynamicVoteOptions.json');
     this.load.json('colours_content', '/assets/json/Colours.json');
 
-    this.load.audio('danceFloorAudioOne', ['/assets/audio/DDM-DanceFloor-1.mp3']);
-    this.load.audio('danceFloorAudioTwo', ['/assets/audio/DDM-DanceFloor-2.mp3']);
+    this.audioManager.LoadAudio();
 
     //this.load.on('complete', () => {this.flag = true});
   }
@@ -1751,9 +1754,7 @@ export default class MainScene extends Phaser.Scene {
       }]
     }) as StorageObjects;
 
-
     //todo: need to write dynamic votes properly
-
     var getDynamicVotes = await this.client.readStorageObjects(this.session, {
       "object_ids": [{
         "collection": "dynamic_voting_scenarios",
@@ -1763,7 +1764,6 @@ export default class MainScene extends Phaser.Scene {
     }) as StorageObjects;
 
     var votesStateData: VoteScenarioState[] = [];
-
 
     // todo here to investigate?
       var vote = getDynamicVotes.objects[0];
@@ -1802,7 +1802,7 @@ export default class MainScene extends Phaser.Scene {
         parsedJson.choice2Votes,
         parsedJson.winner
       ));
-    }
+    }    
 
     //changed dynamic data
     this.dynamicData = new DynamicData(teamsStateData, this.parsedUserStorage, roundObject, votesStateData, dynamicVotesStateData);
