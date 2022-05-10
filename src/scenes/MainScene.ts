@@ -722,7 +722,7 @@ export default class MainScene extends Phaser.Scene {
     this.votePage.setVisible(false);
     this.helpPage.setVisible(false);
     this.settingsPage.setVisible(false);
-
+    
     //audio
     this.danceFloorAudioOne = this.sound.add('danceFloorAudioOne', {
       volume: 0.4,
@@ -771,12 +771,12 @@ export default class MainScene extends Phaser.Scene {
     }
     this.videoFooterButton.onclick = () => {
       this.SetPage("videoOverlay");
-      this.FadeOutDanceFloorAudio();
+      //this.FadeOutDanceFloorAudio();
       this.tapAreaLeft.removeInteractive();
       this.tapAreaRight.removeInteractive();
     }
     this.closeVideoPlayerButton.onclick = () => {
-      this.FadeInDanceFloorAudioOne();
+      //this.FadeInDanceFloorAudioOne();
       this.PauseCurrentVideo();
       this.SetPage("avatarOverlay");
       this.tapAreaLeft.setInteractive();
@@ -905,15 +905,15 @@ export default class MainScene extends Phaser.Scene {
 
     if (!this.sound.locked) {
       // already unlocked so play
-      this.danceFloorAudioOne.play();
-      this.danceFloorAudioTwo.play();
+      //this.danceFloorAudioOne.play();
+      //this.danceFloorAudioTwo.play();
 
     }
     else {
       // wait for 'unlocked' to fire and then play
       this.sound.once(Phaser.Sound.Events.UNLOCKED, () => {
-        this.danceFloorAudioOne.play();
-        this.danceFloorAudioTwo.play();
+        //this.danceFloorAudioOne.play();
+        //this.danceFloorAudioTwo.play();
       })
     }
 
@@ -2116,6 +2116,8 @@ export default class MainScene extends Phaser.Scene {
         k++;
         donateButton.onclick = async () => {
           if (this.localState.SpendActionPointOnDonation()) {
+            this.audioManager.PlayOneshot(AudioManager.sfx_ui_accent);
+            
             this.localState.GainSparks(1 + this.localState.GetUpgradeLevel());
             this.localState.teamStates[this.localState.carouselPosition].DonateEnergy();
             this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
@@ -2146,13 +2148,15 @@ export default class MainScene extends Phaser.Scene {
 
         fanClubButton.onclick = async () => {
           if (this.localState.SpendActionPointOnFanClub()) {
+            this.audioManager.PlayOneshot(AudioManager.sfx_ui_accent);
+
             this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
 
             this.localState.GetCurrentTeamState().JoinFanClub();
             await this.WriteToDDMLocalStorage(["actionPoints", this.localState.currentTeamID + "InFanClub"], [this.localState.actionPoints, true]);
 
             // audio
-            this.FadeInOutDanceFloorAudioTwo();
+            //this.FadeInOutDanceFloorAudioTwo();
 
             // unlock chat
 
@@ -2186,6 +2190,8 @@ export default class MainScene extends Phaser.Scene {
 
         upgradeButton.onclick = async () => {
           if (this.localState.SpendActionPointOnUpgrade()) {
+            this.audioManager.PlayOneshot(AudioManager.sfx_ui_accent);
+
             console.log("upgrade");
             this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
             this.localState.UpgradeTeam(this.localState.currentTeamID);
@@ -2203,6 +2209,8 @@ export default class MainScene extends Phaser.Scene {
         }
 
         closeButton.onclick = () => {
+          this.audioManager.PlayOneshot(AudioManager.sfx_close);
+
           this.SetPage("avatarOverlay");
           this.tapAreaLeft.setInteractive();
           this.tapAreaRight.setInteractive();
@@ -2527,12 +2535,14 @@ export default class MainScene extends Phaser.Scene {
     });
 
     this.tapAreaLeft.setInteractive()
-      .on('pointerdown', async (pointer, localX, localY, event) => {
+      .on('pointerdown', async (pointer, localX, localY, event) => {        
+        this.audioManager.PlayOneshot(AudioManager.sfx_left);
         await this.MoveCarousel(carousel, "left");
       });
 
     this.tapAreaRight.setInteractive()
-      .on('pointerdown', async (pointer, localX, localY, event) => {
+      .on('pointerdown', async (pointer, localX, localY, event) => {        
+        this.audioManager.PlayOneshot(AudioManager.sfx_right);
         await this.MoveCarousel(carousel, "right");
       });
 
@@ -2844,9 +2854,12 @@ export default class MainScene extends Phaser.Scene {
 
         this.notificationHome.depth = this.depthLayers["notifications"];
         this.notificationHome.setVisible(true);
+
+        this.audioManager.PlayOneshot(AudioManager.sfx_notification);
         this.AnimateIconWobble();
 
         nextButton.onclick = () => {
+          this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
           if (this.localState.NextNotificationHomeContent()) {
             content.innerHTML = this.localState.GetCurrentNotificationHomeContent();
             this.AnimateIconWobble();
@@ -2877,10 +2890,11 @@ export default class MainScene extends Phaser.Scene {
           }
         };
         closeButton.onclick = async () => {
+          this.audioManager.PlayOneshot(AudioManager.sfx_ui_confirm);
           await this.CloseNotification(id);
         };
         watchLatestVideoButton.onclick = async () => {
-          this.FadeOutDanceFloorAudio();
+          //this.FadeOutDanceFloorAudio();
           await this.CloseNotification(id);
           var list = this.GetListOfActiveVideos();
           this.localState.LatestVideoContent(list.length);
