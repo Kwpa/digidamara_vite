@@ -572,8 +572,7 @@ export default class MainScene extends Phaser.Scene {
       if(noLocalStorage)
       {
         if(true) // activationCodeQueryVar is valid
-        {
-          await this.WriteToDDMLocalStorage(["email"], [this.emailQueryVar])
+        {          
           this.hasValidActivationCode = true;
           console.log("have an email value");
         }  
@@ -588,15 +587,13 @@ export default class MainScene extends Phaser.Scene {
         else
         {
           if(true) // activationCodeQueryVar is valid
-          {
-            await this.WriteToDDMLocalStorage(["email"], [this.emailQueryVar])
+          {            
             this.hasValidActivationCode = true;
             console.log("have an email value");
           }  
         }
       }
     }
-
     
     await this.waitUntilAssetsLoaded();
     await this.LoadJSON();
@@ -1184,7 +1181,6 @@ export default class MainScene extends Phaser.Scene {
       console.log("made it to here");
       var link = await this.client.linkDevice(this.session, {id: deviceId});
       newUserStorage = true;
-      await this.WriteToDDMLocalStorage(["email"],[{email: this.emailQueryVar}]);
     }
     else if (this.hasValidStoredDeviceId){
       deviceId = this.storeDeviceId;
@@ -1207,7 +1203,7 @@ export default class MainScene extends Phaser.Scene {
 
       localStorage.setItem('ddm_localData', JSON.stringify(
         {
-          "email" : "",
+          "email" : this.emailQueryVar,
           "deviceId": deviceId,
           "username": username,
           "actionPoints": 5,
@@ -2274,18 +2270,27 @@ export default class MainScene extends Phaser.Scene {
   async ReadFromDDMLocalStorageNumber(key: string) {
     const data = await localStorage.getItem('ddm_localData');
     const json = JSON.parse(data as string);
+    if (json === null) {
+      return undefined;
+    }
     return json[key] as number;
   }
 
   async ReadFromDDMLocalStorage(key: string) {
     const data = await localStorage.getItem('ddm_localData');
     const json = JSON.parse(data as string);
+    if (json === null) {
+      return undefined;
+    }
     return json[key] as object;
   }
 
   async ReadFromDDMLocalStorageBoolean(key: string) {
     const data = await localStorage.getItem('ddm_localData');
     const json = JSON.parse(data as string);
+    if (json === null) {
+      return undefined;
+    }
     return json[key] as boolean;
   }
 
