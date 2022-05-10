@@ -119,5 +119,16 @@
         "choiceTwo_title":  "Ideal of Wisdom",
         "choiceTwo_description":  "a thing",
         "choiceTwo_consequences":  "Beaming result to Deep Innks, reply in 24 space hours..."
+    },
+    {
+        "id":  "v_101",
+        "title":  "Pets in Space",
+        "description":  "The DIGIDAMARA broadcast wants to know! Are you a kitten or a puppy person?",
+        "choiceOne_title":  "Kitten",
+        "choiceOne_description":  "Impossibly cute",
+        "choiceOne_consequences":  "Cats rule.",
+        "choiceTwo_title":  "Puppy",
+        "choiceTwo_description":  "Faithful furballs",
+        "choiceTwo_consequences":  "Dogs deserve all the love"
     }
 ]

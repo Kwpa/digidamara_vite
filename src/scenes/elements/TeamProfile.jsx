@@ -25,10 +25,10 @@ const TeamProfile = (teamData) => {
                     </div>
                   </figure>
                   <div id="fan-club-icon" style="position: absolute; top:0; left:0;">
-                    <img src="/assets/ui_icons/icon_UI_fan_transparent_36px.png" width="54" height="54"></img>
+                    <img src="/assets/ui_icons/icon_UI_fan_outline_transparent_36px.png" width="54" height="54"></img>
                   </div>
                   <div id="upgrade-background-container" style="position: absolute; top:0; right:0;">
-                    <img src="/assets/ui_icons/icon_UI_upgrade_transparent_36px.png" width="54" height="54"></img>
+                    <img src="/assets/ui_icons/icon_UI_upgrade_outline_transparent_36px.png" width="54" height="54"></img>
                   </div>
                   <div style="position: absolute; 
                     top:0; 
@@ -80,7 +80,7 @@ const TeamProfile = (teamData) => {
                   </div>
                   <div id="fan-club-container" class="level-item">
                     <div style="display: block">
-                      <button id="fan-club-button" class="button is-primary is-responsive" style="display: block; margin: 0 auto;">Join Fan Club</button>
+                      <button id="fan-club-button" class="button is-primary is-responsive" style="display: block; margin: 0 auto;"><img src="/assets/ui_icons/icon_UI_fan_outline_transparent_36px.png" width="30" height="30"></img> Join Fan Club</button>
                       <div style="height: 20px;"></div>
                       <div class="tags has-addons tagsActive">
                         <span class="tag is-primary">-1 AP</span>
@@ -96,7 +96,7 @@ const TeamProfile = (teamData) => {
                   </div>
                   <div id="upgrade-container" class="level-item is-centered">
                     <div style="display: block">
-                      <button id="upgrade-button" class="button is-primary is-responsive" style="display: block; margin: 0 auto;"><img src="/assets/ui_icons/icon_UI_upgrade_transparent_36px.png" width="30" height="30"></img> Upgrade</button>
+                      <button id="upgrade-button" class="button is-primary is-responsive" style="display: block; margin: 0 auto;"><img src="/assets/ui_icons/icon_UI_upgrade_outline_transparent_36px.png" width="30" height="30"></img> Upgrade</button>
                       <div style="height: 20px;"></div>
                       <div style="margin: 0 auto;" class="tags has-addons tagsActive">
                         <span class="tag is-primary">-1 AP</span>

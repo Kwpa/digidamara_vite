@@ -45,6 +45,6 @@
     },
     {
         "id":  "l_landing_page",
-        "content":  "\u003cp\u003eSome text here\u003cp\u003e\n\u003cp\u003eMore text here\u003c/p\u003e"
+        "content":  "\u003cp\u003eSome text here\u003c/p\u003e\n\u003cp\u003eMore text here\u003c/p\u003e"
     }
 ]

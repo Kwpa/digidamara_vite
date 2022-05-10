@@ -7,7 +7,7 @@ const Header = () => {
       <div class='notification has-background-dark'>
         <nav class="level is-mobile icon-area">
           <div class="level-item has-text-centered header-level-item">
-            <div>
+            <div id="round-value">
               <h1 class="heading has-text-centered has-text-white">Time Left</h1>
               <div>
                 <h1 id="round-header-value" class="title is-size-3 has-text-white">-</h1>
@@ -15,10 +15,10 @@ const Header = () => {
             </div>
           </div>
           <div class="level-item has-text-centered">
-            <div>
+            <div id="ap-value">
               <h1 class="heading has-text-centered has-text-white">Energy</h1>
               <div>
-                <img class="hdrftr-icon hdr-icon" src="/assets/ui_icons/icon_UI_energy_transparent_36px.png"></img>
+                <img class="hdrftr-icon hdr-icon" src="/assets/ui_icons/icon_UI_energy_outline_transparent_32px.png"></img>
                 <span id="ap-header-value" class="title is-size-3 has-text-white">
                   -
                 </span>
@@ -26,10 +26,10 @@ const Header = () => {
             </div>
           </div>
           <div class="level-item has-text-centered">
-            <div>
+            <div id="sparks-value">
               <h1 class="heading has-text-centered has-text-white">Tickets</h1>
               <div>
-                <img class="hdrftr-icon hdr-icon" src="/assets/ui_icons/icon_UI_voteticket_link_transparent_36px.png"></img>
+                <img class="hdrftr-icon hdr-icon" src="/assets/ui_icons/icon_UI_ticket_outline_transparent_36px.png"></img>
                 <span id="sparks-header-value" class="title is-size-3 has-text-white">
                   -
                 </span>
@@ -39,7 +39,7 @@ const Header = () => {
           <div class="level-item has-text-centered">
             <div id="help-header-button" class="has-background-dark" style="padding: 0px;">
               <h1 class="heading has-text-centered has-text-white">Help</h1>
-              <img class="hdrftr-icon hdr-icon" src="/assets/ui_icons/icon_UI_help_transparent_36px.png"></img>
+              <img class="hdrftr-icon hdr-icon" src="/assets/ui_icons/icon_UI_help_outline_transparent_36px.png"></img>
             </div>
           </div>
         </nav>
