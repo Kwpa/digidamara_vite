@@ -12,7 +12,7 @@ const LeaderboardPage = () => {
               </div>
             </div>
           </nav>
-          <div class="table-container popup-page-scroll-with-tablerow">
+          <div id="leaderboard-table-container" class="table-container popup-page-scroll-with-tablerow">
             <table class="table">
               <thead>
                 <tr>

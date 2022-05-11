@@ -10,6 +10,7 @@
         "iconPath":  "icon_spacestation_transparent_36px.png",
         "title":  "Intro",
         "showTitle":  "TRUE",
+        "showCloseButton":  "FALSE",
         "content":  "Space Station here! Please watch this introductory broadcast!",
         "encryption":  "0"
     },
@@ -24,6 +25,7 @@
         "iconPath":  "icon_promoter_transparent_36px.png",
         "title":  "Welcome",
         "showTitle":  "TRUE",
+        "showCloseButton":  "TRUE",
         "content":  "Welcome back to Digidamara - who will YOU choose to birth the new universe?!\nYour final 6 teams need energy to keep dancing! \nThe team with the lowest energy at the end of each day will be eliminated!",
         "encryption":  "0"
     },
@@ -38,6 +40,7 @@
         "iconPath":  "icon_spacestation_transparent_36px.png",
         "title":  "How to Play",
         "showTitle":  "TRUE",
+        "showCloseButton":  "TRUE",
         "content":  "Thank you for joining us Spectators.\nYou can donate energy to teams using your action points.\nEvery time you spend an action point, you gain a spark.\nSparks can be used in our voting booth. For more instructions go to the Help section.",
         "encryption":  "0"
     },
@@ -52,6 +55,7 @@
         "iconPath":  "icon_promoter_transparent_36px.png",
         "title":  "Vote Now!",
         "showTitle":  "TRUE",
+        "showCloseButton":  "TRUE",
         "content":  "How are you doing you wonderful beings?\nSupporting your favourite team until the end?\nDon\u0027t forget to vote! We can\u0027t build the new universe without you!",
         "encryption":  "0"
     },
@@ -66,6 +70,7 @@
         "iconPath":  "icon_promoter_transparent_36px.png",
         "title":  "Goodnight",
         "showTitle":  "TRUE",
+        "showCloseButton":  "TRUE",
         "content":  "What an amazing day of competition! Their life and death are in your hands!\nSo dance until your side hurts, say I love you to those you love. For tomorrow may never come\nat least not in the way you expect it. Goodnight.",
         "encryption":  "0"
     },
@@ -80,6 +85,7 @@
         "iconPath":  "icon_spacestation_transparent_36px.png",
         "title":  "Entering Rest Mode",
         "showTitle":  "TRUE",
+        "showCloseButton":  "TRUE",
         "content":  "Thank you Spectators for your input.\nSystems sleep. \nSignal returns \\\\ 12pm Atlantic Space Time.",
         "encryption":  "0"
     },
@@ -94,6 +100,7 @@
         "iconPath":  "icon_promoter_transparent_36px.png",
         "title":  "New Day",
         "showTitle":  "TRUE",
+        "showCloseButton":  "TRUE",
         "content":  "Tune in, tune on, tune out, tune off and explode - it\u0027s DIGIDAMARA!!! \nIf not 100% satisfied - go get another version of satisfaction! \nLet\u0027s see where our contestants are today ",
         "encryption":  "0"
     },
@@ -108,6 +115,7 @@
         "iconPath":  "icon_spacestation_transparent_36px.png",
         "title":  "System Reactivated",
         "showTitle":  "TRUE",
+        "showCloseButton":  "TRUE",
         "content":  "Welcome Spectators\nEliminated team: the Eeksums, Babes and Bass!\nTop team: Grunter!\nVote Outcome: Ideal of Affection!",
         "encryption":  "0"
     },
@@ -122,6 +130,7 @@
         "iconPath":  "icon_promoter_transparent_36px.png",
         "title":  "Sad to see them go",
         "showTitle":  "FALSE",
+        "showCloseButton":  "TRUE",
         "content":  "Sad to see them go, 50 bajillion clickhours danced!\nYou voted for that Ideal eh? Oh you darlings!\nRemember to tune in to see how this choice plays out in today\u0027s Round Up at 3pm Atlantic Space time!",
         "encryption":  "0"
     },
@@ -136,6 +145,7 @@
         "iconPath":  "icon_spacestation_transparent_36px.png",
         "title":  "Reminder",
         "showTitle":  "FALSE",
+        "showCloseButton":  "TRUE",
         "content":  "Join a team fanclub to gain the ability to upgrade.\nUpgrading a team gives you more sparks when you donate energy to that team.",
         "encryption":  "0"
     },
@@ -150,6 +160,7 @@
         "iconPath":  "icon_promoter_transparent_36px.png",
         "title":  "Round Up Imminent",
         "showTitle":  "TRUE",
+        "showCloseButton":  "TRUE",
         "content":  "Tune in soon for our first Round Up of the action!\nRemember you can stay up to date on all the wizbang hootenanny in the Video section",
         "encryption":  "0"
     },
@@ -164,6 +175,7 @@
         "iconPath":  "icon_promoter_transparent_36px.png",
         "title":  "Incoming Round Up",
         "showTitle":  "TRUE",
+        "showCloseButton":  "TRUE",
         "content":  "",
         "encryption":  "0"
     },
@@ -178,6 +190,7 @@
         "iconPath":  "icon_promoter_transparent_36px.png",
         "title":  "Reminder",
         "showTitle":  "FALSE",
+        "showCloseButton":  "TRUE",
         "content":  "Competing for the biggest prize ever known - the universe!\nDon\u0027t they deserve your support? Get those actions out there and those sparks a\u0027poppin!",
         "encryption":  "0"
     },
@@ -192,6 +205,7 @@
         "iconPath":  "icon_promoter_transparent_36px.png",
         "title":  "Goodnight",
         "showTitle":  "FALSE",
+        "showCloseButton":  "TRUE",
         "content":  "Well folks that\u0027s another day of competition wrapped up in a nice bow.\nOur transmission is breaking up as we swing behind the liquid darkness field of our partner moon\nSee you on the other side",
         "encryption":  "0"
     },
@@ -206,6 +220,7 @@
         "iconPath":  "icon_spacestation_transparent_36px.png",
         "title":  "Entering Rest Mode",
         "showTitle":  "TRUE",
+        "showCloseButton":  "TRUE",
         "content":  "Thank you Spectators for your input.\nSystems sleep. \nSignal returns \\\\ 12pm Atlantic Space Time.",
         "encryption":  "0"
     },
@@ -220,7 +235,38 @@
         "iconPath":  "icon_spacestation_transparent_36px.png",
         "title":  "Story Unlocked!",
         "showTitle":  "TRUE",
+        "showCloseButton":  "TRUE",
         "content":  "Alert: New data files unlocked for all surviving teams!",
+        "encryption":  "0"
+    },
+    {
+        "id":  "n_101",
+        "type":  "arrivetoday",
+        "round":  "0",
+        "order":  "0",
+        "delay":  "1",
+        "buttonType":  "start_tutorial",
+        "character":  "SPACE STATION",
+        "iconPath":  "icon_spacestation_transparent_36px.png",
+        "title":  "Tutorial",
+        "showTitle":  "TRUE",
+        "showCloseButton":  "FALSE",
+        "content":  "Welcome to the DIGIDAMARA orientation session! You\u0027re just in time to take part!\nPlease follow this tutorial to get acquainted with the interactive broadcast interface!\nReady? Let\u0027s begin!",
+        "encryption":  "0"
+    },
+    {
+        "id":  "n_102",
+        "type":  "dynamic",
+        "round":  "0",
+        "order":  "1",
+        "delay":  "1",
+        "buttonType":  "end_tutorial",
+        "character":  "SPACE STATION",
+        "iconPath":  "icon_spacestation_transparent_36px.png",
+        "title":  "Tutorial",
+        "showTitle":  "TRUE",
+        "showCloseButton":  "FALSE",
+        "content":  "Tutorial complete! Need more help? Go to our discord server or tap the help button in the top right corner.",
         "encryption":  "0"
     }
 ]

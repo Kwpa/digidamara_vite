@@ -33,4 +33,8 @@ Import-Csv "public\assets\csv\ChatChannels.csv" | ConvertTo-Json | Set-Content -
 Invoke-WebRequest "https://docs.google.com/spreadsheets/d/1gdqnvbIQByJ_ukNYsLmbQBCnNSLgCzplQkRgaSPO72c/gviz/tq?tqx=out:csv&sheet=Colours" -OutFile "public\assets\csv\Colours.csv"
 Import-Csv "public\assets\csv\Colours.csv" | ConvertTo-Json | Set-Content -Path "public\assets\json\Colours.json"
 
+Invoke-WebRequest "https://docs.google.com/spreadsheets/d/1gdqnvbIQByJ_ukNYsLmbQBCnNSLgCzplQkRgaSPO72c/gviz/tq?tqx=out:csv&sheet=TutorialContent" -OutFile "public\assets\csv\TutorialContent.csv"
+Import-Csv "public\assets\csv\TutorialContent.csv" | ConvertTo-Json | Set-Content -Path "public\assets\json\TutorialContent.json"
+
+
 sftp -b ftp_scripts\sftpScript_jsonFiles.txt -P 18765 u1122-rivlkpske2gg@35.214.125.183

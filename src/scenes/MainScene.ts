@@ -1320,7 +1320,9 @@ export default class MainScene extends Phaser.Scene {
       await this.SetupTeamAvatars();
       await this.SetupVotePage(true);
       await this.SetupChatChannelsAndPages(false);
-      this.StartTutorial();
+      this.QueueNotificationHome("n_101");
+      await this.DisplayQueuedNotification(0);
+
     }
     else
     {
@@ -1382,7 +1384,7 @@ export default class MainScene extends Phaser.Scene {
 
   }
 
-  StartTutorial()
+  async StartTutorial()
   {
     const driver = new Driver(
     {
@@ -1394,7 +1396,7 @@ export default class MainScene extends Phaser.Scene {
       overlayClickNext: false,          // Whether the click on overlay should move next
       doneBtnText: 'Done',              // Text on the final button
       closeBtnText: 'Close',            // Text on the close button for this step
-      stageBackground: '#00a000',       // Background color for the staged behind highlighted element
+      stageBackground: '#000000',       // Background color for the staged behind highlighted element
       nextBtnText: 'Next',              // Next button text for this step
       prevBtnText: 'Previous',          // Previous button text for this step
       showButtons: true,               // Do not show control buttons in footer
@@ -1408,7 +1410,12 @@ export default class MainScene extends Phaser.Scene {
         description: 'Description for it',
       }
     }]);
-    driver.start();
+    //driver.start();
+  }
+
+  async EndTutorial()
+  {
+    
   }
 
   async AddEventListeners() {
@@ -2879,6 +2886,12 @@ export default class MainScene extends Phaser.Scene {
     }
     this.tapAreaLeft = this.add.rectangle(0, height / 2, width / 3, height - 240, 0x6666, 0);
     this.tapAreaRight = this.add.rectangle(width, height / 2, width / 3, height - 240, 0x6666, 0);
+    
+/*     const tapAreaHTMLLeft = this.add.dom(0,height/2,"div", 
+    `background-color: lime; width: ${width/3}; height: ${height-240};`
+    ,"");
+    tapAreaHTMLLeft.setDepth(200); */
+
     var cappedWidth = width;
     var cappedWidth = Math.min(width, 700);
     const tapAreaLeftArrow = this.add.image(cappedWidth / (32 / (2)), height / 2, 'arrow');
@@ -3144,8 +3157,11 @@ export default class MainScene extends Phaser.Scene {
         var watchLatestVideoButton = this.notificationHome.getChildByID("notification-button-watch-latest-video") as HTMLInputElement;
         var viewTodaysVoteButton = this.notificationHome.getChildByID("notification-button-todays-vote") as HTMLInputElement;
         var viewFanClubChat = this.notificationHome.getChildByID("notification-button-fan-club-chat") as HTMLInputElement;
+        var startTutorialButton = this.notificationHome.getChildByID("notification-button-start-tutorial") as HTMLInputElement;
+        var endTutorialButton = this.notificationHome.getChildByID("notification-button-end-tutorial") as HTMLInputElement;
         var box = this.notificationHome.getChildByID("notification-box") as HTMLElement;
 
+        var closeButtonShow = true;
 
         character.innerHTML = '<strong class="has-text-white">' + notificationData.character + '</strong>';
         icon.src = "/assets/white_icons/" + notificationData.iconPath;
@@ -3156,6 +3172,13 @@ export default class MainScene extends Phaser.Scene {
         }
         else {
           title.style.display = "none";
+        }
+
+        if (notificationData.showCloseButton == "TRUE") {
+          
+        }
+        else {
+          closeButtonShow = false;
         }
 
         if(notificationData.character == "SPACE STATION")
@@ -3176,33 +3199,56 @@ export default class MainScene extends Phaser.Scene {
         content.prepend(this.localState.GetCurrentNotificationHomeContent());
         if (this.localState.notificationHomeContentLength == 1) {
           nextButton.style.display = "none";
-          closeButton.style.display = "block";
+          if(closeButtonShow)
+          {
+            closeButton.style.display = "block";
+          }
+          else
+          {
+            closeButton.style.display = "none";
+          }
 
           switch (notificationData.buttonType) {
             case "watch_latest_video":
               watchLatestVideoButton.style.display = "block";
               viewFanClubChat.style.display = "none";
               viewTodaysVoteButton.style.display = "none";
+              startTutorialButton.style.display = "none";
               break;
 
             case "view_todays_vote":
               watchLatestVideoButton.style.display = "none";
               viewFanClubChat.style.display = "none";
               viewTodaysVoteButton.style.display = "block";
-
+              startTutorialButton.style.display = "none";
               break;
 
             case "view_fan_club_chat":
               watchLatestVideoButton.style.display = "none";
               viewFanClubChat.style.display = "block";
               viewTodaysVoteButton.style.display = "none";
+              startTutorialButton.style.display = "none";
+              break;
 
+            case "start_tutorial":
+              watchLatestVideoButton.style.display = "none";
+              viewFanClubChat.style.display = "none";
+              viewTodaysVoteButton.style.display = "none";
+              startTutorialButton.style.display = "block";
+              break;
+              
+            case "end_tutorial":
+              watchLatestVideoButton.style.display = "none";
+              viewFanClubChat.style.display = "none";
+              viewTodaysVoteButton.style.display = "none";
+              startTutorialButton.style.display = "none";
               break;
 
             case "none":
               watchLatestVideoButton.style.display = "none";
               viewFanClubChat.style.display = "none";
               viewTodaysVoteButton.style.display = "none";
+              startTutorialButton.style.display = "none";
               break;
           }
         }
@@ -3210,8 +3256,10 @@ export default class MainScene extends Phaser.Scene {
           nextButton.style.display = "block";
           closeButton.style.display = "none";
           watchLatestVideoButton.style.display = "none";
-              viewFanClubChat.style.display = "none";
-              viewTodaysVoteButton.style.display = "none";
+          viewFanClubChat.style.display = "none";
+          viewTodaysVoteButton.style.display = "none";
+          startTutorialButton.style.display = "none";
+          endTutorialButton.style.display = "none";
         }
 
         this.notificationHome.depth = this.depthLayers["notifications"];
@@ -3226,7 +3274,15 @@ export default class MainScene extends Phaser.Scene {
           else {
             content.innerHTML = this.localState.GetCurrentNotificationHomeContent();
             nextButton.style.display = "none";
-            closeButton.style.display = "block";
+            
+            if(closeButtonShow)
+            {
+              closeButton.style.display = "block";
+            }
+            else
+            {
+              closeButton.style.display = "none";
+            }
 
             switch (notificationData.buttonType) {
               case "watch_latest_video":
@@ -3269,6 +3325,14 @@ export default class MainScene extends Phaser.Scene {
         viewTodaysVoteButton.onclick = async () => {
           await this.CloseNotification(id);
           this.SetPage("votePage");
+        };
+        startTutorialButton.onclick = async () => {
+          await this.CloseNotification(id);
+          await this.StartTutorial();
+        };
+        endTutorialButton.onclick = async () => {
+          await this.CloseNotification(id);
+          await this.EndTutorial();
         };
       }
     }

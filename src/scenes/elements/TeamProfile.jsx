@@ -45,7 +45,7 @@ const TeamProfile = (teamData) => {
               <div class="level-item" style="margin: 20px;">
                 <div style="display: block;">
                   <div class="divider">Energy Status</div>
-                  <div class="box has-background-light">
+                  <div id="team-energy-bar-container" class="box has-background-light">
                     <progress id="teamEnergyBar" class="progress is-warning" value="30" max="100" style="background: #696969;">30%</progress>
                     <div class="message is-warning" style="margin-right: 20px;">
                       <div class="message-body">

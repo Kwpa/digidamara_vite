@@ -14,4 +14,5 @@ put Labels.json
 put VideoContent.json
 put ChatChannels.json
 put Colours.json
+put TutorialContent.json
 bye

@@ -620,7 +620,8 @@ margin: auto;
 
 .notification-button-watch-latest-video,
 .notification-button-fan-club-chat,
-.notification-button-todays-vote
+.notification-button-todays-vote,
+.notification-button-start-tutorial
 {
 	display: none;
 	margin: 0 auto;

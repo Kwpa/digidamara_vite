@@ -8,8 +8,9 @@ export default class StaticData
     videoContent!: VideoContentData[];
     chatChannels!: ChatChannelData[];
     colours!: ColoursData[];
+    tutorialSteps!: TutorialStepData[];
 
-    Init(teams_data, barks_data, items_data, story_data, notifications_data, voteScenarios_data, dynamicVoteOptions_data, appLabels_data, videoContent_data, chatChannel_data, colours_data)
+    Init(teams_data, barks_data, items_data, story_data, notifications_data, voteScenarios_data, dynamicVoteOptions_data, appLabels_data, videoContent_data, chatChannel_data, colours_data, tutorial_data)
     {
         console.log("INIT STATIC");
         this.teams = [];
@@ -20,6 +21,7 @@ export default class StaticData
         this.videoContent = [];
         this.chatChannels = [];
         this.colours = [];
+        this.tutorialSteps = [];
 
         //console.log(story_data[0].teamId + " " + teams_data[0].id);
          
@@ -59,6 +61,11 @@ export default class StaticData
         {
             //console.log(colours_data[k]);
             this.colours.push(new ColoursData(colours_data[k]));
+        }
+        for(var k in tutorial_data)
+        {
+            //console.log(colours_data[k]);
+            this.tutorialSteps.push(new TutorialStepData(tutorial_data[k]));
         }
     }
 
@@ -195,6 +202,7 @@ export class NotificationData
     iconPath!: string;
     title!: string;
     showTitle!: string;
+    showCloseButton!: string;
     content!: string;
     encryption!: number;
     delay!: number;
@@ -207,6 +215,7 @@ export class NotificationData
         this.id = notification.id;
         this.title = notification.title;
         this.showTitle = notification.showTitle;
+        this.showCloseButton = notification.showCloseButton;
         this.character = notification.character;
         this.iconPath = notification.iconPath;
         this.content = notification.content;
@@ -345,5 +354,24 @@ export class AppLabelData
     constructor(appLabelData) {
         this.id = appLabelData.id;
         this.content = appLabelData.content;
+      }
+}
+
+export class TutorialStepData
+{
+    id!: string;
+    title!: string;
+    content!: string;
+    elementId!: string;
+    type!: string;
+    button!: string;
+
+    constructor(tutorialData) {
+        this.id = tutorialData.id;
+        this.title = tutorialData.title;
+        this.content = tutorialData.content;
+        this.elementId = tutorialData.element_id;
+        this.type = tutorialData.type;
+        this.button = tutorialData.button;
       }
 }
