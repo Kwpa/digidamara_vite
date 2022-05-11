@@ -55,9 +55,23 @@ iframe {
 .landing-page
 {
 	position: fixed;
-	top: 50%;
+	top: 0%;
 	left: 50%;
 	width: 100%;
+	display: block;
+	
+}
+
+.landing-page-image{
+	width: 512px;
+  	margin: auto;
+  	display: block;
+}
+
+.landing-page-text
+{
+	text-align: center;
+	padding: 20px 20px 20px 20px;
 }
 
 .video-badge, .chat-badge, .vote-badge

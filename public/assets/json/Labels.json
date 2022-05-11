@@ -45,6 +45,6 @@
     },
     {
         "id":  "l_landing_page",
-        "content":  "\u003cp\u003eSome text here\u003c/p\u003e\n\u003cp\u003eMore text here\u003c/p\u003e"
+        "content":  "\u003cp\u003eHey Spectator!\u003c/p\u003e\n\u003cp\u003eLooks like you haven\u0027t used your activation link\u003c/p\u003e\n\u003cp\u003ePlease return to the email titled: \"***\" and follow the instructions to log-in.\u003c/p\u003e\n\u003cp\u003eIf you haven\u0027t signed up on our eventbrite page, and don\u0027t have an activation link, you won\u0027t be able to take part.\u003c/p\u003e"
     }
 ]

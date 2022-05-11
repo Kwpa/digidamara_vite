@@ -937,8 +937,10 @@ export default class MainScene extends Phaser.Scene {
 
   ShowLandingPage()
   {
-    var innerHTML = this.GetLabel("l_landing_page") as string;
-    const landingPage = this.add.dom(0, 0, LandingPage(innerHTML) as HTMLElement);
+    var landingPageText = this.GetLabel("l_landing_page") as string;
+    const landingPage = this.add.dom(0, 0, LandingPage() as HTMLElement);
+    const text = landingPage.getChildByID("text");
+    text.innerHTML = landingPageText;
   }
 
   StartTimeLeftTiner() {
@@ -1183,7 +1185,7 @@ export default class MainScene extends Phaser.Scene {
     var deviceId = "";
     var create = true;
     var newUserStorage = false;
-    var seenTutorial = true;
+    var seenTutorial = false;
 
     //if we have a code, its valid, and we don't have a device id yet:
     if(this.hasValidActivationCode && !this.hasValidStoredDeviceId)
