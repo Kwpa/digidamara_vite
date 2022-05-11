@@ -42,6 +42,8 @@ import DynamicData from './DynamicData';
 import VoteChoiceHTML from './VoteChoiceHTML';
 import { humanized_time_span } from '../utils/humanized_time_span.js';
 import NakaChannelMessage from './NakaChannelMessage';
+import Shepherd from 'shepherd.js';
+import 'shepherd.js/dist/css/shepherd.css';
 
 export default class MainScene extends Phaser.Scene {
 
@@ -415,7 +417,7 @@ export default class MainScene extends Phaser.Scene {
       this.SetPositionOfLeaderBoardAndSlideDownButton();
       if(this.driverActive)
       {
-        this.driver.moveNext(); 
+        //this.driver.moveNext(); 
       }
     }
   }
@@ -889,7 +891,7 @@ export default class MainScene extends Phaser.Scene {
 
       if(this.driverActive)
       {
-        this.driver.moveNext(); 
+        //this.driver.moveNext(); 
       }
     }
     this.loadNextVideoPlayerButton.onclick = () => {
@@ -1415,7 +1417,109 @@ export default class MainScene extends Phaser.Scene {
 
   async StartTutorial()
   {
-    this.driver = new Driver(
+/* 
+    const tour = new Shepherd.Tour({
+      defaultStepOptions: {
+        cancelIcon: {
+          enabled: true
+        },
+        classes: 'class-1 class-2',
+        scrollTo: { behavior: 'smooth', block: 'center' }
+      }
+    });
+    
+    tour.addStep({
+      title: 'Creating a Shepherd Tour',
+      text: `Creating a Shepherd tour is easy. too!\
+      Just create a \`Tour\` instance, and add as many steps as you want.`,
+      attachTo: {
+        element: '#teamProgressContainer',
+        on: 'top'
+      },
+      buttons: [
+        {
+          action() {
+            return this.back();
+          },
+          classes: 'shepherd-button-secondary',
+          text: 'Back'
+        },
+        {
+          action() {
+            return this.next();
+          },
+          text: 'Next'
+        }
+      ],
+      id: 'creating'
+    });
+    
+    tour.start(); */
+
+    const tour = new Shepherd.Tour({
+      defaultStepOptions: {
+        cancelIcon: {
+          enabled: true
+        },
+        classes: 'class-1 class-2',
+        scrollTo: { behavior: 'smooth', block: 'center' }
+      }
+    });
+
+    this.staticData.tutorialSteps.forEach((tutorialStep)=>{
+      if(tutorialStep.id != "tut_001")
+      {
+        var showStepButtons = false;
+        switch(tutorialStep.type)
+        {
+          case "info":
+            showStepButtons = true;
+            break;
+          case "action":
+            showStepButtons = false;
+            break;
+        }
+        var position;
+        if(tutorialStep.popupPosition == "auto")
+        {
+          position = "bottom";
+        }
+        else
+        {
+          position = tutorialStep.popupPosition;
+        }
+          
+        tour.addStep({
+          title: tutorialStep.title,
+          text: tutorialStep.content,
+          attachTo: {
+            element: '#'+tutorialStep.elementId,
+            on: position
+          },
+          buttons: [
+            {
+              action() {
+                return this.back();
+              },
+              classes: 'shepherd-button-secondary',
+              text: 'Back'
+            },
+            {
+              action() {
+                return this.next();
+              },
+              text: 'Next'
+            }
+          ],
+          id: tutorialStep.id
+        });
+        
+      }
+    });
+
+    tour.start();
+
+    /* this.driver = new Driver(
     {
       className: 'scoped-class',        // className to wrap driver.js popover
       animate: true,                    // Whether to animate or not
@@ -1475,7 +1579,7 @@ export default class MainScene extends Phaser.Scene {
       }
     });
     this.driver.defineSteps(steps);
-    this.driver.start();
+    this.driver.start(); */
   }
 
   async EndTutorial()
