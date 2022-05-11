@@ -40,7 +40,7 @@ See you on the other side","0"
 Systems sleep. 
 Signal returns \\ 12pm Atlantic Space Time.","0"
 "n_016","arrivetoday","2","3","1","none","SPACE STATION","icon_spacestation_transparent_36px.png","Story Unlocked!","TRUE","TRUE","Alert: New data files unlocked for all surviving teams!","0"
-"n_101","arrivetoday","0","0","1","start_tutorial","SPACE STATION","icon_spacestation_transparent_36px.png","Tutorial","TRUE","FALSE","Welcome to the DIGIDAMARA orientation session! You're just in time to take part!
+"n_101","dynamic","0","0","1","start_tutorial","SPACE STATION","icon_spacestation_transparent_36px.png","Tutorial","TRUE","FALSE","Welcome to the DIGIDAMARA orientation session! You're just in time to take part!
 Please follow this tutorial to get acquainted with the interactive broadcast interface!
 Ready? Let's begin!","0"
 "n_102","dynamic","0","1","1","end_tutorial","SPACE STATION","icon_spacestation_transparent_36px.png","Tutorial","TRUE","FALSE","Tutorial complete! Need more help? Go to our discord server or tap the help button in the top right corner.","0"

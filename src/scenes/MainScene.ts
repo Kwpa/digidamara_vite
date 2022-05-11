@@ -21,7 +21,7 @@ import SlideDownButton from './elements/SlideDownButton';
 import VoteOption from './elements/VoteOption';
 import DynamicVoteScenario from './elements/DynamicVoteScenario';
 import LandingPage from './elements/LandingPage';
-import Driver from 'driver.js';
+import Driver, { Step } from 'driver.js';
 import 'driver.js/dist/driver.min.css';
 
 
@@ -63,6 +63,7 @@ export default class MainScene extends Phaser.Scene {
   labels_data!: object;
   videoContent_data!: object;
   chatChannels_data!: object;
+  tutorialSteps_data!: object;
   
 
   whiteIconPath: string = "/assets/white_icons/";
@@ -176,6 +177,7 @@ export default class MainScene extends Phaser.Scene {
 
 
   receiveServerNotifications: boolean = false;
+  finishedTutorial : boolean = false;
 
   webConfig;
   rexVideoPlayer;
@@ -210,6 +212,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.json('appLabels_content', '/assets/json/Labels.json');
     this.load.json('video_content', '/assets/json/VideoContent.json');
     this.load.json('chat_channels', '/assets/json/ChatChannels.json');
+    this.load.json('tutorialSteps_content', '/assets/json/TutorialContent.json');
     this.load.json('eightpath', '/assets/json/paths/path_2.json');
     this.load.json('web_config', '/assets/json/web_config.json');
     this.load.json('dynamicVoteOptions_content', '/assets/json/DynamicVoteOptions.json');
@@ -387,6 +390,7 @@ export default class MainScene extends Phaser.Scene {
     this.labels_data = this.cache.json.get('appLabels_content') as object;
     this.videoContent_data = this.cache.json.get('video_content') as object;
     this.chatChannels_data = this.cache.json.get('chat_channels') as object;
+    this.tutorialSteps_data = this.cache.json.get('tutorialSteps_content') as object;
     this.webConfig = this.cache.json.get('web_config') as object;
     this.colours_data = this.cache.json.get("colours_content") as object;
   }
@@ -408,7 +412,11 @@ export default class MainScene extends Phaser.Scene {
 
     this.leaderboardHeaderButton.onclick = () => {
 
-      this.SetPositionOfLeaderBoardAndSlideDownButton()
+      this.SetPositionOfLeaderBoardAndSlideDownButton();
+      if(this.driverActive)
+      {
+        this.driver.moveNext(); 
+      }
     }
   }
 
@@ -878,6 +886,11 @@ export default class MainScene extends Phaser.Scene {
 
       this.tapAreaLeft.removeInteractive();
       this.tapAreaRight.removeInteractive();
+
+      if(this.driverActive)
+      {
+        this.driver.moveNext(); 
+      }
     }
     this.loadNextVideoPlayerButton.onclick = () => {
       this.NextVideo();
@@ -1131,7 +1144,8 @@ export default class MainScene extends Phaser.Scene {
       this.labels_data,
       this.videoContent_data,
       this.chatChannels_data,
-      this.colours_data
+      this.colours_data,
+      this.tutorialSteps_data
     );
   }
 
@@ -1185,7 +1199,6 @@ export default class MainScene extends Phaser.Scene {
     var deviceId = "";
     var create = true;
     var newUserStorage = false;
-    var seenTutorial = false;
 
     //if we have a code, its valid, and we don't have a device id yet:
     if(this.hasValidActivationCode && !this.hasValidStoredDeviceId)
@@ -1311,18 +1324,32 @@ export default class MainScene extends Phaser.Scene {
     
     await this.GetSystemUsers();
 
-    if(!seenTutorial)
+    //TODO : Get info if user has seen tutorial
+
+    if(!this.finishedTutorial)
     {
+      this.driverActive = true;
       await this.GetLatestDynamicDataTutorial();
       await this.SetupLocalStateTutorial(username);
-      await this.SetupTeamProfiles(true);
+      await this.SetupTeamProfiles(false);
       this.SetupLeaderboard();
       await this.SetupTeamAvatars();
-      await this.SetupVotePage(true);
+      await this.SetupVotePage(false);
       await this.SetupChatChannelsAndPages(false);
+
+      const nTrig = {};
+      this.staticData.notifications.forEach(
+        (notification) => {
+          if (notification.type == "arrivetoday") {
+            console.log(notification.id);
+            nTrig[notification.id] = { seen: false };
+          }
+        }
+      );
+      await this.WriteToLocalStorage("ddm_localDataTutorial",["notificationsState"], [nTrig]);
+
       this.QueueNotificationHome("n_101");
       await this.DisplayQueuedNotification(0);
-
     }
     else
     {
@@ -1364,11 +1391,11 @@ export default class MainScene extends Phaser.Scene {
         await this.JoinGroupChat(this.socket, groupId);
       }
   
-      await this.SetupChatChannelsAndPages(false);
-      await this.SetupTeamProfiles(false);
+      await this.SetupChatChannelsAndPages(true);
+      await this.SetupTeamProfiles(true);
       this.SetupLeaderboard();
       await this.SetupTeamAvatars();
-      await this.SetupVotePage(false);
+      await this.SetupVotePage(true);
   
       await this.JoinMatch(this.socket);
       await this.ReceiveMatchState(this.socket);
@@ -1383,10 +1410,12 @@ export default class MainScene extends Phaser.Scene {
 
 
   }
+  driver!: Driver;
+  driverActive: boolean = false;
 
   async StartTutorial()
   {
-    const driver = new Driver(
+    this.driver = new Driver(
     {
       className: 'scoped-class',        // className to wrap driver.js popover
       animate: true,                    // Whether to animate or not
@@ -1403,19 +1432,55 @@ export default class MainScene extends Phaser.Scene {
     });
 
     // Define the steps for introduction
-    driver.defineSteps([{
-      element: '#ap-value',
-      popover: {
-        title: 'Title for the Popover',
-        description: 'Description for it',
+    const steps : Step[] = [];
+    this.staticData.tutorialSteps.forEach((tutorialStep)=>{
+      if(tutorialStep.id != "tut_001")
+      {
+        var showStepButtons = false;
+        switch(tutorialStep.type)
+        {
+          case "info":
+            showStepButtons = true;
+            break;
+          case "action":
+            showStepButtons = false;
+            break;
+        }
+
+        var stepPopupPosition = "";
+        if(tutorialStep.popupPosition == "auto")
+        {
+          steps.push({
+            element: '#' + tutorialStep.elementId,
+            popover: {
+            title: tutorialStep.title,
+            description: tutorialStep.content,
+            showButtons: showStepButtons
+            }
+          });
+        }
+        else
+        {
+          steps.push({
+            element: '#' + tutorialStep.elementId,
+            popover: {
+            title: tutorialStep.title,
+            description: tutorialStep.content,
+            showButtons: showStepButtons,
+            position: tutorialStep.popupPosition
+            }
+          });
+        }
+
       }
-    }]);
-    //driver.start();
+    });
+    this.driver.defineSteps(steps);
+    this.driver.start();
   }
 
   async EndTutorial()
   {
-    
+
   }
 
   async AddEventListeners() {
@@ -1917,11 +1982,11 @@ export default class MainScene extends Phaser.Scene {
       await this.WriteToDDMLocalStorage(["actionPoints", "firstVisitTodayWithCurtainsOpen"], [this.localState.maxActionPoints, true]);      
   }
 
-  async SetupVotePage(tutorial: boolean) {
+  async SetupVotePage(finishedTutorial: boolean) {
 
     var todaysScenario;
     var todaysScenarioState;
-    if(tutorial)
+    if(!finishedTutorial)
     {
       todaysScenario = this.staticData.voteScenarios.find(p=>p.id=="v_101");
       console.log("LETS FIND TITLE " + todaysScenario["title"]);
@@ -1969,7 +2034,7 @@ export default class MainScene extends Phaser.Scene {
           todaysScenarioState.DecreaseVote(0);
           this.localState.GainSparks(1);
           
-          if(tutorial)
+          if(!finishedTutorial)
           {
             await this.WriteToLocalStorage("ddm_localDataTutorial",["sparks"], [this.localState.sparksAwarded]);
             await this.WriteToLocalStorage("ddm_localDataTutorial",[todaysScenarioState.id + "_choiceOne"], [todaysScenarioState.choiceOneVotesUser]);
@@ -1983,7 +2048,7 @@ export default class MainScene extends Phaser.Scene {
           this.voteChoiceOneUser.innerHTML = todaysScenarioState.choiceOneVotesUser.toString();
           this.voteChoiceOneGlobal.innerHTML = "Total Votes: " + todaysScenarioState.choiceOneVotesGlobal.toString();
           
-          if(!tutorial) {
+          if(finishedTutorial) {
             this.SentVoteMatchState(this.socket, todaysScenarioState.id, 0, -1);
             }
         }
@@ -1994,7 +2059,7 @@ export default class MainScene extends Phaser.Scene {
           todaysScenarioState.IncreaseVote(0);
           this.localState.SpendSparks(1);
 
-          if(tutorial)
+          if(!finishedTutorial)
           {
             await this.WriteToLocalStorage("ddm_localDataTutorial",["sparks"], [this.localState.sparksAwarded]);
             await this.WriteToLocalStorage("ddm_localDataTutorial",[todaysScenarioState.id + "_choiceOne"], [todaysScenarioState.choiceOneVotesUser]);
@@ -2008,7 +2073,7 @@ export default class MainScene extends Phaser.Scene {
           this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
           this.voteChoiceOneUser.innerHTML = todaysScenarioState.choiceOneVotesUser.toString();
           this.voteChoiceOneGlobal.innerHTML = "Total Votes: " + todaysScenarioState.choiceOneVotesGlobal.toString();
-          if(!tutorial)
+          if(finishedTutorial)
           {
             this.SentVoteMatchState(this.socket, todaysScenarioState.id, 0, 1);
           }
@@ -2020,7 +2085,7 @@ export default class MainScene extends Phaser.Scene {
           todaysScenarioState.DecreaseVote(1);
           this.localState.GainSparks(1);
           
-          if(tutorial)
+          if(!finishedTutorial)
           {
             await this.WriteToLocalStorage("ddm_localDataTutorial",["sparks"], [this.localState.sparksAwarded]);
             await this.WriteToLocalStorage("ddm_localDataTutorial",[todaysScenarioState.id + "_choiceTwo"], [todaysScenarioState.choiceTwoVotesUser]);
@@ -2034,7 +2099,7 @@ export default class MainScene extends Phaser.Scene {
           this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
           this.voteChoiceTwoUser.innerHTML = todaysScenarioState.choiceTwoVotesUser.toString();
           this.voteChoiceTwoGlobal.innerHTML = "Total Votes: " + todaysScenarioState.choiceTwoVotesGlobal.toString();
-          if(!tutorial)
+          if(finishedTutorial)
           {
             this.SentVoteMatchState(this.socket, todaysScenarioState.id, 1, -1);
           }
@@ -2046,7 +2111,7 @@ export default class MainScene extends Phaser.Scene {
           todaysScenarioState.IncreaseVote(1);
           this.localState.SpendSparks(1);
 
-          if(tutorial)
+          if(!finishedTutorial)
           {
             await this.WriteToLocalStorage("ddm_localDataTutorial",["sparks"], [this.localState.sparksAwarded]);
             await this.WriteToLocalStorage("ddm_localDataTutorial",[todaysScenarioState.id + "_choiceTwo"], [todaysScenarioState.choiceTwoVotesUser]);
@@ -2060,7 +2125,7 @@ export default class MainScene extends Phaser.Scene {
           this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
           this.voteChoiceTwoUser.innerHTML = todaysScenarioState.choiceTwoVotesUser.toString();
           this.voteChoiceTwoGlobal.innerHTML = "Total Votes: " + this.localState.voteStates[this.localState.round - 1].choiceTwoVotesGlobal.toString();
-          if(!tutorial)
+          if(finishedTutorial)
           {
             this.SentVoteMatchState(this.socket, todaysScenarioState.id, 1, 1);
           }
@@ -2170,13 +2235,13 @@ export default class MainScene extends Phaser.Scene {
     return this.staticData.appLabels.find(p=>p.id == id)?.content;
   }
 
-  async SetupChatChannelsAndPages(tutorial: boolean) {
+  async SetupChatChannelsAndPages(finishedTutorial: boolean) {
     
     let { width, height } = this.sys.game.canvas;
 
     this.chatPage = this.add.dom(0, 0, ChatPage() as HTMLElement);
     this.chatPage.setVisible(false);
-    if(tutorial)
+    if(!finishedTutorial)
     {
       return;
     }
@@ -2353,7 +2418,7 @@ export default class MainScene extends Phaser.Scene {
     return "desktop";
   }
 
-  async SetupTeamProfiles(tutorial: boolean) {
+  async SetupTeamProfiles(finishedTutorial: boolean) {
     this.teamProfilePages = [];
     let { width, height } = this.sys.game.canvas;
 
@@ -2437,7 +2502,7 @@ export default class MainScene extends Phaser.Scene {
 
             this.CheckIfOutOfPointsUI(donateButton, upgradeButton, fanClubButton, this.localState.carouselPosition);
 
-            if(tutorial)
+            if(!finishedTutorial)
             {
               await this.WriteToLocalStorage("ddm_localDataTutorial", ["actionPoints", "sparks"], [this.localState.actionPoints, this.localState.sparksAwarded]);
             }
@@ -2457,7 +2522,7 @@ export default class MainScene extends Phaser.Scene {
 
             this.CSSAnimation([imageContainer], "jello-horizontal", 800);
 
-            if(!tutorial)
+            if(finishedTutorial)
             {
               await this.DonateEnergyMatchState(this.socket, this.localState.currentTeamID);
             }
@@ -2470,7 +2535,7 @@ export default class MainScene extends Phaser.Scene {
             this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
 
             this.localState.GetCurrentTeamState().JoinFanClub();
-            if(tutorial)
+            if(!finishedTutorial)
             {
               await this.WriteToLocalStorage("ddm_localDataTutorial", ["actionPoints", this.localState.currentTeamID + "InFanClub"], [this.localState.actionPoints, true]);
             }
@@ -2485,7 +2550,7 @@ export default class MainScene extends Phaser.Scene {
             // unlock chat
 
             var groupName = this.staticData.teams[this.localState.carouselPosition].fanClubChannelId;
-            if(!tutorial)
+            if(finishedTutorial)
             {
               var cId = await this.JoinGroup(this.session, this.client, groupName);
   
@@ -2521,7 +2586,7 @@ export default class MainScene extends Phaser.Scene {
             this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
             this.localState.UpgradeTeam(this.localState.currentTeamID);
             
-            if(tutorial)
+            if(!finishedTutorial)
             {
               await this.WriteToLocalStorage("ddm_localDataTutorial", ["actionPoints", this.localState.currentTeamID + "UpgradeLevel"], [this.localState.actionPoints, this.localState.GetCurrentTeamState().upgradeLevel]);
             }
@@ -2650,6 +2715,26 @@ export default class MainScene extends Phaser.Scene {
     }
   }
 
+  async ReadFromLocalStorage(dict: string, key: string) {
+    const data = await localStorage.getItem(dict);
+    if(data !== null || data !== undefined)
+    {
+      console.log("read good");
+      const json = JSON.parse(data as string);
+      console.log("parse good");
+      if(json !== null && json[key] !== null)
+      {
+        console.log("parse good");
+        return json[key] as object;
+      }
+      else return null;
+    }
+    else
+    {
+      return null;
+    }
+  }
+
   async ReadJSONFromLocalStorage(key: string) {
     const data = await localStorage.getItem(key);
     if(data !== null || data !== undefined)
@@ -2669,6 +2754,12 @@ export default class MainScene extends Phaser.Scene {
 
   async ReadFromDDMLocalStorageBoolean(key: string) {
     const data = await localStorage.getItem('ddm_localData');
+    const json = JSON.parse(data as string);
+    return json[key] as boolean;
+  }
+
+  async ReadFromLocalStorageBoolean(dict: string, key: string) {
+    const data = await localStorage.getItem(dict);
     const json = JSON.parse(data as string);
     return json[key] as boolean;
   }
@@ -3197,6 +3288,7 @@ export default class MainScene extends Phaser.Scene {
         this.localState.NextNotificationHomeContent();
         content.innerHTML = "";
         content.prepend(this.localState.GetCurrentNotificationHomeContent());
+        console.log("buttontype " + notificationData.buttonType);   
         if (this.localState.notificationHomeContentLength == 1) {
           nextButton.style.display = "none";
           if(closeButtonShow)
@@ -3214,6 +3306,7 @@ export default class MainScene extends Phaser.Scene {
               viewFanClubChat.style.display = "none";
               viewTodaysVoteButton.style.display = "none";
               startTutorialButton.style.display = "none";
+              endTutorialButton.style.display = "none";
               break;
 
             case "view_todays_vote":
@@ -3221,6 +3314,7 @@ export default class MainScene extends Phaser.Scene {
               viewFanClubChat.style.display = "none";
               viewTodaysVoteButton.style.display = "block";
               startTutorialButton.style.display = "none";
+              endTutorialButton.style.display = "none";
               break;
 
             case "view_fan_club_chat":
@@ -3228,13 +3322,16 @@ export default class MainScene extends Phaser.Scene {
               viewFanClubChat.style.display = "block";
               viewTodaysVoteButton.style.display = "none";
               startTutorialButton.style.display = "none";
+              endTutorialButton.style.display = "none";
               break;
 
             case "start_tutorial":
-              watchLatestVideoButton.style.display = "none";
+            console.log("STARTTUTORIALBUTTON");  
+            watchLatestVideoButton.style.display = "none";
               viewFanClubChat.style.display = "none";
               viewTodaysVoteButton.style.display = "none";
               startTutorialButton.style.display = "block";
+              endTutorialButton.style.display = "none";
               break;
               
             case "end_tutorial":
@@ -3242,6 +3339,7 @@ export default class MainScene extends Phaser.Scene {
               viewFanClubChat.style.display = "none";
               viewTodaysVoteButton.style.display = "none";
               startTutorialButton.style.display = "none";
+              endTutorialButton.style.display = "block";
               break;
 
             case "none":
@@ -3249,6 +3347,7 @@ export default class MainScene extends Phaser.Scene {
               viewFanClubChat.style.display = "none";
               viewTodaysVoteButton.style.display = "none";
               startTutorialButton.style.display = "none";
+              endTutorialButton.style.display = "none";
               break;
           }
         }
@@ -3288,16 +3387,57 @@ export default class MainScene extends Phaser.Scene {
               case "watch_latest_video":
                 watchLatestVideoButton.style.display = "block";
                 viewTodaysVoteButton.style.display = "none";
+                viewFanClubChat.style.display = "none";
+                startTutorialButton.style.display = "none";
+                endTutorialButton.style.display = "none";
                 break;
 
               case "view_todays_vote":
                 watchLatestVideoButton.style.display = "none";
                 viewTodaysVoteButton.style.display = "block";
+                viewFanClubChat.style.display = "none";
+                startTutorialButton.style.display = "none";
+                endTutorialButton.style.display = "none";
+                break;
+
+              case "view_fan_club_chat":
+                watchLatestVideoButton.style.display = "none";
+                viewTodaysVoteButton.style.display = "none";
+                viewFanClubChat.style.display = "block";
+                startTutorialButton.style.display = "none";
+                endTutorialButton.style.display = "none";
+                break;
+    
+              case "start_tutorial":
+                watchLatestVideoButton.style.display = "none";
+                viewFanClubChat.style.display = "none";
+                viewTodaysVoteButton.style.display = "none";
+                startTutorialButton.style.display = "block";
+                endTutorialButton.style.display = "none";
+                break;
+                
+              case "end_tutorial":
+                watchLatestVideoButton.style.display = "none";
+                viewFanClubChat.style.display = "none";
+                viewTodaysVoteButton.style.display = "none";
+                startTutorialButton.style.display = "none";
+                endTutorialButton.style.display = "block";
+                break;
+  
+              case "none":
+                watchLatestVideoButton.style.display = "none";
+                viewFanClubChat.style.display = "none";
+                viewTodaysVoteButton.style.display = "none";
+                startTutorialButton.style.display = "none";
+                endTutorialButton.style.display = "none";
                 break;
 
               default:
                 watchLatestVideoButton.style.display = "none";
                 viewTodaysVoteButton.style.display = "none";
+                viewTodaysVoteButton.style.display = "none";
+                startTutorialButton.style.display = "none";
+                endTutorialButton.style.display = "none";
                 break;
             }
 
@@ -3396,8 +3536,16 @@ export default class MainScene extends Phaser.Scene {
 
   async CloseNotification(id: string) {
     this.notificationHome.setVisible(false);
-    var notificationsState = (await this.ReadFromDDMLocalStorage("notificationsState") as object);
-    console.log("is this seen now?" + id + " : " + notificationsState[id].seen);
+    var notificationsState;
+    if(this.finishedTutorial)
+    {
+      notificationsState = (await this.ReadFromDDMLocalStorage("notificationsState") as object);
+    } 
+    else
+    {
+      notificationsState = (await this.ReadFromLocalStorage("ddm_localDataTutorial", "notificationsState") as object);
+    }
+    //console.log("is this seen now?" + id + " : " + notificationsState[id].seen);
     const character = this.staticData.notifications.find(p => p.id == id)?.character as string;
     notificationsState[id] = {
       seen: true,
@@ -3407,7 +3555,7 @@ export default class MainScene extends Phaser.Scene {
     };
 
     await this.WriteToDDMLocalStorage(["notificationsState"], [notificationsState]);
-    console.log("is this seen now?" + id + " : " + notificationsState[id].seen);
+    //console.log("is this seen now?" + id + " : " + notificationsState[id].seen);
     const type = this.staticData.notifications.find(p => p.id == id)?.type as string;
     if (type == "arrivetoday") {
       this.dailyNotificationCount++;

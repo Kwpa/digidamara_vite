@@ -241,7 +241,7 @@
     },
     {
         "id":  "n_101",
-        "type":  "arrivetoday",
+        "type":  "dynamic",
         "round":  "0",
         "order":  "0",
         "delay":  "1",

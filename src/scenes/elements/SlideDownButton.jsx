@@ -3,7 +3,7 @@ import { h } from 'start-dom-jsx';
 const SlideDownButton = () => {
   return (
     
-      <div class="slide-down-button-container">
+      <div id="slide-down-button-container" class="slide-down-button-container">
         <div id="slideDownContainer" class="slide-down-container">
           <div id="leaderboard-header-button" class="slide-down-button has-background-warning">
             <div>

@@ -365,6 +365,7 @@ export class TutorialStepData
     elementId!: string;
     type!: string;
     button!: string;
+    popupPosition!: string;
 
     constructor(tutorialData) {
         this.id = tutorialData.id;
@@ -373,5 +374,6 @@ export class TutorialStepData
         this.elementId = tutorialData.element_id;
         this.type = tutorialData.type;
         this.button = tutorialData.button;
+        this.popupPosition = tutorialData.popup_position
       }
 }

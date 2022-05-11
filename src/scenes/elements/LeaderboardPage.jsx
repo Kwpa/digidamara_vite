@@ -3,7 +3,7 @@ import { h } from 'start-dom-jsx';
 const LeaderboardPage = () => {
   return (
     <div>
-      <div class="popup-page-leaderboard">
+      <div id="leaderboard-page" class="popup-page-leaderboard">
         <div class="box popup-box-wrapper has-background-warning">
           <nav class="level is-mobile">
             <div class="level-left">
@@ -12,7 +12,7 @@ const LeaderboardPage = () => {
               </div>
             </div>
           </nav>
-          <div id="leaderboard-table-container" class="table-container popup-page-scroll-with-tablerow">
+          <div class="table-container popup-page-scroll-with-tablerow">
             <table class="table">
               <thead>
                 <tr>
