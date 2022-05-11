@@ -7,6 +7,7 @@ const LandingPage = (text) => {
       <div id="text" class="content has-text-white landing-page-text">
         text here
       </div>
+      <img class="landing-page-footer"></img>
     </div>
   )
 }

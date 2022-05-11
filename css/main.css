@@ -68,10 +68,32 @@ iframe {
   	display: block;
 }
 
+
+.landing-page-footer{
+	width: 256px;
+	height: 256px;
+	margin: auto;
+	display: block;
+	background-image: url("/assets/images/hero_partners.jpg");
+}
+
+@media screen and (min-width : 1024px)
+{
+	.landing-page-footer{
+		width: 512px;
+		height: 100px;
+		margin: auto;
+		display: block;
+		background-image: url("/assets/images/hero_partners_long.jpg");
+	}
+}
+
+
+
 .landing-page-text
 {
 	text-align: center;
-	padding: 20px 20px 20px 20px;
+	padding: 0px 20px 20px 20px;
 }
 
 .video-badge, .chat-badge, .vote-badge
