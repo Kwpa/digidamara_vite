@@ -16,7 +16,7 @@ const TeamProfile = (teamData) => {
             <img id="close-team-page-button" class="hdrftr-icon" src="/assets/black_icons/icon_cross_black.png" style=""></img>
 
           </div>
-          <div class="popup-page-scroll-with-footer">
+          <div id="team-profile-scroll" class="popup-page-scroll-with-footer">
             <div class="level team-top-row">
               <div class="level-item">
                 <div class="box has-background-dark" style="position:relative;">

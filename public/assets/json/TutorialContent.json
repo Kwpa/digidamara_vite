@@ -6,7 +6,9 @@
         "element_id":  "",
         "type":  "",
         "button":  "",
-        "popup_position":  ""
+        "popup_position":  "",
+        "scroll_to_x":  "",
+        "scroll_to_y":  ""
     },
     {
         "id":  "tut_002",
@@ -15,7 +17,9 @@
         "element_id":  "teamProgressContainer",
         "type":  "info",
         "button":  "none",
-        "popup_position":  "auto"
+        "popup_position":  "top",
+        "scroll_to_x":  "",
+        "scroll_to_y":  ""
     },
     {
         "id":  "tut_003",
@@ -24,7 +28,9 @@
         "element_id":  "ap-value",
         "type":  "info",
         "button":  "none",
-        "popup_position":  "auto"
+        "popup_position":  "bottom",
+        "scroll_to_x":  "",
+        "scroll_to_y":  ""
     },
     {
         "id":  "tut_004",
@@ -33,7 +39,9 @@
         "element_id":  "sparks-value",
         "type":  "info",
         "button":  "none",
-        "popup_position":  "auto"
+        "popup_position":  "bottom",
+        "scroll_to_x":  "",
+        "scroll_to_y":  ""
     },
     {
         "id":  "tut_005",
@@ -42,16 +50,20 @@
         "element_id":  "slide-down-button-container",
         "type":  "action",
         "button":  "leaderboard-header-button",
-        "popup_position":  "auto"
+        "popup_position":  "bottom",
+        "scroll_to_x":  "",
+        "scroll_to_y":  ""
     },
     {
         "id":  "tut_006",
         "title":  "Today\u0027s Rankings",
         "content":  "The team with the most energy is ranked at the top. In the case of a draw, the team with the largest fan club wins!",
-        "element_id":  "leaderboard-page",
+        "element_id":  "leaderboard-table-container",
         "type":  "info",
         "button":  "none",
-        "popup_position":  "right-bottom"
+        "popup_position":  "bottom",
+        "scroll_to_x":  "",
+        "scroll_to_y":  ""
     },
     {
         "id":  "tut_007",
@@ -60,16 +72,20 @@
         "element_id":  "leaderboard-header-button",
         "type":  "action",
         "button":  "leaderboard-header-button",
-        "popup_position":  "auto"
+        "popup_position":  "top",
+        "scroll_to_x":  "",
+        "scroll_to_y":  ""
     },
     {
         "id":  "tut_008",
         "title":  "Team Profile",
         "content":  "Let\u0027s find a way to donate some energy to this team. Click on the team\u0027s name or image.",
         "element_id":  "openProfile",
-        "type":  "info",
+        "type":  "action",
         "button":  "openProfile",
-        "popup_position":  "auto"
+        "popup_position":  "top",
+        "scroll_to_x":  "",
+        "scroll_to_y":  ""
     },
     {
         "id":  "tut_009",
@@ -78,7 +94,9 @@
         "element_id":  "donate-button",
         "type":  "action",
         "button":  "donate-button",
-        "popup_position":  "auto"
+        "popup_position":  "bottom",
+        "scroll_to_x":  "",
+        "scroll_to_y":  ""
     },
     {
         "id":  "tut_010",
@@ -87,7 +105,9 @@
         "element_id":  "team-energy-bar-container",
         "type":  "info",
         "button":  "none",
-        "popup_position":  "auto"
+        "popup_position":  "top",
+        "scroll_to_x":  "",
+        "scroll_to_y":  ""
     },
     {
         "id":  "tut_011",
@@ -96,61 +116,75 @@
         "element_id":  "fan-club-button",
         "type":  "action",
         "button":  "fan-club-button",
-        "popup_position":  "auto"
+        "popup_position":  "bottom",
+        "scroll_to_x":  "",
+        "scroll_to_y":  ""
     },
     {
         "id":  "tut_012",
         "title":  "Join Fan Club",
         "content":  "Great! Joining a fan club gives you special access to a secret fan club chat channel. It also unlocks Team Upgrades.",
-        "element_id":  "fan-club-button",
+        "element_id":  "image-container",
         "type":  "info",
         "button":  "none",
-        "popup_position":  "auto"
+        "popup_position":  "auto",
+        "scroll_to_x":  "",
+        "scroll_to_y":  ""
     },
     {
         "id":  "tut_013",
         "title":  "Upgrade Team",
-        "content":  "Upgrades improve your relationship with a team. As a consequence they will share a piece of their story with you in the team profile, and will also give you more Tickets the next time you donate energy to them.",
-        "element_id":  "upgrade-button",
-        "type":  "info",
-        "button":  "none",
-        "popup_position":  "auto"
-    },
-    {
-        "id":  "tut_014",
-        "title":  "Upgrade Team",
-        "content":  "Spend energy of an Upgrade now.",
+        "content":  "Upgrades unlock backstory in the team profile, plus award you bonus Tickets the next time you donate energy to this team. Spend energy of an Upgrade now.",
         "element_id":  "upgrade-button",
         "type":  "action",
         "button":  "upgrade-button",
-        "popup_position":  "auto"
+        "popup_position":  "auto",
+        "scroll_to_x":  "",
+        "scroll_to_y":  ""
     },
     {
-        "id":  "tut_015",
+        "id":  "tut_014",
         "title":  "Upgrade Team",
         "content":  "Bravo! Your upgrade star on the team now shows a \u00271\u0027 - this means you\u0027ll get one additional Ticket next time you Donate. ",
         "element_id":  "upgrade-value-container",
         "type":  "info",
         "button":  "none",
-        "popup_position":  "auto"
+        "popup_position":  "auto",
+        "scroll_to_x":  "",
+        "scroll_to_y":  ""
+    },
+    {
+        "id":  "tut_015",
+        "title":  "Backstory",
+        "content":  "And by the way, here\u0027s where that juicy backstory you unlocked lives!",
+        "element_id":  "open-close-button",
+        "type":  "info",
+        "button":  "none",
+        "popup_position":  "auto",
+        "scroll_to_x":  "",
+        "scroll_to_y":  ""
     },
     {
         "id":  "tut_016",
-        "title":  "Upgrade Team",
+        "title":  "Bonus Tickets",
         "content":  "Let\u0027s donate energy two more times.",
         "element_id":  "donate-button",
         "type":  "action",
         "button":  "upgrade-button,upgrade-button",
-        "popup_position":  "auto"
+        "popup_position":  "auto",
+        "scroll_to_x":  "",
+        "scroll_to_y":  ""
     },
     {
         "id":  "tut_017",
-        "title":  "Upgrade Team",
+        "title":  "Bonus Tickets",
         "content":  "Nice, our ticket count went up by 2 each time! Remember, you won\u0027t get Tickets for the upgrade action, so don\u0027t make your last action an upgrade unless you\u0027re really sure!",
         "element_id":  "sparks-value",
         "type":  "info",
         "button":  "info",
-        "popup_position":  "auto"
+        "popup_position":  "auto",
+        "scroll_to_x":  "",
+        "scroll_to_y":  ""
     },
     {
         "id":  "tut_018",
@@ -159,7 +193,9 @@
         "element_id":  "vote-footer-button",
         "type":  "action",
         "button":  "vote-footer-button",
-        "popup_position":  "auto"
+        "popup_position":  "auto",
+        "scroll_to_x":  "",
+        "scroll_to_y":  ""
     },
     {
         "id":  "tut_019",
@@ -168,7 +204,9 @@
         "element_id":  "voteScenario",
         "type":  "info",
         "button":  "info",
-        "popup_position":  "auto"
+        "popup_position":  "auto",
+        "scroll_to_x":  "",
+        "scroll_to_y":  ""
     },
     {
         "id":  "tut_020",
@@ -177,7 +215,9 @@
         "element_id":  "voteScenario",
         "type":  "choiceValue",
         "button":  "none",
-        "popup_position":  "auto"
+        "popup_position":  "auto",
+        "scroll_to_x":  "",
+        "scroll_to_y":  ""
     },
     {
         "id":  "tut_021",
@@ -186,7 +226,9 @@
         "element_id":  "video-footer-button",
         "type":  "info",
         "button":  "none",
-        "popup_position":  "auto"
+        "popup_position":  "auto",
+        "scroll_to_x":  "",
+        "scroll_to_y":  ""
     },
     {
         "id":  "tut_022",
@@ -195,6 +237,8 @@
         "element_id":  "chat-footer-button",
         "type":  "info",
         "button":  "none",
-        "popup_position":  "auto"
+        "popup_position":  "auto",
+        "scroll_to_x":  "",
+        "scroll_to_y":  ""
     }
 ]

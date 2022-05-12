@@ -2,5 +2,6 @@
     "remotehostname": "96.30.134.139",
     "hostname": "127.0.0.1",
     "port":"7350",
-    "ssl": false
+    "ssl": false,
+    "homewebpage": "http://localhost:3000"
 }

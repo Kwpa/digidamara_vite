@@ -374,6 +374,6 @@ export class TutorialStepData
         this.elementId = tutorialData.element_id;
         this.type = tutorialData.type;
         this.button = tutorialData.button;
-        this.popupPosition = tutorialData.popup_position
+        this.popupPosition = tutorialData.popup_position;
       }
 }

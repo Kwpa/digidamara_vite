@@ -180,6 +180,7 @@ export default class MainScene extends Phaser.Scene {
 
   receiveServerNotifications: boolean = false;
   finishedTutorial : boolean = false;
+  tutorialTour!: Shepherd.Tour;
 
   webConfig;
   rexVideoPlayer;
@@ -412,12 +413,13 @@ export default class MainScene extends Phaser.Scene {
       this.SetPositionOfLeaderBoardAndSlideDownButton();
     }); */
 
-    this.leaderboardHeaderButton.onclick = () => {
+    this.leaderboardHeaderButton.onclick = async() => {
 
       this.SetPositionOfLeaderBoardAndSlideDownButton();
-      if(this.driverActive)
+      if(this.tourActive)
       {
-        //this.driver.moveNext(); 
+        await this.delay(400);
+       this.tutorialTour.next(); 
       }
     }
   }
@@ -775,10 +777,15 @@ export default class MainScene extends Phaser.Scene {
     this.closeSettingsPageButton = this.settingsPage.getChildByID('close-settings-page-button') as HTMLElement;
     this.avatarOverlayButton = this.avatarOverlay.getChildByID('openProfile') as HTMLElement;
 
-    this.voteFooterButton.onclick = () => {
+    this.voteFooterButton.onclick = async () => {
       this.SetPage("votePage");
       this.tapAreaLeft.removeInteractive();
       this.tapAreaRight.removeInteractive();
+      if(this.tourActive)
+      {
+        await this.delay(400);
+        this.tutorialTour.next(); 
+      }
     }
     this.settingsFooterButton.onclick = () => {
       this.SetPage("settingsPage");
@@ -818,7 +825,7 @@ export default class MainScene extends Phaser.Scene {
       this.tapAreaLeft.setInteractive();
       this.tapAreaRight.setInteractive();
     }
-    this.avatarOverlayButton.onclick = () => {
+    this.avatarOverlayButton.onclick = async() => {
       this.SetPage("teamProfile");
       var donateButton = this.teamProfilePages[this.localState.carouselPosition].getChildByID('donate-button') as HTMLInputElement;
       var fanClubButton = this.teamProfilePages[this.localState.carouselPosition].getChildByID('fan-club-button') as HTMLInputElement;
@@ -889,9 +896,10 @@ export default class MainScene extends Phaser.Scene {
       this.tapAreaLeft.removeInteractive();
       this.tapAreaRight.removeInteractive();
 
-      if(this.driverActive)
+      if(this.tourActive)
       {
-        //this.driver.moveNext(); 
+        await this.delay(400);
+        this.tutorialTour.next(); 
       }
     }
     this.loadNextVideoPlayerButton.onclick = () => {
@@ -1330,7 +1338,7 @@ export default class MainScene extends Phaser.Scene {
 
     if(!this.finishedTutorial)
     {
-      this.driverActive = true;
+      this.tourActive = true;
       await this.GetLatestDynamicDataTutorial();
       await this.SetupLocalStateTutorial(username);
       await this.SetupTeamProfiles(false);
@@ -1412,64 +1420,24 @@ export default class MainScene extends Phaser.Scene {
 
 
   }
-  driver!: Driver;
-  driverActive: boolean = false;
+  tourActive: boolean = false;
 
   async StartTutorial()
   {
-/* 
-    const tour = new Shepherd.Tour({
+    this.tutorialTour = new Shepherd.Tour({
       defaultStepOptions: {
-        cancelIcon: {
-          enabled: true
-        },
-        classes: 'class-1 class-2',
+        classes: 'shepherd-theme-arrows',
         scrollTo: { behavior: 'smooth', block: 'center' }
-      }
-    });
-    
-    tour.addStep({
-      title: 'Creating a Shepherd Tour',
-      text: `Creating a Shepherd tour is easy. too!\
-      Just create a \`Tour\` instance, and add as many steps as you want.`,
-      attachTo: {
-        element: '#teamProgressContainer',
-        on: 'top'
       },
-      buttons: [
-        {
-          action() {
-            return this.back();
-          },
-          classes: 'shepherd-button-secondary',
-          text: 'Back'
-        },
-        {
-          action() {
-            return this.next();
-          },
-          text: 'Next'
-        }
-      ],
-      id: 'creating'
-    });
-    
-    tour.start(); */
-
-    const tour = new Shepherd.Tour({
-      defaultStepOptions: {
-        cancelIcon: {
-          enabled: true
-        },
-        classes: 'class-1 class-2',
-        scrollTo: { behavior: 'smooth', block: 'center' }
-      }
+      useModalOverlay: true
     });
 
     this.staticData.tutorialSteps.forEach((tutorialStep)=>{
       if(tutorialStep.id != "tut_001")
       {
         var showStepButtons = false;
+        var scrollToCustom = false;
+
         switch(tutorialStep.type)
         {
           case "info":
@@ -1488,36 +1456,78 @@ export default class MainScene extends Phaser.Scene {
         {
           position = tutorialStep.popupPosition;
         }
+
+        if(tutorialStep.scrollToX !== null && tutorialStep.scrollToX !== undefined && tutorialStep.scrollToX !== 0)
+        {
+          if(tutorialStep.scrollToY !== null && tutorialStep.scrollToY !== undefined && tutorialStep.scrollToY !== 0)
+          {
+            scrollToCustom = true;
+          }  
+        }
           
-        tour.addStep({
-          title: tutorialStep.title,
-          text: tutorialStep.content,
-          attachTo: {
-            element: '#'+tutorialStep.elementId,
-            on: position
-          },
-          buttons: [
-            {
-              action() {
-                return this.back();
-              },
-              classes: 'shepherd-button-secondary',
-              text: 'Back'
+
+        
+        if(tutorialStep.title == "Chat"){
+          this.tutorialTour.addStep({
+            title: tutorialStep.title,
+            text: tutorialStep.content,
+            attachTo: {
+              element: '#'+tutorialStep.elementId,
+              on: position
             },
-            {
-              action() {
-                return this.next();
-              },
-              text: 'Next'
-            }
-          ],
-          id: tutorialStep.id
-        });
+            buttons: [
+              {
+                action() {
+                  return this.complete();
+                },
+                text: 'End'
+              }
+            ],
+            id: tutorialStep.id,
+            canClickTarget: true
+          });
+        }
+        else if(showStepButtons)
+        {
+          this.tutorialTour.addStep({
+            title: tutorialStep.title,
+            text: tutorialStep.content,
+            attachTo: {
+              element: '#'+tutorialStep.elementId,
+              on: position
+            },
+            buttons: [
+              {
+                action() {
+                  return this.next();
+                },
+                text: 'Next'
+              }
+            ],
+            id: tutorialStep.id,
+            canClickTarget: false
+          });
+        }
+        else
+        {
+          this.tutorialTour.addStep({
+            title: tutorialStep.title,
+            text: tutorialStep.content,
+            attachTo: {
+              element: '#'+tutorialStep.elementId,
+              on: position
+            },
+            id: tutorialStep.id
+          });
+        }
         
       }
     });
-
-    tour.start();
+    this.tutorialTour.on("complete", async ()=>{
+      this.QueueNotificationHome("n_102");
+      await this.DisplayQueuedNotification(400);
+    })
+    this.tutorialTour.start();
 
     /* this.driver = new Driver(
     {
@@ -1584,7 +1594,7 @@ export default class MainScene extends Phaser.Scene {
 
   async EndTutorial()
   {
-
+    window.location.replace(this.webConfig.homewebpage);
   }
 
   async AddEventListeners() {
@@ -1837,7 +1847,7 @@ export default class MainScene extends Phaser.Scene {
 
     var voteIds = ["v_101", "v_102"];
 
-    for(var i =0; i< 6; i++)
+    for(var i =0; i< 1; i++)
     {
       votesStateData.push(new VoteScenarioState(
         voteIds[i],
@@ -2134,8 +2144,12 @@ export default class MainScene extends Phaser.Scene {
 
       const choiceOneSubtractButton = voteScenario.querySelector('#' + "choiceOneSubtract") as HTMLElement;
       choiceOneSubtractButton.onclick = async () => {
-        if (this.localState.HaveSpentSparksOnTodaysVote(0)) {
+        if (this.localState.HaveSpentSparksOnTodaysVote(0, this.tourActive)) {
           todaysScenarioState.DecreaseVote(0);
+          if(this.tourActive)
+          {
+            this.localState.tutorialVariable_voteChoiceOneCount = Math.max(this.localState.tutorialVariable_voteChoiceOneCount-1,0);
+          }
           this.localState.GainSparks(1);
           
           if(!finishedTutorial)
@@ -2161,6 +2175,14 @@ export default class MainScene extends Phaser.Scene {
       choiceOneAddButton.onclick = async () => {
         if (this.localState.HaveSparks()) {
           todaysScenarioState.IncreaseVote(0);
+          if(this.tourActive)
+          {
+            this.localState.tutorialVariable_voteChoiceOneCount++;
+            if(this.localState.tutorialVariable_voteChoiceOneCount==5)
+            {
+              this.tutorialTour.next();
+            }
+          }
           this.localState.SpendSparks(1);
 
           if(!finishedTutorial)
@@ -2185,8 +2207,14 @@ export default class MainScene extends Phaser.Scene {
       };
       const choiceTwoSubtractButton = voteScenario.querySelector('#' + "choiceTwoSubtract") as HTMLElement;
       choiceTwoSubtractButton.onclick = async () => {
-        if (this.localState.HaveSpentSparksOnTodaysVote(1)) {
+        if (this.localState.HaveSpentSparksOnTodaysVote(1, this.tourActive)) {
           todaysScenarioState.DecreaseVote(1);
+          
+          if(this.tourActive)
+          {
+            this.localState.tutorialVariable_voteChoiceTwoCount=Math.max(this.localState.tutorialVariable_voteChoiceTwoCount-1,0);
+          }
+
           this.localState.GainSparks(1);
           
           if(!finishedTutorial)
@@ -2213,6 +2241,16 @@ export default class MainScene extends Phaser.Scene {
       choiceTwoAddButton.onclick = async () => {
         if (this.localState.HaveSparks()) {
           todaysScenarioState.IncreaseVote(1);
+          
+          if(this.tourActive)
+          {
+            this.localState.tutorialVariable_voteChoiceTwoCount++;
+            if(this.localState.tutorialVariable_voteChoiceTwoCount==5)
+            {
+              this.tutorialTour.next();
+            }
+          }
+
           this.localState.SpendSparks(1);
 
           if(!finishedTutorial)
@@ -2228,7 +2266,7 @@ export default class MainScene extends Phaser.Scene {
 
           this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
           this.voteChoiceTwoUser.innerHTML = todaysScenarioState.choiceTwoVotesUser.toString();
-          this.voteChoiceTwoGlobal.innerHTML = "Total Votes: " + this.localState.voteStates[this.localState.round - 1].choiceTwoVotesGlobal.toString();
+          this.voteChoiceTwoGlobal.innerHTML = "Total Votes: " + todaysScenarioState.choiceTwoVotesGlobal.toString();
           if(finishedTutorial)
           {
             this.SentVoteMatchState(this.socket, todaysScenarioState.id, 1, 1);
@@ -2631,6 +2669,26 @@ export default class MainScene extends Phaser.Scene {
               await this.DonateEnergyMatchState(this.socket, this.localState.currentTeamID);
             }
             //update UI
+
+            if(this.tourActive)
+            {
+              if(this.localState.tutorialVariable_donateFirstAction == false)
+              {
+                await this.delay(400);
+                this.tutorialTour.next(); 
+                this.localState.tutorialVariable_donateFirstAction = true;
+              }
+              else if (this.localState.tutorialVariable_donateSecondActionCount < 1)
+              {
+                this.localState.tutorialVariable_donateSecondActionCount++;
+              }
+              else if(this.localState.tutorialVariable_donateSecondActionCount == 1)
+              {
+                await this.delay(400);
+                this.tutorialTour.next(); 
+                this.localState.tutorialVariable_donateSecondActionCount++;
+              }
+            }
           }
         }
 
@@ -2681,6 +2739,11 @@ export default class MainScene extends Phaser.Scene {
             const value = JSON.parse(getUserData as string); */
 
             //await this.DonateEnergyMatchState(socket, this.localState.currentTeamID);
+            if(this.tourActive)
+            {
+              await this.delay(400);
+              this.tutorialTour.next(); 
+            }
           }
         }
 
@@ -2707,6 +2770,11 @@ export default class MainScene extends Phaser.Scene {
             this.CSSAnimation([upgradeValue, upgradeBackground], "wobble-hor-bottom", 800);
 
             //await this.DonateEnergyMatchState(socket, this.localState.currentTeamID);
+            if(this.tourActive)
+            {
+              await this.delay(400);
+              this.tutorialTour.next(); 
+            }
           }
         }
 
@@ -3108,12 +3176,18 @@ export default class MainScene extends Phaser.Scene {
 
     this.tapAreaLeft.setInteractive()
       .on('pointerdown', async (pointer, localX, localY, event) => {
-        await this.MoveCarousel(carousel, "left");
+        if(this.finishedTutorial)
+        {
+          await this.MoveCarousel(carousel, "left");
+        }
       });
 
     this.tapAreaRight.setInteractive()
       .on('pointerdown', async (pointer, localX, localY, event) => {
-        await this.MoveCarousel(carousel, "right");
+        if(this.finishedTutorial)
+        {
+          await this.MoveCarousel(carousel, "right");
+        }
       });
 
     var arrowX = Math.min(width * 0.10, 100);
@@ -3138,7 +3212,14 @@ export default class MainScene extends Phaser.Scene {
       delay: 100
     });
 
-    this.MoveCarousel(carousel, "to", this.localState.GetRandomTeamStillInCompetition());
+    if(!this.tourActive)
+    {
+      this.MoveCarousel(carousel, "to", this.localState.GetRandomTeamStillInCompetition());
+    }
+    else
+    {
+      this.MoveCarousel(carousel, "to", 0);
+    }
 
     this.startCharacterGraphics = true;
     this.add.existing(carousel);

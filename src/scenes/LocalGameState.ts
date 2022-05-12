@@ -51,6 +51,12 @@ export default class LocalGameState
     curtainsOpen: boolean = false;
     firstVisitTodayWithCurtainsOpen: boolean = false;
 
+    tutorialVariable_donateFirstAction: boolean = false;
+    tutorialVariable_donateSecondActionCount: number = 0;
+    tutorialVariable_voteChoiceOneCount: number = 0;
+    tutorialVariable_voteChoiceTwoCount: number = 0;
+
+
     appState!: AppState;
 
     StartAppState()
@@ -179,16 +185,25 @@ export default class LocalGameState
             return false;
         }
     }
-    HaveSpentSparksOnTodaysVote(choice: number)
+    HaveSpentSparksOnTodaysVote(choice: number, tourActive: boolean)
     {
         
+        var round = 0;
+        if(tourActive){
+            round = 1;
+        }
+        else
+        {
+            round = this.round
+        }
+
         if(choice==0){
             
-            return this.voteStates[this.round-1].choiceOneVotesUser > 0; 
+            return this.voteStates[round-1].choiceOneVotesUser > 0; 
         }
         else if (choice==1)
         {
-            return this.voteStates[this.round-1].choiceTwoVotesUser > 0;
+            return this.voteStates[round-1].choiceTwoVotesUser > 0;
         }
         else
         {
