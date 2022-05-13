@@ -66,6 +66,8 @@ export default class MainScene extends Phaser.Scene {
   videoContent_data!: object;
   chatChannels_data!: object;
   tutorialSteps_data!: object;
+
+  parsedUserStorage!: object;
   
 
   whiteIconPath: string = "/assets/white_icons/";
@@ -179,7 +181,7 @@ export default class MainScene extends Phaser.Scene {
 
 
   receiveServerNotifications: boolean = false;
-  finishedTutorial : boolean = false;
+  finishedTutorial : boolean = true;
   tutorialTour!: Shepherd.Tour;
 
   webConfig;
@@ -626,7 +628,7 @@ export default class MainScene extends Phaser.Scene {
     {
       // do you have a device id?
       try {
-        const key = await localStorage.getItem('ddm_localData');
+        const key = await localStorage.getItem('deviceId');
         console.log("deviceId: " + key);
         const value = JSON.parse(key as string);
   
@@ -951,7 +953,7 @@ export default class MainScene extends Phaser.Scene {
       })
     }
 
-    var firstTimeTodayOpen = await this.ReadFromDDMLocalStorageBoolean("firstVisitTodayWithCurtainsOpen");
+    var firstTimeTodayOpen = this.parsedUserStorage["firstVisitTodayWithCurtainsOpen"];
     if (firstTimeTodayOpen) {
       console.log("firstVisitTodayWithCurtainsOpen");
       await this.CallNotificationsForTheDay();
@@ -1018,12 +1020,12 @@ export default class MainScene extends Phaser.Scene {
       }
     );
 
-    var notificationsState = await this.ReadFromDDMLocalStorage("notificationsState");
+    var notificationsState = this.parsedUserStorage["notificationsState"];
     
     orderedNotifications.forEach(
       (notification) => {
         console.log("notification: " + notification.id);
-        var seen = notificationsState[notification.id].seen;
+        var seen = notificationsState[notification.id]["seen"];
         if (seen == false) {
           this.dailyNotificationTotal++;
           console.log("****2");
@@ -1215,16 +1217,20 @@ export default class MainScene extends Phaser.Scene {
     {
       this.session = await this.client.authenticateEmail(this.emailQueryVar, this.activationCodeQueryVar); //username already set by dotnet client
       deviceId = Phaser.Utils.String.UUID() as string;
+      console.log("give me device id :" + deviceId);
       console.log("made it to here");
       var link = await this.client.linkDevice(this.session, {id: deviceId});
       newUserStorage = true;
       var emailJson = {"email": this.emailQueryVar} as object;
+      var deviceJson = {"deviceId": deviceId} as object;   
       await localStorage.setItem("storeEmail", JSON.stringify(emailJson));
+      await localStorage.setItem("deviceId", JSON.stringify(deviceJson));
     }
     else if (this.hasValidStoredDeviceId){
       deviceId = this.storeDeviceId;
       try
       {
+        console.log("give me device id :" + deviceId);
         this.session = await this.client.authenticateDevice(deviceId, false);
       }
       catch(error){
@@ -1240,7 +1246,9 @@ export default class MainScene extends Phaser.Scene {
 
     if (newUserStorage) {
 
-      localStorage.setItem('ddm_localData', JSON.stringify(
+      await this.WriteToNakamaUserStorageInitial(deviceId, username);
+
+      /* localStorage.setItem('ddm_localData', JSON.stringify(
         {
           "deviceId": deviceId,
           "username": username,
@@ -1283,7 +1291,7 @@ export default class MainScene extends Phaser.Scene {
           firstVisitTodayWithCurtainsClosed: true,
           firstVisitTodayWithCurtainsOpen: true
         }
-      ));
+      )); */
 
       localStorage.setItem('ddm_localDataTutorial', JSON.stringify(
         {
@@ -1335,6 +1343,9 @@ export default class MainScene extends Phaser.Scene {
     await this.GetSystemUsers();
 
     //TODO : Get info if user has seen tutorial
+    await this.GetUserStorageData();
+
+    this.finishedTutorial = this.parsedUserStorage["finishedTutorial"] as boolean;
 
     if(!this.finishedTutorial)
     {
@@ -1363,37 +1374,40 @@ export default class MainScene extends Phaser.Scene {
     }
     else
     {
+      await this.GetUserStorageData();
       await this.GetLatestDynamicData();
       await this.SetupLocalState(username);
   
       this.socket = this.client.createSocket(this.webConfig.ssl);
       await this.socket.connect(this.session, true);
-  
-      if (newUserStorage) {
-        var c001id = await this.JoinGroup(this.session, this.client, "c_001");
-        var c002id = await this.JoinGroup(this.session, this.client, "c_002");
-        //var c003id = await this.JoinGroup(this.session, this.client, "c_003");
-        this.localState.AddChatChannels(
-          {
-            "c_001": c001id,
-            "c_002": c002id
-          });
-  
-        const nTrig = {};
-        this.staticData.notifications.forEach(
-          (notification) => {
-            if (notification.type == "arrivetoday") {
-              console.log(notification.id);
-              nTrig[notification.id] = { seen: false };
-            }
+
+      //removed newuserstorage
+      
+      var c001id = await this.JoinGroup(this.session, this.client, "c_001");
+      var c002id = await this.JoinGroup(this.session, this.client, "c_002");
+      //var c003id = await this.JoinGroup(this.session, this.client, "c_003");
+      this.localState.AddChatChannels(
+        {
+          "c_001": c001id,
+          "c_002": c002id
+        });
+
+      const nTrig = {};
+      this.staticData.notifications.forEach(
+        (notification) => {
+          console.log("createeach");
+          if (notification.type == "arrivetoday") {
+            console.log("make notification: " + notification.id);
+            nTrig[notification.id] = { seen: false };
           }
-        );
-        await this.WriteToDDMLocalStorage(["notificationsState"], [nTrig]);
-      }
-      else {
-        var channels = await this.GetGroupsFromAccount();
-        this.localState.AddChatChannels(channels);
-      }
+        }
+      );
+      await this.WriteToNakamaUserStorage(["notificationsState"], [nTrig]);
+      
+      
+      var channels = await this.GetGroupsFromAccount();
+      this.localState.AddChatChannels(channels);
+      
   
       // use object keys to get each groupId
       for (var key in this.localState.chatChannels) {
@@ -1521,7 +1535,8 @@ export default class MainScene extends Phaser.Scene {
 
   async EndTutorial()
   {
-    window.location.replace(this.webConfig.homewebpage);
+    await this.WriteToNakamaUserStorage(["finishedTutorial"], [true]);
+    window.location.replace(this.webConfig.homewebpage); //vs replace()
   }
 
   async AddEventListeners() {
@@ -1538,9 +1553,91 @@ export default class MainScene extends Phaser.Scene {
     console.log("on blur");
   }
 
+  async GetUserStorageData()
+  {
+    this.parsedUserStorage = (await this.client.readStorageObjects(
+      this.session, {
+        "object_ids": [{
+          "collection": "userStorage",
+          "key": this.session.user_id,
+          "user_id": this.session.user_id
+        }]
+      }
+    ) as StorageObjects).objects[0].value as object;
+  }
+
+  async WriteToNakamaUserStorageInitial(deviceId: string, username: string)
+  {
+    const objects = [{
+      "collection": "userStorage",
+      "key": this.session.user_id,
+      "value": 
+        {
+          "deviceId": deviceId,
+          "username": username,
+          "actionPoints": 5,
+          "sparks": 0,
+          "round": 0,
+          "energyRequirement": 20,
+          "t_001UpgradeLevel": 0,
+          "t_002UpgradeLevel": 0,
+          "t_003UpgradeLevel": 0,
+          "t_004UpgradeLevel": 0,
+          "t_005UpgradeLevel": 0,
+          "t_006UpgradeLevel": 0,
+          "t_001InFanClub": false,
+          "t_002InFanClub": false,
+          "t_003InFanClub": false,
+          "t_004InFanClub": false,
+          "t_005InFanClub": false,
+          "t_006InFanClub": false,
+          "v_001_choiceOne": 0,
+          "v_001_choiceTwo": 0,
+          "v_002_choiceOne": 0,
+          "v_002_choiceTwo": 0,
+          "v_003_choiceOne": 0,
+          "v_003_choiceTwo": 0,
+          "v_004_choiceOne": 0,
+          "v_004_choiceTwo": 0,
+          "v_005_choiceOne": 0,
+          "v_005_choiceTwo": 0,
+          "v_006_choiceOne": 0,
+          "v_006_choiceTwo": 0,
+          "notificationsState": {
+
+          },
+          "dynamicVote":{
+            users:[
+              0,0,0,0,0,0
+            ]
+          },
+          firstVisitTodayWithCurtainsClosed: true,
+          firstVisitTodayWithCurtainsOpen: true,
+          "finishedTutorial": false
+        }
+    }];
+    
+    await this.client.writeStorageObjects(this.session, objects);
+  }
+
+  async WriteToNakamaUserStorage(keys: string[], values: any[])
+  {
+    for(var i=0; i< keys.length; i++)
+    {
+      this.parsedUserStorage[keys[i]] = values[i];
+    }
+    const objects = [{
+      "collection": "userStorage",
+      "key": this.session.user_id,
+      "value": this.parsedUserStorage
+    }];
+
+    await this.client.writeStorageObjects(this.session, objects);
+  }
+
   async GetLatestDynamicData() {
-    var getUserData = await localStorage.getItem("ddm_localData");
-    var parsedUserData = JSON.parse(getUserData as string);
+    //var getUserData = await localStorage.getItem("ddm_localData");
+    //var parsedUserData = JSON.parse(getUserData as string); 
 
     var getTeams = await this.client.readStorageObjects(this.session, {
       "object_ids": [{
@@ -1618,13 +1715,13 @@ export default class MainScene extends Phaser.Scene {
     
     
 
-    if(roundObject.round == parsedUserData.round)
+    if(roundObject.round == this.parsedUserStorage.round)
     {
       //we're on the same round
     }
     else
     {
-      if(roundObject.round > parsedUserData.round)
+      if(roundObject.round > this.parsedUserStorage.round)
       {
         this.newRound = true;
       }
@@ -1675,7 +1772,7 @@ export default class MainScene extends Phaser.Scene {
 
     var users : number[] = [];
      
-    var userChoices = await this.ReadFromDDMLocalStorage("dynamicVote") as object;
+    var userChoices = this.parsedUserStorage["dynamicVote"] as object;
 
     for(var i=0; i<6; i++)
     {
@@ -1696,8 +1793,8 @@ export default class MainScene extends Phaser.Scene {
       var vote = getVotes.objects[i];
       var voteJsonString = JSON.stringify(vote.value);
       var parsedJson = JSON.parse(voteJsonString);
-      var choiceOne = await this.ReadFromDDMLocalStorageNumber(parsedJson.id + "_choiceOne");
-      var choiceTwo = await this.ReadFromDDMLocalStorageNumber(parsedJson.id + "_choiceTwo");
+      var choiceOne = this.parsedUserStorage[parsedJson.id + "_choiceOne"];
+      var choiceTwo = this.parsedUserStorage[parsedJson.id + "_choiceTwo"];
       votesStateData.push(new VoteScenarioState(
         parsedJson.id,
         choiceOne, choiceTwo,
@@ -1708,7 +1805,7 @@ export default class MainScene extends Phaser.Scene {
     }
 
     //changed dynamic data
-    this.dynamicData = new DynamicData(teamsStateData, parsedUserData, roundObject, votesStateData, dynamicVotesStateData);
+    this.dynamicData = new DynamicData(teamsStateData, this.parsedUserStorage, roundObject, votesStateData, dynamicVotesStateData);
   }
 
   async GetLatestDynamicDataTutorial() {
@@ -1846,15 +1943,15 @@ export default class MainScene extends Phaser.Scene {
 
     for (var i = 0; i < this.dynamicData.voteScenariosState.length; i++) {
       var voteState = this.dynamicData.voteScenariosState[i];
-      var choiceOne = await this.ReadFromDDMLocalStorageNumber(this.dynamicData.voteScenariosState[i].id + "_choiceOne");
-      var choiceTwo = await this.ReadFromDDMLocalStorageNumber(this.dynamicData.voteScenariosState[i].id + "_choiceTwo");
+      var choiceOne = this.parsedUserStorage[this.dynamicData.voteScenariosState[i].id + "_choiceOne"];
+      var choiceTwo = this.parsedUserStorage[this.dynamicData.voteScenariosState[i].id + "_choiceTwo"];
       var vote = new VoteScenarioState(voteState.id, choiceOne, choiceTwo, voteState.choiceOneVotesGlobal, voteState.choiceTwoVotesGlobal, voteState.winnerIndex);
       voteStateList.push(vote);
     }
     
       var voteDynamicState = this.dynamicData.d_dynamicVoteOptionsState;
       console.log("vote hyname : " + voteDynamicState.globalVotes);
-      var userChoices = await this.ReadFromDDMLocalStorage("dynamicVote") as object;
+      var userChoices = this.parsedUserStorage["dynamicVote"] as object;
 
       voteDynamicState.userVotes = userChoices["users"] as number[];
 
@@ -1862,27 +1959,25 @@ export default class MainScene extends Phaser.Scene {
     //}
 
     
-    var actionPoints = await this.ReadFromDDMLocalStorageNumber("actionPoints");
-    var sparks = await this.ReadFromDDMLocalStorageNumber("sparks");
+    var actionPoints =  this.parsedUserStorage["actionPoints"];
+    var sparks = this.parsedUserStorage["sparks"];
     
     
     this.localState.Init(username, this.dynamicData.dynamicRoundState.round, this.dynamicData.dynamicRoundState.endOfShowDateTime, this.dynamicData.dynamicRoundState.showDynamicVotes, actionPoints, 5, sparks, this.dynamicData.dynamicRoundState.energyRequirement, teamIdList, voteStateList, voteDynamicState, teamStateList);
     
     if (this.newRound) {
-      await this.WriteToDDMLocalStorage(["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
+      await this.WriteToNakamaUserStorage(["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
       //trigger new round
 
       await this.TriggerNewRound();
     }
     else {
-      await this.WriteToDDMLocalStorage(["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
+      await this.WriteToNakamaUserStorage(["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
     }
     
-    this.actionPointsCounter.innerHTML = (await this.ReadFromDDMLocalStorageNumber("actionPoints")).toString();
-    this.sparksCounter.innerHTML = (await this.ReadFromDDMLocalStorageNumber("sparks")).toString();
+    this.actionPointsCounter.innerHTML = (this.parsedUserStorage["actionPoints"]).toString();
+    this.sparksCounter.innerHTML = (this.parsedUserStorage["sparks"]).toString();
     //this.roundCounter.innerHTML = (6-this.localState.round).toString();
-
-    
 
     this.avatarOverlayButton.innerHTML = this.staticData.teams[this.localState.carouselPosition].title;
 
@@ -1994,33 +2089,32 @@ export default class MainScene extends Phaser.Scene {
 
     for (var i = 0; i < this.localState.voteStates.length; i++) {
       var vote = this.dynamicData.voteScenariosState[i] as VoteScenarioState;
-      var choiceOne = await this.ReadFromDDMLocalStorageNumber(this.localState.voteStates[i].id + "_choiceOne");
-      var choiceTwo = await this.ReadFromDDMLocalStorageNumber(this.localState.voteStates[i].id + "_choiceTwo");
+      var choiceOne = this.parsedUserStorage[this.localState.voteStates[i].id + "_choiceOne"];
+      var choiceTwo = this.parsedUserStorage[this.localState.voteStates[i].id + "_choiceTwo"];
       this.localState.voteStates[i].UpdateFromDynamicData(choiceOne, choiceTwo, vote.choiceOneVotesGlobal, vote.choiceTwoVotesGlobal);
     }
 
-    var userChoices = await this.ReadFromDDMLocalStorage("dynamicVote");
+    var userChoices = this.parsedUserStorage["dynamicVote"];
     this.localState.dynamicVoteState.UpdateFromDynamicData(userChoices["users"], this.dynamicData.d_dynamicVoteOptionsState.globalVotes);
 
     if (this.localState.UpdateFromDynamicData(roundDynamic)) {
-      await this.WriteToDDMLocalStorage(["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
+      await this.WriteToNakamaUserStorage(["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
       //trigger new round
 
       await this.TriggerNewRound();
-      this.CallNotificationsForTheDay();
+      await this.CallNotificationsForTheDay();
 
     }
     else {
-      await this.WriteToDDMLocalStorage(["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
+      await this.WriteToNakamaUserStorage(["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
     }
-
   }
 
   async TriggerNewRound()
   {
       this.localState.SetActionPointsToMax();
       this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
-      await this.WriteToDDMLocalStorage(["actionPoints", "firstVisitTodayWithCurtainsOpen"], [this.localState.maxActionPoints, true]);      
+      await this.WriteToNakamaUserStorage(["actionPoints", "firstVisitTodayWithCurtainsOpen"], [this.localState.maxActionPoints, true]);      
   }
 
   async SetupVotePage(finishedTutorial: boolean) {
@@ -2086,8 +2180,8 @@ export default class MainScene extends Phaser.Scene {
           }
           else
           {
-            await this.WriteToDDMLocalStorage(["sparks"], [this.localState.sparksAwarded]);
-            await this.WriteToDDMLocalStorage([todaysScenarioState.id + "_choiceOne"], [todaysScenarioState.choiceOneVotesUser]);
+            await this.WriteToNakamaUserStorage(["sparks"], [this.localState.sparksAwarded]);
+            await this.WriteToNakamaUserStorage([todaysScenarioState.id + "_choiceOne"], [todaysScenarioState.choiceOneVotesUser]);
           }
           this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
           this.voteChoiceOneUser.innerHTML = todaysScenarioState.choiceOneVotesUser.toString();
@@ -2119,8 +2213,8 @@ export default class MainScene extends Phaser.Scene {
           }
           else
           {
-            await this.WriteToDDMLocalStorage(["sparks"], [this.localState.sparksAwarded]);
-            await this.WriteToDDMLocalStorage([todaysScenarioState.id + "_choiceOne"], [todaysScenarioState.choiceOneVotesUser]);
+            await this.WriteToNakamaUserStorage(["sparks"], [this.localState.sparksAwarded]);
+            await this.WriteToNakamaUserStorage([todaysScenarioState.id + "_choiceOne"], [todaysScenarioState.choiceOneVotesUser]);
           }
 
           this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
@@ -2151,8 +2245,8 @@ export default class MainScene extends Phaser.Scene {
           }
           else
           {
-            await this.WriteToDDMLocalStorage(["sparks"], [this.localState.sparksAwarded]);
-            await this.WriteToDDMLocalStorage([todaysScenarioState.id + "_choiceTwo"], [todaysScenarioState.choiceTwoVotesUser]);
+            await this.WriteToNakamaUserStorage(["sparks"], [this.localState.sparksAwarded]);
+            await this.WriteToNakamaUserStorage([todaysScenarioState.id + "_choiceTwo"], [todaysScenarioState.choiceTwoVotesUser]);
           }
 
           this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
@@ -2187,8 +2281,8 @@ export default class MainScene extends Phaser.Scene {
           }
           else
           {
-            await this.WriteToDDMLocalStorage(["sparks"], [this.localState.sparksAwarded]);
-            await this.WriteToDDMLocalStorage([todaysScenarioState.id + "_choiceTwo"], [todaysScenarioState.choiceTwoVotesUser]);
+            await this.WriteToNakamaUserStorage(["sparks"], [this.localState.sparksAwarded]);
+            await this.WriteToNakamaUserStorage([todaysScenarioState.id + "_choiceTwo"], [todaysScenarioState.choiceTwoVotesUser]);
           }
 
           this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
@@ -2256,13 +2350,13 @@ export default class MainScene extends Phaser.Scene {
         if (this.localState.HaveSpentSparksOnTodaysDynamicVote(vote_id_val)) {
           this.localState.dynamicVoteState.DecreaseVote(vote_id_val);
           this.localState.GainSparks(1);
-          await this.WriteToDDMLocalStorage(["sparks"], [this.localState.sparksAwarded]);
+          await this.WriteToNakamaUserStorage(["sparks"], [this.localState.sparksAwarded]);
           
           //get local data
-          const localVoteData = await this.ReadFromDDMLocalStorage("dynamicVote") as object;
+          const localVoteData = this.parsedUserStorage["dynamicVote"] as object;
           //add a property if if doesn't exist / otherwise update it
           localVoteData["users"][vote_id_val] = this.localState.dynamicVoteState.userVotes[vote_id_val];
-          await this.WriteToDDMLocalStorage(["dynamicVote"], [localVoteData]);
+          await this.WriteToNakamaUserStorage(["dynamicVote"], [localVoteData]);
           
           this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
           optionChoiceCount.innerHTML = this.localState.dynamicVoteState.userVotes[vote_id_val].toString();
@@ -2277,13 +2371,13 @@ export default class MainScene extends Phaser.Scene {
         if (this.localState.HaveSparks()) {
           this.localState.dynamicVoteState.IncreaseVote(vote_id_val);
           this.localState.SpendSparks(1);
-          await this.WriteToDDMLocalStorage(["sparks"], [this.localState.sparksAwarded]);
+          await this.WriteToNakamaUserStorage(["sparks"], [this.localState.sparksAwarded]);
           
           //get local data
-          const localVoteData = await this.ReadFromDDMLocalStorage("dynamicVote") as object;
+          const localVoteData = this.parsedUserStorage["dynamicVote"] as object;
           //add a property if if doesn't exist / otherwise update it
           localVoteData["users"][vote_id_val] = this.localState.dynamicVoteState.userVotes[vote_id_val];
-          await this.WriteToDDMLocalStorage(["dynamicVote"], [localVoteData]);
+          await this.WriteToNakamaUserStorage(["dynamicVote"], [localVoteData]);
           
           this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
           optionChoiceCount.innerHTML = this.localState.dynamicVoteState.userVotes[vote_id_val].toString();
@@ -2577,7 +2671,7 @@ export default class MainScene extends Phaser.Scene {
             }
             else
             {
-              await this.WriteToDDMLocalStorage(["actionPoints", "sparks"], [this.localState.actionPoints, this.localState.sparksAwarded]);
+              await this.WriteToNakamaUserStorage(["actionPoints", "sparks"], [this.localState.actionPoints, this.localState.sparksAwarded]);
             }
 
             this.SetOverlayProgress(
@@ -2630,7 +2724,7 @@ export default class MainScene extends Phaser.Scene {
             }
             else
             {
-              await this.WriteToDDMLocalStorage(["actionPoints", this.localState.currentTeamID + "InFanClub"], [this.localState.actionPoints, true]);
+              await this.WriteToNakamaUserStorage(["actionPoints", this.localState.currentTeamID + "InFanClub"], [this.localState.actionPoints, true]);
             }
 
             // audio
@@ -2686,7 +2780,7 @@ export default class MainScene extends Phaser.Scene {
             }
             else
             {
-              await this.WriteToDDMLocalStorage(["actionPoints", this.localState.currentTeamID + "UpgradeLevel"], [this.localState.actionPoints, this.localState.GetCurrentTeamState().upgradeLevel]);
+              await this.WriteToNakamaUserStorage(["actionPoints", this.localState.currentTeamID + "UpgradeLevel"], [this.localState.actionPoints, this.localState.GetCurrentTeamState().upgradeLevel]);
             }
 
             this.CheckIfOutOfPointsUI(donateButton, upgradeButton, fanClubButton, this.localState.carouselPosition);
@@ -2758,18 +2852,6 @@ export default class MainScene extends Phaser.Scene {
     });
   }
 
-  async WriteToDDMLocalStorage(keys: string[], values: Array<any>) {
-    const data = await localStorage.getItem('ddm_localData');
-    const json = JSON.parse(data as string);
-    var i = 0;
-    keys.forEach((key) => {
-      json[key] = values[i];
-      i++;
-    })
-
-    localStorage.setItem('ddm_localData', JSON.stringify(json));
-  }
-
   async WriteToLocalStorage(dict: string, keys: string[], values: Array<any>) {
     const data = await localStorage.getItem(dict);
     const json = JSON.parse(data as string);
@@ -2779,13 +2861,7 @@ export default class MainScene extends Phaser.Scene {
       i++;
     })
 
-    localStorage.setItem('ddm_localData', JSON.stringify(json));
-  }
-
-  async ReadFromDDMLocalStorageNumber(key: string) {
-    const data = await localStorage.getItem('ddm_localData');
-    const json = JSON.parse(data as string);
-    return json[key] as number;
+    localStorage.setItem(dict, JSON.stringify(json));
   }
 
   async ReadFromLocalStorageNumber(dict: string, key: string) {
@@ -2794,25 +2870,6 @@ export default class MainScene extends Phaser.Scene {
     return json[key] as number;
   }
 
-  async ReadFromDDMLocalStorage(key: string) {
-    const data = await localStorage.getItem('ddm_localData');
-    if(data !== null || data !== undefined)
-    {
-      console.log("read good");
-      const json = JSON.parse(data as string);
-      console.log("parse good");
-      if(json !== null && json[key] !== null)
-      {
-        console.log("parse good");
-        return json[key] as object;
-      }
-      else return null;
-    }
-    else
-    {
-      return null;
-    }
-  }
 
   async ReadFromLocalStorage(dict: string, key: string) {
     const data = await localStorage.getItem(dict);
@@ -2851,18 +2908,14 @@ export default class MainScene extends Phaser.Scene {
     }
   }
 
-  async ReadFromDDMLocalStorageBoolean(key: string) {
-    const data = await localStorage.getItem('ddm_localData');
-    const json = JSON.parse(data as string);
-    return json[key] as boolean;
-  }
-
   async ReadFromLocalStorageBoolean(dict: string, key: string) {
     const data = await localStorage.getItem(dict);
     const json = JSON.parse(data as string);
     return json[key] as boolean;
   }
 
+
+  
   async RefreshFromDynamicData() {
     console.log("refresh");
 
@@ -2873,9 +2926,11 @@ export default class MainScene extends Phaser.Scene {
     //todo - the same update for notifications
 
     var storePrevShowDynamicVotesValue = this.localState.showDynamicVoteOptions;
+    
+    await this.GetUserStorageData();
     await this.GetLatestDynamicData();
     await this.ReloadLocalState();
-    await this.WriteToDDMLocalStorage(["actionPoints", "energyRequirement", "round"], [this.localState.actionPoints, this.localState.roundEnergyRequirement, this.localState.round]);
+    await this.WriteToNakamaUserStorage(["actionPoints", "energyRequirement", "round"], [this.localState.actionPoints, this.localState.roundEnergyRequirement, this.localState.round]);
 
     this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
     //this.roundCounter.innerHTML = (6-this.localState.round).toString();
@@ -3651,7 +3706,7 @@ export default class MainScene extends Phaser.Scene {
     var notificationsState;
     if(this.finishedTutorial)
     {
-      notificationsState = (await this.ReadFromDDMLocalStorage("notificationsState") as object);
+      notificationsState = (this.parsedUserStorage["notificationsState"] as object);
     } 
     else
     {
@@ -3666,7 +3721,14 @@ export default class MainScene extends Phaser.Scene {
       username: character
     };
 
-    await this.WriteToDDMLocalStorage(["notificationsState"], [notificationsState]);
+    if(this.finishedTutorial)
+    {
+      await this.WriteToNakamaUserStorage(["notificationsState"], [notificationsState]);
+    }
+    else
+    {
+      await this.WriteToLocalStorage("ddm_localDataTutorial", ["notificationsState"], [notificationsState]);
+    }
     //console.log("is this seen now?" + id + " : " + notificationsState[id].seen);
     const type = this.staticData.notifications.find(p => p.id == id)?.type as string;
     if (type == "arrivetoday") {
@@ -3674,7 +3736,14 @@ export default class MainScene extends Phaser.Scene {
     }
 
     if (this.dailyNotificationCount == this.dailyNotificationTotal) {
-      await this.WriteToDDMLocalStorage(["firstVisitTodayWithCurtainsOpen"], [false]);
+      if(this.finishedTutorial)
+      {
+        await this.WriteToNakamaUserStorage(["firstVisitTodayWithCurtainsOpen"], [false]);
+      }
+      else
+      {
+        await this.WriteToLocalStorage("ddm_localDataTutorial", ["firstVisitTodayWithCurtainsOpen"], [false]);
+      }
     }
     this.DisplayQueuedNotification(400);
   }
@@ -3868,16 +3937,16 @@ export default class MainScene extends Phaser.Scene {
   }
 
   async GenerateNotificationChannelMessages() {
-    var notificationsState = await this.ReadFromDDMLocalStorage("notificationsState") as object;
+    var notificationsState = this.parsedUserStorage["notificationsState"] as object;
     var notificationsSeen = [] as string[];
     Object.keys(notificationsState).forEach(
       (key) => {
-        if (notificationsState[key].seen == true) {
+        if (notificationsState[key]["seen"] == true) {
           console.log("key " + key);
           notificationsSeen.push(key)
         }
         else {
-          console.log("no key " + notificationsState[key].seen);
+          console.log("no key " + notificationsState[key]["seen"]);
         }
       }
     );
