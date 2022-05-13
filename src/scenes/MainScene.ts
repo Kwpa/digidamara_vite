@@ -1436,7 +1436,6 @@ export default class MainScene extends Phaser.Scene {
       if(tutorialStep.id != "tut_001")
       {
         var showStepButtons = false;
-        var scrollToCustom = false;
 
         switch(tutorialStep.type)
         {
@@ -1457,16 +1456,6 @@ export default class MainScene extends Phaser.Scene {
           position = tutorialStep.popupPosition;
         }
 
-        if(tutorialStep.scrollToX !== null && tutorialStep.scrollToX !== undefined && tutorialStep.scrollToX !== 0)
-        {
-          if(tutorialStep.scrollToY !== null && tutorialStep.scrollToY !== undefined && tutorialStep.scrollToY !== 0)
-          {
-            scrollToCustom = true;
-          }  
-        }
-          
-
-        
         if(tutorialStep.title == "Chat"){
           this.tutorialTour.addStep({
             title: tutorialStep.title,
@@ -1528,68 +1517,6 @@ export default class MainScene extends Phaser.Scene {
       await this.DisplayQueuedNotification(400);
     })
     this.tutorialTour.start();
-
-    /* this.driver = new Driver(
-    {
-      className: 'scoped-class',        // className to wrap driver.js popover
-      animate: true,                    // Whether to animate or not
-      opacity: 0.75,                    // Background opacity (0 means only popovers and without overlay)
-      padding: 10,                      // Distance of element from around the edges
-      allowClose: false,                 // Whether the click on overlay should close or not
-      overlayClickNext: false,          // Whether the click on overlay should move next
-      doneBtnText: 'Done',              // Text on the final button
-      closeBtnText: 'Close',            // Text on the close button for this step
-      stageBackground: '#000000',       // Background color for the staged behind highlighted element
-      nextBtnText: 'Next',              // Next button text for this step
-      prevBtnText: 'Previous',          // Previous button text for this step
-      showButtons: true,               // Do not show control buttons in footer
-    });
-
-    // Define the steps for introduction
-    const steps : Step[] = [];
-    this.staticData.tutorialSteps.forEach((tutorialStep)=>{
-      if(tutorialStep.id != "tut_001")
-      {
-        var showStepButtons = false;
-        switch(tutorialStep.type)
-        {
-          case "info":
-            showStepButtons = true;
-            break;
-          case "action":
-            showStepButtons = false;
-            break;
-        }
-
-        var stepPopupPosition = "";
-        if(tutorialStep.popupPosition == "auto")
-        {
-          steps.push({
-            element: '#' + tutorialStep.elementId,
-            popover: {
-            title: tutorialStep.title,
-            description: tutorialStep.content,
-            showButtons: showStepButtons
-            }
-          });
-        }
-        else
-        {
-          steps.push({
-            element: '#' + tutorialStep.elementId,
-            popover: {
-            title: tutorialStep.title,
-            description: tutorialStep.content,
-            showButtons: showStepButtons,
-            position: tutorialStep.popupPosition
-            }
-          });
-        }
-
-      }
-    });
-    this.driver.defineSteps(steps);
-    this.driver.start(); */
   }
 
   async EndTutorial()

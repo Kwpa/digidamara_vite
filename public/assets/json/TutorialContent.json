@@ -6,9 +6,7 @@
         "element_id":  "",
         "type":  "",
         "button":  "",
-        "popup_position":  "",
-        "scroll_to_x":  "",
-        "scroll_to_y":  ""
+        "popup_position":  ""
     },
     {
         "id":  "tut_002",
@@ -17,9 +15,7 @@
         "element_id":  "teamProgressContainer",
         "type":  "info",
         "button":  "none",
-        "popup_position":  "top",
-        "scroll_to_x":  "",
-        "scroll_to_y":  ""
+        "popup_position":  "top"
     },
     {
         "id":  "tut_003",
@@ -28,9 +24,7 @@
         "element_id":  "ap-value",
         "type":  "info",
         "button":  "none",
-        "popup_position":  "bottom",
-        "scroll_to_x":  "",
-        "scroll_to_y":  ""
+        "popup_position":  "bottom"
     },
     {
         "id":  "tut_004",
@@ -39,9 +33,7 @@
         "element_id":  "sparks-value",
         "type":  "info",
         "button":  "none",
-        "popup_position":  "bottom",
-        "scroll_to_x":  "",
-        "scroll_to_y":  ""
+        "popup_position":  "bottom"
     },
     {
         "id":  "tut_005",
@@ -50,9 +42,7 @@
         "element_id":  "slide-down-button-container",
         "type":  "action",
         "button":  "leaderboard-header-button",
-        "popup_position":  "bottom",
-        "scroll_to_x":  "",
-        "scroll_to_y":  ""
+        "popup_position":  "bottom"
     },
     {
         "id":  "tut_006",
@@ -61,9 +51,7 @@
         "element_id":  "leaderboard-table-container",
         "type":  "info",
         "button":  "none",
-        "popup_position":  "bottom",
-        "scroll_to_x":  "",
-        "scroll_to_y":  ""
+        "popup_position":  "bottom"
     },
     {
         "id":  "tut_007",
@@ -72,9 +60,7 @@
         "element_id":  "leaderboard-header-button",
         "type":  "action",
         "button":  "leaderboard-header-button",
-        "popup_position":  "top",
-        "scroll_to_x":  "",
-        "scroll_to_y":  ""
+        "popup_position":  "top"
     },
     {
         "id":  "tut_008",
@@ -83,9 +69,7 @@
         "element_id":  "openProfile",
         "type":  "action",
         "button":  "openProfile",
-        "popup_position":  "top",
-        "scroll_to_x":  "",
-        "scroll_to_y":  ""
+        "popup_position":  "top"
     },
     {
         "id":  "tut_009",
@@ -94,9 +78,7 @@
         "element_id":  "donate-button",
         "type":  "action",
         "button":  "donate-button",
-        "popup_position":  "bottom",
-        "scroll_to_x":  "",
-        "scroll_to_y":  ""
+        "popup_position":  "bottom"
     },
     {
         "id":  "tut_010",
@@ -105,9 +87,7 @@
         "element_id":  "team-energy-bar-container",
         "type":  "info",
         "button":  "none",
-        "popup_position":  "top",
-        "scroll_to_x":  "",
-        "scroll_to_y":  ""
+        "popup_position":  "top"
     },
     {
         "id":  "tut_011",
@@ -116,9 +96,7 @@
         "element_id":  "fan-club-button",
         "type":  "action",
         "button":  "fan-club-button",
-        "popup_position":  "bottom",
-        "scroll_to_x":  "",
-        "scroll_to_y":  ""
+        "popup_position":  "bottom"
     },
     {
         "id":  "tut_012",
@@ -127,9 +105,7 @@
         "element_id":  "image-container",
         "type":  "info",
         "button":  "none",
-        "popup_position":  "auto",
-        "scroll_to_x":  "",
-        "scroll_to_y":  ""
+        "popup_position":  "auto"
     },
     {
         "id":  "tut_013",
@@ -138,9 +114,7 @@
         "element_id":  "upgrade-button",
         "type":  "action",
         "button":  "upgrade-button",
-        "popup_position":  "auto",
-        "scroll_to_x":  "",
-        "scroll_to_y":  ""
+        "popup_position":  "auto"
     },
     {
         "id":  "tut_014",
@@ -149,9 +123,7 @@
         "element_id":  "upgrade-value-container",
         "type":  "info",
         "button":  "none",
-        "popup_position":  "auto",
-        "scroll_to_x":  "",
-        "scroll_to_y":  ""
+        "popup_position":  "auto"
     },
     {
         "id":  "tut_015",
@@ -160,9 +132,7 @@
         "element_id":  "open-close-button",
         "type":  "info",
         "button":  "none",
-        "popup_position":  "auto",
-        "scroll_to_x":  "",
-        "scroll_to_y":  ""
+        "popup_position":  "auto"
     },
     {
         "id":  "tut_016",
@@ -171,9 +141,7 @@
         "element_id":  "donate-button",
         "type":  "action",
         "button":  "upgrade-button,upgrade-button",
-        "popup_position":  "auto",
-        "scroll_to_x":  "",
-        "scroll_to_y":  ""
+        "popup_position":  "auto"
     },
     {
         "id":  "tut_017",
@@ -182,9 +150,7 @@
         "element_id":  "sparks-value",
         "type":  "info",
         "button":  "info",
-        "popup_position":  "auto",
-        "scroll_to_x":  "",
-        "scroll_to_y":  ""
+        "popup_position":  "auto"
     },
     {
         "id":  "tut_018",
@@ -193,9 +159,7 @@
         "element_id":  "vote-footer-button",
         "type":  "action",
         "button":  "vote-footer-button",
-        "popup_position":  "auto",
-        "scroll_to_x":  "",
-        "scroll_to_y":  ""
+        "popup_position":  "auto"
     },
     {
         "id":  "tut_019",
@@ -204,9 +168,7 @@
         "element_id":  "voteScenario",
         "type":  "info",
         "button":  "info",
-        "popup_position":  "auto",
-        "scroll_to_x":  "",
-        "scroll_to_y":  ""
+        "popup_position":  "auto"
     },
     {
         "id":  "tut_020",
@@ -215,9 +177,7 @@
         "element_id":  "voteScenario",
         "type":  "choiceValue",
         "button":  "none",
-        "popup_position":  "auto",
-        "scroll_to_x":  "",
-        "scroll_to_y":  ""
+        "popup_position":  "auto"
     },
     {
         "id":  "tut_021",
@@ -226,9 +186,7 @@
         "element_id":  "video-footer-button",
         "type":  "info",
         "button":  "none",
-        "popup_position":  "auto",
-        "scroll_to_x":  "",
-        "scroll_to_y":  ""
+        "popup_position":  "auto"
     },
     {
         "id":  "tut_022",
@@ -237,8 +195,6 @@
         "element_id":  "chat-footer-button",
         "type":  "info",
         "button":  "none",
-        "popup_position":  "auto",
-        "scroll_to_x":  "",
-        "scroll_to_y":  ""
+        "popup_position":  "auto"
     }
 ]
