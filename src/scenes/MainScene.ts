@@ -3867,6 +3867,17 @@ export default class MainScene extends Phaser.Scene {
         if(this.CharacterUsernameCheck(username))
         {
           styleString = "background-color: " + "#000000" + ";";
+          switch(username)
+              {
+                case "THEPROMOTER": case "THE PROMOTER": avatarUrl="icon_promoter_transparent_36px.png"; break;
+                case "SPACESTATION": case "SPACE STATION": avatarUrl="icon_spacestation_transparent_36px.png"; break;
+                case "MASTERGAURI": case "MASTERREFILWE": avatarUrl="icon_teamemblem_pillow_fit_transparent_36px.png"; break;
+                case "FORMATION16": case "FORMATION17": avatarUrl="icon_teamemblem_sponge_fitted_transparent_36px.png"; break;
+                case "TWILL": case "KITT": avatarUrl="icon_teamemblem_pipes_fit_transparent_36px.png"; break;
+                case "GRUNTER": avatarUrl="icon_teamemblem_bag_fitted_transparent_36px.png"; break;
+                case "BABE": case "BAS": avatarUrl="icon_teamemblem_balloon_fitted_transparent_36px.png"; break;
+                case "ENTHER": case "AURAM": avatarUrl="icon_teamemblem_glove_fit_transparent_36px.png"; break;
+              }
         }
         else
         {
@@ -3876,13 +3887,15 @@ export default class MainScene extends Phaser.Scene {
           styleString = "background-color: " + hexColor + ";";
         }
 
+        var fullAvatarPath = this.CharacterUsernameCheck(username) ? (this.teamEmblemsIconPath + avatarUrl) : (this.whiteIconPath + avatarUrl);
 
         if (message.sender_id == this.session.user_id) {
 
-          // if chat open
+          
+          
           if (this.localState.GetCurrentChatChannelGroupId() == message.group_id) {
             var timeago = this.GetTime(message.create_time as string);
-            const messageElement = ChatMessageCurrentUser(username, message.content.message, this.whiteIconPath+avatarUrl, timeago, styleString) as HTMLElement;
+            const messageElement = ChatMessageCurrentUser(username, message.content.message, fullAvatarPath, timeago, styleString) as HTMLElement;
 
             if (this.localState.lastChatMessageUserId == message.sender_id) {
               var top = messageElement.querySelector('#chat-top') as HTMLElement;
@@ -3901,7 +3914,7 @@ export default class MainScene extends Phaser.Scene {
           // if chat open
           if (this.localState.GetCurrentChatChannelGroupId() == message.group_id) {
             var timeago = this.GetTime(message.create_time as string);
-            const messageElement = ChatMessageOtherUser(username, message.content.message, this.whiteIconPath+avatarUrl, timeago, styleString) as HTMLElement;
+            const messageElement = ChatMessageOtherUser(username, message.content.message, fullAvatarPath, timeago, styleString) as HTMLElement;
             this.chatMessageContainer.append(messageElement);
           }
           else {
@@ -4085,6 +4098,17 @@ export default class MainScene extends Phaser.Scene {
             if(this.CharacterUsernameCheck(username))
             {
               styleString = "background-color: " + "#000000" + ";";
+              switch(username)
+              {
+                case "THEPROMOTER": case "THE PROMOTER": avatarUrl="icon_promoter_transparent_36px.png"; break;
+                case "SPACESTATION": case "SPACE STATION": avatarUrl="icon_spacestation_transparent_36px.png"; break;
+                case "MASTERGAURI": case "MASTERREFILWE": avatarUrl="icon_teamemblem_pillow_fit_transparent_36px.png"; break;
+                case "FORMATION16": case "FORMATION17": avatarUrl="icon_teamemblem_sponge_fitted_transparent_36px.png"; break;
+                case "TWILL": case "KITT": avatarUrl="icon_teamemblem_pipes_fit_transparent_36px.png"; break;
+                case "GRUNTER": avatarUrl="icon_teamemblem_bag_fitted_transparent_36px.png"; break;
+                case "BABE": case "BAS": avatarUrl="icon_teamemblem_balloon_fitted_transparent_36px.png"; break;
+                case "ENTHER": case "AURAM": avatarUrl="icon_teamemblem_glove_fit_transparent_36px.png"; break;
+              }
             }
             else
             {
@@ -4093,7 +4117,6 @@ export default class MainScene extends Phaser.Scene {
               var hexColor = "#" + this.staticData.colours[number].hexCode;
               styleString = "background-color: " + hexColor + ";";
             }
-            
 
             var timeago = this.GetTime(message.create_time as string);
 
@@ -4123,7 +4146,7 @@ export default class MainScene extends Phaser.Scene {
               this.chatMessageContainer.append(messageElement);
             }
             else {
-              const messageElement = ChatMessageOtherUser(username, getMessage.message, this.whiteIconPath+avatarUrl, timeago, styleString) as HTMLElement; // works! but can't find the message :/
+              const messageElement = ChatMessageOtherUser(username, getMessage.message, fullAvatarPath, timeago, styleString) as HTMLElement; // works! but can't find the message :/
 
               if (storeUserId == message.sender_id) {
                 var top = messageElement.querySelector('#chat-top') as HTMLElement;
