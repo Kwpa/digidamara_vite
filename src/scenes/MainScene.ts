@@ -44,6 +44,7 @@ import { humanized_time_span } from '../utils/humanized_time_span.js';
 import NakaChannelMessage from './NakaChannelMessage';
 import Shepherd from 'shepherd.js';
 import 'shepherd.js/dist/css/shepherd.css';
+import AudioManager from '../AudioManager';
 
 export default class MainScene extends Phaser.Scene {
 
@@ -187,8 +188,11 @@ export default class MainScene extends Phaser.Scene {
   webConfig;
   rexVideoPlayer;
 
+  audioManager: AudioManager;
+
   constructor() {
     super('MainScene');
+    this.audioManager = new AudioManager(this);
   }
 
   preload() {
@@ -223,8 +227,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.json('dynamicVoteOptions_content', '/assets/json/DynamicVoteOptions.json');
     this.load.json('colours_content', '/assets/json/Colours.json');
 
-    this.load.audio('danceFloorAudioOne', ['/assets/audio/DDM-DanceFloor-1.mp3']);
-    this.load.audio('danceFloorAudioTwo', ['/assets/audio/DDM-DanceFloor-2.mp3']);
+    this.audioManager.LoadAudio();
 
     //this.load.on('complete', () => {this.flag = true});
   }
@@ -459,6 +462,8 @@ export default class MainScene extends Phaser.Scene {
 
   SetupClickSlideDownButton() {
     this.leaderboardHeaderButton.onclick = () => {
+
+      // TODO Leaderboard SFX
 
       if (!this.leaderboardIsOpen) {
         console.log("OpenTheLeaderBoard");
@@ -747,7 +752,7 @@ export default class MainScene extends Phaser.Scene {
     this.votePage.setVisible(false);
     this.helpPage.setVisible(false);
     this.settingsPage.setVisible(false);
-
+    
     //audio
     this.danceFloorAudioOne = this.sound.add('danceFloorAudioOne', {
       volume: 0.4,
@@ -801,7 +806,7 @@ export default class MainScene extends Phaser.Scene {
     }
     this.videoFooterButton.onclick = () => {
       this.SetPage("videoOverlay");
-      this.FadeOutDanceFloorAudio();
+      //this.FadeOutDanceFloorAudio();
       this.tapAreaLeft.removeInteractive();
       this.tapAreaRight.removeInteractive();
     }
@@ -829,6 +834,9 @@ export default class MainScene extends Phaser.Scene {
     }
     this.avatarOverlayButton.onclick = async() => {
       this.SetPage("teamProfile");
+
+      this.audioManager.PlayOneshot(AudioManager.sfx_open);
+
       var donateButton = this.teamProfilePages[this.localState.carouselPosition].getChildByID('donate-button') as HTMLInputElement;
       var fanClubButton = this.teamProfilePages[this.localState.carouselPosition].getChildByID('fan-club-button') as HTMLInputElement;
       var upgradeButton = this.teamProfilePages[this.localState.carouselPosition].getChildByID('upgrade-button') as HTMLInputElement;
@@ -1751,9 +1759,7 @@ export default class MainScene extends Phaser.Scene {
       }]
     }) as StorageObjects;
 
-
     //todo: need to write dynamic votes properly
-
     var getDynamicVotes = await this.client.readStorageObjects(this.session, {
       "object_ids": [{
         "collection": "dynamic_voting_scenarios",
@@ -1763,7 +1769,6 @@ export default class MainScene extends Phaser.Scene {
     }) as StorageObjects;
 
     var votesStateData: VoteScenarioState[] = [];
-
 
     // todo here to investigate?
       var vote = getDynamicVotes.objects[0];
@@ -1802,7 +1807,7 @@ export default class MainScene extends Phaser.Scene {
         parsedJson.choice2Votes,
         parsedJson.winner
       ));
-    }
+    }    
 
     //changed dynamic data
     this.dynamicData = new DynamicData(teamsStateData, this.parsedUserStorage, roundObject, votesStateData, dynamicVotesStateData);
@@ -2658,6 +2663,8 @@ export default class MainScene extends Phaser.Scene {
         k++;
         donateButton.onclick = async () => {
           if (this.localState.SpendActionPointOnDonation()) {
+            this.audioManager.PlayOneshot(AudioManager.sfx_ui_accent);
+            
             this.localState.GainSparks(1 + this.localState.GetUpgradeLevel());
             this.localState.teamStates[this.localState.carouselPosition].DonateEnergy();
             this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
@@ -2715,6 +2722,8 @@ export default class MainScene extends Phaser.Scene {
 
         fanClubButton.onclick = async () => {
           if (this.localState.SpendActionPointOnFanClub()) {
+            this.audioManager.PlayOneshot(AudioManager.sfx_ui_accent);
+
             this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
 
             this.localState.GetCurrentTeamState().JoinFanClub();
@@ -2728,7 +2737,7 @@ export default class MainScene extends Phaser.Scene {
             }
 
             // audio
-            this.FadeInOutDanceFloorAudioTwo();
+            //this.FadeInOutDanceFloorAudioTwo();
 
             // unlock chat
 
@@ -2770,6 +2779,8 @@ export default class MainScene extends Phaser.Scene {
 
         upgradeButton.onclick = async () => {
           if (this.localState.SpendActionPointOnUpgrade()) {
+            this.audioManager.PlayOneshot(AudioManager.sfx_ui_accent);
+
             console.log("upgrade");
             this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
             this.localState.UpgradeTeam(this.localState.currentTeamID);
@@ -2800,6 +2811,8 @@ export default class MainScene extends Phaser.Scene {
         }
 
         closeButton.onclick = () => {
+          this.audioManager.PlayOneshot(AudioManager.sfx_close);
+
           this.SetPage("avatarOverlay");
           this.tapAreaLeft.setInteractive();
           this.tapAreaRight.setInteractive();
@@ -3160,6 +3173,7 @@ export default class MainScene extends Phaser.Scene {
       .on('pointerdown', async (pointer, localX, localY, event) => {
         if(this.finishedTutorial)
         {
+          this.audioManager.PlayOneshot(AudioManager.sfx_left);
           await this.MoveCarousel(carousel, "left");
         }
       });
@@ -3168,6 +3182,7 @@ export default class MainScene extends Phaser.Scene {
       .on('pointerdown', async (pointer, localX, localY, event) => {
         if(this.finishedTutorial)
         {
+          this.audioManager.PlayOneshot(AudioManager.sfx_right);
           await this.MoveCarousel(carousel, "right");
         }
       });
@@ -3530,9 +3545,12 @@ export default class MainScene extends Phaser.Scene {
 
         this.notificationHome.depth = this.depthLayers["notifications"];
         this.notificationHome.setVisible(true);
+
+        this.audioManager.PlayOneshot(AudioManager.sfx_notification);
         this.AnimateIconWobble();
 
         nextButton.onclick = () => {
+          this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
           if (this.localState.NextNotificationHomeContent()) {
             content.innerHTML = this.localState.GetCurrentNotificationHomeContent();
             this.AnimateIconWobble();
@@ -3612,10 +3630,11 @@ export default class MainScene extends Phaser.Scene {
           }
         };
         closeButton.onclick = async () => {
+          this.audioManager.PlayOneshot(AudioManager.sfx_ui_confirm);
           await this.CloseNotification(id);
         };
         watchLatestVideoButton.onclick = async () => {
-          this.FadeOutDanceFloorAudio();
+          //this.FadeOutDanceFloorAudio();
           await this.CloseNotification(id);
           var list = this.GetListOfActiveVideos();
           this.localState.LatestVideoContent(list.length);
