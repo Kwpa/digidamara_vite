@@ -72,6 +72,7 @@ export default class MainScene extends Phaser.Scene {
   
 
   whiteIconPath: string = "/assets/white_icons/";
+  teamEmblemsIconPath: string = "/assets/team_emblems/";
 
   teamProfilePages!: Phaser.GameObjects.DOMElement[];
   landingPage!: Phaser.GameObjects.DOMElement; 
@@ -1960,7 +1961,7 @@ export default class MainScene extends Phaser.Scene {
 
       voteDynamicState.userVotes = userChoices["users"] as number[];
 
-    this.GetSystemUsers();
+    await this.GetSystemUsers();
     //}
 
     
@@ -2032,7 +2033,7 @@ export default class MainScene extends Phaser.Scene {
       
       voteDynamicState.userVotes = [0,0,0,0,0,0];
 
-    this.GetSystemUsers();
+    await this.GetSystemUsers();
     //}
 
     
@@ -2469,7 +2470,7 @@ export default class MainScene extends Phaser.Scene {
     if (this.localState.chatChannels[id] != null) {
 
 
-      var src = "/assets/team_emblems/" + channel.iconPath;
+      var src = this.teamEmblemsIconPath + channel.iconPath;
       const chatChannel = ChatChannel(channel.title, src) as HTMLElement;
       const chatChannelOpenButton = chatChannel.querySelector("#chat-channel-button-open") as HTMLElement;
 
@@ -3822,6 +3823,30 @@ export default class MainScene extends Phaser.Scene {
     return Object.keys(object).find(key => object[key] === value);
   }
 
+  CharacterUsernameCheck(name: string)
+  {
+    var listOfCharacterNames =
+    [
+      "SPACESTATION",
+      "THEPROMOTER",
+      "SPACE STATION",
+      "THE PROMOTER",
+      "MASTERGAURI",
+      "MASTERREFILWE",
+      "FORMATION16",
+      "FORMATION17",
+      "TWILL",
+      "KITT",
+      "GRUNTER",
+      "BABE",
+      "BAS",
+      "ENTHER",
+      "AURAM"
+    ]; 
+    return listOfCharacterNames.includes(name);
+    
+  }
+
   async initializeChat(socket: Socket) {
     //receive code is here
 
@@ -3833,11 +3858,13 @@ export default class MainScene extends Phaser.Scene {
       if (key != null) {
         var account = await this.client.getUsers(this.session, [message.sender_id]);
         var users = account.users as User[];
-        var avatarUrl = users[0].avatar_url as string;
-        var username = users[0].username as string;
+        var avatarUrl; 
+        var username; 
+        avatarUrl = users[0].avatar_url as string;
+        username = users[0].username as string;
         
         var styleString = "";
-        if(username == "SPACE STATION" || username == "THE PROMOTER")
+        if(this.CharacterUsernameCheck(username))
         {
           styleString = "background-color: " + "#000000" + ";";
         }
@@ -4055,7 +4082,7 @@ export default class MainScene extends Phaser.Scene {
             var username = storeUserDetails[message.sender_id as string].username as string;
             var styleString = "";
             console.log("username : : " + username);
-            if(username == "SPACE STATION" || username == "THE PROMOTER")
+            if(this.CharacterUsernameCheck(username))
             {
               styleString = "background-color: " + "#000000" + ";";
             }
@@ -4070,8 +4097,10 @@ export default class MainScene extends Phaser.Scene {
 
             var timeago = this.GetTime(message.create_time as string);
 
+            var fullAvatarPath = this.CharacterUsernameCheck(username) ? (this.teamEmblemsIconPath + avatarUrl) : (this.whiteIconPath + avatarUrl);
+
             if (message.sender_id == this.session.user_id) {
-              const messageElement = ChatMessageCurrentUser(username, getMessage.message, this.whiteIconPath+avatarUrl, timeago, styleString) as HTMLElement; // works! but can't find the message :/
+              const messageElement = ChatMessageCurrentUser(username, getMessage.message, fullAvatarPath, timeago, styleString) as HTMLElement; // works! but can't find the message :/
               var top = messageElement.querySelector('#chat-message') as HTMLElement;
 
               if (storeUserId == message.sender_id) {
