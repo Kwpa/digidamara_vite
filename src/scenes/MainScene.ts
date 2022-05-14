@@ -463,6 +463,8 @@ export default class MainScene extends Phaser.Scene {
   SetupClickSlideDownButton() {
     this.leaderboardHeaderButton.onclick = () => {
 
+      // TODO Leaderboard SFX
+
       if (!this.leaderboardIsOpen) {
         console.log("OpenTheLeaderBoard");
         this.leaderboardPage.setY(this.height / 2);
@@ -809,7 +811,7 @@ export default class MainScene extends Phaser.Scene {
       this.tapAreaRight.removeInteractive();
     }
     this.closeVideoPlayerButton.onclick = () => {
-      //this.FadeInDanceFloorAudioOne();
+      this.FadeInDanceFloorAudioOne();
       this.PauseCurrentVideo();
       this.SetPage("avatarOverlay");
       this.tapAreaLeft.setInteractive();
@@ -832,6 +834,9 @@ export default class MainScene extends Phaser.Scene {
     }
     this.avatarOverlayButton.onclick = async() => {
       this.SetPage("teamProfile");
+
+      this.audioManager.PlayOneshot(AudioManager.sfx_open);
+
       var donateButton = this.teamProfilePages[this.localState.carouselPosition].getChildByID('donate-button') as HTMLInputElement;
       var fanClubButton = this.teamProfilePages[this.localState.carouselPosition].getChildByID('fan-club-button') as HTMLInputElement;
       var upgradeButton = this.teamProfilePages[this.localState.carouselPosition].getChildByID('upgrade-button') as HTMLInputElement;
@@ -944,15 +949,15 @@ export default class MainScene extends Phaser.Scene {
 
     if (!this.sound.locked) {
       // already unlocked so play
-      //this.danceFloorAudioOne.play();
-      //this.danceFloorAudioTwo.play();
+      this.danceFloorAudioOne.play();
+      this.danceFloorAudioTwo.play();
 
     }
     else {
       // wait for 'unlocked' to fire and then play
       this.sound.once(Phaser.Sound.Events.UNLOCKED, () => {
-        //this.danceFloorAudioOne.play();
-        //this.danceFloorAudioTwo.play();
+        this.danceFloorAudioOne.play();
+        this.danceFloorAudioTwo.play();
       })
     }
 
