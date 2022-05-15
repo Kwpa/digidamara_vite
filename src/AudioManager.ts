@@ -5,10 +5,13 @@ export default class AudioManager {
 
     public static sfx_init: string = "sfx_init";
     public static sfx_ui_accent: string = "sfx_ui_accent";
+    public static sfx_ui_accent_2: string = "sfx_ui_accent_2";
+    public static sfx_ui_accent_3: string = "sfx_ui_accent_3";
     public static sfx_notification: string = "sfx_notification";
     public static sfx_left: string = "sfx_left";    
     public static sfx_right: string = "sfx_right";
     public static sfx_open: string = "sfx_open";    
+    public static sfx_open_chat: string = "sfx_open_chat";
     public static sfx_close: string = "sfx_close";
     public static sfx_ui_click: string = "sfx_ui_click";
     public static sfx_ui_confirm: string = "sfx_ui_confirm";
@@ -23,13 +26,16 @@ export default class AudioManager {
 
         this.scene.load.audio(AudioManager.sfx_init, ['/assets/audio/ddm_sfx_init.mp3']);
         this.scene.load.audio(AudioManager.sfx_ui_accent, ['/assets/audio/ddm_sfx_ui.mp3']);
+        this.scene.load.audio(AudioManager.sfx_ui_accent_2, ['/assets/audio/ddm_sfx_ui_accent_2.mp3']);
+        this.scene.load.audio(AudioManager.sfx_ui_accent_3, ['/assets/audio/ddm_sfx_ui_accent_3.mp3']);
         this.scene.load.audio(AudioManager.sfx_ui_click, ['/assets/audio/ddm_sfx_ui_click.mp3']);
         this.scene.load.audio(AudioManager.sfx_ui_confirm, ['/assets/audio/ddm_sfx_ui_confirm.mp3']);
         this.scene.load.audio(AudioManager.sfx_notification, ['/assets/audio/ddm_sfx_notification.mp3']);        
         this.scene.load.audio(AudioManager.sfx_left, ['/assets/audio/ddm_sfx_left_1.mp3']);
         this.scene.load.audio(AudioManager.sfx_right, ['/assets/audio/ddm_sfx_right_1.mp3']);
-        this.scene.load.audio(AudioManager.sfx_close, ['/assets/audio/ddm_sfx_left_1.mp3']);
-        this.scene.load.audio(AudioManager.sfx_open, ['/assets/audio/ddm_sfx_right_1.mp3']);
+        this.scene.load.audio(AudioManager.sfx_close, ['/assets/audio/ddm_sfx_close.mp3']);
+        this.scene.load.audio(AudioManager.sfx_open, ['/assets/audio/ddm_sfx_open.mp3']);
+        this.scene.load.audio(AudioManager.sfx_open_chat, ['/assets/audio/ddm_sfx_open_chat.mp3']);
     }
 
     PlayOneshot(key: string) {
