@@ -464,16 +464,16 @@ export default class MainScene extends Phaser.Scene {
   SetupClickSlideDownButton() {
     this.leaderboardHeaderButton.onclick = () => {
 
-      // TODO Leaderboard SFX
-
       if (!this.leaderboardIsOpen) {
         console.log("OpenTheLeaderBoard");
+        this.audioManager.PlayOneshot(AudioManager.sfx_open);
         this.leaderboardPage.setY(this.height / 2);
         this.leaderboardHeaderButton.style.top = "calc(100vh - 260px)";
         this.leaderboardIsOpen = true;
       }
       else {
         console.log("CloseTheLeaderboard");
+        this.audioManager.PlayOneshot(AudioManager.sfx_close);
         this.leaderboardPage.setY(-10000);
         this.leaderboardHeaderButton.style.top = "0px";
         this.leaderboardIsOpen = false;
@@ -486,12 +486,14 @@ export default class MainScene extends Phaser.Scene {
 
       if (!this.leaderboardIsOpen) {
         console.log("OpenTheLeaderBoard");
+        this.audioManager.PlayOneshot(AudioManager.sfx_open);
         this.leaderboardPage.setY(this.height / 2);
         this.leaderboardHeaderButton.style.top = "calc(100vh - 260px)";
         this.leaderboardIsOpen = true;
       }
       else {
         console.log("CloseTheLeaderboard");
+        this.audioManager.PlayOneshot(AudioManager.sfx_close);
         this.leaderboardPage.setY(-10000);
         this.leaderboardHeaderButton.style.top = "0px";
         this.leaderboardIsOpen = false;
@@ -504,6 +506,7 @@ export default class MainScene extends Phaser.Scene {
     if (!this.leaderboardIsOpen) {
       //if (this.storeMouseYPosition > this.height / 2) {
         console.log("OpenTheLeaderBoard");
+        this.audioManager.PlayOneshot(AudioManager.sfx_open);
         this.leaderboardPage.setY(this.height / 2 - 16);
         this.leaderboardHeaderButton.style.top = "calc(100vh - 258px)";
         this.leaderboardIsOpen = true;
@@ -524,6 +527,7 @@ export default class MainScene extends Phaser.Scene {
       }
       else { */
         console.log("CloseTheLeaderboard");
+        this.audioManager.PlayOneshot(AudioManager.sfx_close);
         this.leaderboardPage.setY(-10000);
         this.leaderboardHeaderButton.style.top = "0px";
         this.leaderboardIsOpen = false;
@@ -787,6 +791,7 @@ export default class MainScene extends Phaser.Scene {
 
     this.voteFooterButton.onclick = async () => {
       this.SetPage("votePage");
+      this.audioManager.PlayOneshot(AudioManager.sfx_open);
       this.tapAreaLeft.removeInteractive();
       this.tapAreaRight.removeInteractive();
       if(this.tourActive)
@@ -797,21 +802,25 @@ export default class MainScene extends Phaser.Scene {
     }
     this.settingsFooterButton.onclick = () => {
       this.SetPage("settingsPage");
+      this.audioManager.PlayOneshot(AudioManager.sfx_open);
       this.tapAreaLeft.removeInteractive();
       this.tapAreaRight.removeInteractive();
     }
     this.helpHeaderButton.onclick = () => {
       this.SetPage("helpPage");
+      this.audioManager.PlayOneshot(AudioManager.sfx_open);
       this.tapAreaLeft.removeInteractive();
       this.tapAreaRight.removeInteractive();
     }
     this.videoFooterButton.onclick = () => {
       this.SetPage("videoOverlay");
+      this.audioManager.PlayOneshot(AudioManager.sfx_open);
       //this.FadeOutDanceFloorAudio();
       this.tapAreaLeft.removeInteractive();
       this.tapAreaRight.removeInteractive();
     }
     this.closeVideoPlayerButton.onclick = () => {
+      this.audioManager.PlayOneshot(AudioManager.sfx_close);
       this.FadeInDanceFloorAudioOne();
       this.PauseCurrentVideo();
       this.SetPage("avatarOverlay");
@@ -819,16 +828,19 @@ export default class MainScene extends Phaser.Scene {
       this.tapAreaRight.setInteractive();
     }
     this.closeHelpPageButton.onclick = () => {
+      this.audioManager.PlayOneshot(AudioManager.sfx_close);
       this.SetPage("avatarOverlay");
       this.tapAreaLeft.setInteractive();
       this.tapAreaRight.setInteractive();
     }
     this.closeSettingsPageButton.onclick = () => {
+      this.audioManager.PlayOneshot(AudioManager.sfx_close);
       this.SetPage("avatarOverlay");
       this.tapAreaLeft.setInteractive();
       this.tapAreaRight.setInteractive();
     }
     this.closeVotePageButton.onclick = () => {
+      this.audioManager.PlayOneshot(AudioManager.sfx_close);
       this.SetPage("avatarOverlay");
       this.tapAreaLeft.setInteractive();
       this.tapAreaRight.setInteractive();
@@ -914,15 +926,19 @@ export default class MainScene extends Phaser.Scene {
       }
     }
     this.loadNextVideoPlayerButton.onclick = () => {
+      this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
       this.NextVideo();
     }
     this.loadPreviousVideoPlayerButton.onclick = () => {
+      this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
       this.PreviousVideo();
     }
     this.playVideoPlayerButton.onclick = () => {
+      this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
       this.PlayCurrentVideo();
     }
     this.pauseVideoPlayerButton.onclick = () => {
+      this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
       this.PauseCurrentVideo();
     }
 
@@ -2172,6 +2188,7 @@ export default class MainScene extends Phaser.Scene {
       const choiceOneSubtractButton = voteScenario.querySelector('#' + "choiceOneSubtract") as HTMLElement;
       choiceOneSubtractButton.onclick = async () => {
         if (this.localState.HaveSpentSparksOnTodaysVote(0, this.tourActive)) {
+          this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
           todaysScenarioState.DecreaseVote(0);
           if(this.tourActive)
           {
@@ -2201,6 +2218,7 @@ export default class MainScene extends Phaser.Scene {
       const choiceOneAddButton = voteScenario.querySelector('#' + "choiceOneAdd") as HTMLElement;
       choiceOneAddButton.onclick = async () => {
         if (this.localState.HaveSparks()) {
+          this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
           todaysScenarioState.IncreaseVote(0);
           if(this.tourActive)
           {
@@ -2235,6 +2253,7 @@ export default class MainScene extends Phaser.Scene {
       const choiceTwoSubtractButton = voteScenario.querySelector('#' + "choiceTwoSubtract") as HTMLElement;
       choiceTwoSubtractButton.onclick = async () => {
         if (this.localState.HaveSpentSparksOnTodaysVote(1, this.tourActive)) {
+          this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
           todaysScenarioState.DecreaseVote(1);
           
           if(this.tourActive)
@@ -2267,6 +2286,7 @@ export default class MainScene extends Phaser.Scene {
       const choiceTwoAddButton = voteScenario.querySelector('#' + "choiceTwoAdd") as HTMLElement;
       choiceTwoAddButton.onclick = async () => {
         if (this.localState.HaveSparks()) {
+          this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
           todaysScenarioState.IncreaseVote(1);
           
           if(this.tourActive)
@@ -2354,6 +2374,7 @@ export default class MainScene extends Phaser.Scene {
         var vote_id_val = parseInt(vote_id);
         
         if (this.localState.HaveSpentSparksOnTodaysDynamicVote(vote_id_val)) {
+          this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
           this.localState.dynamicVoteState.DecreaseVote(vote_id_val);
           this.localState.GainSparks(1);
           await this.WriteToNakamaUserStorage(["sparks"], [this.localState.sparksAwarded]);
@@ -2375,6 +2396,7 @@ export default class MainScene extends Phaser.Scene {
         var vote_id = el.currentTarget?.getAttribute("vote_id") as string;
         var vote_id_val = parseInt(vote_id);
         if (this.localState.HaveSparks()) {
+          this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
           this.localState.dynamicVoteState.IncreaseVote(vote_id_val);
           this.localState.SpendSparks(1);
           await this.WriteToNakamaUserStorage(["sparks"], [this.localState.sparksAwarded]);
@@ -2439,20 +2461,24 @@ export default class MainScene extends Phaser.Scene {
 
     this.chatFooterButton.onclick = () => {
       this.SetPage("chatPage");
+      this.audioManager.PlayOneshot(AudioManager.sfx_open_chat);
       this.tapAreaLeft.removeInteractive();
       this.tapAreaRight.removeInteractive();
     }
     this.closeChatPageButton.onclick = () => {
       this.SetPage("avatarOverlay");
+      this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
       this.tapAreaLeft.setInteractive();
       this.tapAreaRight.setInteractive();
     }
     this.closeChatChannelsPageButton.onclick = () => {
       this.SetPage("avatarOverlay");
+      this.audioManager.PlayOneshot(AudioManager.sfx_close);
       this.tapAreaLeft.setInteractive();
       this.tapAreaRight.setInteractive();
     }
     this.returnToChatChannelsButton.onclick = () => {
+      this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
       this.chatChannelOpen.style.display = "none";
       this.chatChannels.style.display = "block";
     }
@@ -2476,6 +2502,7 @@ export default class MainScene extends Phaser.Scene {
 
       chatChannelOpenButton.onclick = async () => {
 
+        this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
         this.chatChannelOpen.style.display = "block";
         this.chatChannels.style.display = "none";
         this.chatChannelTitle.innerHTML = channel.title;
@@ -2631,9 +2658,11 @@ export default class MainScene extends Phaser.Scene {
           mainButton.onclick = () => {
             if (storyUnlocked == true) {
               if (collapsibleMessage.style.maxHeight) {
+                this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
                 collapsibleMessage.style.maxHeight = null; //works as intended
               }
               else {
+                this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
                 collapsibleMessage.style.maxHeight = collapsibleMessage.scrollHeight + "px";
               }
             }
@@ -3859,7 +3888,6 @@ export default class MainScene extends Phaser.Scene {
 
   async initializeChat(socket: Socket) {
     //receive code is here
-
     
     socket.onchannelmessage = async (message) => {
       
@@ -3900,8 +3928,6 @@ export default class MainScene extends Phaser.Scene {
         var fullAvatarPath = this.CharacterUsernameCheck(username) ? (this.teamEmblemsIconPath + avatarUrl) : (this.whiteIconPath + avatarUrl);
 
         if (message.sender_id == this.session.user_id) {
-
-          
           
           if (this.localState.GetCurrentChatChannelGroupId() == message.group_id) {
             var timeago = this.GetTime(message.create_time as string);
@@ -3962,6 +3988,7 @@ export default class MainScene extends Phaser.Scene {
 
     this.chatSubmitButton.onclick = () => {
       var message = this.messageInput.value;
+      this.audioManager.PlayOneshot(AudioManager.sfx_ui_accent_2);
       console.log("text " + message);
       if (message.length > 0) {
         var channelId = this.localState.GetCurrentChatChannelGroupId();
