@@ -2508,42 +2508,50 @@ export default class MainScene extends Phaser.Scene {
       var title = this.staticData.teams[k].title;
       var iconPath = this.staticData.teams[k].iconId;
       const row = LeaderboardRow(title, iconPath) as HTMLElement;
+      row.setAttribute("originalOrder",k.toString());
       this.leaderboardRows.push(row);
       rowContainer.append(row);
       k++;
     });
     this.UpdateLeaderboard();
-    this.OrderLeaderboard();
   }
 
   UpdateLeaderboard() {
-    var k = 0;
-    this.leaderboardRows.forEach(
-      (row) => {
+    const rowContainer = this.leaderboardPage.getChildByID("leaderboard-rows-container");
+    this.localState.SetLeaderboardStatus();
+    for(var i=0; i<this.localState.teamStates.length; i++)
+    {
+        const row = this.leaderboardRows[i];
+        //var k = parseInt(row.getAttribute("originalOrder") as string);
         const energyElement = row.querySelector('#leaderboard-row-energy') as HTMLElement;
         const fansElement = row.querySelector('#leaderboard-row-fans') as HTMLElement;
         const upgradesElement = row.querySelector('#leaderboard-row-upgrades') as HTMLElement;
 
         var energy = "";
-        var teamState = this.localState.teamStates[k] as TeamState;
-        if (this.localState.teamStates[k].eliminated) {
-          energy = "-";
-          
+        var teamState = this.localState.teamStates[i] as TeamState;
+        if (teamState.eliminated) {
+          energy = "-"; 
         }
         else {
           energy = (teamState.currentEnergy).toString();
-          
         }
 
         energyElement.innerHTML = energy;
-        
-
-        k++;
+        row.setAttribute("newOrder", teamState.leaderboardPosition.toString());
       }
-    )
+      this.leaderboardRows.sort((a, b)=>{
+        return parseInt(a.getAttribute("newOrder")as string)-parseInt(b.getAttribute("newOrder")as string);
+      });
+      this.leaderboardRows.forEach((row)=>{
+        rowContainer.appendChild(row);
+      });
+      this.leaderboardRows.sort((a, b)=>{
+        return parseInt(a.getAttribute("originalOrder")as string)-parseInt(b.getAttribute("originalOrder")as string);
+      });
+
   }
 
-  OrderLeaderboard() {
+/*   OrderLeaderboardAnimated() {
     this.localState.SetLeaderboardStatus();
     var rowBoundingBoxes = [] as DOMRect[];
     this.leaderboardRows.forEach(
@@ -2573,7 +2581,7 @@ export default class MainScene extends Phaser.Scene {
         });
       }
     );
-  }
+  } */
 
   GetDeviceType()
   {
@@ -2672,6 +2680,8 @@ export default class MainScene extends Phaser.Scene {
             this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
 
             this.CheckIfOutOfPointsUI(donateButton, upgradeButton, fanClubButton, this.localState.carouselPosition);
+
+            this.UpdateLeaderboard();
 
             if(!finishedTutorial)
             {
@@ -2987,7 +2997,6 @@ export default class MainScene extends Phaser.Scene {
     }
 
     this.UpdateLeaderboard();
-    this.OrderLeaderboard();
   }
 
   async RefreshChat() //TODO
@@ -3388,6 +3397,7 @@ export default class MainScene extends Phaser.Scene {
             var teamState = this.localState.teamStates[j];
             this.SetTeamProfileProgress(teamState.currentEnergy, this.localState.roundEnergyRequirement, j);
           }
+          this.UpdateLeaderboard();
           console.log("User " + result.presence.username + " donated Energy to " + content);
           break;
         case 2:

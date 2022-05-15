@@ -368,7 +368,7 @@ export default class LocalGameState
 
     SetLeaderboardStatus()
     {
-        this.leaderboardStatus = [];
+
         const orderedLeaderboard = this.teamStates.sort(
             (teamA,teamB) =>
             {

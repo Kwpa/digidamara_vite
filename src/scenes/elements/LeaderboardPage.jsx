@@ -21,7 +21,7 @@ const LeaderboardPage = () => {
                   <th>Energy</th>
                 </tr>
               </thead>
-              <tbody id = "leaderboard-rows-container">
+              <tbody id = "leaderboard-rows-container" class="leaderboard-table-container">
                
               </tbody>
             </table>
