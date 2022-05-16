@@ -1417,11 +1417,13 @@ export default class MainScene extends Phaser.Scene {
       
       var c001id = await this.JoinGroup(this.session, this.client, "c_001");
       var c002id = await this.JoinGroup(this.session, this.client, "c_002");
+      var c003id = await this.JoinGroup(this.session, this.client, "c_003");
       //var c003id = await this.JoinGroup(this.session, this.client, "c_003");
       this.localState.AddChatChannels(
         {
           "c_001": c001id,
-          "c_002": c002id
+          "c_002": c002id,
+          "c_003": c003id
         });
 
       const nTrig = {};
@@ -4004,7 +4006,7 @@ export default class MainScene extends Phaser.Scene {
                 case "THEPROMOTER": case "THE PROMOTER": avatarUrl="icon_promoter_transparent_36px.png"; break;
                 case "SPACESTATION": case "SPACE STATION": avatarUrl="icon_spacestation_transparent_36px.png"; break;
                 case "MASTERGAURI": case "MASTERREFILWE": avatarUrl="icon_teamemblem_pillow_fit_transparent_36px.png"; break;
-                case "FORMATION16": case "FORMATION17": avatarUrl="icon_teamemblem_sponge_fitted_transparent_36px.png"; break;
+                case "FORMATION16": case "FORMATION17": avatarUrl="icon_teamemblem_sponge_fit_transparent_36px.png"; break;
                 case "TWILL": case "KITT": avatarUrl="icon_teamemblem_pipes_fit_transparent_36px.png"; break;
                 case "GRUNTER": avatarUrl="icon_teamemblem_bag_fitted_transparent_36px.png"; break;
                 case "BABE": case "BAS": avatarUrl="icon_teamemblem_balloon_fitted_transparent_36px.png"; break;
@@ -4165,11 +4167,11 @@ export default class MainScene extends Phaser.Scene {
   }
 
   async CreateChatMessages(chatId: string) {
-    var forward = true;
+    var forward = false;
     var channelId = "3." + this.localState.chatChannels[chatId] + "..";
     this.localState.chatChannels
     console.log(chatId + ": " + this.localState.chatChannels[chatId]);
-    var result: ChannelMessageList = await this.client.listChannelMessages(this.session, channelId, 50, forward);
+    var result: ChannelMessageList = await this.client.listChannelMessages(this.session, channelId, 50, forward, );
 
     if (result.messages?.length != 0) {
       var messages = result.messages as ChannelMessage[];
@@ -4213,6 +4215,8 @@ export default class MainScene extends Phaser.Scene {
         var bTime = new Date(b.create_time as string).getTime();
         return aTime-bTime;
       }); */
+
+      result.messages = result.messages.reverse();
 
       result.messages.forEach(async (message) => {
         switch (message.code) {
