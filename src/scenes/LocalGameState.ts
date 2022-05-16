@@ -29,6 +29,7 @@ export default class LocalGameState
     carouselPosition!: number;
     videoContentPosition!: number;
     chatChannels!: object;
+    chatChannelsCursors!: object;
     currentChatChannel!: string;
     currentTeamID!: string;
     teamIDs!: string[];
@@ -91,6 +92,7 @@ export default class LocalGameState
         this.teamStates = teamStates;    
         this.notificationHomeStringArray = [];  
         this.chatChannels = [];
+        this.chatChannelsCursors = {};
         this.currentChatChannel = "c_001";
         this.danceFloorAudioTwoPlaying = false;
         this.leaderboardStatus = [];

@@ -100,7 +100,7 @@ const TeamProfile = (teamData) => {
                       <div style="height: 20px;"></div>
                       <div style="margin: 0 auto;" class="tags has-addons tagsActive">
                         <span class="tag is-primary">-1 Energy</span>
-                        <span class="tag is-warning">Gain +1 Bond Per Donation</span>
+                        <span class="tag is-warning">Unlock backstory, +1 additional Bond per Sponsor</span>
                       </div>
                       <div style="display: none;" class="tags tagsNotEnoughAP">
                         <span class="tag is-danger">Not enough Energy</span>

@@ -822,7 +822,7 @@ export default class MainScene extends Phaser.Scene {
     this.videoFooterButton.onclick = () => {
       this.SetPage("videoOverlay");
       this.audioManager.PlayOneshot(AudioManager.sfx_open);
-      //this.FadeOutDanceFloorAudio();
+      this.FadeOutDanceFloorAudio();
       this.tapAreaLeft.removeInteractive();
       this.tapAreaRight.removeInteractive();
     }
@@ -2477,6 +2477,8 @@ export default class MainScene extends Phaser.Scene {
       
       textTag.innerHTML = "New"!;
       mainButton.removeAttribute("disabled");
+      mainButton.classList.remove("accordian");
+      mainButton.classList.add("accordian-unlocked");
       const collapsibleMessage = storyAccordian.querySelectorAll("#collapsible-message")[0] as HTMLElement;
       await this.delay(200);
       this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
@@ -2564,7 +2566,7 @@ export default class MainScene extends Phaser.Scene {
         this.chatChannelOpen.style.display = "block";
         this.chatChannels.style.display = "none";
         this.chatChannelTitle.innerHTML = channel.title;
-        this.chatChannelIcon.src = "/assets/white_icons/" + channel.iconPath + ".png";
+        this.chatChannelIcon.src = "/assets/white_icons/" + channel.iconPath;
         this.localState.SetCurrentChatChannel(channel.id);
         await this.ReloadGroupChat(channel.id);
 
@@ -2710,6 +2712,8 @@ export default class MainScene extends Phaser.Scene {
           mainButton.setAttribute("story", j.toString());
           if (upgradeValue>= j) {
             textTag.innerHTML = "New"!;
+            mainButton.classList.remove("accordian");
+            mainButton.classList.add("accordian-unlocked");
           }
           else {
             textTag.innerHTML = "Locked"!;

@@ -734,6 +734,15 @@ cursor: pointer;
 transition: background-color 0.1s linear;
 }
 
+button.accordian-unlocked {
+	width: 100%;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	background-color: #0127b3;
+	transition: background-color 0.1s linear;
+	}
+
 .puff-in-center {
 	-webkit-animation: puff-in-center 0.7s cubic-bezier(0.470, 0.000, 0.745, 0.715) both;
 	        animation: puff-in-center 0.7s cubic-bezier(0.470, 0.000, 0.745, 0.715) both;
@@ -987,6 +996,13 @@ border: none;
 outline: none;
 cursor: pointer;
 }
+
+button.accordian-unlocked:hover {
+	background-color: #2a51de;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	}
 
 
 .accordian-content {
