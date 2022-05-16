@@ -32,7 +32,7 @@ import PerspectiveImagePlugin from 'phaser3-rex-plugins/plugins/perspectiveimage
 import { PerspectiveCarousel } from 'phaser3-rex-plugins/plugins/perspectiveimage.js';
 import YoutubePlayerPlugin from 'phaser3-rex-plugins/plugins/youtubeplayer-plugin.js';
 import LocalGameState, { AppState, DynamicVoteScenarioState, TeamImages, TeamRenderTextures, TeamState, VoteScenarioState } from './LocalGameState';
-import StaticData, { ChatChannelData, NotificationData } from './StaticData';
+import StaticData, { ChatChannelData, NotificationData, StoryData, TeamData } from './StaticData';
 import RenderTexture from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/rendertexture/RenderTexture';
 import Sprite from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/sprite/Sprite';
 import Image from 'phaser3-rex-plugins/plugins/gameobjects/mesh/perspective/image/Image';
@@ -737,7 +737,14 @@ export default class MainScene extends Phaser.Scene {
     this.videoPlayerOverlay.setDepth(this.depthLayers["videoPlayer"]);
     this.votePage = this.add.dom(0, 0, VotingPage() as HTMLElement);
     this.helpPage = this.add.dom(0, 0, HelpPage() as HTMLElement);
-    this.settingsPage = this.add.dom(0, 0, SettingsPage() as HTMLElement);
+
+    this.settingsPage = this.add.dom(0, 0, SettingsPage(new Date(Date.now()).toString()) as HTMLElement);
+    const muteButton = this.settingsPage.getChildByID("settings-mute") as HTMLInputElement;
+    muteButton.onclick = () =>
+    {
+      this.audioManager.ToggleMute();
+      
+    };
     const slideDownButton = this.add.dom(this.width / 2, this.height / 2, SlideDownButton() as HTMLElement);
     slideDownButton.depth = this.depthLayers["slideDownButton"];
 
@@ -749,7 +756,7 @@ export default class MainScene extends Phaser.Scene {
     this.overlayEliminated = this.avatarOverlay.getChildByID("teamEliminated") as HTMLInputElement;
     this.videoPlayerContainer = this.videoPlayerOverlay.getChildByID("video-player") as HTMLElement;
     this.currentVideoTitle = this.videoPlayerOverlay.getChildByID("video-player-overlay-title") as HTMLElement;
-    this.leaderboardPage.depth = this.depthLayers["slideDownPage"];;
+    this.leaderboardPage.depth = this.depthLayers["slideDownPage"];
     this.leaderboardPage.setY(-10000);
     this.avatarOverlay.setVisible(false);
     this.videoPlayerOverlay.setVisible(false);
@@ -1638,7 +1645,55 @@ export default class MainScene extends Phaser.Scene {
           },
           firstVisitTodayWithCurtainsClosed: true,
           firstVisitTodayWithCurtainsOpen: true,
-          "finishedTutorial": false
+          "finishedTutorial": false,
+          "t_001_unlockedStory":{
+            "s_001": false,
+            "s_002": false,
+            "s_003": false,
+            "s_004": false,
+            "s_005": false,
+            "s_006": false
+          },
+          "t_002_unlockedStory":{
+            "s_007": false,
+            "s_008": false,
+            "s_009": false,
+            "s_010": false,
+            "s_011": false,
+            "s_012": false
+          },
+          "t_003_unlockedStory":{
+            "s_013": false,
+            "s_014": false,
+            "s_015": false,
+            "s_016": false,
+            "s_017": false,
+            "s_018": false
+          },
+          "t_004_unlockedStory":{
+            "s_019": false,
+            "s_020": false,
+            "s_021": false,
+            "s_022": false,
+            "s_023": false,
+            "s_024": false
+          },
+          "t_005_unlockedStory":{
+            "s_025": false,
+            "s_026": false,
+            "s_027": false,
+            "s_028": false,
+            "s_029": false,
+            "s_030": false
+          },
+          "t_006_unlockedStory":{
+            "s_031": false,
+            "s_032": false,
+            "s_033": false,
+            "s_034": false,
+            "s_035": false,
+            "s_036": false
+          }
         }
     }];
     
@@ -1700,14 +1755,6 @@ export default class MainScene extends Phaser.Scene {
       var teamJsonString = JSON.stringify(team.value);
       var parsedJson = JSON.parse(teamJsonString);
 
-      var storyBools = {
-        "s_001": parsedJson.s_001Unlocked,
-        "s_002": parsedJson.s_002Unlocked,
-        "s_003": parsedJson.s_003Unlocked,
-        "s_004": parsedJson.s_004Unlocked,
-        "s_005": parsedJson.s_005Unlocked,
-        "s_006": parsedJson.s_006Unlocked
-      }
       teamsStateData.push(new TeamState(
         parsedJson.id,
         k,
@@ -1716,8 +1763,7 @@ export default class MainScene extends Phaser.Scene {
         parsedJson.upgradeLevel,
         parsedJson.energyRequirement,
         parsedJson.energy,
-        parsedJson.inFanClub,
-        storyBools
+        parsedJson.inFanClub
       )
       )
       k++;
@@ -1839,14 +1885,7 @@ export default class MainScene extends Phaser.Scene {
     var k = 0;
     for(var i=0; i< 6; i++) {
 
-      var storyBools = {
-        "s_001": true,
-        "s_002": false,
-        "s_003": false,
-        "s_004": false,
-        "s_005": false,
-        "s_006": false
-      }
+
       teamsStateData.push(new TeamState(
         teamIds[i],
         k,
@@ -1855,8 +1894,7 @@ export default class MainScene extends Phaser.Scene {
         0,
         0,
         0,
-        false,
-        storyBools
+        false
       )
       )
       k++;
@@ -1958,8 +1996,7 @@ export default class MainScene extends Phaser.Scene {
         upgradeLevel,
         roundDynamic.energyRequirement,
         teamDynamic.currentEnergy,
-        inFanClub,
-        teamDynamic.storyUnlocked
+        inFanClub
       ));
     }
 
@@ -2032,8 +2069,7 @@ export default class MainScene extends Phaser.Scene {
         upgradeLevel,
         roundDynamic.energyRequirement,
         teamDynamic.currentEnergy,
-        inFanClub,
-        teamDynamic.storyUnlocked
+        inFanClub
       ));
     }
 
@@ -2426,6 +2462,26 @@ export default class MainScene extends Phaser.Scene {
     return this.staticData.appLabels.find(p=>p.id == id)?.content;
   }
 
+  async UnlockNextStory()
+  {
+    const currentTeam = this.localState.GetCurrentTeamState(); 
+    const upgradeLevel = currentTeam.upgradeLevel;
+    if(upgradeLevel<=10)
+    {
+      console.log(upgradeLevel);
+      const storyAccordian = currentTeam.storyAccordianList[upgradeLevel-1];
+      const textTag = storyAccordian.querySelector("#textTag") as HTMLElement;
+      const mainButton = storyAccordian.querySelectorAll("#open-close-button")[0] as HTMLElement;
+      
+      textTag.innerHTML = "New"!;
+      mainButton.removeAttribute("disabled");
+      const collapsibleMessage = storyAccordian.querySelectorAll("#collapsible-message")[0] as HTMLElement;
+      await this.delay(200);
+      this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
+      collapsibleMessage.style.maxHeight = collapsibleMessage.scrollHeight + "px";              
+    }
+  }
+
   async SetupChatChannelsAndPages(finishedTutorial: boolean) {
     
     let { width, height } = this.sys.game.canvas;
@@ -2627,6 +2683,7 @@ export default class MainScene extends Phaser.Scene {
     let { width, height } = this.sys.game.canvas;
 
     var k = 0;
+    var teamsLength = this.staticData.teams.length; 
     this.staticData.teams.forEach(
       (team) => {
 
@@ -2641,13 +2698,15 @@ export default class MainScene extends Phaser.Scene {
         const container = teamProfile.getChildByID('story-container') as HTMLElement;
         var j = 1;
         team.story.forEach((story) => {
-
           const storyAccordian = StoryAccordian(story) as HTMLElement;
+          this.localState.teamStates.find(p=>p.id==team.id)?.storyAccordianList.push(storyAccordian);
           const textTag = storyAccordian.querySelector("#textTag") as HTMLElement;
-          const storyUnlocked = this.localState.teamStates[k].storyUnlocked["s_00" + j];
+          const upgradeValue = this.localState.teamStates[k].upgradeLevel;
 
           const mainButton = storyAccordian.querySelectorAll("#open-close-button")[0] as HTMLElement;
-          if (storyUnlocked) {
+          mainButton.setAttribute("team", team.id);
+          mainButton.setAttribute("story", j.toString());
+          if (upgradeValue>= j) {
             textTag.innerHTML = "New"!;
           }
           else {
@@ -2655,8 +2714,13 @@ export default class MainScene extends Phaser.Scene {
             mainButton.setAttribute("disabled", '');
           }
           const collapsibleMessage = storyAccordian.querySelectorAll("#collapsible-message")[0] as HTMLElement;
-          mainButton.onclick = () => {
-            if (storyUnlocked == true) {
+          mainButton.onclick = (el) => {
+            
+            const team = (el.currentTarget as HTMLElement).getAttribute("team") as string;
+            const storyId = parseInt((el.currentTarget as HTMLElement).getAttribute("story") as string);
+            const upgradeLevel = this.localState.teamStates.find(p=>p.id == team)?.upgradeLevel as number;
+            console.log("team - " + team + ", story id -"+ + ", isStoryUnlocked - " + upgradeLevel);
+            if (upgradeLevel >= storyId) {
               if (collapsibleMessage.style.maxHeight) {
                 this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
                 collapsibleMessage.style.maxHeight = null; //works as intended
@@ -2840,6 +2904,8 @@ export default class MainScene extends Phaser.Scene {
             upgradeValue.innerHTML = this.localState.GetCurrentTeamState().upgradeLevel.toString();
             this.CSSAnimation([imageContainer], "jello-horizontal", 800);
             this.CSSAnimation([upgradeValue, upgradeBackground], "wobble-hor-bottom", 800);
+
+            await this.UnlockNextStory();
 
             //await this.DonateEnergyMatchState(socket, this.localState.currentTeamID);
             if(this.tourActive)
@@ -3214,6 +3280,7 @@ export default class MainScene extends Phaser.Scene {
         {
           this.audioManager.PlayOneshot(AudioManager.sfx_left);
           await this.MoveCarousel(carousel, "left");
+
         }
       });
 
@@ -3310,6 +3377,33 @@ export default class MainScene extends Phaser.Scene {
         this.overlayProgressContainer.style.display = "none";
       }
       this.avatarOverlayButton.innerHTML = this.staticData.teams[this.localState.carouselPosition].title;
+      if(this.localState.GetCurrentTeamState().userInFanClub)
+      {
+        (this.avatarOverlay.getChildByID("fan-club-icon") as HTMLElement).style.display = "block";
+        (this.avatarOverlay.getChildByID("upgrade-background-container") as HTMLElement).style.display = "block";
+        (this.avatarOverlay.getChildByID("upgrade-value") as HTMLElement).style.display="block";
+        (this.avatarOverlay.getChildByID("upgrade-value") as HTMLElement).innerHTML = this.localState.GetCurrentTeamState().upgradeLevel.toString();
+      }
+      else
+      {
+        (this.avatarOverlay.getChildByID("fan-club-icon") as HTMLElement).style.display = "none";
+        (this.avatarOverlay.getChildByID("upgrade-background-container") as HTMLElement).style.display = "none";
+        (this.avatarOverlay.getChildByID("upgrade-value") as HTMLElement).style.display="none";
+      }
+
+      var iconUrl = "";
+      switch(this.localState.GetCurrentTeamState().id)
+      {
+        case "t_001": iconUrl = "icon_galaxy_cushcush_transparent_36px.png"; break;
+        case "t_002": iconUrl = "icon_galaxy_apex_transparent_36px.png"; break;
+        case "t_003": iconUrl = "icon_galaxy_unknown_transparent_36px.png"; break;
+        case "t_004": iconUrl = "icon_galaxy_gorgplain_transparent_36px.png"; break;
+        case "t_005": iconUrl = "icon_galaxy_bobbleon_transparent_36px.png"; break;
+        case "t_006": iconUrl = "icon_galaxy_deepinnks_transparent_36px.png"; break;
+      }
+      console.log("icon URL " + iconUrl);
+      (this.avatarOverlay.getChildByID("galaxy-icon") as HTMLImageElement).src=this.whiteIconPath+iconUrl;
+
       await this.AnimateOverlayChange();
     }
   }

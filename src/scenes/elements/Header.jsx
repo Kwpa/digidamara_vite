@@ -27,7 +27,7 @@ const Header = () => {
           </div>
           <div class="level-item has-text-centered">
             <div id="sparks-value">
-              <h1 class="heading has-text-centered has-text-white">Tickets</h1>
+              <h1 class="heading has-text-centered has-text-white">Bonds</h1>
               <div>
                 <img class="hdrftr-icon hdr-icon" src="/assets/ui_icons/icon_UI_ticket_outline_transparent_36px.png"></img>
                 <span id="sparks-header-value" class="title is-size-3 has-text-white">

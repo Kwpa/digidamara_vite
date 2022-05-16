@@ -1,4 +1,5 @@
 import DynamicData from "./DynamicData";
+import StoryAccordian from './elements/StoryAccordian';
 
 export class AppState {
     // Create new instances of the same class as static attributes
@@ -441,11 +442,13 @@ export class TeamState
     energyRequirement: number = 1;
     currentEnergy: number = 0;
     userInFanClub: boolean = false;
-    storyUnlocked!: object;
     totalNumberOfFans: number = 0;
     leaderboardPosition: number = 0;
+
+    storyAccordianList!: StoryAccordian[];
+    storyIds!: string[];
    
-    constructor(id, index, title, outOfComp, upgradeLevel, energyReq, currentEnergy, inFanClub, storyUnlocked: object){
+    constructor(id, index, title, outOfComp, upgradeLevel, energyReq, currentEnergy, inFanClub){
         this.id = id;
         this.index = index,
         this.title = title;
@@ -454,7 +457,7 @@ export class TeamState
         this.upgradeLevel = upgradeLevel;
         this.userInFanClub = inFanClub;
         this.energyRequirement = energyReq;
-        this.storyUnlocked = storyUnlocked;
+        this.storyAccordianList = [];
     }
 
     UpdateFromDynamicData(teamDynamic: TeamState, energyRequirement:number, upgradeLevel:number, inFanClub:boolean)
@@ -464,12 +467,6 @@ export class TeamState
         this.upgradeLevel=upgradeLevel;
         this.userInFanClub=inFanClub;
         this.energyRequirement = energyRequirement;
-        this.storyUnlocked = teamDynamic.storyUnlocked;
-    }
-
-    UnlockStory(storyId: string)
-    {
-        this.storyUnlocked[storyId] = true;
     }
 
     Upgrade()

@@ -1,6 +1,6 @@
 import { h } from 'start-dom-jsx';
 
-const SettingsPage = () => {
+const SettingsPage = (time) => {
   return (
     <div class="popup-page">
       <div class="box popup-box-wrapper">
@@ -15,6 +15,8 @@ const SettingsPage = () => {
           <img id="close-settings-page-button" class="hdrftr-icon" src="/assets/black_icons/icon_cross_black.png" style=""></img>
         </div>
         <div class="popup-page-scroll-without-footer">
+          <h1>Pilot build v0.3</h1>
+          <button id="settings-mute"class="button">Toggle Music Mute</button>
         </div>
       </div>
     </div>

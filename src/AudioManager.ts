@@ -42,4 +42,29 @@ export default class AudioManager {
         this.scene.sound.play(key, {'detune': (Math.random() - 0.5) * 50});
     }
 
+    MuteAll()
+    {
+        this.scene.sound.mute = true;
+    }
+
+    UnmuteAll()
+    {
+        this.scene.sound.mute = false;
+    }
+
+    muted = false;
+
+    ToggleMute()
+    {
+        if(this.muted)
+        {
+            this.UnmuteAll();
+            this.muted = false;
+        }
+        else
+        {
+            this.MuteAll();
+            this.muted = true;
+        }
+    }
 }

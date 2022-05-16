@@ -52,6 +52,23 @@ iframe {
 	min-height: 380px;
 }
 
+.avatar-overlay-left-container
+{
+
+}
+.avatar-overlay-right-container
+{
+
+}
+.avatar-overlay-left-image
+{
+	
+}
+.avatar-overlay-right-image
+{
+
+}
+
 .landing-page
 {
 	position: fixed;
@@ -374,7 +391,7 @@ position: fixed;
 .ov-container {
 	position: fixed;
 	left: 0;
-	bottom: 75px;
+	bottom: 20px;
 	width: 300px;
 }
 
@@ -472,6 +489,43 @@ border-radius: 20px;
 border: 3px solid rgb(255, 255, 255);
 }
 
+.fan-club-icon-left
+{
+	position: absolute; top:-40px; left:0;
+}
+
+.fan-club-icon-middle
+{
+	top: -40px; left: 50%; transform: translate(-50%,0); position: absolute; 
+}
+
+.fan-club-icon-right
+{
+	position: absolute; top:-40px; right:0;
+}
+.backing-circ-container-middle
+{
+	top: -46px; left: 50%; transform: translate(-50%,0); position: absolute; 
+}
+.backing-circ-container-left
+{
+	position: absolute; top:-46px; left:-7px; 
+}
+.backing-circ-container-right
+{
+	position: absolute; top:-46px; right:-7px;
+}
+.backing-circ
+{
+	height: 50px;
+	width: 50px;
+	background-color: #000000;
+	border-radius: 50%;    
+	border-color: white;
+	border-width: 2.5px;
+	border-style: solid;
+	   
+}
 .chat-message-container {
 height: 70%;
 width: 100%;
