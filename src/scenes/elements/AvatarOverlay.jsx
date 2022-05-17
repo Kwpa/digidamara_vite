@@ -50,7 +50,7 @@ const AvatarOverlay = (avatarName, id) => {
                     right:0; 
                     width: 36px; 
                     height: 36px;">
-          <div id="upgrade-value-container" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+          <div id="upgrade-val-container" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
             <h1 id="upgrade-value">0</h1>
           </div>
         </div>

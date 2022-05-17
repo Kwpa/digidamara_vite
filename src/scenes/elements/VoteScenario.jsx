@@ -5,7 +5,7 @@ const VoteScenario = (scenarioData) => {
     <div id="voteScenario" class="box">
       <div class='box has-background-dark has-text-white'>
         <h1 class="title has-text-white">{scenarioData.title}</h1>
-        <div class='content'>
+        <div id="vote-content" class='content'>
           {scenarioData.description}
         </div>
       </div>
@@ -16,7 +16,7 @@ const VoteScenario = (scenarioData) => {
             <div class="content">
               {scenarioData.choiceOne_description}
             </div>
-            <div class="level">
+            <div id="choice-one-total" class="level">
               <div class="level-item">
                 <div class="message is-warning">
                   <div class="message-body">
@@ -40,7 +40,7 @@ const VoteScenario = (scenarioData) => {
             <div class="content">
               {scenarioData.choiceTwo_description}
             </div>
-            <div class="level">
+            <div id="choice-two-total" class="level">
               <div class="level-item">
                 <div class="message is-warning">
                   <div class="message-body">

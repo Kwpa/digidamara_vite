@@ -52,6 +52,11 @@ iframe {
 	min-height: 380px;
 }
 
+.shepherd-header
+{
+	display: none;
+}
+
 .avatar-overlay-left-container
 {
 

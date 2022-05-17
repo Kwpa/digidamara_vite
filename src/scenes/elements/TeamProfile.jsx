@@ -19,7 +19,7 @@ const TeamProfile = (teamData) => {
           <div id="team-profile-scroll" class="popup-page-scroll-with-footer">
             <div class="level team-top-row">
               <div class="level-item">
-                <div class="box has-background-dark" style="position:relative;">
+                <div id="image-box" class="box has-background-dark" style="position:relative;">
                   <figure id="image-container" class="image is-128x128">
                     <div id="team-icon">
                     </div>

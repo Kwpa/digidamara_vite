@@ -1390,6 +1390,11 @@ export default class MainScene extends Phaser.Scene {
       await this.SetupVotePage(false);
       await this.SetupChatChannelsAndPages(false);
 
+      this.localState.SetActionPointsToMax();
+      this.localState.SpendSparks(1);this.localState.SpendSparks(1);this.localState.SpendSparks(1);this.localState.SpendSparks(1);this.localState.SpendSparks(1);
+      this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
+      this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
+
       const nTrig = {};
       this.staticData.notifications.forEach(
         (notification) => {
@@ -1504,7 +1509,67 @@ export default class MainScene extends Phaser.Scene {
           position = tutorialStep.popupPosition;
         }
 
-        if(tutorialStep.title == "Chat"){
+        if(tutorialStep.id=="tut_020")
+        {
+          this.tutorialTour.addStep({
+            title: tutorialStep.title,
+            text: tutorialStep.content,
+            attachTo: {
+              element: '#'+tutorialStep.elementId,
+              on: position
+            },
+            id: tutorialStep.id,
+            canClickTarget: true,
+            
+            when: {
+              show: async() => {
+                console.log("BARRRRRRRRGGGGGG");
+                const choiceOneTotal = (document.querySelector("#choice-one-total") as HTMLElement);
+                const choiceTwoTotal = (document.querySelector("#choice-two-total") as HTMLElement);
+                choiceOneTotal.style.display="none";
+                choiceTwoTotal.style.display="none";
+
+                const voteContainer = (document.querySelector("#vote-container") as HTMLElement);
+                
+                await this.delay(300);
+                voteContainer.scrollTo(0, voteContainer.scrollHeight);
+              }
+            }
+          });
+        }
+        if(tutorialStep.id=="tut_014" || tutorialStep.id=="tut_012")
+        {
+          this.tutorialTour.addStep({
+            title: tutorialStep.title,
+            text: tutorialStep.content,
+            attachTo: {
+              element: '#'+tutorialStep.elementId,
+              on: position
+            },
+            id: tutorialStep.id,
+            canClickTarget: true,
+            buttons: [
+              {
+                action() {
+                  return this.next();
+                },
+                text: 'Next'
+              }
+            ],
+            
+            when: {
+              show: async() => {
+                console.log("BARRRRRRRRGGGGGG");
+                const thing = (document.querySelector("#team-profile-scroll") as HTMLElement);
+                
+                await this.delay(300);
+                thing.scrollTo(0, 0);
+              }
+            }
+          });
+        }
+
+        else if(tutorialStep.title == "Chat"){
           this.tutorialTour.addStep({
             title: tutorialStep.title,
             text: tutorialStep.content,
@@ -1602,104 +1667,123 @@ export default class MainScene extends Phaser.Scene {
 
   async WriteToNakamaUserStorageInitial(deviceId: string, username: string)
   {
-    const objects = [{
-      "collection": "userStorage",
-      "key": this.session.user_id,
-      "value": 
-        {
-          "deviceId": deviceId,
-          "username": username,
-          "actionPoints": 5,
-          "sparks": 0,
-          "round": 0,
-          "energyRequirement": 20,
-          "t_001UpgradeLevel": 0,
-          "t_002UpgradeLevel": 0,
-          "t_003UpgradeLevel": 0,
-          "t_004UpgradeLevel": 0,
-          "t_005UpgradeLevel": 0,
-          "t_006UpgradeLevel": 0,
-          "t_001InFanClub": false,
-          "t_002InFanClub": false,
-          "t_003InFanClub": false,
-          "t_004InFanClub": false,
-          "t_005InFanClub": false,
-          "t_006InFanClub": false,
-          "v_001_choiceOne": 0,
-          "v_001_choiceTwo": 0,
-          "v_002_choiceOne": 0,
-          "v_002_choiceTwo": 0,
-          "v_003_choiceOne": 0,
-          "v_003_choiceTwo": 0,
-          "v_004_choiceOne": 0,
-          "v_004_choiceTwo": 0,
-          "v_005_choiceOne": 0,
-          "v_005_choiceTwo": 0,
-          "v_006_choiceOne": 0,
-          "v_006_choiceTwo": 0,
-          "notificationsState": {
 
-          },
-          "dynamicVote":{
-            users:[
-              0,0,0,0,0,0
-            ]
-          },
-          firstVisitTodayWithCurtainsClosed: true,
-          firstVisitTodayWithCurtainsOpen: true,
-          "finishedTutorial": false,
-          "t_001_unlockedStory":{
-            "s_001": false,
-            "s_002": false,
-            "s_003": false,
-            "s_004": false,
-            "s_005": false,
-            "s_006": false
-          },
-          "t_002_unlockedStory":{
-            "s_007": false,
-            "s_008": false,
-            "s_009": false,
-            "s_010": false,
-            "s_011": false,
-            "s_012": false
-          },
-          "t_003_unlockedStory":{
-            "s_013": false,
-            "s_014": false,
-            "s_015": false,
-            "s_016": false,
-            "s_017": false,
-            "s_018": false
-          },
-          "t_004_unlockedStory":{
-            "s_019": false,
-            "s_020": false,
-            "s_021": false,
-            "s_022": false,
-            "s_023": false,
-            "s_024": false
-          },
-          "t_005_unlockedStory":{
-            "s_025": false,
-            "s_026": false,
-            "s_027": false,
-            "s_028": false,
-            "s_029": false,
-            "s_030": false
-          },
-          "t_006_unlockedStory":{
-            "s_031": false,
-            "s_032": false,
-            "s_033": false,
-            "s_034": false,
-            "s_035": false,
-            "s_036": false
+    const storageObjects = (await this.client.readStorageObjects(
+      this.session, {
+        "object_ids": [{
+          "collection": "userStorage",
+          "key": this.session.user_id,
+          "user_id": this.session.user_id
+        }]
+      }
+    ) as StorageObjects)
+
+    if(storageObjects != undefined && storageObjects.objects.length>0)
+    {
+      this.parsedUserStorage = storageObjects.objects[0].value as object;
+    }
+    else
+    {
+      const objects = [{
+        "collection": "userStorage",
+        "key": this.session.user_id,
+        "value": 
+          {
+            "deviceId": deviceId,
+            "username": username,
+            "actionPoints": 5,
+            "sparks": 0,
+            "round": 0,
+            "energyRequirement": 20,
+            "t_001UpgradeLevel": 0,
+            "t_002UpgradeLevel": 0,
+            "t_003UpgradeLevel": 0,
+            "t_004UpgradeLevel": 0,
+            "t_005UpgradeLevel": 0,
+            "t_006UpgradeLevel": 0,
+            "t_001InFanClub": false,
+            "t_002InFanClub": false,
+            "t_003InFanClub": false,
+            "t_004InFanClub": false,
+            "t_005InFanClub": false,
+            "t_006InFanClub": false,
+            "v_001_choiceOne": 0,
+            "v_001_choiceTwo": 0,
+            "v_002_choiceOne": 0,
+            "v_002_choiceTwo": 0,
+            "v_003_choiceOne": 0,
+            "v_003_choiceTwo": 0,
+            "v_004_choiceOne": 0,
+            "v_004_choiceTwo": 0,
+            "v_005_choiceOne": 0,
+            "v_005_choiceTwo": 0,
+            "v_006_choiceOne": 0,
+            "v_006_choiceTwo": 0,
+            "notificationsState": {
+  
+            },
+            "dynamicVote":{
+              users:[
+                0,0,0,0,0,0
+              ]
+            },
+            firstVisitTodayWithCurtainsClosed: true,
+            firstVisitTodayWithCurtainsOpen: true,
+            "finishedTutorial": false,
+            "t_001_unlockedStory":{
+              "s_001": false,
+              "s_002": false,
+              "s_003": false,
+              "s_004": false,
+              "s_005": false,
+              "s_006": false
+            },
+            "t_002_unlockedStory":{
+              "s_007": false,
+              "s_008": false,
+              "s_009": false,
+              "s_010": false,
+              "s_011": false,
+              "s_012": false
+            },
+            "t_003_unlockedStory":{
+              "s_013": false,
+              "s_014": false,
+              "s_015": false,
+              "s_016": false,
+              "s_017": false,
+              "s_018": false
+            },
+            "t_004_unlockedStory":{
+              "s_019": false,
+              "s_020": false,
+              "s_021": false,
+              "s_022": false,
+              "s_023": false,
+              "s_024": false
+            },
+            "t_005_unlockedStory":{
+              "s_025": false,
+              "s_026": false,
+              "s_027": false,
+              "s_028": false,
+              "s_029": false,
+              "s_030": false
+            },
+            "t_006_unlockedStory":{
+              "s_031": false,
+              "s_032": false,
+              "s_033": false,
+              "s_034": false,
+              "s_035": false,
+              "s_036": false
+            }
           }
-        }
-    }];
+      }];
+      await this.client.writeStorageObjects(this.session, objects);
+
+    }
     
-    await this.client.writeStorageObjects(this.session, objects);
   }
 
   async WriteToNakamaUserStorage(keys: string[], values: any[])

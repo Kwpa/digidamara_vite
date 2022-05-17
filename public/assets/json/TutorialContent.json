@@ -11,7 +11,7 @@
     {
         "id":  "tut_002",
         "title":  "Energy Bar",
-        "content":  "You can see that this team\u0027s energy is running low! They are at risk of being eliminated from the dance marathon!",
+        "content":  "You can see that this team\u0027s Energy is running low! They are at risk of being eliminated from the dance marathon!",
         "element_id":  "teamProgressContainer",
         "type":  "info",
         "button":  "none",
@@ -29,7 +29,7 @@
     {
         "id":  "tut_004",
         "title":  "Bond Tickets",
-        "content":  "When you use the Donate Energy action, you will get Bond Tickets in return! Bond Tickets let you vote on big decisions that the audience must make together.",
+        "content":  "When you use the Sponsor action, you will get Bonds in return! Bonds let you vote on big decisions that the audience must make together.",
         "element_id":  "sparks-value",
         "type":  "info",
         "button":  "none",
@@ -38,7 +38,7 @@
     {
         "id":  "tut_005",
         "title":  "Today\u0027s Rankings",
-        "content":  "Let\u0027s get an overview of the teams energy levels! Click on Today\u0027s Ranking bar.",
+        "content":  "Let\u0027s get an overview of the teams Energy levels! Click on Today\u0027s Ranking bar.",
         "element_id":  "slide-down-button-container",
         "type":  "action",
         "button":  "leaderboard-header-button",
@@ -47,7 +47,7 @@
     {
         "id":  "tut_006",
         "title":  "Today\u0027s Rankings",
-        "content":  "The team with the most energy is ranked at the top. In the case of a draw, the team with the largest fan club wins!",
+        "content":  "The team with the most Energy is ranked at the top. In the case of a draw, the team with the largest Fan Club wins!",
         "element_id":  "leaderboard-table-container",
         "type":  "info",
         "button":  "none",
@@ -60,21 +60,21 @@
         "element_id":  "leaderboard-header-button",
         "type":  "action",
         "button":  "leaderboard-header-button",
-        "popup_position":  "top"
+        "popup_position":  "bottom"
     },
     {
         "id":  "tut_008",
         "title":  "Team Profile",
-        "content":  "Let\u0027s find a way to donate some energy to this team. Click on the team\u0027s name or image.",
+        "content":  "Let\u0027s find a way to donate some Energy to this team. Click on the team\u0027s name.",
         "element_id":  "openProfile",
         "type":  "action",
         "button":  "openProfile",
-        "popup_position":  "top"
+        "popup_position":  "bottom"
     },
     {
         "id":  "tut_009",
         "title":  "Donate Energy",
-        "content":  "Here you can view the team profile. There\u0027s lots of information about the team here to discover. To start let\u0027s Donate 1 Energy to this team.",
+        "content":  "Here you can view the team profile. There\u0027s lots of information about the team here to discover. To start let\u0027s spend 1 Energy to Sponsor this team.",
         "element_id":  "donate-button",
         "type":  "action",
         "button":  "donate-button",
@@ -83,16 +83,16 @@
     {
         "id":  "tut_010",
         "title":  "Donate Energy",
-        "content":  "Their energy bar has gone up!",
+        "content":  "Their Energy bar has gone up! Great sponsoring!",
         "element_id":  "team-energy-bar-container",
         "type":  "info",
         "button":  "none",
-        "popup_position":  "top"
+        "popup_position":  "bottom"
     },
     {
         "id":  "tut_011",
         "title":  "Join Fan Club",
-        "content":  "Now let\u0027s spend 1 Energy to join this team\u0027s fan club!",
+        "content":  "Now let\u0027s spend 1 Energy to join this team\u0027s Fan Club!",
         "element_id":  "fan-club-button",
         "type":  "action",
         "button":  "fan-club-button",
@@ -101,34 +101,34 @@
     {
         "id":  "tut_012",
         "title":  "Join Fan Club",
-        "content":  "Great! Joining a fan club gives you special access to a secret fan club chat channel. It also unlocks Team Upgrades.",
-        "element_id":  "image-container",
+        "content":  "Joining a fan club gives you special access to a secret fan club chat channel. It also unlocks Gifting.",
+        "element_id":  "image-box",
         "type":  "info",
         "button":  "none",
-        "popup_position":  "auto"
+        "popup_position":  "top"
     },
     {
         "id":  "tut_013",
         "title":  "Upgrade Team",
-        "content":  "Upgrades unlock backstory in the team profile, plus award you bonus Tickets the next time you donate energy to this team. Spend energy of an Upgrade now.",
+        "content":  "Giving a Gift to a team unlocks backstory in the team profile, plus awards you bonus Bonds the next time you Sponsor to this team. Spend 1 Energy on an Upgrade now.",
         "element_id":  "upgrade-button",
         "type":  "action",
         "button":  "upgrade-button",
-        "popup_position":  "auto"
+        "popup_position":  "bottom"
     },
     {
         "id":  "tut_014",
         "title":  "Upgrade Team",
-        "content":  "Bravo! Your upgrade star on the team now shows a \u00271\u0027 - this means you\u0027ll get one additional Ticket next time you Donate. ",
-        "element_id":  "upgrade-value-container",
+        "content":  "Bravo! Your Gift level now shows a 1 - this means you\u0027ll get +1 additional Bond the next time you Sponsor this team. ",
+        "element_id":  "image-box",
         "type":  "info",
         "button":  "none",
-        "popup_position":  "auto"
+        "popup_position":  "top"
     },
     {
         "id":  "tut_015",
         "title":  "Backstory",
-        "content":  "And by the way, here\u0027s where that juicy backstory you unlocked lives!",
+        "content":  "Remember you also unlocked some juicy backstory - you can find it here in the team profile!",
         "element_id":  "open-close-button",
         "type":  "info",
         "button":  "none",
@@ -137,7 +137,7 @@
     {
         "id":  "tut_016",
         "title":  "Bonus Tickets",
-        "content":  "Let\u0027s donate energy two more times.",
+        "content":  "Let\u0027s use the Sponsor action two more times.",
         "element_id":  "donate-button",
         "type":  "action",
         "button":  "upgrade-button,upgrade-button",
@@ -146,7 +146,7 @@
     {
         "id":  "tut_017",
         "title":  "Bonus Tickets",
-        "content":  "Nice, our ticket count went up by 2 each time! Remember, you won\u0027t get Tickets for the upgrade action, so don\u0027t make your last action an upgrade unless you\u0027re really sure!",
+        "content":  "Nice, our Bond count went up by 2 each time! Warning: you WON\u0027T get Bonds for the Give a Gift action until you Sponsor!",
         "element_id":  "sparks-value",
         "type":  "info",
         "button":  "info",
@@ -155,7 +155,7 @@
     {
         "id":  "tut_018",
         "title":  "Voting",
-        "content":  "What do we spend all these tickets on? Voting! Open the voting booth page.",
+        "content":  "What do we spend all these Bonds on? Voting of course! Open the voting booth page.",
         "element_id":  "vote-footer-button",
         "type":  "action",
         "button":  "vote-footer-button",
@@ -164,20 +164,20 @@
     {
         "id":  "tut_019",
         "title":  "Voting",
-        "content":  "Here we have an eons-old dilemma. The binary choice! Your Tickets can be used to put weight behind one option or the other. You can also save up your Tickets for the future as Tickets do not reset each day.",
+        "content":  "Your Bonds can be used to put weight behind one vote option or the other. You can also save up your Bonds for the future as Tickets do not reset each day.",
         "element_id":  "voteScenario",
         "type":  "info",
         "button":  "info",
-        "popup_position":  "auto"
+        "popup_position":  "top"
     },
     {
         "id":  "tut_020",
-        "title":  "Voting",
-        "content":  "For this example, add all five tickets to your favourite choice.",
-        "element_id":  "voteScenario",
+        "title":  "Using Bonds",
+        "content":  "For this example, add all five tickets to your favourite choice. Use the scroll bar if you need to see all the options!",
+        "element_id":  "vote-container",
         "type":  "choiceValue",
         "button":  "none",
-        "popup_position":  "auto"
+        "popup_position":  "top"
     },
     {
         "id":  "tut_021",
@@ -191,7 +191,7 @@
     {
         "id":  "tut_022",
         "title":  "Chat",
-        "content":  "Once you exit the tutorial, you\u0027ll be able to use the chat feature! Speak with other galactic citizens on the universal waveform! Plan your next moves in the team fan clubs! And look out for unique moments to talk with the teams directly!",
+        "content":  "Once you end the tutorial, you can use the STARCOM chat feature! Speak with other galactic citizens on the universal waveform or in fan club channels.",
         "element_id":  "chat-footer-button",
         "type":  "info",
         "button":  "none",
