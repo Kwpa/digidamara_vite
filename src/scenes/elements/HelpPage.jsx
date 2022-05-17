@@ -1,6 +1,6 @@
 import { h } from 'start-dom-jsx';
 
-const HelpPage = () => {
+const HelpPage = (titleClasses="title is-size-3 has-text-black") => {
   return (
 
     <div class="popup-page">
@@ -8,7 +8,7 @@ const HelpPage = () => {
         <nav class="level is-mobile">
           <div class="level-left">
             <div class="level-item has-text-centered">
-              <h1 class="title has-text-black">Help</h1>
+              <h1 class={titleClasses}>Help</h1>
             </div>
           </div>
         </nav>

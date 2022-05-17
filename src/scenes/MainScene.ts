@@ -729,18 +729,21 @@ export default class MainScene extends Phaser.Scene {
     game.style.setProperty('z-index', '-1');
 
     var headerFontClasses = this.GetDeviceType()=="mobile" ? "title is-size-5 has-text-white":"title is-size-3 has-text-white";
+    var headerCountPadding = this.GetDeviceType()=="mobile" ? "title is-size-5 has-text-white hdr-timer-pad":"title is-size-3 has-text-white";
 
-    this.header = this.add.dom(this.width / 2, 55, Header(headerFontClasses) as HTMLElement);
+    this.header = this.add.dom(this.width / 2, 55, Header(headerFontClasses, headerCountPadding) as HTMLElement);
     this.footer = this.add.dom(this.width / 2, 55, Footer() as HTMLElement);
     this.header.depth = this.depthLayers["headerFooter"];
     this.footer.depth = this.depthLayers["headerFooter"];
 
-    this.videoPlayerOverlay = this.add.dom(this.width / 2, this.height / 2, VideoPlayerOverlay() as HTMLElement);
+    var titleClasses = this.GetDeviceType()=="mobile"?"title is-size-5 has-text-black":"title is-size-3 has-text-black";
+    
+    this.videoPlayerOverlay = this.add.dom(this.width / 2, this.height / 2, VideoPlayerOverlay(titleClasses) as HTMLElement);
     this.videoPlayerOverlay.setDepth(this.depthLayers["videoPlayer"]);
-    this.votePage = this.add.dom(0, 0, VotingPage() as HTMLElement);
-    this.helpPage = this.add.dom(0, 0, HelpPage() as HTMLElement);
+    this.votePage = this.add.dom(0, 0, VotingPage(titleClasses) as HTMLElement);
+    this.helpPage = this.add.dom(0, 0, HelpPage(titleClasses) as HTMLElement);
 
-    this.settingsPage = this.add.dom(0, 0, SettingsPage(new Date(Date.now()).toString()) as HTMLElement);
+    this.settingsPage = this.add.dom(0, 0, SettingsPage(new Date(Date.now()).toString(), titleClasses) as HTMLElement);
     const muteButton = this.settingsPage.getChildByID("settings-mute") as HTMLInputElement;
     muteButton.onclick = () =>
     {
@@ -2298,7 +2301,8 @@ export default class MainScene extends Phaser.Scene {
     else
     {
       this.HideWaitingForDynamicVotes();
-      var voteScenario = VoteScenario(todaysScenario) as HTMLElement;
+      var titleClasses = this.GetDeviceType()=="mobile"?"title is-size-5 has-text-white":"title is-size-3 has-text-white";
+      var voteScenario = VoteScenario(todaysScenario, titleClasses) as HTMLElement;
       this.voteChoiceOneUser = voteScenario.querySelector('#' + "choiceOne") as HTMLElement;
       this.voteChoiceTwoUser = voteScenario.querySelector('#' + "choiceTwo") as HTMLElement;
       this.voteChoiceOneGlobal = voteScenario.querySelector('#' + "choice-one-total-count") as HTMLElement;
@@ -2464,7 +2468,8 @@ export default class MainScene extends Phaser.Scene {
 
   async CreateDynamicVotes(todaysScenario, todaysScenarioDynamicState)
   {
-    const dynamicVoteScenario = DynamicVoteScenario() as HTMLElement; //have to append into somewhere
+    var titleClasses = this.GetDeviceType()=="mobile"?"title is-size-5 has-text-white":"title is-size-3 has-text-white";
+    const dynamicVoteScenario = DynamicVoteScenario(titleClasses) as HTMLElement; //have to append into somewhere
     const dynamicVoteScenarioTitle = dynamicVoteScenario.querySelector('#' + "dynamic-vote-scenario-title") as HTMLElement;
     const dynamicVoteScenarioContent = dynamicVoteScenario.querySelector('#' + "dynamic-vote-scenario-content") as HTMLElement;
     const dynamicVoteScenarioOptions = dynamicVoteScenario.querySelector('#' + "dynamic-vote-scenario-options") as HTMLElement;
@@ -2576,7 +2581,8 @@ export default class MainScene extends Phaser.Scene {
     
     let { width, height } = this.sys.game.canvas;
 
-    this.chatPage = this.add.dom(0, 0, ChatPage() as HTMLElement);
+    var titleClasses = this.GetDeviceType()=="mobile"?"title is-size-5 has-text-black":"title is-size-3 has-text-black";
+    this.chatPage = this.add.dom(0, 0, ChatPage(titleClasses) as HTMLElement);
     this.chatPage.setVisible(false);
     if(!finishedTutorial)
     {

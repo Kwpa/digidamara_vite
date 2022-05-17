@@ -1,13 +1,13 @@
 import { h } from 'start-dom-jsx';
 
-const SettingsPage = (time) => {
+const SettingsPage = (time, titleClasses="title is-size-3 has-text-black") => {
   return (
     <div class="popup-page">
       <div class="box popup-box-wrapper">
         <nav class="level is-mobile">
           <div class="level-left">
             <div class="level-item has-text-centered">
-              <h1 class="title has-text-black">Settings</h1>
+              <h1 class={titleClasses}>Settings</h1>
             </div>
           </div>
         </nav>

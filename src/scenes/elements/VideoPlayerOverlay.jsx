@@ -1,6 +1,6 @@
 import { h } from 'start-dom-jsx';
 
-const VideoPlayerOverlay = (avatarName, id) => {
+const VideoPlayerOverlay = (titleClasses="title is-size-3 has-text-black", avatarName, id) => {
   return (
     <div class="modal video-player-overlay">
       <div class="modal-background"></div>
@@ -10,7 +10,7 @@ const VideoPlayerOverlay = (avatarName, id) => {
             <div class="level-left">
               <div class="level-item has-text-centered">
                 <span>
-                  <h1 id="video-player-overlay-title" class="title has-text-black">Video Content</h1>
+                  <h1 id="video-player-overlay-title" class={titleClasses}>Video Content</h1>
                 </span>
 
               </div>

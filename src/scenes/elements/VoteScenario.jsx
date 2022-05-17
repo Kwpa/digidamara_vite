@@ -1,10 +1,10 @@
 import { h } from 'start-dom-jsx';
 
-const VoteScenario = (scenarioData) => {
+const VoteScenario = (scenarioData, titleClasses="title is-size-3 has-text-white") => {
   return (
     <div id="voteScenario" class="box">
       <div class='box has-background-dark has-text-white'>
-        <h1 class="title has-text-white">{scenarioData.title}</h1>
+        <h1 class={titleClasses}>{scenarioData.title}</h1>
         <div id="vote-content" class='content'>
           {scenarioData.description}
         </div>

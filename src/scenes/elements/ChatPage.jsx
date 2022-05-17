@@ -1,6 +1,6 @@
 import { h } from 'start-dom-jsx';
 
-const ChatPage = () => {
+const ChatPage = (titleClasses="title is-size-3 has-text-black") => {
   return (
       <div class="popup-page">
         <div class="box popup-box-wrapper">
@@ -13,7 +13,7 @@ const ChatPage = () => {
                     <img id="channel-icon"></img>
                   </div>
                   <button id="chat-channel-button-return" class="button is-primary chat-channel-button-return">&lt;</button>
-                  <h1 id="chat-channel-title" class="title has-text-black">Chat</h1>
+                  <h1 id="chat-channel-title" class={titleClasses}>Chat</h1>
                 </div>
               </div>
             </nav>
@@ -31,7 +31,7 @@ const ChatPage = () => {
             <nav class="level is-mobile">
               <div class="level-left">
                 <div class="level-item has-text-centered">
-                  <h1 class="title has-text-black">Your Signals</h1>
+                  <h1 class={titleClasses}>STARCOM Signals</h1>
                 </div>
               </div>
             </nav>

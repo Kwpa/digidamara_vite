@@ -1,6 +1,6 @@
 import { h } from 'start-dom-jsx';
 
-const Header = (headerFontClasses="title is-size-3 has-text-white") => {
+const Header = (headerFontClasses="title is-size-3 has-text-white", headerCountPadding="title is-size-3 has-text-white") => {
   return (
 
     <div class="fixed-header">
@@ -10,7 +10,7 @@ const Header = (headerFontClasses="title is-size-3 has-text-white") => {
             <div id="round-value">
               <h1 class="heading has-text-centered has-text-white">Time Left</h1>
               <div>
-                <h1 id="round-header-value" class={headerFontClasses}>-</h1>
+                <h1 id="round-header-value" class={headerCountPadding}>-</h1>
               </div>
             </div>
           </div>
