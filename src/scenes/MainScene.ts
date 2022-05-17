@@ -4170,16 +4170,43 @@ export default class MainScene extends Phaser.Scene {
     return channelNotifications;
   }
 
+
+
   async CreateChatMessages(chatId: string) {
     var forward = false;
     var channelId = "3." + this.localState.chatChannels[chatId] + "..";
     this.localState.chatChannels
     console.log(chatId + ": " + this.localState.chatChannels[chatId]);
-    var result: ChannelMessageList = await this.client.listChannelMessages(this.session, channelId, 50, forward, );
+    
+    var accumulatedMessages : ChannelMessage[] = [];
+    
+    var result = await this.client.listChannelMessages(this.session, channelId, 100, forward, "");
+    var cached = result.next_cursor;
+    var cached_cursor = result.cacheable_cursor as string;
+    
+    accumulatedMessages = accumulatedMessages.concat(result.messages as ChannelMessage[]);
+    console.log("accum + " + accumulatedMessages.length);
+    console.log("cached 1   : " + cached);
+    console.log("cached_cursor 1   : " + cached_cursor);
+
+    var result = await this.client.listChannelMessages(this.session, channelId, 100, forward, cached);
+    var cached = result.next_cursor;
+    var cached_cursor = result.cacheable_cursor as string;
+    
+    accumulatedMessages = accumulatedMessages.concat(result.messages as ChannelMessage[]);
+    console.log("accum + " + accumulatedMessages.length);
+    console.log("cached 1   : " + cached);
+    console.log("cached_cursor 1   : " + cached_cursor);
+    
+    
 
     if (result.messages?.length != 0) {
       var messages = result.messages as ChannelMessage[];
       console.log(messages[0].create_time + " message made, converted is  : " + new Date(messages[0].create_time as string).toUTCString());
+    }
+    else
+    {
+      console.log("empty");
     }
 
 
@@ -4242,7 +4269,7 @@ export default class MainScene extends Phaser.Scene {
                 case "THEPROMOTER": case "THE PROMOTER": avatarUrl="icon_promoter_transparent_36px.png"; break;
                 case "SPACESTATION": case "SPACE STATION": avatarUrl="icon_spacestation_transparent_36px.png"; break;
                 case "MASTERGAURI": case "MASTERREFILWE": avatarUrl="icon_teamemblem_pillow_fit_transparent_36px.png"; break;
-                case "FORMATION16": case "FORMATION17": avatarUrl="icon_teamemblem_sponge_fitted_transparent_36px.png"; break;
+                case "FORMATION16": case "FORMATION17": avatarUrl="icon_teamemblem_sponge_fit_transparent_36px.png"; break;
                 case "TWILL": case "KITT": avatarUrl="icon_teamemblem_pipes_fit_transparent_36px.png"; break;
                 case "GRUNTER": avatarUrl="icon_teamemblem_bag_fitted_transparent_36px.png"; break;
                 case "BABE": case "BAS": avatarUrl="icon_teamemblem_balloon_fitted_transparent_36px.png"; break;
