@@ -11,6 +11,7 @@ import VideoTile from './elements/VideoTile';
 import VoteScenario from './elements/VoteScenario';
 import AvatarOverlay from './elements/AvatarOverlay';
 import VideoPlayerOverlay from './elements/VideoPlayerOverlay';
+import EndOfShow from './elements/EndOfShow';
 import TeamProfile from './elements/TeamProfile';
 import VotingPage from './elements/VotingPage';
 import LeaderboardPage from './elements/LeaderboardPage';
@@ -84,6 +85,8 @@ export default class MainScene extends Phaser.Scene {
   helpPage!: Phaser.GameObjects.DOMElement;
   settingsPage!: Phaser.GameObjects.DOMElement;
   videoPlayerOverlay!: Phaser.GameObjects.DOMElement;
+  endOfShowOverlay!: Phaser.GameObjects.DOMElement;
+ 
   session!: Session;
   client!: Client;
   match!: Match;
@@ -140,6 +143,7 @@ export default class MainScene extends Phaser.Scene {
   
   avatarOverlay!: Phaser.GameObjects.DOMElement;
   videoPlayerContainer!: HTMLElement;
+  endOfShowContainer!: HTMLElement;
   notificationHome!: Phaser.GameObjects.DOMElement;
 
   voteChoiceOneUser!: HTMLElement;
@@ -188,6 +192,7 @@ export default class MainScene extends Phaser.Scene {
 
   webConfig;
   rexVideoPlayer;
+  rexVideoPlayerEnd;
 
   audioManager: AudioManager;
 
@@ -2117,8 +2122,21 @@ export default class MainScene extends Phaser.Scene {
     var sparks = this.parsedUserStorage["sparks"];
     
     
-    this.localState.Init(username, this.dynamicData.dynamicRoundState.round, this.dynamicData.dynamicRoundState.endOfShowDateTime, this.dynamicData.dynamicRoundState.showDynamicVotes, actionPoints, 10, sparks, this.dynamicData.dynamicRoundState.energyRequirement, teamIdList, voteStateList, voteDynamicState, teamStateList);
+    this.localState.Init(username, this.dynamicData.dynamicRoundState.round, this.dynamicData.dynamicRoundState.endOfShowDateTime, this.dynamicData.dynamicRoundState.showDynamicVotes, actionPoints, 10, sparks, this.dynamicData.dynamicRoundState.energyRequirement, teamIdList, voteStateList, voteDynamicState, teamStateList, this.dynamicData.dynamicRoundState.restMode, this.dynamicData.dynamicRoundState.endOfShow);
     
+    const appStateValue = this.localState.UpdateAppStateFromDynamicData(roundDynamic); 
+    if(appStateValue == 1)
+    {
+      // trigger rest mode
+    }
+    else if(appStateValue == 2)
+    {
+      // trigger end of show
+      //this.SetPage("endOfShowVideoOverlay");
+      //document.body.classList.add('only-end-of-show-player');
+    }
+    else
+    {
     if (this.newRound) {
       await this.WriteToNakamaUserStorage(["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
       //trigger new round
@@ -2127,6 +2145,7 @@ export default class MainScene extends Phaser.Scene {
     }
     else {
       await this.WriteToNakamaUserStorage(["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
+      }
     }
     
     this.actionPointsCounter.innerHTML = (this.parsedUserStorage["actionPoints"]).toString();
@@ -2189,7 +2208,7 @@ export default class MainScene extends Phaser.Scene {
     var sparks = await this.ReadFromLocalStorageNumber("ddm_localDataTutorial", "sparks");
     
     
-    this.localState.Init(username, this.dynamicData.dynamicRoundState.round, this.dynamicData.dynamicRoundState.endOfShowDateTime, this.dynamicData.dynamicRoundState.showDynamicVotes, actionPoints, 10, sparks, this.dynamicData.dynamicRoundState.energyRequirement, teamIdList, voteStateList, voteDynamicState, teamStateList);
+    this.localState.Init(username, this.dynamicData.dynamicRoundState.round, this.dynamicData.dynamicRoundState.endOfShowDateTime, this.dynamicData.dynamicRoundState.showDynamicVotes, actionPoints, 10, sparks, this.dynamicData.dynamicRoundState.energyRequirement, teamIdList, voteStateList, voteDynamicState, teamStateList, this.dynamicData.dynamicRoundState.restMode, this.dynamicData.dynamicRoundState.endOfShow);
     
     if (this.newRound) {
       await this.WriteToLocalStorage("ddm_localDataTutorial",["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
@@ -2258,6 +2277,20 @@ export default class MainScene extends Phaser.Scene {
     var userChoices = this.parsedUserStorage["dynamicVote"];
     this.localState.dynamicVoteState.UpdateFromDynamicData(userChoices["users"], this.dynamicData.d_dynamicVoteOptionsState.globalVotes);
 
+    const appStateValue = this.localState.UpdateAppStateFromDynamicData(roundDynamic); 
+    if(appStateValue == 1)
+    {
+      // trigger rest mode
+    }
+    else if(appStateValue == 2)
+    {
+      // trigger end of show
+      //this.SetPage("endOfShowVideoOverlay");
+      //document.body.classList.add('only-end-of-show-player');
+
+    }
+    else
+    {
     if (this.localState.UpdateFromDynamicData(roundDynamic)) {
       await this.WriteToNakamaUserStorage(["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
       //trigger new round
@@ -2269,6 +2302,7 @@ export default class MainScene extends Phaser.Scene {
     else {
       await this.WriteToNakamaUserStorage(["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
     }
+  }
   }
 
   async TriggerNewRound()
@@ -3955,33 +3989,37 @@ export default class MainScene extends Phaser.Scene {
   SetPage(pageName: string) {
     switch (pageName) {
       case "votePage":
-        this.SetActiveOnPages(true, false, false, false, false, false, false);
+        this.SetActiveOnPages(true, false, false, false, false, false, false, false);
         break;
       case "chatPage":
-        this.SetActiveOnPages(false, true, false, false, false, false, false);
+        this.SetActiveOnPages(false, true, false, false, false, false, false, false);
         break;
       case "videoOverlay":
-        this.SetActiveOnPages(false, false, true, false, false, false, false);
+        this.SetActiveOnPages(false, false, true, false, false, false, false, false);
         break;
       case "avatarOverlay":
-        this.SetActiveOnPages(false, false, false, true, false, false, false);
+        this.SetActiveOnPages(false, false, false, true, false, false, false, false);
         break;
       case "teamProfile":
-        this.SetActiveOnPages(false, false, false, false, true, false, false);
+        this.SetActiveOnPages(false, false, false, false, true, false, false, false);
         break;
       case "helpPage":
-        this.SetActiveOnPages(false, false, false, false, false, true, false);
+        this.SetActiveOnPages(false, false, false, false, false, true, false, false);
         break;
       case "settingsPage":
-        this.SetActiveOnPages(false, false, false, false, false, false, true);
+        this.SetActiveOnPages(false, false, false, false, false, false, true, false);
+        break;
+      case "endOfShowVideoOverlay":
+        this.SetActiveOnPages(false, false, false, false, false, false, false, true);
         break;
     }
   }
 
-  SetActiveOnPages(votePage: boolean, chatPage: boolean, videoOverlay: boolean, avatarOverlay: boolean, teamProfile: boolean, helpPage: boolean, settingsPage: boolean) {
+  SetActiveOnPages(votePage: boolean, chatPage: boolean, videoOverlay: boolean, avatarOverlay: boolean, teamProfile: boolean, helpPage: boolean, settingsPage: boolean, endOfShowVideoOverlay: boolean) {
     this.votePage.setVisible(votePage);
     this.chatPage.setVisible(chatPage);
     this.videoPlayerOverlay.setVisible(videoOverlay);
+    //this.endOfShowOverlay.setVisible(endOfShowVideoOverlay);
     this.avatarOverlay.setVisible(avatarOverlay);
 
     if (teamProfile) {

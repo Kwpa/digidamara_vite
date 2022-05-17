@@ -10,6 +10,23 @@ body.only-notification .notification-home * {
 	pointer-events: all;
 }
 
+body.only-end-of-show-player * {
+	pointer-events: none;
+}
+  
+body.only-end-of-show-player .end-of-show-video-player * {
+	pointer-events: all;
+}
+
+.end-of-show
+{
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-flow: row wrap;
+	align-items: flex-start;
+}
+
 @font-face {
 	font-family: "Pixellari";
 	src: url('../fonts/Pixellari.ttf') format('truetype');

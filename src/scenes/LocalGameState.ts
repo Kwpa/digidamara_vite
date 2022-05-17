@@ -107,6 +107,24 @@ export default class LocalGameState
         this.danceFloorAudioTwoPlaying = value;
     }
 
+    UpdateAppStateFromDynamicData(dynamicData)
+    {
+        this.restMode = dynamicData.endOfShow as boolean;
+        this.endOfShow = dynamicData.endOfShow as boolean;
+        if(this.restMode)
+        {
+            return 1;
+        }
+        else if (this.endOfShow)
+        { 
+            return 2; 
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
     UpdateFromDynamicData(dynamicData)
     {
         this.roundEnergyRequirement = dynamicData.energyRequirement;
