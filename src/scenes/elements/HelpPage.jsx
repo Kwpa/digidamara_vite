@@ -18,40 +18,40 @@ const HelpPage = () => {
         <div class="popup-page-scroll-without-footer">
           <div class="content">
           <p><strong>GOAL:</strong></p>
-            <p>- Keep your favorite team in the game by Energizing them!</p>
+            <p>- Keep your favorite team in the game by Sponsoring them with Energy!</p>
             <p>- At the end of the day, the team with the lowest Energy is eliminated!</p>
             
             <p><strong>ACTIONS:</strong></p>
-            <p><strong>DONATE (costs 1 AP) </strong>
+            <p><strong>SPONSOR (costs 1 Energy)</strong>
             - Energize a Team!
-            - Gain Sparks!</p>
+            - Gain Bonds!</p>
 
-            <p><strong>JOIN FAN CLUB (costs 1 AP)</strong> 
+            <p><strong>JOIN FAN CLUB (costs 1 Energy)</strong> 
             - Unlock a Secret Chat!
-            - Unlock Team Upgrades!</p>
+            - Unlock Gifting!</p>
 
-            <p><strong>UPGRADE (costs 1 AP)</strong>
-            - Every Donation produces +1 extra Spark!</p>
+            <p><strong>GIVE A GIFT (costs 1 Energy)</strong>
+            - Every Sponsor action produces +1 extra Bond!</p>
 
-            <p><strong>VOTE (costs Sparks)</strong>
+            <p><strong>VOTE (costs Bonds)</strong>
             - Vote in today's ballot!</p>
             <p>
 
             </p>
             <p>
-              <strong>CHAT:</strong> Universal Signal allows you to speak to all Spectators, a Fanclub Signal is a private chat  for only Spectators who joined that Fanclub using an Action point
+              <strong>CHAT:</strong> Universal Waveform allows you to speak to all other Spectators, a Fanclub is a private chat for Spectators who joined that Fanclub (costs 1 Energy))
             </p>
             <p>
-              <strong>VIDEOS:</strong> Catch up on the daily Round Ups and any other direct signals from the Space Station and the Promoter!
+              <strong>VIDEOS:</strong> Catch up on the daily Round Ups and any other STARCOM signals from the Space Station and the Promoter!
             </p>
             <p>
-              <strong>TEAM PROFILES:</strong> Click the teal name button! See a team's bio, their home Galaxy and some of their traits and beliefs.The more you donate and support, the more you learn about the teams!
+              <strong>TEAM PROFILES:</strong> Click the team name button! See a team's bio, their home Galaxy and some of their traits and beliefs. The more you support a team, the more you learn about them!
             </p>
             <p>
-              <strong>SETTINGS (NOT ACTIVE)</strong>
+              <strong>SETTINGS:</strong> Turn SFX and Music on / off
             </p>
             <p>
-              <strong>TODAY'S RANKINGS:</strong> Tap the yellow bar at the top with the trophies to see an uptodate leaderboard!
+              <strong>TODAY'S RANKINGS:</strong> Tap the yellow bar to see an up to date leaderboard!
             </p>
           </div>
         </div>

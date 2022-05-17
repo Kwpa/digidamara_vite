@@ -1691,7 +1691,7 @@ export default class MainScene extends Phaser.Scene {
           {
             "deviceId": deviceId,
             "username": username,
-            "actionPoints": 5,
+            "actionPoints": 10,
             "sparks": 0,
             "round": 0,
             "energyRequirement": 20,
@@ -2108,7 +2108,7 @@ export default class MainScene extends Phaser.Scene {
     var sparks = this.parsedUserStorage["sparks"];
     
     
-    this.localState.Init(username, this.dynamicData.dynamicRoundState.round, this.dynamicData.dynamicRoundState.endOfShowDateTime, this.dynamicData.dynamicRoundState.showDynamicVotes, actionPoints, 5, sparks, this.dynamicData.dynamicRoundState.energyRequirement, teamIdList, voteStateList, voteDynamicState, teamStateList);
+    this.localState.Init(username, this.dynamicData.dynamicRoundState.round, this.dynamicData.dynamicRoundState.endOfShowDateTime, this.dynamicData.dynamicRoundState.showDynamicVotes, actionPoints, 10, sparks, this.dynamicData.dynamicRoundState.energyRequirement, teamIdList, voteStateList, voteDynamicState, teamStateList);
     
     if (this.newRound) {
       await this.WriteToNakamaUserStorage(["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
@@ -2179,7 +2179,7 @@ export default class MainScene extends Phaser.Scene {
     var sparks = await this.ReadFromLocalStorageNumber("ddm_localDataTutorial", "sparks");
     
     
-    this.localState.Init(username, this.dynamicData.dynamicRoundState.round, this.dynamicData.dynamicRoundState.endOfShowDateTime, this.dynamicData.dynamicRoundState.showDynamicVotes, actionPoints, 5, sparks, this.dynamicData.dynamicRoundState.energyRequirement, teamIdList, voteStateList, voteDynamicState, teamStateList);
+    this.localState.Init(username, this.dynamicData.dynamicRoundState.round, this.dynamicData.dynamicRoundState.endOfShowDateTime, this.dynamicData.dynamicRoundState.showDynamicVotes, actionPoints, 10, sparks, this.dynamicData.dynamicRoundState.energyRequirement, teamIdList, voteStateList, voteDynamicState, teamStateList);
     
     if (this.newRound) {
       await this.WriteToLocalStorage("ddm_localDataTutorial",["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
@@ -2814,10 +2814,14 @@ export default class MainScene extends Phaser.Scene {
               if (collapsibleMessage.style.maxHeight) {
                 this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
                 collapsibleMessage.style.maxHeight = null; //works as intended
+                collapsibleMessage.style.paddingTop="0";
+                collapsibleMessage.style.paddingBottom="0";
               }
               else {
                 this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
                 collapsibleMessage.style.maxHeight = collapsibleMessage.scrollHeight + "px";
+                collapsibleMessage.style.paddingTop="5px";
+                collapsibleMessage.style.paddingBottom="5px";
               }
             }
           }

@@ -3,8 +3,8 @@
         "id":  "s_001",
         "teamId":  "t_001",
         "round":  "1",
-        "title":  "The Beginning",
-        "content":  "Master Gauri \u0026 Master Refilwe wish to create a universe that does not resist change. They were not always fearless of the transformation of death. Before they were Masters they held much different views.",
+        "title":  "Aids and Mentors",
+        "content":  "Creatures and peoples from many galaxies come to visit the Wipio in Cush Cush galaxy as they are known to use their spiritual prowess to help others solve problems. ",
         "encryption":  "0",
         "iconId":  "t_001"
     },
@@ -12,8 +12,8 @@
         "id":  "s_002",
         "teamId":  "t_001",
         "round":  "2",
-        "title":  "The Meeting",
-        "content":  "They met dancing at a festival of colourjoy, after Refilwe had lost someone close to them.",
+        "title":  "Healing",
+        "content":  "If one is lost in their lives, they will find cushion here, returning to their own galaxy with the freshest air. The Wipio are friends and mentors to all and share their practice mind to mind. ",
         "encryption":  "1",
         "iconId":  "t_001"
     },
@@ -21,8 +21,8 @@
         "id":  "s_003",
         "teamId":  "t_001",
         "round":  "3",
-        "title":  "The Change",
-        "content":  "The first time Gauri saw change in its most infinitesimal, they were dancing solo, it felt like a rainbow.",
+        "title":  "How they got here\n",
+        "content":  "Master Gauri and Master Refilwe were sent to represent Cush Cush at Digidamara because they are well respected and full of knowledge.",
         "encryption":  "1",
         "iconId":  "t_001"
     },
@@ -30,8 +30,8 @@
         "id":  "s_004",
         "teamId":  "t_001",
         "round":  "4",
-        "title":  "The Fear",
-        "content":  "Refilewe had a strong fear of change. Rainbows were not the same for them.",
+        "title":  "Their Motivation\n",
+        "content":  "They want to bring their practice of forgiveness and acceptance into the next universe. But it was not always so.",
         "encryption":  "1",
         "iconId":  "t_001"
     },
@@ -39,234 +39,504 @@
         "id":  "s_005",
         "teamId":  "t_001",
         "round":  "5",
-        "title":  "Partners",
-        "content":  "Gauri proposed they become partners and meld their rainbows. It was this great transformation that took them on their journey to become the eventual Masters we see today.",
+        "title":  "The Test\n",
+        "content":  "In order to master the technique of soul travel, one must descend into the depths of soul.",
         "encryption":  "1",
         "iconId":  "t_001"
     },
     {
         "id":  "s_006",
-        "teamId":  "t_002",
-        "round":  "1",
-        "title":  "Bad News",
-        "content":  "A few months ago, the chief of My fellow Brutus was diagnosed with a rare disease Lot#1430A.",
+        "teamId":  "t_001",
+        "round":  "6",
+        "title":  "Partners",
+        "content":  "Gauri met Refilwe there, lost in the chasm of void. It took the strength of a whole community of Masters, channeled through Gauri, to ascend back to themselves in this plain of existence.",
         "encryption":  "0",
-        "iconId":  "t_002"
+        "iconId":  "t_001"
     },
     {
         "id":  "s_007",
-        "teamId":  "t_002",
-        "round":  "2",
-        "title":  "A New Hope",
-        "content":  "The chief is getting weaker day by day. While the death of the chief is coming slowly, Brutus hopes to win the dance marathon and bring the chief back to life in the next universe.",
+        "teamId":  "t_001",
+        "round":  "7",
+        "title":  "Doubt",
+        "content":  "Since the collapse of the universe, Master Refilwe has been haunted by the call of the Great Redistribution.",
         "encryption":  "2",
-        "iconId":  "t_002"
+        "iconId":  "t_001"
     },
     {
         "id":  "s_008",
-        "teamId":  "t_002",
-        "round":  "3",
-        "title":  "The Past",
-        "content":  "Formation 16 knows a Lye healer. They used to be the best of friends.",
+        "teamId":  "t_001",
+        "round":  "8",
+        "title":  "Reaching",
+        "content":  "Master Gauri says they can be the strength for both of them.",
         "encryption":  "2",
-        "iconId":  "t_002"
+        "iconId":  "t_001"
     },
     {
         "id":  "s_009",
-        "teamId":  "t_002",
-        "round":  "4",
-        "title":  "If you loved me…",
-        "content":  "After the Lye abandoned Brutus, Formation 17 convinced Formation 16 that it wasn\u0027t safe to continue their friendship.",
+        "teamId":  "t_001",
+        "round":  "9",
+        "title":  "Unnamed",
+        "content":  "But what transformation will wait for them beyond the void?",
         "encryption":  "2",
-        "iconId":  "t_002"
+        "iconId":  "t_001"
     },
     {
         "id":  "s_010",
-        "teamId":  "t_002",
-        "round":  "5",
-        "title":  "Misgivings",
-        "content":  "Formation 17 worries that if they bring back the chief of My fellow Brutus, they will cast the Lye into the void.",
+        "teamId":  "t_001",
+        "round":  "10",
+        "title":  "Admiration",
+        "content":  "The Promoter admires these two because they keep faith at all costs.  It is a shame it will all be for naught.",
         "encryption":  "2",
-        "iconId":  "t_002"
+        "iconId":  "t_001"
     },
     {
         "id":  "s_011",
-        "teamId":  "t_003",
+        "teamId":  "t_002",
         "round":  "1",
-        "title":  "Free Movement",
-        "content":  "Popper and Piper have been running for a long time. They are experts at passing through boundaries.",
+        "title":  "Galactic Friends",
+        "content":  "Apex and Bobbleon are very close to each other as galaxies, both in temperament and in distance.",
         "encryption":  "0",
-        "iconId":  "t_003"
+        "iconId":  "t_002"
     },
     {
         "id":  "s_012",
-        "teamId":  "t_003",
+        "teamId":  "t_002",
         "round":  "2",
-        "title":  "Isolation",
-        "content":  "It is hard to exist in inbetween places where no one wants to join them or attempt to understand.",
+        "title":  "Handy Travel!",
+        "content":  "In fact, The Brutus travel to Bobbleon by grouping their bodies hand in hand in a giant line!",
         "encryption":  "3",
-        "iconId":  "t_003"
+        "iconId":  "t_002"
     },
     {
         "id":  "s_013",
-        "teamId":  "t_003",
+        "teamId":  "t_002",
         "round":  "3",
-        "title":  "A Dream",
-        "content":  "If they won DIGIDAMARA, they want to create a place that is safe. Safety is…",
+        "title":  "Ideals",
+        "content":  "The Brutus are known for their team building skills, discipline and efficiency - respect in competition is key for them.",
         "encryption":  "3",
-        "iconId":  "t_003"
+        "iconId":  "t_002"
     },
     {
         "id":  "s_014",
-        "teamId":  "t_003",
+        "teamId":  "t_002",
         "round":  "4",
         "title":  "Foundation",
-        "content":  "The familiar. Familiar needs to be built. Nothing is value...yet.",
+        "content":  "When one visits a Brutus village, they can expect a riot of bright colours, athletic obstacle courses and spongey geometry. Pleasure is found in purity and economy of movement.",
         "encryption":  "3",
-        "iconId":  "t_003"
+        "iconId":  "t_002"
     },
     {
         "id":  "s_015",
-        "teamId":  "t_003",
+        "teamId":  "t_002",
         "round":  "5",
-        "title":  "The Silence",
-        "content":  "Everyone knows why Popper and Piper are the last, but everyone is afraid to say it, otherwise they may be the last too.",
+        "title":  "Why them?",
+        "content":  "Formation 16 and Formation 17 left their team behind to represent Apex at Digidamara. Chosen for their strength and vibrancy, they have one wish - to save their leader and their way of life.",
         "encryption":  "3",
-        "iconId":  "t_003"
+        "iconId":  "t_002"
     },
     {
         "id":  "s_016",
-        "teamId":  "t_004",
-        "round":  "1",
-        "title":  "The Mountain",
-        "content":  "Grunter is tired of being seen as one thing.",
+        "teamId":  "t_002",
+        "round":  "6",
+        "title":  "Why they are here",
+        "content":  "A few months ago, their valiant leader fell ill. Every day they weaken a little more.  While the death of the chief is coming slowly, Formation 16 and Formation 17 hope to win Digidamara and bring their whole society through the Great Redistribution intact. ",
         "encryption":  "0",
-        "iconId":  "t_004"
+        "iconId":  "t_002"
     },
     {
         "id":  "s_017",
-        "teamId":  "t_004",
-        "round":  "2",
+        "teamId":  "t_002",
+        "round":  "7",
         "title":  "The Pressure",
-        "content":  "Some of his family clusters want Grunter to be eternally strong, and this is part of why he ran away on the Soul Train.",
+        "content":  "This was not an easy decision to make. Formation 16 knew a healer from the planet Lye in Apex who could help their leader. They used to be the best of friends.",
         "encryption":  "4",
-        "iconId":  "t_004"
+        "iconId":  "t_002"
     },
     {
         "id":  "s_018",
-        "teamId":  "t_004",
-        "round":  "3",
-        "title":  "My insides",
-        "content":  "Grunter tries to hide it, but the great hunger inside him never stops.",
+        "teamId":  "t_002",
+        "round":  "8",
+        "title":  "The Betrayal",
+        "content":  "As the Collapse began to suck galactic locations into the void, the Lye abandoned Brutus, thinking they would disappear first. Formation 17 convinced Formation 16 that it wasn\u0027t safe to continue their friendship with a betrayer.",
         "encryption":  "4",
-        "iconId":  "t_004"
+        "iconId":  "t_002"
     },
     {
         "id":  "s_019",
-        "teamId":  "t_004",
-        "round":  "4",
-        "title":  "Some are proud",
-        "content":  "His grandcluster is proud of him, and has held Collective Smash parties in his honour since he started dancing.",
+        "teamId":  "t_002",
+        "round":  "9",
+        "title":  "Revenge?",
+        "content":  "Formation 17 worries that if they win Digidamara, the Brutus will in turn abandon the Lye during the Great Redistribution, casting them into the void permanently, never to return.",
         "encryption":  "4",
-        "iconId":  "t_004"
+        "iconId":  "t_002"
     },
     {
         "id":  "s_020",
-        "teamId":  "t_004",
-        "round":  "5",
-        "title":  "Break the cycle",
-        "content":  "Grunter believes if he wins, the Sglunkus Snorfluxii will find a way to satisfy this eternal hunger.",
+        "teamId":  "t_002",
+        "round":  "10",
+        "title":  "Multiversal Will",
+        "content":  "The Promoter honours the tenacity and strength of this team. Perseverance no matter what will get you where you need to go, and the Promoter will never give up, never give up, never give up.",
         "encryption":  "4",
-        "iconId":  "t_004"
+        "iconId":  "t_002"
     },
     {
         "id":  "s_021",
-        "teamId":  "t_005",
+        "teamId":  "t_003",
         "round":  "1",
-        "title":  "Be a Star",
-        "content":  "Babe and Bas have secretly always wanted to be famous. If they are always loved, their chance of perishing is limited.",
+        "title":  "The Light is Gone",
+        "content":  "The Unknown Galaxy is called just that because no one knows exactly how it came to be the way it is. Noxious gas fills every planetary nook and cranny while plums of dangerous toxic space wind drifts in the dark solar depths.",
         "encryption":  "0",
-        "iconId":  "t_005"
+        "iconId":  "t_003"
     },
     {
         "id":  "s_022",
-        "teamId":  "t_005",
+        "teamId":  "t_003",
         "round":  "2",
-        "title":  "The Fight",
-        "content":  "Once Babe made a game that Bas could not play. It was their first great fight.",
+        "title":  "Into the Weird",
+        "content":  "Strange holes have appeared in spacetime along The Unknown’s borders and occasionally a piece of debris escapes galactic orbit to drift into nearby systems, causing further speculation.",
         "encryption":  "5",
-        "iconId":  "t_005"
+        "iconId":  "t_003"
     },
     {
         "id":  "s_023",
-        "teamId":  "t_005",
+        "teamId":  "t_003",
         "round":  "3",
-        "title":  "Forgiveness",
-        "content":  "It took them only .23 seconds to forgive each other. Eeeksum find great strength in uniting at all costs.",
+        "title":  "A Tipping Point",
+        "content":  "Some 50 solar years ago, it was heard that the Quxerre society was developing something revolutionary, but shortly after all communication ceased.",
         "encryption":  "5",
-        "iconId":  "t_005"
+        "iconId":  "t_003"
     },
     {
         "id":  "s_024",
-        "teamId":  "t_005",
+        "teamId":  "t_003",
         "round":  "4",
-        "title":  "The Enemy",
-        "content":  "For them, Sglunkus Snorfluxii are giant vacuum cleaners who take over all they see.",
+        "title":  "Vanished",
+        "content":  "It is widely acknowledged that this new invention caused a disaster that wiped out all galactic life but no trace of the deadly source could be found and the reason behind the invention’s creation has been lost.",
         "encryption":  "5",
-        "iconId":  "t_005"
+        "iconId":  "t_003"
     },
     {
         "id":  "s_025",
-        "teamId":  "t_005",
+        "teamId":  "t_003",
         "round":  "5",
-        "title":  "Stand Together",
-        "content":  "If they win DIGIDAMARA, they are excited about how their unity will transform them and others.",
+        "title":  "Wanderers",
+        "content":  "Twill and Kitt, from what they can tell us, wandered the wastes of their home galaxy in search of help and survivors to no avail.  Resourceful inventors themselves, they created helo bubbles to protect themselves from the harsh environments.",
         "encryption":  "5",
-        "iconId":  "t_005"
+        "iconId":  "t_003"
     },
     {
         "id":  "s_026",
-        "teamId":  "t_006",
-        "round":  "1",
-        "title":  "Goodbye Water",
-        "content":  "Not many know, but the oceanic homeland of the Mandulae is drying up.",
+        "teamId":  "t_003",
+        "round":  "6",
+        "title":  "Forsaken",
+        "content":  "and wing sails to navigate the torn areas of spacetime. After the explosion, they are always aware or anxious about inventing even though this is their strength. Imagine being so afraid of the thing you love to do?",
         "encryption":  "0",
-        "iconId":  "t_006"
+        "iconId":  "t_003"
     },
     {
         "id":  "s_027",
-        "teamId":  "t_006",
-        "round":  "2",
-        "title":  "Knowledge is all",
-        "content":  "Entheroll and Auram have come to DIGIDAMARA so the wealth of knowledge that the Mandulae have gained will be taken into the next universe.",
+        "teamId":  "t_003",
+        "round":  "7",
+        "title":  "Moving On",
+        "content":  "One day Twill convinced Kitt that they should take their chances and go to other galaxies, to make new relationships and find new friends. There was no one left to leave behind.",
         "encryption":  "6",
-        "iconId":  "t_006"
+        "iconId":  "t_003"
     },
     {
         "id":  "s_028",
-        "teamId":  "t_006",
-        "round":  "3",
-        "title":  "The Greatest Thread",
-        "content":  "If they fail, they will return to the ultimate beauty of the darkness.",
+        "teamId":  "t_003",
+        "round":  "8",
+        "title":  "A Curious Hand",
+        "content":  "They were picked up by the Space Station to represent one of the last galaxies, and because the Space Station knows what it is to be alone in the universe.",
         "encryption":  "6",
-        "iconId":  "t_006"
+        "iconId":  "t_003"
     },
     {
         "id":  "s_029",
-        "teamId":  "t_006",
-        "round":  "4",
-        "title":  "Doubt",
-        "content":  "Auram is not sure if the darkness is the most beautiful anymore. Their curiosity leads them.",
+        "teamId":  "t_003",
+        "round":  "9",
+        "title":  "Renewal",
+        "content":  "Winning Digidamara is their chance to start over completely.",
         "encryption":  "6",
-        "iconId":  "t_006"
+        "iconId":  "t_003"
     },
     {
         "id":  "s_030",
+        "teamId":  "t_003",
+        "round":  "10",
+        "title":  "Painful Memories",
+        "content":  "The Promoter has a healthy respect for these two and once shared similar dreams. But that dream was shattered by infidelity.",
+        "encryption":  "6",
+        "iconId":  "t_003"
+    },
+    {
+        "id":  "s_031",
+        "teamId":  "t_004",
+        "round":  "1",
+        "title":  "Canyon Swings and Meadows Green",
+        "content":  "Gorgplain is a rough, mineral rich and expansive place, with many planets composed of rocky chasms and vast liliagreen fields.",
+        "encryption":  "",
+        "iconId":  "t_004"
+    },
+    {
+        "id":  "s_032",
+        "teamId":  "t_004",
+        "round":  "2",
+        "title":  "Heritage",
+        "content":  "The Sglunkus Snorfluxii have a widespread culture and now occupy most solar sectors to some extent, continuing a long and complex tradition that values courage above all.",
+        "encryption":  "",
+        "iconId":  "t_004"
+    },
+    {
+        "id":  "s_033",
+        "teamId":  "t_004",
+        "round":  "3",
+        "title":  "Teach Me How to Fly",
+        "content":  "Hyper speed has evolved in most beings in this galaxy; they don\u0027t need space ships to travel in space they simply fly.  Gorglium, the main nourishing element, is also a power source for other galaxies.",
+        "encryption":  "",
+        "iconId":  "t_004"
+    },
+    {
+        "id":  "s_034",
+        "teamId":  "t_004",
+        "round":  "4",
+        "title":  "A Turn",
+        "content":  "Bobbleon is a close galaxy and when Gorglium and liliagreen grass started to become rarer at the turn of the Collapse, more Sglunkus Snorfluxii started venturing to Bobbleon.",
+        "encryption":  "",
+        "iconId":  "t_004"
+    },
+    {
+        "id":  "s_035",
+        "teamId":  "t_004",
+        "round":  "5",
+        "title":  "Testing the Neighbors",
+        "content":  "They love the colour and the flavours of that galaxy, but their massive size and appetites are ruining fragile Eeksum cities, causing mounting tension.",
+        "encryption":  "",
+        "iconId":  "t_004"
+    },
+    {
+        "id":  "s_036",
+        "teamId":  "t_004",
+        "round":  "6",
+        "title":  "Gossip",
+        "content":  "Grunter is known for his pacifist stance in the matter, currently resisting the consumption of Eeksums. Yet this peaceful goal could not keep scandal from shrouding his arrival to Digidamara.",
+        "encryption":  "",
+        "iconId":  "t_004"
+    },
+    {
+        "id":  "s_037",
+        "teamId":  "t_004",
+        "round":  "7",
+        "title":  "The Runner Up",
+        "content":  "Grunter was the second choice. The elders wanted his brother, Prundiar, to compete. Prundiar represents everything a Snorfluxxi should be.",
+        "encryption":  "",
+        "iconId":  "t_004"
+    },
+    {
+        "id":  "s_038",
+        "teamId":  "t_004",
+        "round":  "8",
+        "title":  "The Renegade",
+        "content":  "Grunter traveled the universe dancing with the intergalactic Soul Train but some felt he was too subversive and not the best representative of the Snorfuxii traditions that need to be taken forward into the next universe. ",
+        "encryption":  "",
+        "iconId":  "t_004"
+    },
+    {
+        "id":  "s_039",
+        "teamId":  "t_004",
+        "round":  "9",
+        "title":  "All Consuming",
+        "content":  "In a fit of rage, Grunter ate his brother in a fight and took his place. His family is now divided with some disowning him and others rooting for him because a Snorfluxii winning is better than none. ",
+        "encryption":  "",
+        "iconId":  "t_004"
+    },
+    {
+        "id":  "s_40",
+        "teamId":  "t_004",
+        "round":  "10",
+        "title":  "Give Me More",
+        "content":  "Grunter believes that strength isn’t always everything, and he wants to shake things up in the Great Redistribution. The Promoter is only too willing to take advantage of Grunter’s pluck.",
+        "encryption":  "",
+        "iconId":  "t_004"
+    },
+    {
+        "id":  "s_041",
+        "teamId":  "t_005",
+        "round":  "1",
+        "title":  "Wonderland",
+        "content":  "Bobbleon is a lush paradise that is frequented by many life forms year round and you can find Eeksums on almost every planet in the system! ",
+        "encryption":  "",
+        "iconId":  "t_005"
+    },
+    {
+        "id":  "s_042",
+        "teamId":  "t_005",
+        "round":  "2",
+        "title":  "One love",
+        "content":  "Prolific reproducers, Eeksums have multi annual ‘bloom’ events where they all get together in warm ponds and have beautiful orgies which create the next generation.",
+        "encryption":  "",
+        "iconId":  "t_005"
+    },
+    {
+        "id":  "s_043",
+        "teamId":  "t_005",
+        "round":  "3",
+        "title":  "Happy Together",
+        "content":  "Their cities are wonderous grottos of light, life, colour and music that attract visitors from across the intergalactic pantheon. In particular, Eeksums and other communal life forms of Bobbleon like Apex art, as it champions the many in the one.",
+        "encryption":  "",
+        "iconId":  "t_005"
+    },
+    {
+        "id":  "s_044",
+        "teamId":  "t_005",
+        "round":  "4",
+        "title":  "Never Alone",
+        "content":  "Eeksums are the entertainers, performers and athletes of the intergalactic circuit, are the life of the party and always work in pairs, trios or more! For Babe and Bas, winning Digidamara is about being the BEST.",
+        "encryption":  "",
+        "iconId":  "t_005"
+    },
+    {
+        "id":  "s_045",
+        "teamId":  "t_005",
+        "round":  "5",
+        "title":  "Who Wants to Live Forever?",
+        "content":  "They crave fame and the spotlight like no other and will bring Eeksum glory fully to bear in the Great Redistribution.",
+        "encryption":  "",
+        "iconId":  "t_005"
+    },
+    {
+        "id":  "s_046",
+        "teamId":  "t_005",
+        "round":  "6",
+        "title":  "Money Matters",
+        "content":  "Some are overly critical of their dubious and secret sponsorships given the topsy turvy nature of financial value in Bobbleon - one day metazips are the top currency, the next it’s bezocola?!",
+        "encryption":  "",
+        "iconId":  "t_005"
+    },
+    {
+        "id":  "s_047",
+        "teamId":  "t_005",
+        "round":  "7",
+        "title":  "The Darkside",
+        "content":  "Despite this, none can fault their rightful arrival at Digidamara. There was an official entry contest on Bobbleon (Eeksums LOVE a contest as much as the love a boogie!) and they won to much acclaim. But the price of fame is steep.",
+        "encryption":  "",
+        "iconId":  "t_005"
+    },
+    {
+        "id":  "s_048",
+        "teamId":  "t_005",
+        "round":  "8",
+        "title":  "Daredevils",
+        "content":  "Bas has suffered from many stress related conditions and Babe’s response has been to push their risktaking to the limit.",
+        "encryption":  "",
+        "iconId":  "t_005"
+    },
+    {
+        "id":  "s_049",
+        "teamId":  "t_005",
+        "round":  "9",
+        "title":  "Loss",
+        "content":  "They come from many siblings, but knowing they will never make many again, never be part of a great bloom again, is difficult.",
+        "encryption":  "",
+        "iconId":  "t_005"
+    },
+    {
+        "id":  "s_050",
+        "teamId":  "t_005",
+        "round":  "10",
+        "title":  "Reflector",
+        "content":  "Burning bright until the end keeps the darkness at bay. The Promoter is threatened by these two - they are an inconvenient mirror of their desires.",
+        "encryption":  "",
+        "iconId":  "t_005"
+    },
+    {
+        "id":  "s_051",
+        "teamId":  "t_006",
+        "round":  "1",
+        "title":  "In the Beginning",
+        "content":  "It is said some Mandulae have not felt the warmth of light on their aquatic bodies since the dawn of the last universe.",
+        "encryption":  "",
+        "iconId":  "t_006"
+    },
+    {
+        "id":  "s_052",
+        "teamId":  "t_006",
+        "round":  "2",
+        "title":  "Elusive Guests",
+        "content":  "Although they drift eternally through Deep Innks, they have been spotted occasionally in other galaxies, articularly at beautiful locations or events, where they have hardly interacted with others at all.",
+        "encryption":  "",
+        "iconId":  "t_006"
+    },
+    {
+        "id":  "s_053",
+        "teamId":  "t_006",
+        "round":  "3",
+        "title":  "Fear of the Uknown",
+        "content":  "This led to political speculation that they have sinister intentions, although others have treated their rare presence as a blessing.",
+        "encryption":  "",
+        "iconId":  "t_006"
+    },
+    {
+        "id":  "s_054",
+        "teamId":  "t_006",
+        "round":  "4",
+        "title":  "Entranced",
+        "content":  "They move so beautifully it brings many witnesses to tears instantly. When spotted, others have noticed that their movements are much like a slowed but graceful ballroom dance.",
+        "encryption":  "",
+        "iconId":  "t_006"
+    },
+    {
+        "id":  "s_055",
         "teamId":  "t_006",
         "round":  "5",
-        "title":  "Sacrifice",
-        "content":  "Entheroll has offered Auram a gift that may save them despite who wins.",
-        "encryption":  "6",
+        "title":  "The Uninvited",
+        "content":  "At Digidamara, Enthar and Auram were not invited, but simply appeared, which caused a massive shock.",
+        "encryption":  "",
+        "iconId":  "t_006"
+    },
+    {
+        "id":  "s_056",
+        "teamId":  "t_006",
+        "round":  "6",
+        "title":  "Fluency in Another Sense",
+        "content":  "When asked what their goals were for the next universe, Enthar and Auram silently began stirring slowly in a lovely partner dance. Fluidity is key.",
+        "encryption":  "",
+        "iconId":  "t_006"
+    },
+    {
+        "id":  "s_057",
+        "teamId":  "t_006",
+        "round":  "7",
+        "title":  "Allure",
+        "content":  "In fact we know more about the Deep Innks than we do this couple, and that is not much. Due to its extreme inaccessibility Deep Innks is a fantasy destination for the universe\u0027s uber-rich and wanna-be-tourists alike,",
+        "encryption":  "",
+        "iconId":  "t_006"
+    },
+    {
+        "id":  "s_058",
+        "teamId":  "t_006",
+        "round":  "8",
+        "title":  "The Value of a Mystery",
+        "content":  "though few have been successful at visiting. Images that have been taken from under the surface have sold for great deals of currency and have been widely published in universe-wide publications.",
+        "encryption":  "",
+        "iconId":  "t_006"
+    },
+    {
+        "id":  "s_059",
+        "teamId":  "t_006",
+        "round":  "9",
+        "title":  "Impenetrable ",
+        "content":  "Recon devices within the viscous waters of this galaxy are found to be extruded after mere hours.",
+        "encryption":  "",
+        "iconId":  "t_006"
+    },
+    {
+        "id":  "s_060",
+        "teamId":  "t_006",
+        "round":  "10",
+        "title":  "Hold Me Close",
+        "content":  "The Promoter is wary of this team. Enther and Auram’s dance brings up coursing waves of sadness through their being - memories of a universe long past flash before their eyes. The sadness turns to rage.",
+        "encryption":  "",
         "iconId":  "t_006"
     }
 ]

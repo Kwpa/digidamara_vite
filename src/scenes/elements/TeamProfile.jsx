@@ -112,11 +112,11 @@ const TeamProfile = (teamData) => {
                   </div>
                 </div>
               </div>
-              <div style="display: flex; padding-bottom: 30px;">
+              <div style="display: flex; padding-bottom: 30px; flex-direction: column;">
                 <div style="flex: 1; margin-right: 20px;">
                   <div class="divider">About the team</div>
                   <div class="box">
-                    <div id="team-profile-content" class="content">
+                    <div id="team-profile-content" class="content has-background-light">
                     </div>
                   </div>
                 </div>

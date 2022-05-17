@@ -12,7 +12,7 @@
         "id":  "tut_002",
         "title":  "Energy Bar",
         "content":  "You can see that this team\u0027s Energy is running low! They are at risk of being eliminated from the dance marathon!",
-        "element_id":  "teamProgressContainer",
+        "element_id":  "avatar-overlay-ui",
         "type":  "info",
         "button":  "none",
         "popup_position":  "top"
@@ -20,7 +20,7 @@
     {
         "id":  "tut_003",
         "title":  "Energy",
-        "content":  "As a Spectator, you are able to spend Energy to take actions. You get 5 Energy per day.",
+        "content":  "As a Spectator, you are able to spend Energy to take actions. You get 10 Energy per day.",
         "element_id":  "ap-value",
         "type":  "info",
         "button":  "none",
