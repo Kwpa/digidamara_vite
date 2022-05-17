@@ -1,6 +1,6 @@
 import { h } from 'start-dom-jsx';
 
-const Header = () => {
+const Header = (headerFontClasses="title is-size-3 has-text-white") => {
   return (
 
     <div class="fixed-header">
@@ -10,16 +10,16 @@ const Header = () => {
             <div id="round-value">
               <h1 class="heading has-text-centered has-text-white">Time Left</h1>
               <div>
-                <h1 id="round-header-value" class="title is-size-3 has-text-white">-</h1>
+                <h1 id="round-header-value" class={headerFontClasses}>-</h1>
               </div>
             </div>
           </div>
           <div class="level-item has-text-centered">
             <div id="ap-value">
               <h1 class="heading has-text-centered has-text-white">Energy</h1>
-              <div>
+              <div class="hdr-icon-container">
                 <img class="hdrftr-icon hdr-icon" src="/assets/ui_icons/icon_UI_energy_outline_transparent_32px.png"></img>
-                <span id="ap-header-value" class="title is-size-3 has-text-white">
+                <span id="ap-header-value" class={headerFontClasses}>
                   -
                 </span>
               </div>
@@ -28,9 +28,9 @@ const Header = () => {
           <div class="level-item has-text-centered">
             <div id="sparks-value">
               <h1 class="heading has-text-centered has-text-white">Bonds</h1>
-              <div>
+              <div class="hdr-icon-container">
                 <img class="hdrftr-icon hdr-icon" src="/assets/ui_icons/icon_UI_ticket_outline_transparent_36px.png"></img>
-                <span id="sparks-header-value" class="title is-size-3 has-text-white">
+                <span id="sparks-header-value" class={headerFontClasses}>
                   -
                 </span>
               </div>

@@ -1,6 +1,6 @@
 import { h } from 'start-dom-jsx';
 
-const TeamProfile = (teamData) => {
+const TeamProfile = (teamData, titleclasses="title is-size-3 has-text-black") => {
   return (
     
       <div class="popup-page">
@@ -8,7 +8,7 @@ const TeamProfile = (teamData) => {
           <nav class="level is-mobile">
             <div class="level-left">
               <div class="level-item has-text-centered">
-                <h1 class="title has-text-black">{teamData.name}</h1>
+                <h1 class={titleclasses}>{teamData.name}</h1>
               </div>
             </div>
           </nav>
@@ -61,62 +61,63 @@ const TeamProfile = (teamData) => {
             <div style="height: inherit;">
               <div class="divider">Actions</div>
               <div class="box has-background-light">
-                <div class="level">
-                  <div class="level-item">
-                    <div style="display: block">
-                      <button id="donate-button" class="button is-primary is-responsive" style="display: block; margin: 0 auto;">Sponsor</button>
+                <div class="actions-flex">
+                  <div class="actions-flex-item">
+                    
+                      <button id="donate-button" class="button is-primary is-responsive button-click donate-button">Sponsor</button>
                       <div style="height: 20px;"></div>
-                      <div class="tags has-addons tagsActive">
-                        <span class="tag is-primary">-1 Energy</span>
-                        <span class="tag is-warning">Give Energy, Gain Sparks</span>
+                      <div class="tagsActive box has-background-primary-light">
+                        <p>-1 Energy</p>
+                        <p>+Energize Team, Gain Bonds</p>
                       </div>
-                      <div style="display: none;" class="tags tagsNotEnoughAP">
-                        <span class="tag is-danger">Not enough Energy</span>
+                      <div style="display: none;" class=" tagsNotEnoughAP box has-background-danger-light">
+                        <p>Not enough Energy</p>
                       </div>
-                      <div style="display: none;" class="tags tagsEliminated">
-                        <span class="tag is-danger">Team eliminated</span>
+                      <div style="display: none;" class="tagsEliminated box has-background-danger-light">
+                        <p>Team eliminated</p>
                       </div>
                     </div>
-                  </div>
-                  <div id="fan-club-container" class="level-item">
-                    <div style="display: block">
-                      <button id="fan-club-button" class="button is-primary is-responsive" style="display: block; margin: 0 auto;"><img src="/assets/ui_icons/icon_UI_fan_outline_transparent_36px.png" width="30" height="30"></img> Join Fan Club</button>
+                  
+                  <div id="fan-club-container" class="actions-flex-item">
+                    
+                      <button id="fan-club-button" class="button is-primary is-responsive button-click fan-club-button"><img class="button-image" src="/assets/ui_icons/icon_UI_fan_outline_transparent_36px.png" width="30" height="30"></img> Join Fan Club</button>
                       <div style="height: 20px;"></div>
-                      <div class="tags has-addons tagsActive">
-                        <span class="tag is-primary">-1 Energy</span>
-                        <span class="tag is-warning">Unlocks Gifting and Fan Club Chat</span>
+                      <div class="tagsActive box has-background-primary-light">
+                        <p>-1 Energy</p>
+                        <p>+Unlocks Gifting and Fan Club Chat</p>
                       </div>
-                      <div style="display: none;" class="tags tagsNotEnoughAP">
-                        <span class="tag is-danger">Not enough Energy</span>
+                      <div style="display: none;" class="tagsNotEnoughAP box has-background-danger-light">
+                        <p>Not enough Energy</p>
                       </div>
-                      <div style="display: none;" class="tags tagsEliminated">
-                        <span class="tag is-danger">Team eliminated</span>
+                      <div style="display: none;" class="tagsEliminated box has-background-danger-light">
+                        <p>Team eliminated</p>
                       </div>
                     </div>
-                  </div>
-                  <div id="upgrade-container" class="level-item is-centered">
-                    <div style="display: block">
-                      <button id="upgrade-button" class="button is-info is-responsive" style="display: block; margin: 0 auto;"><img src="/assets/ui_icons/icon_UI_upgrade_outline_transparent_36px.png" width="30" height="30"></img> Give Gift</button>
+                  
+                  <div id="upgrade-container" class="actions-flex-item">
+                    
+                      <button id="upgrade-button" class="button is-info is-responsive button-click upgrade-button"><img class="button-image" src="/assets/ui_icons/icon_UI_upgrade_outline_transparent_36px.png" width="30" height="30"></img> Give Gift</button>
                       <div style="height: 20px;"></div>
-                      <div style="margin: 0 auto;" class="tags has-addons tagsActive">
-                        <span class="tag is-primary">-1 Energy</span>
-                        <span class="tag is-warning">Unlock backstory, +1 additional Bond per Sponsor</span>
+                      <div class="tagsActive box has-background-info-light">
+                        <p>-1 Energy</p>
+                        <p>+Unlock backstory</p>
+                        <p>+1 additional Bond when using Sponsor action</p>
                       </div>
-                      <div style="display: none;" class="tags tagsNotEnoughAP">
-                        <span class="tag is-danger">Not enough Energy</span>
+                      <div style="display: none;" class="tagsNotEnoughAP box has-background-danger-light">
+                        <p>Not enough Energy</p>
                       </div>
-                      <div style="display: none;" class="tags tagsEliminated">
-                        <span class="tag is-danger">Team eliminated</span>
+                      <div style="display: none;" class="tagsEliminated box has-background-danger-light">
+                        <p>Team eliminated</p>
                       </div>
                     </div>
-                  </div>
+                  
                 </div>
               </div>
               <div style="display: flex; padding-bottom: 30px; flex-direction: column;">
                 <div style="flex: 1; margin-right: 20px;">
                   <div class="divider">About the team</div>
-                  <div class="box">
-                    <div id="team-profile-content" class="content has-background-light">
+                  <div class="box has-background-light">
+                    <div id="team-profile-content" class="content">
                     </div>
                   </div>
                 </div>

@@ -728,7 +728,9 @@ export default class MainScene extends Phaser.Scene {
     game.style.setProperty('position', 'absolute');
     game.style.setProperty('z-index', '-1');
 
-    this.header = this.add.dom(this.width / 2, 55, Header() as HTMLElement);
+    var headerFontClasses = this.GetDeviceType()=="mobile" ? "title is-size-5 has-text-white":"title is-size-3 has-text-white";
+
+    this.header = this.add.dom(this.width / 2, 55, Header(headerFontClasses) as HTMLElement);
     this.footer = this.add.dom(this.width / 2, 55, Footer() as HTMLElement);
     this.header.depth = this.depthLayers["headerFooter"];
     this.footer.depth = this.depthLayers["headerFooter"];
@@ -2778,7 +2780,8 @@ export default class MainScene extends Phaser.Scene {
         var title = team.id as string;
 
         const data = { name: team.title, biography: team.biography };
-        const teamProfile = this.add.dom(0, 0, TeamProfile(data) as HTMLElement);
+        var titleClasses = this.GetDeviceType()=="mobile"?"title is-size-5 has-text-black":"title is-size-3 has-text-black";
+        const teamProfile = this.add.dom(0, 0, TeamProfile(data, titleClasses) as HTMLElement);
         var content = teamProfile.getChildByID("team-profile-content") as HTMLElement;
         content.innerHTML = team.biography;
         const teamIcon = teamProfile.getChildByID('team-icon') as HTMLElement;

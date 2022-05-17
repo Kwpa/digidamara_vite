@@ -6,7 +6,7 @@ const AvatarOverlay = (avatarName, id) => {
     <div class="ov-container">
       <div id="avatar-overlay-ui">
         <div class="panel is-primary team-panel">
-          <button id="openProfile" class="button is-fullwidth has-text-centered panel-heading">
+          <button id="openProfile" class="button is-fullwidth has-text-centered panel-heading button-click">
             {avatarName}
           </button>
           <div class="panel-block has-background-dark team-panel-block" style="margin-bottom: 0px">

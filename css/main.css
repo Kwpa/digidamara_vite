@@ -74,6 +74,50 @@ iframe {
 
 }
 
+.button-click
+{
+	box-shadow: 0 6px rgb(184, 183, 183) !important;
+	padding-bottom: 4px !important;
+}
+
+.button-click:visited
+{
+	box-shadow: 0 6px rgb(184, 183, 183) !important;
+	padding-bottom: 4px !important;
+}
+
+.button-click:active
+{
+	box-shadow: 0 3px #666 !important;
+  	transform: translateY(4px) !important;
+}
+.donate-button,
+.fan-club-button,
+.upgrade-button
+{
+	display: block;
+	margin: 0 auto; 	
+}
+
+.button-image
+{
+	vertical-align: middle;
+}
+
+.actions-flex
+{
+	display: flex;
+	flex-flow: row wrap;
+	align-items: flex-start;
+}
+.actions-flex-item
+{
+	flex: 1;
+	padding: 0 10px;
+	margin: 0 auto; 
+	font-size: small;
+}
+
 .landing-page
 {
 	position: fixed;
@@ -109,8 +153,6 @@ iframe {
 		background-image: url("/assets/images/hero_partners_long.jpg");
 	}
 }
-
-
 
 .landing-page-text
 {
@@ -413,12 +455,13 @@ bottom: 120px;
 .icon-area {
 max-width: 750px;
 margin: 0 auto;
+align-items: flex-start;
 }
 
 
 .header-level-item
 {
-
+	
 }
 
 
@@ -428,14 +471,28 @@ height: 36px;
 margin-left: 10px;
 margin-right: 10px;
 }
+.hdrftr-icon-mobile {
+	width: 36px;
+	height: 36px;
+	margin-left: 10px;
+	margin-right: 10px;
+}
 
 .hdr-icon
 {
  margin-top: 0px;
+ vertical-align: middle;
+
+}
+.hdr-icon-container
+{
+	display: flex;
+	align-items: center;
 }
 .ftr-icon
 {
 	margin-bottom: 5px;
+	vertical-align: middle;
 }
 
 .badger {
