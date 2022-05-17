@@ -4104,10 +4104,10 @@ export default class MainScene extends Phaser.Scene {
     const messageAck = await socket.writeChatMessage(groupId, data);
   }
 
-  async CreateUserList(list: ChannelMessageList) {
+  async CreateUserList(list: ChannelMessage[]) {
     var userList = {};
-    list.messages?.forEach(async (message) => {
-      console.log("message time: " + new Date(message.create_time as string).toUTCString());
+    list.forEach(async (message) => {
+      //console.log("message time: " + new Date(message.create_time as string).toUTCString());
       var account = await this.client.getUsers(this.session, [message.sender_id as string]);
       var users = account.users as User[];
       var avatarUrl = users[0].avatar_url as string;
@@ -4173,19 +4173,36 @@ export default class MainScene extends Phaser.Scene {
 
 
   async CreateChatMessages(chatId: string) {
-    var forward = false;
+    var forward = true;
     var channelId = "3." + this.localState.chatChannels[chatId] + "..";
     this.localState.chatChannels
     console.log(chatId + ": " + this.localState.chatChannels[chatId]);
     
-    var accumulatedMessages : ChannelMessage[] = [];
+    var allMessages : ChannelMessage[] = [];
     
-    var result = await this.client.listChannelMessages(this.session, channelId, 100, forward, "");
+    var accumulateMesages = async (cursor, channelId) => {
+      
+      console.log("cursor-----" + cursor + "-------");
+      var result = await this.client.listChannelMessages(this.session, channelId, 100, true, cursor);
+      
+      allMessages = allMessages.concat(result.messages as ChannelMessage[]);
+
+      console.log("acc" + allMessages.length);
+      if (result.next_cursor==undefined) {
+        return;
+      }
+      accumulateMesages(result.next_cursor, channelId);
+    }
+
+    await accumulateMesages("", channelId);
+    
+
+    /* var result = await this.client.listChannelMessages(this.session, channelId, 100, forward, "");
     var cached = result.next_cursor;
     var cached_cursor = result.cacheable_cursor as string;
     
-    accumulatedMessages = accumulatedMessages.concat(result.messages as ChannelMessage[]);
-    console.log("accum + " + accumulatedMessages.length);
+    allMessages = allMessages.concat(result.messages as ChannelMessage[]);
+    console.log("accum + " + allMessages.length);
     console.log("cached 1   : " + cached);
     console.log("cached_cursor 1   : " + cached_cursor);
 
@@ -4193,15 +4210,15 @@ export default class MainScene extends Phaser.Scene {
     var cached = result.next_cursor;
     var cached_cursor = result.cacheable_cursor as string;
     
-    accumulatedMessages = accumulatedMessages.concat(result.messages as ChannelMessage[]);
-    console.log("accum + " + accumulatedMessages.length);
+    allMessages = allMessages.concat(result.messages as ChannelMessage[]);
+    console.log("accum + " + allMessages.length);
     console.log("cached 1   : " + cached);
-    console.log("cached_cursor 1   : " + cached_cursor);
+    console.log("cached_cursor 1   : " + cached_cursor); */
     
     
 
-    if (result.messages?.length != 0) {
-      var messages = result.messages as ChannelMessage[];
+    if (allMessages.length != 0) {
+      var messages = allMessages as ChannelMessage[];
       console.log(messages[0].create_time + " message made, converted is  : " + new Date(messages[0].create_time as string).toUTCString());
     }
     else
@@ -4212,13 +4229,13 @@ export default class MainScene extends Phaser.Scene {
 
     //if(chat)
 
-    if (result.messages != null && result.messages.length > 0) {
+    if (allMessages != null && allMessages.length > 0) {
       var storeUserId = "";
       var storeMessageCreateTime = "";
       var storeUserDetails = {} as object;
       var input = this.chatPage.getChildByID('chat-input-container') as HTMLElement;
 
-      storeUserDetails = await this.CreateUserList(result);
+      storeUserDetails = await this.CreateUserList(allMessages);
       if (chatId == "c_001") {
 
         console.log("notifications!!!!!!!!!!!!!");
@@ -4227,11 +4244,11 @@ export default class MainScene extends Phaser.Scene {
         var list = await this.GenerateNotificationChannelMessages();
         list.forEach(
           (notification) => {
-            result.messages?.push(notification);
+            allMessages?.push(notification);
           }
         )
 
-        result.messages?.sort((messageA, messageB) => {
+        allMessages?.sort((messageA, messageB) => {
           return new Date(messageA.create_time as string).getTime() - new Date(messageB.create_time as string).getTime();
         })
       }
@@ -4247,12 +4264,12 @@ export default class MainScene extends Phaser.Scene {
         return aTime-bTime;
       }); */
 
-      result.messages = result.messages.reverse();
+      //allMessages = allMessages.reverse();
 
-      result.messages.forEach(async (message) => {
+      allMessages.forEach(async (message) => {
         switch (message.code) {
           case 0:
-            console.log("Message has id %o and content" + message.content, message.message_id);
+            //console.log("Message has id %o and content" + message.content, message.message_id);
 
             let getMessage: any = {};
             getMessage = message.content;
@@ -4260,7 +4277,7 @@ export default class MainScene extends Phaser.Scene {
 
             var username = storeUserDetails[message.sender_id as string].username as string;
             var styleString = "";
-            console.log("username : : " + username);
+            //console.log("username : : " + username);
             if(this.CharacterUsernameCheck(username))
             {
               styleString = "background-color: " + "#000000" + ";";
@@ -4279,7 +4296,7 @@ export default class MainScene extends Phaser.Scene {
             else
             {
               var number = parseInt(avatarUrl.split("=")[1] as string);
-              console.log("number " + number);            
+                          
               var hexColor = "#" + this.staticData.colours[number].hexCode;
               styleString = "background-color: " + hexColor + ";";
             }
@@ -4337,7 +4354,7 @@ export default class MainScene extends Phaser.Scene {
 
   GetTime(date: string) {
     var timeago = humanized_time_span(date);
-    console.log("Time ago: " + date + " " + timeago);
+    //console.log("Time ago: " + date + " " + timeago);
     return timeago;
   }
 
