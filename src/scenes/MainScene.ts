@@ -1855,7 +1855,8 @@ export default class MainScene extends Phaser.Scene {
         parsedJson.upgradeLevel,
         parsedJson.energyRequirement,
         parsedJson.energy,
-        parsedJson.inFanClub
+        parsedJson.inFanClub,
+        parsedJson.totalFanCount
       )
       )
       k++;
@@ -1985,8 +1986,9 @@ export default class MainScene extends Phaser.Scene {
         false,
         0,
         0,
-        0,
-        false
+        1,
+        false,
+        0
       )
       )
       k++;
@@ -1995,7 +1997,7 @@ export default class MainScene extends Phaser.Scene {
     var roundObject = {
         "Key": "round",
         "endOfShowDateTime": "2022-05-22T18:17:00.001Z",
-        "energyRequirement": 3,
+        "energyRequirement": 5,
         "id": "round",
         "round": 0,
         "showDynamicVotes": false
@@ -2088,7 +2090,8 @@ export default class MainScene extends Phaser.Scene {
         upgradeLevel,
         roundDynamic.energyRequirement,
         teamDynamic.currentEnergy,
-        inFanClub
+        inFanClub,
+        teamDynamic.totalNumberOfFans
       ));
     }
 
@@ -2161,7 +2164,8 @@ export default class MainScene extends Phaser.Scene {
         upgradeLevel,
         roundDynamic.energyRequirement,
         teamDynamic.currentEnergy,
-        inFanClub
+        inFanClub,
+        teamDynamic.totalNumberOfFans
       ));
     }
 
@@ -2735,7 +2739,10 @@ export default class MainScene extends Phaser.Scene {
           energy = (teamState.currentEnergy).toString();
         }
 
+        var fans = teamState.totalNumberOfFans.toString();
+
         energyElement.innerHTML = energy;
+        fansElement.innerHTML = fans;
         row.setAttribute("newOrder", teamState.leaderboardPosition.toString());
       }
       this.leaderboardRows.sort((a, b)=>{
@@ -3007,6 +3014,10 @@ export default class MainScene extends Phaser.Scene {
               await this.delay(400);
               this.tutorialTour.next(); 
             }
+            if(this.finishedTutorial)
+            {
+              await this.JoinFanClub(this.socket, this.localState.currentTeamID);
+            }
           }
         }
 
@@ -3167,6 +3178,7 @@ export default class MainScene extends Phaser.Scene {
   
   async RefreshFromDynamicData() {
     //Kconsole.log("refresh");
+
 
     this.load.json('dynamicVoteOptions_content', '/assets/json/DynamicVoteOptions.json');
     this.dynamicVoteOptions_data = this.cache.json.get('dynamicVoteOptions_content') as object;
@@ -3621,6 +3633,13 @@ export default class MainScene extends Phaser.Scene {
     //Kconsole.log("send vote!!!! " + scenarioId + " " + choiceIndex + " " + value);
 
     await socket.sendMatchState(this.match.match_id, 2, { "scenarioId": scenarioId, "option": choiceIndex, "votes": value, "dynamic": false}); //
+  }
+
+  async JoinFanClub(socket: Socket, team_id: string) {
+
+    //Kconsole.log("donate!!!! " + this.localState.teamStates[this.localState.carouselPosition].currentEnergy);
+
+    await socket.sendMatchState(this.match.match_id, 4, { "team_id": team_id }); //
   }
 
   async SendDynamicVoteMatchState(socket: Socket, scenarioId: string, choiceIndex: number, value: number) {

@@ -58,6 +58,8 @@ export default class LocalGameState
     tutorialVariable_voteChoiceOneCount: number = 0;
     tutorialVariable_voteChoiceTwoCount: number = 0;
 
+    restMode: boolean = false;
+    endOfShow: boolean = false;
 
     appState!: AppState;
 
@@ -72,7 +74,7 @@ export default class LocalGameState
         console.log(state.name.toUpperCase());
     }
 
-    Init(username: string, round: number, endOfShowDateTime: string, showDynamicVoteOptions: boolean, actionPoints: number, maxActionPoints: number, sparksAwarded: number, energyRequirement: number, teamIDs : string[], voteStates, dynamicVoteState : DynamicVoteScenarioState, teamStates)
+    Init(username: string, round: number, endOfShowDateTime: string, showDynamicVoteOptions: boolean, actionPoints: number, maxActionPoints: number, sparksAwarded: number, energyRequirement: number, teamIDs : string[], voteStates, dynamicVoteState : DynamicVoteScenarioState, teamStates, restMode, endOfShow)
     {
         this.actionPoints = actionPoints;
         this.sparksAwarded = sparksAwarded;
@@ -96,6 +98,8 @@ export default class LocalGameState
         this.currentChatChannel = "c_001";
         this.danceFloorAudioTwoPlaying = false;
         this.leaderboardStatus = [];
+        this.restMode = restMode;
+        this.endOfShow = endOfShow;
     }
 
     DanceFloorTwoAudio(value: boolean)
@@ -450,7 +454,7 @@ export class TeamState
     storyAccordianList!: StoryAccordian[];
     storyIds!: string[];
    
-    constructor(id, index, title, outOfComp, upgradeLevel, energyReq, currentEnergy, inFanClub){
+    constructor(id, index, title, outOfComp, upgradeLevel, energyReq, currentEnergy, inFanClub, totalNumberOfFans){
         this.id = id;
         this.index = index,
         this.title = title;
@@ -460,6 +464,8 @@ export class TeamState
         this.userInFanClub = inFanClub;
         this.energyRequirement = energyReq;
         this.storyAccordianList = [];
+        this.totalNumberOfFans = totalNumberOfFans;
+        console.log("fans - " + this.totalNumberOfFans);
     }
 
     UpdateFromDynamicData(teamDynamic: TeamState, energyRequirement:number, upgradeLevel:number, inFanClub:boolean)
@@ -469,6 +475,7 @@ export class TeamState
         this.upgradeLevel=upgradeLevel;
         this.userInFanClub=inFanClub;
         this.energyRequirement = energyRequirement;
+        this.totalNumberOfFans = teamDynamic.totalNumberOfFans;
     }
 
     Upgrade()
