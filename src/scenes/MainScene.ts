@@ -2214,7 +2214,7 @@ export default class MainScene extends Phaser.Scene {
   {
     element.style.pointerEvents="none";
     await this.delay(400);
-    element.style.pointerEvents="none";
+    element.style.pointerEvents="all";
   }
 
   async ReloadLocalState() {
