@@ -11,7 +11,7 @@
 "tut_010","Donate Energy","Their Energy bar has gone up! Great sponsoring!","team-energy-bar-container","info","none","bottom"
 "tut_011","Join Fan Club","Now let's spend 1 Energy to join this team's Fan Club!","fan-club-button","action","fan-club-button","bottom"
 "tut_012","Join Fan Club","Joining a fan club gives you special access to a secret fan club chat channel. It also unlocks Gifting.","image-box","info","none","top"
-"tut_013","Upgrade Team","Giving a Gift to a team unlocks backstory in the team profile, plus awards you bonus Bonds the next time you Sponsor to this team. Spend 1 Energy on an Upgrade now.","upgrade-button","action","upgrade-button","bottom"
+"tut_013","Upgrade Team","Giving a Gift to a team unlocks backstory in the team profile, plus awards you bonus Bonds the next time you Sponsor to this team. Spend 1 Energy on an Gift now.","upgrade-button","action","upgrade-button","bottom"
 "tut_014","Upgrade Team","Bravo! Your Gift level now shows a 1 - this means you'll get +1 additional Bond the next time you Sponsor this team. ","image-box","info","none","top"
 "tut_015","Backstory","Remember you also unlocked some juicy backstory - you can find it here in the team profile!","open-close-button","info","none","auto"
 "tut_016","Bonus Tickets","Let's use the Sponsor action two more times.","donate-button","action","upgrade-button,upgrade-button","auto"

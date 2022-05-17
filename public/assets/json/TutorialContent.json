@@ -110,7 +110,7 @@
     {
         "id":  "tut_013",
         "title":  "Upgrade Team",
-        "content":  "Giving a Gift to a team unlocks backstory in the team profile, plus awards you bonus Bonds the next time you Sponsor to this team. Spend 1 Energy on an Upgrade now.",
+        "content":  "Giving a Gift to a team unlocks backstory in the team profile, plus awards you bonus Bonds the next time you Sponsor to this team. Spend 1 Energy on an Gift now.",
         "element_id":  "upgrade-button",
         "type":  "action",
         "button":  "upgrade-button",
