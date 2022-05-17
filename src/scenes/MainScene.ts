@@ -239,12 +239,12 @@ export default class MainScene extends Phaser.Scene {
   SetResizeListener()
   {
     this.storeHeightSize = window.innerHeight;
-    console.log("STORED HEIGHT::: " + this.storeHeightSize); 
+    //Kconsole.log("STORED HEIGHT::: " + this.storeHeightSize); 
 
     window.addEventListener("resize", (e) => {
       var deviceType = this.GetDeviceType();
       var newHeight = window.innerHeight;
-      console.log("STORED HEIGHT::: " + this.storeHeightSize + " NEW HEIGHT::: " + newHeight);
+      //Kconsole.log("STORED HEIGHT::: " + this.storeHeightSize + " NEW HEIGHT::: " + newHeight);
       switch(deviceType)
       {
         case "tablet":
@@ -253,7 +253,7 @@ export default class MainScene extends Phaser.Scene {
           {
             if(newHeight < this.storeHeightSize-40)
             {
-              console.log("turn on keyboard");
+              //Kconsole.log("turn on keyboard");
               document.documentElement.style.setProperty('overflow', 'auto'); 
               const metaViewport = document.querySelector('meta[name=viewport]') as Element;
               metaViewport.setAttribute('content', 'height=' + this.height + 'px, width=device-width, initial-scale=1.0');
@@ -266,7 +266,7 @@ export default class MainScene extends Phaser.Scene {
           {
             if(newHeight > this.storeHeightSize+40)
             {
-              console.log("turn off keyboard");
+              //Kconsole.log("turn off keyboard");
               const metaViewport = document.querySelector('meta[name=viewport]') as Element;
               metaViewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0');
               this.footer.setVisible(true);
@@ -276,7 +276,7 @@ export default class MainScene extends Phaser.Scene {
           }
           break;
         case "desktop": 
-          console.log("desktop");
+          //Kconsole.log("desktop");
           break;
       }
     });
@@ -293,7 +293,7 @@ export default class MainScene extends Phaser.Scene {
         var playeriFrame = document.querySelectorAll('iframe')[0];
         this.videoPlayerContainer.append(playeriFrame);
       }).on('statechange', () => {
-        console.log("video state" + this.rexVideoPlayer.videoState);
+        //Kconsole.log("video state" + this.rexVideoPlayer.videoState);
       }
       );
     //this.rexVideoPlayer.
@@ -367,7 +367,7 @@ export default class MainScene extends Phaser.Scene {
   {
     var { width, height } = this.sys.game.canvas;
     this.SetResizeListener();
-    console.log('load Main Scene');
+    //Kconsole.log('load Main Scene');
     this.logo = this.add.image(width / 2, height / 2 - 200, 'logo');
     this.logo.scale = Math.min(((0.8 * width) / 512), 1.5);
     this.IS_TOUCH = 0;
@@ -409,12 +409,12 @@ export default class MainScene extends Phaser.Scene {
 
   SetupLeaderboardForMouse() {
     /* this.leaderboardHeaderButton.addEventListener("mousedown", () => {
-      console.log("mousedown");
+      //Kconsole.log("mousedown");
       addEventListener("mousemove", this.onDrag);
     });
 
     addEventListener("mouseup", () => {
-      console.log("mouseup");
+      //Kconsole.log("mouseup");
       removeEventListener("mousemove", this.onDrag);
       this.SetPositionOfLeaderBoardAndSlideDownButton();
     }); */
@@ -433,7 +433,7 @@ export default class MainScene extends Phaser.Scene {
 
 
   onFirstMouseDown(e: MouseEvent) {
-    /* console.log("touch = " + this.IS_TOUCH);
+    /* //Kconsole.log("touch = " + this.IS_TOUCH);
 
     this.IS_TOUCH = 1 as number;
     this.SetupLeaderboardForMouse(); */
@@ -465,14 +465,14 @@ export default class MainScene extends Phaser.Scene {
     this.leaderboardHeaderButton.onclick = () => {
 
       if (!this.leaderboardIsOpen) {
-        console.log("OpenTheLeaderBoard");
+        //Kconsole.log("OpenTheLeaderBoard");
         this.audioManager.PlayOneshot(AudioManager.sfx_open);
         this.leaderboardPage.setY(this.height / 2);
         this.leaderboardHeaderButton.style.top = "calc(100vh - 260px)";
         this.leaderboardIsOpen = true;
       }
       else {
-        console.log("CloseTheLeaderboard");
+        //Kconsole.log("CloseTheLeaderboard");
         this.audioManager.PlayOneshot(AudioManager.sfx_close);
         this.leaderboardPage.setY(-10000);
         this.leaderboardHeaderButton.style.top = "0px";
@@ -485,14 +485,14 @@ export default class MainScene extends Phaser.Scene {
     this.leaderboardHeaderButton.onclick = () => {
 
       if (!this.leaderboardIsOpen) {
-        console.log("OpenTheLeaderBoard");
+        //Kconsole.log("OpenTheLeaderBoard");
         this.audioManager.PlayOneshot(AudioManager.sfx_open);
         this.leaderboardPage.setY(this.height / 2);
         this.leaderboardHeaderButton.style.top = "calc(100vh - 260px)";
         this.leaderboardIsOpen = true;
       }
       else {
-        console.log("CloseTheLeaderboard");
+        //Kconsole.log("CloseTheLeaderboard");
         this.audioManager.PlayOneshot(AudioManager.sfx_close);
         this.leaderboardPage.setY(-10000);
         this.leaderboardHeaderButton.style.top = "0px";
@@ -502,17 +502,17 @@ export default class MainScene extends Phaser.Scene {
   }
 
   SetPositionOfLeaderBoardAndSlideDownButton() {
-    console.log("leaderboard is open? " + this.leaderboardIsOpen + ", Y? " + this.storeMouseYPosition + ", Height? " + this.height);
+    //Kconsole.log("leaderboard is open? " + this.leaderboardIsOpen + ", Y? " + this.storeMouseYPosition + ", Height? " + this.height);
     if (!this.leaderboardIsOpen) {
       //if (this.storeMouseYPosition > this.height / 2) {
-        console.log("OpenTheLeaderBoard");
+        //Kconsole.log("OpenTheLeaderBoard");
         this.audioManager.PlayOneshot(AudioManager.sfx_open);
         this.leaderboardPage.setY(this.height / 2 - 16);
         this.leaderboardHeaderButton.style.top = "calc(100vh - 258px)";
         this.leaderboardIsOpen = true;
       /* }
       else {
-        console.log("KeepClosed");
+        //Kconsole.log("KeepClosed");
         this.leaderboardPage.setY(-10000);
         this.leaderboardHeaderButton.style.top = "0px";
         this.leaderboardIsOpen = false;
@@ -520,13 +520,13 @@ export default class MainScene extends Phaser.Scene {
     }
     else {
       /* if (this.storeMouseYPosition > this.height / 2) {
-        console.log("KeepOpen");
+        //Kconsole.log("KeepOpen");
         this.leaderboardPage.setY(this.height / 2 - 16);
         this.leaderboardHeaderButton.style.top = "calc(100vh - 258px)";
         this.leaderboardIsOpen = true;
       }
       else { */
-        console.log("CloseTheLeaderboard");
+        //Kconsole.log("CloseTheLeaderboard");
         this.audioManager.PlayOneshot(AudioManager.sfx_close);
         this.leaderboardPage.setY(-10000);
         this.leaderboardHeaderButton.style.top = "0px";
@@ -541,7 +541,7 @@ export default class MainScene extends Phaser.Scene {
     this.leaderboardHeaderButton.style.top = `${event.clientY - 112}px`;
     this.leaderboardPage.setY(event.clientY - this.leaderboardPage.height / 2);
     this.storeMouseYPosition = event.clientY;
-    console.log("drag " + event.clientY);
+    //Kconsole.log("drag " + event.clientY);
   }
 
   previousTouch!: Touch;
@@ -582,7 +582,7 @@ export default class MainScene extends Phaser.Scene {
     if(this.emailQueryVar == null || this.emailQueryVar == undefined || this.emailQueryVar == "")
     {
       this.hasValidActivationCode = false;
-      console.log("no email value");
+      //Kconsole.log("no email value");
     }
     else
     {
@@ -606,7 +606,7 @@ export default class MainScene extends Phaser.Scene {
           var emailJson = {"email": this.emailQueryVar} as object;
           await localStorage.setItem("storeEmail", JSON.stringify(emailJson));
           this.hasValidActivationCode = true;
-          console.log("have an email value");
+          //Kconsole.log("have an email value");
         }  
       }
       else
@@ -614,7 +614,7 @@ export default class MainScene extends Phaser.Scene {
         if(this.emailQueryVar == storeEmail["email"] as string)
         {
           this.hasValidActivationCode = false;
-          console.log("have previous email");
+          //Kconsole.log("have previous email");
         }
         else
         {
@@ -623,7 +623,7 @@ export default class MainScene extends Phaser.Scene {
             var emailJson = {"email": this.emailQueryVar} as object;
             await localStorage.setItem("storeEmail", JSON.stringify(emailJson));
             this.hasValidActivationCode = true;
-            console.log("have an email value");
+            //Kconsole.log("have an email value");
           }  
         }
       }
@@ -639,28 +639,28 @@ export default class MainScene extends Phaser.Scene {
       // do you have a device id?
       try {
         const key = await localStorage.getItem('deviceId');
-        console.log("deviceId: " + key);
+        //Kconsole.log("deviceId: " + key);
         const value = JSON.parse(key as string);
   
         if (value !== null){
           this.storeDeviceId = value.deviceId as string;
           this.hasValidStoredDeviceId = true;
-          console.log("I have a valid device id");
+          //Kconsole.log("I have a valid device id");
         }
         else
         {
-          console.log("I DON'T have a valid device id");
+          //Kconsole.log("I DON'T have a valid device id");
           this.hasValidStoredDeviceId = false;
         }
       }
       catch (error) {
-        console.log("An error occurred: %o", error);
+        //Kconsole.log("An error occurred: %o", error);
       }
     }
 
     if(!this.hasValidStoredDeviceId && !this.hasValidActivationCode)
     {
-      console.log("I DON'T have a valid device id or a valid activation code");
+      //Kconsole.log("I DON'T have a valid device id or a valid activation code");
       this.ShowLandingPage();
       return;
     }
@@ -673,7 +673,7 @@ export default class MainScene extends Phaser.Scene {
     await this.delay(1200);
     this.localState.UpdateAppState(AppState.CurtainsOpen);
 
-    //console.log(this.cache.json);1
+    ////Kconsole.log(this.cache.json);1
     this.width = this.sys.game.canvas.width;
     this.height = this.sys.game.canvas.height;
 
@@ -733,6 +733,7 @@ export default class MainScene extends Phaser.Scene {
 
     this.header = this.add.dom(this.width / 2, 55, Header(headerFontClasses, headerCountPadding) as HTMLElement);
     this.footer = this.add.dom(this.width / 2, 55, Footer() as HTMLElement);
+
     this.header.depth = this.depthLayers["headerFooter"];
     this.footer.depth = this.depthLayers["headerFooter"];
 
@@ -992,7 +993,7 @@ export default class MainScene extends Phaser.Scene {
 
     var firstTimeTodayOpen = this.parsedUserStorage["firstVisitTodayWithCurtainsOpen"];
     if (firstTimeTodayOpen) {
-      console.log("firstVisitTodayWithCurtainsOpen");
+      //Kconsole.log("firstVisitTodayWithCurtainsOpen");
       await this.CallNotificationsForTheDay();
     }
   }
@@ -1049,7 +1050,7 @@ export default class MainScene extends Phaser.Scene {
   async CallNotificationsForTheDay() {
     var todaysNotifications = this.staticData.notifications.filter(p => p.round == this.localState.round);
     todaysNotifications = todaysNotifications.filter(p => p.type == "arrivetoday");
-    console.log("**** round: " + this.localState.round + " todaysnotifications: " + todaysNotifications.length);
+    //Kconsole.log("**** round: " + this.localState.round + " todaysnotifications: " + todaysNotifications.length);
 
     var orderedNotifications = todaysNotifications.sort(
       (notificationA, notificationB) => {
@@ -1061,11 +1062,11 @@ export default class MainScene extends Phaser.Scene {
     
     orderedNotifications.forEach(
       (notification) => {
-        console.log("notification: " + notification.id);
+        //Kconsole.log("notification: " + notification.id);
         var seen = notificationsState[notification.id]["seen"];
         if (seen == false) {
           this.dailyNotificationTotal++;
-          console.log("****2");
+          //Kconsole.log("****2");
           this.QueueNotificationHome(notification.id);
         }
       }
@@ -1075,7 +1076,7 @@ export default class MainScene extends Phaser.Scene {
 
   async DisplayQueuedNotification(delay: number) {
     if (this.queuedNotificationList.length > 0) {
-      console.log("****3");
+      //Kconsole.log("****3");
       var id = this.queuedNotificationList[0];
       await this.delay(delay);
       this.DisplayNotificationHome(id);
@@ -1208,7 +1209,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   SetOverlayProgress(value: number, maxValue: number) {
-    console.log("progress: " + value + " " + maxValue);
+    //Kconsole.log("progress: " + value + " " + maxValue);
     var normalisedValue = Math.floor(value / maxValue * 100).toString();
     this.overlayProgressBar.value = normalisedValue;
   }
@@ -1254,8 +1255,8 @@ export default class MainScene extends Phaser.Scene {
     {
       this.session = await this.client.authenticateEmail(this.emailQueryVar, this.activationCodeQueryVar); //username already set by dotnet client
       deviceId = Phaser.Utils.String.UUID() as string;
-      console.log("give me device id :" + deviceId);
-      console.log("made it to here");
+      //Kconsole.log("give me device id :" + deviceId);
+      //Kconsole.log("made it to here");
       var link = await this.client.linkDevice(this.session, {id: deviceId});
       newUserStorage = true;
       var emailJson = {"email": this.emailQueryVar} as object;
@@ -1267,11 +1268,11 @@ export default class MainScene extends Phaser.Scene {
       deviceId = this.storeDeviceId;
       try
       {
-        console.log("give me device id :" + deviceId);
+        //Kconsole.log("give me device id :" + deviceId);
         this.session = await this.client.authenticateDevice(deviceId, false);
       }
       catch(error){
-        console.log("error" + error);
+        //Kconsole.log("error" + error);
       }
       newUserStorage = false;
     }
@@ -1404,7 +1405,7 @@ export default class MainScene extends Phaser.Scene {
       this.staticData.notifications.forEach(
         (notification) => {
           if (notification.type == "arrivetoday") {
-            console.log(notification.id);
+            //Kconsole.log(notification.id);
             nTrig[notification.id] = { seen: false };
           }
         }
@@ -1439,9 +1440,9 @@ export default class MainScene extends Phaser.Scene {
       const nTrig = {};
       this.staticData.notifications.forEach(
         (notification) => {
-          console.log("createeach");
+          //Kconsole.log("createeach");
           if (notification.type == "arrivetoday") {
-            console.log("make notification: " + notification.id);
+            //Kconsole.log("make notification: " + notification.id);
             nTrig[notification.id] = { seen: false };
           }
         }
@@ -1528,7 +1529,7 @@ export default class MainScene extends Phaser.Scene {
             
             when: {
               show: async() => {
-                console.log("BARRRRRRRRGGGGGG");
+                //Kconsole.log("BARRRRRRRRGGGGGG");
                 const choiceOneTotal = (document.querySelector("#choice-one-total") as HTMLElement);
                 const choiceTwoTotal = (document.querySelector("#choice-two-total") as HTMLElement);
                 choiceOneTotal.style.display="none";
@@ -1542,7 +1543,7 @@ export default class MainScene extends Phaser.Scene {
             }
           });
         }
-        if(tutorialStep.id=="tut_014" || tutorialStep.id=="tut_012")
+        else if(tutorialStep.id=="tut_014" || tutorialStep.id=="tut_012")
         {
           this.tutorialTour.addStep({
             title: tutorialStep.title,
@@ -1564,7 +1565,7 @@ export default class MainScene extends Phaser.Scene {
             
             when: {
               show: async() => {
-                console.log("BARRRRRRRRGGGGGG");
+                //Kconsole.log("BARRRRRRRRGGGGGG");
                 const thing = (document.querySelector("#team-profile-scroll") as HTMLElement);
                 
                 await this.delay(300);
@@ -1649,12 +1650,12 @@ export default class MainScene extends Phaser.Scene {
   }
 
   async OnFocus() {
-    console.log("on focus");
+    //Kconsole.log("on focus");
     this.RefreshFromDynamicData();
   }
 
   async OnBlur() {
-    console.log("on blur");
+    //Kconsole.log("on blur");
   }
 
   async GetUserStorageData()
@@ -1935,11 +1936,11 @@ export default class MainScene extends Phaser.Scene {
 
     for(var i=0; i<6; i++)
     {
-      console.log("i: " + i);
+      //Kconsole.log("i: " + i);
       users.push(userChoices["users"][i]);
     }
 
-    console.log("**** json : " +parsedJson.globalCount);
+    //Kconsole.log("**** json : " +parsedJson.globalCount);
 
     var dynamicVotesStateData = new DynamicVoteScenarioState(
       parsedJson.id,
@@ -2100,7 +2101,7 @@ export default class MainScene extends Phaser.Scene {
     }
     
       var voteDynamicState = this.dynamicData.d_dynamicVoteOptionsState;
-      console.log("vote hyname : " + voteDynamicState.globalVotes);
+      //Kconsole.log("vote hyname : " + voteDynamicState.globalVotes);
       var userChoices = this.parsedUserStorage["dynamicVote"] as object;
 
       voteDynamicState.userVotes = userChoices["users"] as number[];
@@ -2209,6 +2210,13 @@ export default class MainScene extends Phaser.Scene {
       this.localState.roundEnergyRequirement);
   }
 
+  async DelayInteractivity(element : HTMLElement)
+  {
+    element.style.pointerEvents="none";
+    await this.delay(400);
+    element.style.pointerEvents="none";
+  }
+
   async ReloadLocalState() {
 
     var userDynamicFromLocal = this.dynamicData.dynamicUserState;
@@ -2273,7 +2281,7 @@ export default class MainScene extends Phaser.Scene {
     if(!finishedTutorial)
     {
       todaysScenario = this.staticData.voteScenarios.find(p=>p.id=="v_101");
-      console.log("LETS FIND TITLE " + todaysScenario["title"]);
+      //Kconsole.log("LETS FIND TITLE " + todaysScenario["title"]);
       todaysScenarioState = this.localState.voteStates.find(p=>p.id=="v_101");
     }
     else
@@ -2314,9 +2322,12 @@ export default class MainScene extends Phaser.Scene {
       this.voteChoiceTwoGlobal.innerHTML = "Total Votes: " + todaysScenarioState.choiceTwoVotesGlobal.toString();
 
       const choiceOneSubtractButton = voteScenario.querySelector('#' + "choiceOneSubtract") as HTMLElement;
-      choiceOneSubtractButton.onclick = async () => {
+      choiceOneSubtractButton.onclick = async (el) => {
         if (this.localState.HaveSpentSparksOnTodaysVote(0, this.tourActive)) {
+          
           this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
+          this.DelayInteractivity(el.currentTarget as HTMLElement);
+          
           todaysScenarioState.DecreaseVote(0);
           if(this.tourActive)
           {
@@ -2344,9 +2355,12 @@ export default class MainScene extends Phaser.Scene {
         }
       };
       const choiceOneAddButton = voteScenario.querySelector('#' + "choiceOneAdd") as HTMLElement;
-      choiceOneAddButton.onclick = async () => {
+      choiceOneAddButton.onclick = async (el) => {
         if (this.localState.HaveSparks()) {
+          
           this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
+          this.DelayInteractivity(el.currentTarget as HTMLElement);
+
           todaysScenarioState.IncreaseVote(0);
           if(this.tourActive)
           {
@@ -2379,9 +2393,12 @@ export default class MainScene extends Phaser.Scene {
         }
       };
       const choiceTwoSubtractButton = voteScenario.querySelector('#' + "choiceTwoSubtract") as HTMLElement;
-      choiceTwoSubtractButton.onclick = async () => {
+      choiceTwoSubtractButton.onclick = async (el) => {
         if (this.localState.HaveSpentSparksOnTodaysVote(1, this.tourActive)) {
+          
           this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
+          this.DelayInteractivity(el.currentTarget as HTMLElement);
+
           todaysScenarioState.DecreaseVote(1);
           
           if(this.tourActive)
@@ -2412,9 +2429,12 @@ export default class MainScene extends Phaser.Scene {
         }
       };
       const choiceTwoAddButton = voteScenario.querySelector('#' + "choiceTwoAdd") as HTMLElement;
-      choiceTwoAddButton.onclick = async () => {
+      choiceTwoAddButton.onclick = async (el) => {
         if (this.localState.HaveSparks()) {
+          
           this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
+          this.DelayInteractivity(el.currentTarget as HTMLElement);
+          
           todaysScenarioState.IncreaseVote(1);
           
           if(this.tourActive)
@@ -2484,7 +2504,7 @@ export default class MainScene extends Phaser.Scene {
         description: option.description 
       } as object;
       const createOption = VoteOption(optionData) as HTMLElement;
-      console.log(createOption);
+      //Kconsole.log(createOption);
       const optionTotalCount = createOption.querySelector("#total-count") as HTMLElement;
       const optionChoiceCount = createOption.querySelector("#choice-count") as HTMLElement;
       const optionChoiceSubtract = createOption.querySelector("#choice-subtract") as HTMLInputElement;
@@ -2561,7 +2581,7 @@ export default class MainScene extends Phaser.Scene {
     const upgradeLevel = currentTeam.upgradeLevel;
     if(upgradeLevel<=10)
     {
-      console.log(upgradeLevel);
+      //Kconsole.log(upgradeLevel);
       const storyAccordian = currentTeam.storyAccordianList[upgradeLevel-1];
       const textTag = storyAccordian.querySelector("#textTag") as HTMLElement;
       const mainButton = storyAccordian.querySelectorAll("#open-close-button")[0] as HTMLElement;
@@ -2730,6 +2750,8 @@ export default class MainScene extends Phaser.Scene {
 
   }
 
+  DisableAllInteractions
+
 /*   OrderLeaderboardAnimated() {
     this.localState.SetLeaderboardStatus();
     var rowBoundingBoxes = [] as DOMRect[];
@@ -2818,7 +2840,7 @@ export default class MainScene extends Phaser.Scene {
             const team = (el.currentTarget as HTMLElement).getAttribute("team") as string;
             const storyId = parseInt((el.currentTarget as HTMLElement).getAttribute("story") as string);
             const upgradeLevel = this.localState.teamStates.find(p=>p.id == team)?.upgradeLevel as number;
-            console.log("team - " + team + ", story id -"+ + ", isStoryUnlocked - " + upgradeLevel);
+            //Kconsole.log("team - " + team + ", story id -"+ + ", isStoryUnlocked - " + upgradeLevel);
             if (upgradeLevel >= storyId) {
               if (collapsibleMessage.style.maxHeight) {
                 this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
@@ -2866,10 +2888,12 @@ export default class MainScene extends Phaser.Scene {
         this.CheckIfOutOfPointsUI(donateButton, upgradeButton, fanClubButton, k);
 
         k++;
-        donateButton.onclick = async () => {
+        donateButton.onclick = async (el) => {
           if (this.localState.SpendActionPointOnDonation()) {
-            this.audioManager.PlayOneshot(AudioManager.sfx_ui_accent);
             
+            this.audioManager.PlayOneshot(AudioManager.sfx_ui_accent);
+            this.DelayInteractivity(el.currentTarget as HTMLElement);
+
             this.localState.GainSparks(1 + this.localState.GetUpgradeLevel());
             this.localState.teamStates[this.localState.carouselPosition].DonateEnergy();
             this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
@@ -2927,9 +2951,11 @@ export default class MainScene extends Phaser.Scene {
           }
         }
 
-        fanClubButton.onclick = async () => {
+        fanClubButton.onclick = async (el) => {
           if (this.localState.SpendActionPointOnFanClub()) {
+            
             this.audioManager.PlayOneshot(AudioManager.sfx_ui_accent);
+            this.DelayInteractivity(el.currentTarget as HTMLElement);
 
             this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
 
@@ -2984,11 +3010,12 @@ export default class MainScene extends Phaser.Scene {
           }
         }
 
-        upgradeButton.onclick = async () => {
+        upgradeButton.onclick = async (el) => {
           if (this.localState.SpendActionPointOnUpgrade()) {
+            
             this.audioManager.PlayOneshot(AudioManager.sfx_ui_accent);
+            this.DelayInteractivity(el.currentTarget as HTMLElement);
 
-            console.log("upgrade");
             this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
             this.localState.UpgradeTeam(this.localState.currentTeamID);
             
@@ -3097,12 +3124,12 @@ export default class MainScene extends Phaser.Scene {
     const data = await localStorage.getItem(dict);
     if(data !== null || data !== undefined)
     {
-      console.log("read good");
+      //Kconsole.log("read good");
       const json = JSON.parse(data as string);
-      console.log("parse good");
+      //Kconsole.log("parse good");
       if(json !== null && json[key] !== null)
       {
-        console.log("parse good");
+        //Kconsole.log("parse good");
         return json[key] as object;
       }
       else return null;
@@ -3139,7 +3166,7 @@ export default class MainScene extends Phaser.Scene {
 
   
   async RefreshFromDynamicData() {
-    console.log("refresh");
+    //Kconsole.log("refresh");
 
     this.load.json('dynamicVoteOptions_content', '/assets/json/DynamicVoteOptions.json');
     this.dynamicVoteOptions_data = this.cache.json.get('dynamicVoteOptions_content') as object;
@@ -3173,9 +3200,9 @@ export default class MainScene extends Phaser.Scene {
         var count = 0;
         this.dynamicVoteChoicesHTML.forEach(
           (element)=>{
-            console.log("testig : " + count);
+            //Kconsole.log("testig : " + count);
             var voteVal = this.localState.dynamicVoteState.globalVotes[count];
-            console.log("voteVAL = " + this.localState.dynamicVoteState.globalVotes);
+            //Kconsole.log("voteVAL = " + this.localState.dynamicVoteState.globalVotes);
             element.optionTotalCount.innerHTML = "Total Votes: " + this.localState.dynamicVoteState.globalVotes[count].toString();
             element.optionCount.innerHTML = this.localState.dynamicVoteState.userVotes[count].toString();
             count++;
@@ -3342,7 +3369,7 @@ export default class MainScene extends Phaser.Scene {
       (team) => {
         var frontId = team.id + "_A";
         var backId = team.id + "_A_flipped";
-        console.log("frontid " + frontId + " backid" + backId);
+        //Kconsole.log("frontid " + frontId + " backid" + backId);
         data.faces?.push(CreateCard(this, 'atlas', frontId, 'atlas', backId));
       })*/
 
@@ -3504,7 +3531,7 @@ export default class MainScene extends Phaser.Scene {
         case "t_005": iconUrl = "icon_galaxy_bobbleon_transparent_36px.png"; break;
         case "t_006": iconUrl = "icon_galaxy_deepinnks_transparent_36px.png"; break;
       }
-      console.log("icon URL " + iconUrl);
+      //Kconsole.log("icon URL " + iconUrl);
       (this.avatarOverlay.getChildByID("galaxy-icon") as HTMLImageElement).src=this.whiteIconPath+iconUrl;
 
       await this.AnimateOverlayChange();
@@ -3574,7 +3601,7 @@ export default class MainScene extends Phaser.Scene {
     if (list.matches?.length == 1) {
       var match = list.matches[0];
       this.match = await socket.joinMatch(match.match_id);
-      console.log("match_id" + this.match.match_id);
+      //Kconsole.log("match_id" + this.match.match_id);
     }
     else {
       // TODO Activate rest/maintenance mode here
@@ -3584,21 +3611,21 @@ export default class MainScene extends Phaser.Scene {
 
   async DonateEnergyMatchState(socket: Socket, team_id: string) {
 
-    console.log("donate!!!! " + this.localState.teamStates[this.localState.carouselPosition].currentEnergy);
+    //Kconsole.log("donate!!!! " + this.localState.teamStates[this.localState.carouselPosition].currentEnergy);
 
     await socket.sendMatchState(this.match.match_id, 1, { "team_id": team_id }); //
   }
 
   async SentVoteMatchState(socket: Socket, scenarioId: string, choiceIndex: number, value: number) {
 
-    console.log("send vote!!!! " + scenarioId + " " + choiceIndex + " " + value);
+    //Kconsole.log("send vote!!!! " + scenarioId + " " + choiceIndex + " " + value);
 
     await socket.sendMatchState(this.match.match_id, 2, { "scenarioId": scenarioId, "option": choiceIndex, "votes": value, "dynamic": false}); //
   }
 
   async SendDynamicVoteMatchState(socket: Socket, scenarioId: string, choiceIndex: number, value: number) {
 
-    console.log("send vote!!!! " + scenarioId + " " + choiceIndex + " " + value);
+    //Kconsole.log("send vote!!!! " + scenarioId + " " + choiceIndex + " " + value);
 
     await socket.sendMatchState(this.match.match_id, 2, { "scenarioId": scenarioId, "option": choiceIndex, "votes": value, "dynamic": true }); //
   }
@@ -3611,10 +3638,10 @@ export default class MainScene extends Phaser.Scene {
           this.RefreshFromDynamicData();
           // this.localState.SetActionPointsToMax();
           // await this.WriteToDDMLocalStorage(["actionPoints"], [this.localState.maxActionPoints]);
-          console.log("User " + result.presence.username + " refreshed for a new round");
+          //Kconsole.log("User " + result.presence.username + " refreshed for a new round");
           break;
         case 1:
-          console.log("Received! " + content.team_id);
+          //Kconsole.log("Received! " + content.team_id);
           this.localState.GetCurrentTeamState().DonateEnergy();
           if (this.localState.currentTeamID == content.team_id) {
             this.SetOverlayProgress(this.localState.GetCurrentTeamState().currentEnergy, this.localState.roundEnergyRequirement);
@@ -3624,19 +3651,19 @@ export default class MainScene extends Phaser.Scene {
             this.SetTeamProfileProgress(teamState.currentEnergy, this.localState.roundEnergyRequirement, j);
           }
           this.UpdateLeaderboard();
-          console.log("User " + result.presence.username + " donated Energy to " + content);
+          //Kconsole.log("User " + result.presence.username + " donated Energy to " + content);
           break;
         case 2:
-          console.log("User " + result.presence.username + " spent Sparks on " + content);
+          //Kconsole.log("User " + result.presence.username + " spent Sparks on " + content);
           break;
         case 4:
-          console.log("User " + result.presence.username + " joined " + content + "s fan club");
+          //Kconsole.log("User " + result.presence.username + " joined " + content + "s fan club");
           break;
         case 5:
-          console.log("User " + result.presence.username + " upgraded " + content);
+          //Kconsole.log("User " + result.presence.username + " upgraded " + content);
           break;
         case 100:
-          console.log("Notification");
+          //Kconsole.log("Notification");
           if (this.receiveServerNotifications) {
             /* bulmaToast.toast(
               {
@@ -3707,7 +3734,7 @@ export default class MainScene extends Phaser.Scene {
         this.localState.NextNotificationHomeContent();
         content.innerHTML = "";
         content.prepend(this.localState.GetCurrentNotificationHomeContent());
-        console.log("buttontype " + notificationData.buttonType);   
+        //Kconsole.log("buttontype " + notificationData.buttonType);   
         if (this.localState.notificationHomeContentLength == 1) {
           nextButton.style.display = "none";
           if(closeButtonShow)
@@ -3745,7 +3772,7 @@ export default class MainScene extends Phaser.Scene {
               break;
 
             case "start_tutorial":
-            console.log("STARTTUTORIALBUTTON");  
+            //Kconsole.log("STARTTUTORIALBUTTON");  
             watchLatestVideoButton.style.display = "none";
               viewFanClubChat.style.display = "none";
               viewTodaysVoteButton.style.display = "none";
@@ -3785,6 +3812,11 @@ export default class MainScene extends Phaser.Scene {
 
         this.audioManager.PlayOneshot(AudioManager.sfx_notification);
         this.AnimateIconWobble();
+
+        if(!this.finishedTutorial)
+        {
+          document.body.classList.add('only-notification');
+        }
 
         nextButton.onclick = () => {
           this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
@@ -3871,7 +3903,7 @@ export default class MainScene extends Phaser.Scene {
           await this.CloseNotification(id);
         };
         watchLatestVideoButton.onclick = async () => {
-          //this.FadeOutDanceFloorAudio();
+          this.FadeOutDanceFloorAudio();
           await this.CloseNotification(id);
           var list = this.GetListOfActiveVideos();
           this.localState.LatestVideoContent(list.length);
@@ -3958,6 +3990,11 @@ export default class MainScene extends Phaser.Scene {
   }
 
   async CloseNotification(id: string) {
+    if(!this.finishedTutorial)
+    {
+      document.body.classList.remove('only-notification');
+    }
+
     this.notificationHome.setVisible(false);
     var notificationsState;
     if(this.finishedTutorial)
@@ -3968,7 +4005,7 @@ export default class MainScene extends Phaser.Scene {
     {
       notificationsState = (await this.ReadFromLocalStorage("ddm_localDataTutorial", "notificationsState") as object);
     }
-    //console.log("is this seen now?" + id + " : " + notificationsState[id].seen);
+    ////Kconsole.log("is this seen now?" + id + " : " + notificationsState[id].seen);
     const character = this.staticData.notifications.find(p => p.id == id)?.character as string;
     notificationsState[id] = {
       seen: true,
@@ -3985,7 +4022,7 @@ export default class MainScene extends Phaser.Scene {
     {
       await this.WriteToLocalStorage("ddm_localDataTutorial", ["notificationsState"], [notificationsState]);
     }
-    //console.log("is this seen now?" + id + " : " + notificationsState[id].seen);
+    ////Kconsole.log("is this seen now?" + id + " : " + notificationsState[id].seen);
     const type = this.staticData.notifications.find(p => p.id == id)?.type as string;
     if (type == "arrivetoday") {
       this.dailyNotificationCount++;
@@ -4028,7 +4065,7 @@ export default class MainScene extends Phaser.Scene {
     var joinedGroup = await client.joinGroup(session, groupId);
     console.info("Sent group join request", groupName);
     if (joinedGroup) {
-      console.log("Joined " + groupName);
+      //Kconsole.log("Joined " + groupName);
     }
 
     return groupId;
@@ -4052,7 +4089,7 @@ export default class MainScene extends Phaser.Scene {
     const persistence = true;
     const hidden = false;
     const response = await socket.joinChat(groupId, 3, persistence, hidden);
-    console.log("join chat: " + groupId + " response.id : " + response.id);
+    //Kconsole.log("join chat: " + groupId + " response.id : " + response.id);
   }
 
   GetKeyByValue(object, value) {
@@ -4117,7 +4154,7 @@ export default class MainScene extends Phaser.Scene {
         else
         {
           var number = parseInt(avatarUrl.split("=")[1] as string);
-          console.log("number " + number);            
+          //Kconsole.log("number " + number);            
           var hexColor = "#" + this.staticData.colours[number].hexCode;
           styleString = "background-color: " + hexColor + ";";
         }
@@ -4163,8 +4200,8 @@ export default class MainScene extends Phaser.Scene {
     };
 
     /* socket.onchannelmessage = async (message) => {
-      console.log("Received a message on channel: %o", message.channel_id);
-      console.log("Message content: %o", message.content);
+      //Kconsole.log("Received a message on channel: %o", message.channel_id);
+      //Kconsole.log("Message content: %o", message.content);
       this.anotherTextElement.innerHTML = message.content.message;
 
       var account = await this.client.getUsers(this.session, [message.sender_id]);
@@ -4186,7 +4223,7 @@ export default class MainScene extends Phaser.Scene {
     this.chatSubmitButton.onclick = () => {
       var message = this.messageInput.value;
       this.audioManager.PlayOneshot(AudioManager.sfx_ui_accent_2);
-      console.log("text " + message);
+      //Kconsole.log("text " + message);
       if (message.length > 0) {
         var channelId = this.localState.GetCurrentChatChannelGroupId();
         this.SendChatMessage(socket, "3." + channelId + "..", message);
@@ -4204,7 +4241,7 @@ export default class MainScene extends Phaser.Scene {
   async CreateUserList(list: ChannelMessage[]) {
     var userList = {};
     list.forEach(async (message) => {
-      //console.log("message time: " + new Date(message.create_time as string).toUTCString());
+      ////Kconsole.log("message time: " + new Date(message.create_time as string).toUTCString());
       var account = await this.client.getUsers(this.session, [message.sender_id as string]);
       var users = account.users as User[];
       var avatarUrl = users[0].avatar_url as string;
@@ -4235,11 +4272,11 @@ export default class MainScene extends Phaser.Scene {
     Object.keys(notificationsState).forEach(
       (key) => {
         if (notificationsState[key]["seen"] == true) {
-          console.log("key " + key);
+          //Kconsole.log("key " + key);
           notificationsSeen.push(key)
         }
         else {
-          console.log("no key " + notificationsState[key]["seen"]);
+          //Kconsole.log("no key " + notificationsState[key]["seen"]);
         }
       }
     );
@@ -4249,7 +4286,7 @@ export default class MainScene extends Phaser.Scene {
     notificationsSeen.forEach(
       (key) => {
         var data = notificationsState[key];
-        console.log("data ID " + key + " " + data.userId);
+        //Kconsole.log("data ID " + key + " " + data.userId);
         const id = key; //it is there
         const createdAt = data.createdAt; //it is there
         const userId = data.userId;
@@ -4273,18 +4310,18 @@ export default class MainScene extends Phaser.Scene {
     var forward = true;
     var channelId = "3." + this.localState.chatChannels[chatId] + "..";
     this.localState.chatChannels
-    console.log(chatId + ": " + this.localState.chatChannels[chatId]);
+    //Kconsole.log(chatId + ": " + this.localState.chatChannels[chatId]);
     
     var allMessages : ChannelMessage[] = [];
     
     var accumulateMesages = async (cursor, channelId) => {
       
-      console.log("cursor-----" + cursor + "-------");
+      //Kconsole.log("cursor-----" + cursor + "-------");
       var result = await this.client.listChannelMessages(this.session, channelId, 100, true, cursor);
       
       allMessages = allMessages.concat(result.messages as ChannelMessage[]);
 
-      console.log("acc" + allMessages.length);
+      //Kconsole.log("acc" + allMessages.length);
       if (result.next_cursor==undefined) {
         return;
       }
@@ -4299,28 +4336,28 @@ export default class MainScene extends Phaser.Scene {
     var cached_cursor = result.cacheable_cursor as string;
     
     allMessages = allMessages.concat(result.messages as ChannelMessage[]);
-    console.log("accum + " + allMessages.length);
-    console.log("cached 1   : " + cached);
-    console.log("cached_cursor 1   : " + cached_cursor);
+    //Kconsole.log("accum + " + allMessages.length);
+    //Kconsole.log("cached 1   : " + cached);
+    //Kconsole.log("cached_cursor 1   : " + cached_cursor);
 
     var result = await this.client.listChannelMessages(this.session, channelId, 100, forward, cached);
     var cached = result.next_cursor;
     var cached_cursor = result.cacheable_cursor as string;
     
     allMessages = allMessages.concat(result.messages as ChannelMessage[]);
-    console.log("accum + " + allMessages.length);
-    console.log("cached 1   : " + cached);
-    console.log("cached_cursor 1   : " + cached_cursor); */
+    //Kconsole.log("accum + " + allMessages.length);
+    //Kconsole.log("cached 1   : " + cached);
+    //Kconsole.log("cached_cursor 1   : " + cached_cursor); */
     
     
 
     if (allMessages.length != 0) {
       var messages = allMessages as ChannelMessage[];
-      console.log(messages[0].create_time + " message made, converted is  : " + new Date(messages[0].create_time as string).toUTCString());
+      //Kconsole.log(messages[0].create_time + " message made, converted is  : " + new Date(messages[0].create_time as string).toUTCString());
     }
     else
     {
-      console.log("empty");
+      //Kconsole.log("empty");
     }
 
 
@@ -4335,7 +4372,7 @@ export default class MainScene extends Phaser.Scene {
       storeUserDetails = await this.CreateUserList(allMessages);
       if (chatId == "c_001") {
 
-        console.log("notifications!!!!!!!!!!!!!");
+        //Kconsole.log("notifications!!!!!!!!!!!!!");
         input.style.visibility="hidden";
         
         var list = await this.GenerateNotificationChannelMessages();
@@ -4366,7 +4403,7 @@ export default class MainScene extends Phaser.Scene {
       allMessages.forEach(async (message) => {
         switch (message.code) {
           case 0:
-            //console.log("Message has id %o and content" + message.content, message.message_id);
+            ////Kconsole.log("Message has id %o and content" + message.content, message.message_id);
 
             let getMessage: any = {};
             getMessage = message.content;
@@ -4374,7 +4411,7 @@ export default class MainScene extends Phaser.Scene {
 
             var username = storeUserDetails[message.sender_id as string].username as string;
             var styleString = "";
-            //console.log("username : : " + username);
+            ////Kconsole.log("username : : " + username);
             if(this.CharacterUsernameCheck(username))
             {
               styleString = "background-color: " + "#000000" + ";";
@@ -4444,20 +4481,20 @@ export default class MainScene extends Phaser.Scene {
         }
       });
 
-      console.log("messages loaded");
+      //Kconsole.log("messages loaded");
     }
   }
 
 
   GetTime(date: string) {
     var timeago = humanized_time_span(date);
-    //console.log("Time ago: " + date + " " + timeago);
+    ////Kconsole.log("Time ago: " + date + " " + timeago);
     return timeago;
   }
 
   /* GetTime(date: string) {
     var timeago = humanized_time_span(date);
-    console.log("Time ago: " + timeago);
+    //Kconsole.log("Time ago: " + timeago);
     return timeago;
   } */
 

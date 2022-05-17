@@ -2,6 +2,14 @@
 @import "../node_modules/@creativebulma/bulma-divider";
 
 
+body.only-notification * {
+	pointer-events: none;
+}
+  
+body.only-notification .notification-home * {
+	pointer-events: all;
+}
+
 @font-face {
 	font-family: "Pixellari";
 	src: url('../fonts/Pixellari.ttf') format('truetype');

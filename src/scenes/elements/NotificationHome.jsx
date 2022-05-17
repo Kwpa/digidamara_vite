@@ -2,7 +2,7 @@ import { h } from 'start-dom-jsx';
 
 const NotificationHome = (notification, imageURL) => {
   return (
-    <div class="notification-home">
+    <div id="notification-home-mask" class="notification-home">
       <div class="notification-top has-background-dark">
         <div id="notification-character" class="notification-left has-text-white">
           {notification.character}

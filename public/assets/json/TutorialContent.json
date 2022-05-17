@@ -136,7 +136,7 @@
     },
     {
         "id":  "tut_016",
-        "title":  "Bonus Tickets",
+        "title":  "Bonus Bonds",
         "content":  "Let\u0027s use the Sponsor action two more times.",
         "element_id":  "donate-button",
         "type":  "action",
@@ -145,7 +145,7 @@
     },
     {
         "id":  "tut_017",
-        "title":  "Bonus Tickets",
+        "title":  "Bonus Bonds",
         "content":  "Nice, our Bond count went up by 2 each time! Warning: you WON\u0027T get Bonds for the Give a Gift action until you Sponsor!",
         "element_id":  "sparks-value",
         "type":  "info",

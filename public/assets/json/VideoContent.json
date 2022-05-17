@@ -9,7 +9,7 @@
         "id":  "vc_002",
         "title":  "Day One Roundup",
         "youtubeId":  "6GtO96nEbXI",
-        "active":  "TRUE"
+        "active":  "FALSE"
     },
     {
         "id":  "vc_003",
@@ -25,7 +25,7 @@
     },
     {
         "id":  "vc_006",
-        "title":  "The Twist Video",
+        "title":  "Day Four Roundup",
         "youtubeId":  "_X3HzUjptvc",
         "active":  "FALSE"
     },
