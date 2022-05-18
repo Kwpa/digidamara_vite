@@ -1089,31 +1089,10 @@ export default class MainScene extends Phaser.Scene {
           (element as HTMLElement).style.display = "none";
         });
 
-      }
-      else if (this.localState.actionPoints == 0) {
-        donateButton.setAttribute("disabled", '');
-        fanClubButton.setAttribute("disabled", '');
-        upgradeButton.setAttribute("disabled", '');
+        (this.votePage.getChildByID("voting-scenario-hide") as HTMLElement).style.display="none";
+        (this.votePage.getChildByID("voting-scenario-col") as HTMLElement).style.display="block";
 
-        Array.from(tagsActive).forEach(element => {
-          (element as HTMLElement).style.display = "none";
-        });
 
-        Array.from(tagsNotEnoughAP).forEach(element => {
-          (element as HTMLElement).style.display = "block";
-        });
-
-        Array.from(tagsEliminated).forEach(element => {
-          (element as HTMLElement).style.display = "none";
-        });
-
-        Array.from(tagsRestMode).forEach(element => {
-          (element as HTMLElement).style.display = "none";
-        });
-
-        Array.from(tagsTeamEnergyBarFull).forEach(element => {
-          (element as HTMLElement).style.display = "none";
-        });
       }
       else if(this.localState.restMode)
       {
@@ -1140,6 +1119,39 @@ export default class MainScene extends Phaser.Scene {
         Array.from(tagsTeamEnergyBarFull).forEach(element => {
           (element as HTMLElement).style.display = "none";
         });
+
+        (this.votePage.getChildByID("voting-scenario-hide") as HTMLElement).style.display="block";
+        (this.votePage.getChildByID("voting-scenario-col") as HTMLElement).style.display="none";
+      }
+      else if (this.localState.actionPoints == 0) {
+        donateButton.setAttribute("disabled", '');
+        fanClubButton.setAttribute("disabled", '');
+        upgradeButton.setAttribute("disabled", '');
+
+        Array.from(tagsActive).forEach(element => {
+          (element as HTMLElement).style.display = "none";
+        });
+
+        Array.from(tagsNotEnoughAP).forEach(element => {
+          (element as HTMLElement).style.display = "block";
+        });
+
+        Array.from(tagsEliminated).forEach(element => {
+          (element as HTMLElement).style.display = "none";
+        });
+
+        Array.from(tagsRestMode).forEach(element => {
+          (element as HTMLElement).style.display = "none";
+        });
+
+        Array.from(tagsTeamEnergyBarFull).forEach(element => {
+          (element as HTMLElement).style.display = "none";
+        });
+
+        const c = (this.votePage.getChildByID("voting-scenario-hide") as HTMLElement);
+        c.style.display="none";
+
+        (this.votePage.getChildByID("voting-scenario-col") as HTMLElement).style.display="block";
       }
       else {
         const curEnergy = this.localState.teamStates[currentTeam].currentEnergy;
@@ -1178,6 +1190,10 @@ export default class MainScene extends Phaser.Scene {
             (element as HTMLElement).style.display = "none";
           });
         }
+
+        const c = (this.votePage.getChildByID("voting-scenario-hide") as HTMLElement);
+        c.style.display="none";
+        (this.votePage.getChildByID("voting-scenario-col") as HTMLElement).style.display="block";
 
         fanClubButton.removeAttribute("disabled");
         upgradeButton.removeAttribute("disabled");
@@ -1577,10 +1593,10 @@ export default class MainScene extends Phaser.Scene {
       this.tourActive = true;
       await this.GetLatestDynamicDataTutorial();
       await this.SetupLocalStateTutorial(username);
+      await this.SetupVotePage(false);
       await this.SetupTeamProfiles(false);
       this.SetupLeaderboard();
       await this.SetupTeamAvatars();
-      await this.SetupVotePage(false);
       await this.SetupChatChannelsAndPages(false);
 
       this.localState.SetActionPointsToMax();
@@ -1648,10 +1664,10 @@ export default class MainScene extends Phaser.Scene {
       }
   
       await this.SetupChatChannelsAndPages(true);
+      await this.SetupVotePage(true);
       await this.SetupTeamProfiles(true);
       this.SetupLeaderboard();
       await this.SetupTeamAvatars();
-      await this.SetupVotePage(true);
   
       await this.JoinMatch(this.socket);
       await this.ReceiveMatchState(this.socket);

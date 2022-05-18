@@ -92,6 +92,11 @@ iframe {
 	padding: 20px 20px 20px 20px;
 }
 
+.voting-scenario-hide
+{
+	display: block;
+}
+
 .video-player-buttons
 {
 	margin-top: 15px;

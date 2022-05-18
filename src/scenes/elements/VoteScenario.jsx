@@ -9,7 +9,10 @@ const VoteScenario = (scenarioData, titleClasses="title is-size-3 has-text-white
           {scenarioData.description}
         </div>
       </div>
-      <div class='columns'>
+      <div id="voting-scenario-hide" class="box has-background-danger-light voting-scenario-hide">
+        Voting is disabled until teams are back on the dance floor - return at 3pm ADT to discover the results!
+      </div>
+      <div id="voting-scenario-col" class='columns'>
         <div class="column">
           <div class="box has-background-dark has-text-white">
             <h1><strong class="has-text-white">{scenarioData.choiceOne_title}</strong></h1>
