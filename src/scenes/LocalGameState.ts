@@ -59,7 +59,9 @@ export default class LocalGameState
     tutorialVariable_voteChoiceTwoCount: number = 0;
 
     restMode: boolean = false;
+    seenRestMode: boolean = false;
     endOfShow: boolean = false;
+    seenEndOfShow: boolean = false;
 
     appState!: AppState;
 
@@ -109,7 +111,7 @@ export default class LocalGameState
 
     UpdateAppStateFromDynamicData(dynamicData)
     {
-        this.restMode = dynamicData.endOfShow as boolean;
+        this.restMode = dynamicData.restMode as boolean;
         this.endOfShow = dynamicData.endOfShow as boolean;
         if(this.restMode)
         {

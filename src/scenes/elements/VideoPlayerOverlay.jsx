@@ -46,6 +46,28 @@ const VideoPlayerOverlay = (titleClasses="title is-size-3 has-text-black", avata
               </button>
             </div>
           </div>
+          <div class="level is-mobile end-of-show-video-player-buttons">
+            <div class="level-item">
+              <button id="credits-button" class="button is-primary">
+                Credits
+              </button>
+            </div>
+            <div class="level-item">
+              <button id="video-player-button-play" class="button is-warning">
+                Play
+              </button>
+            </div>
+            <div class="level-item">
+              <button id="video-player-button-pause" class="button is-warning">
+                Pause
+              </button>
+            </div>
+            <div class="level-item">
+              <button id="feedback-button" class="button is-primary">
+                Feedback
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

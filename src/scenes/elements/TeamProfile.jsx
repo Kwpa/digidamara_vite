@@ -76,6 +76,12 @@ const TeamProfile = (teamData, titleclasses="title is-size-3 has-text-black") =>
                       <div style="display: none;" class="tagsEliminated box has-background-danger-light">
                         <p>Team eliminated</p>
                       </div>
+                      <div style="display: none;" class="tagsTeamEnergyBarFull box has-background-danger-light">
+                        <p>This team now has full energy! You cannot give them any more.</p>
+                      </div>
+                      <div style="display: none;" class="tagsRestMode box has-background-danger-light">
+                        <p>Teams are in rest mode - actions are offline - return at 3pm ADT</p>
+                      </div>
                     </div>
                   
                   <div id="fan-club-container" class="actions-flex-item">
@@ -91,6 +97,9 @@ const TeamProfile = (teamData, titleclasses="title is-size-3 has-text-black") =>
                       </div>
                       <div style="display: none;" class="tagsEliminated box has-background-danger-light">
                         <p>Team eliminated</p>
+                      </div>
+                      <div style="display: none;" class="tagsRestMode box has-background-danger-light">
+                        <p>Teams are in rest mode - actions are offline - return at 3pm ADT</p>
                       </div>
                     </div>
                   
@@ -108,6 +117,9 @@ const TeamProfile = (teamData, titleclasses="title is-size-3 has-text-black") =>
                       </div>
                       <div style="display: none;" class="tagsEliminated box has-background-danger-light">
                         <p>Team eliminated</p>
+                      </div>
+                      <div style="display: none;" class="tagsRestMode box has-background-danger-light">
+                        <p>Teams are in rest mode - actions are offline - return at 3pm ADT</p>
                       </div>
                     </div>
                   

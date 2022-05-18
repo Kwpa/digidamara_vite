@@ -56,7 +56,7 @@
         "title":  "Break time with the Teams",
         "showTitle":  "TRUE",
         "showCloseButton":  "TRUE",
-        "content":  "Spectators: some teams are taking their obligatory short break. \nPlease tune into the universal signal if you have questions for them.",
+        "content":  "Spectators: some teams are taking their obligatory short break. \nPlease tune into the universal waveform if you have questions for them.",
         "encryption":  "0"
     },
     {
@@ -86,7 +86,7 @@
         "title":  "Break time with the Teams",
         "showTitle":  "TRUE",
         "showCloseButton":  "TRUE",
-        "content":  "Spectators: some teams are taking their obligatory short break. \nPlease tune into the universal signal if you have questions for them.",
+        "content":  "Spectators: some teams are taking their obligatory short break. \nPlease tune into the universal waveform if you have questions for them.",
         "encryption":  "0"
     },
     {
@@ -116,12 +116,12 @@
         "title":  "Break time with the Teams\n",
         "showTitle":  "TRUE",
         "showCloseButton":  "TRUE",
-        "content":  "Spectators: some teams are taking their obligatory short break. \nPlease tune into the universal signal if you have questions for them.",
+        "content":  "Spectators: some teams are taking their obligatory short break. \nPlease tune into the universal waveform if you have questions for them.",
         "encryption":  "0"
     },
     {
         "id":  "n_009",
-        "type":  "dynamic",
+        "type":  "endofday",
         "round":  "1",
         "order":  "0",
         "delay":  "1",
@@ -136,9 +136,9 @@
     },
     {
         "id":  "n_010",
-        "type":  "dynamic",
+        "type":  "endofday",
         "round":  "1",
-        "order":  "0",
+        "order":  "1",
         "delay":  "1",
         "buttonType":  "none",
         "character":  "SPACE STATION",
@@ -236,7 +236,7 @@
         "title":  "Break time with the teams",
         "showTitle":  "TRUE",
         "showCloseButton":  "TRUE",
-        "content":  "Spectators: some teams are taking their obligatory short break. \nPlease tune into the universal signal if you have questions for them.",
+        "content":  "Spectators: some teams are taking their obligatory short break. \nPlease tune into the universal waveform if you have questions for them.",
         "encryption":  "0"
     },
     {
@@ -266,12 +266,12 @@
         "title":  "Break time with the Teams",
         "showTitle":  "TRUE",
         "showCloseButton":  "TRUE",
-        "content":  "Spectators: some teams are taking their obligatory short break. \nPlease tune into the universal signal if you have questions for them.",
+        "content":  "Spectators: some teams are taking their obligatory short break. \nPlease tune into the universal waveform if you have questions for them.",
         "encryption":  ""
     },
     {
         "id":  "n_019",
-        "type":  "dynamic",
+        "type":  "endofday",
         "round":  "2",
         "order":  "0",
         "delay":  "1",
@@ -286,7 +286,7 @@
     },
     {
         "id":  "n_020",
-        "type":  "dynamic",
+        "type":  "endofday",
         "round":  "2",
         "order":  "1",
         "delay":  "1",
@@ -356,7 +356,7 @@
         "title":  "Break time with the Teams",
         "showTitle":  "TRUE",
         "showCloseButton":  "TRUE",
-        "content":  "Spectators: some teams are taking their obligatory short break. \nPlease tune into the universal signal if you have questions for them.",
+        "content":  "Spectators: some teams are taking their obligatory short break. \nPlease tune into the universal waveform if you have questions for them.",
         "encryption":  ""
     },
     {
@@ -386,7 +386,7 @@
         "title":  "Break time with the Teams",
         "showTitle":  "TRUE",
         "showCloseButton":  "TRUE",
-        "content":  "Spectators: some teams are taking their obligatory short break. \nPlease tune into the universal signal if you have questions for them.",
+        "content":  "Spectators: some teams are taking their obligatory short break. \nPlease tune into the universal waveform if you have questions for them.",
         "encryption":  ""
     },
     {
@@ -416,12 +416,12 @@
         "title":  "Break time with the Teams",
         "showTitle":  "TRUE",
         "showCloseButton":  "TRUE",
-        "content":  "Spectators: some teams are taking their obligatory short break. \nPlease tune into the universal signal if you have questions",
+        "content":  "Spectators: some teams are taking their obligatory short break. \nPlease tune into the universal waveform if you have questions",
         "encryption":  ""
     },
     {
         "id":  "n_029",
-        "type":  "dynamic",
+        "type":  "endofday",
         "round":  "3",
         "order":  "0",
         "delay":  "1",
@@ -436,7 +436,7 @@
     },
     {
         "id":  "n_30",
-        "type":  "dynamic",
+        "type":  "endofday",
         "round":  "3",
         "order":  "1",
         "delay":  "1",
@@ -506,7 +506,7 @@
         "title":  "Break time with the Teams",
         "showTitle":  "TRUE",
         "showCloseButton":  "TRUE",
-        "content":  "Spectators: some teams are taking their obligatory short break. \nPlease tune into the universal signal if you have questions for them.",
+        "content":  "Spectators: some teams are taking their obligatory short break. \nPlease tune into the universal waveform if you have questions for them.",
         "encryption":  ""
     },
     {
@@ -536,7 +536,7 @@
         "title":  "Break time with the Teams",
         "showTitle":  "TRUE",
         "showCloseButton":  "TRUE",
-        "content":  "Spectators: some teams are taking their obligatory short break. \nPlease tune into the universal signal if you have questions for them.",
+        "content":  "Spectators: some teams are taking their obligatory short break. \nPlease tune into the universal waveform if you have questions for them.",
         "encryption":  ""
     },
     {
@@ -566,12 +566,12 @@
         "title":  "Break time with the Teams",
         "showTitle":  "TRUE",
         "showCloseButton":  "TRUE",
-        "content":  "Spectators: some teams are taking their obligatory short break. \nPlease tune into the universal signal if you have questions for them.",
+        "content":  "Spectators: some teams are taking their obligatory short break. \nPlease tune into the universal waveform if you have questions for them.",
         "encryption":  ""
     },
     {
         "id":  "n_039",
-        "type":  "dynamic",
+        "type":  "endofday",
         "round":  "4",
         "order":  "0",
         "delay":  "1",
@@ -586,7 +586,7 @@
     },
     {
         "id":  "n_040",
-        "type":  "dynamic",
+        "type":  "endofday",
         "round":  "4",
         "order":  "1",
         "delay":  "1",
@@ -721,11 +721,11 @@
     },
     {
         "id":  "n_049",
-        "type":  "dynamic",
+        "type":  "endofshow",
         "round":  "5",
         "order":  "0",
         "delay":  "1",
-        "buttonType":  "none",
+        "buttonType":  "watch_latest_video",
         "character":  "THE PROMOTER",
         "iconPath":  "icon_promoter_transparent_36px.png",
         "title":  "FOILED!",
@@ -736,7 +736,7 @@
     },
     {
         "id":  "n_101",
-        "type":  "dynamic",
+        "type":  "tutorial",
         "round":  "0",
         "order":  "0",
         "delay":  "1",
@@ -751,7 +751,7 @@
     },
     {
         "id":  "n_102",
-        "type":  "dynamic",
+        "type":  "tutorial",
         "round":  "0",
         "order":  "1",
         "delay":  "1",

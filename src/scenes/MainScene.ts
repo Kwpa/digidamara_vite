@@ -172,7 +172,7 @@ export default class MainScene extends Phaser.Scene {
   storeMouseYPosition: number = 0;
   leaderboardIsOpen: boolean = false;
 
-  depthLayers: object = { gameLayer: 0, background: 0, foreground: 1, overlay: 2, slideDownPage: 3, headerFooter: 4, curtains: 4, slideDownButton: 5, notifications: 6, videoPlayer: 7 };
+  depthLayers: object = { gameLayer: 0, background: 0, foreground: 1, overlay: 2, slideDownPage: 3, headerFooter: 4, curtains: 4, slideDownButton: 5, blackout: 6, notifications: 7, videoPlayer: 8 };
 
   //avatarRenderTextures
   avatarRenderTextures;
@@ -868,71 +868,7 @@ export default class MainScene extends Phaser.Scene {
 
       this.audioManager.PlayOneshot(AudioManager.sfx_open);
 
-      var donateButton = this.teamProfilePages[this.localState.carouselPosition].getChildByID('donate-button') as HTMLInputElement;
-      var fanClubButton = this.teamProfilePages[this.localState.carouselPosition].getChildByID('fan-club-button') as HTMLInputElement;
-      var upgradeButton = this.teamProfilePages[this.localState.carouselPosition].getChildByID('upgrade-button') as HTMLInputElement;
-      var tagsActive = this.teamProfilePages[this.localState.carouselPosition].node.getElementsByClassName("tagsActive");
-      var tagsNotEnoughAP = this.teamProfilePages[this.localState.carouselPosition].node.getElementsByClassName("tagsNotEnoughAP");
-      var tagsEliminated = this.teamProfilePages[this.localState.carouselPosition].node.getElementsByClassName("tagsEliminated");
-
-      if (this.localState.GetCurrentTeamState().eliminated) {
-        donateButton.classList.remove("is-primary");
-        donateButton.classList.add("is-danger");
-        donateButton.setAttribute("disabled", '');
-        fanClubButton.classList.remove("is-primary");
-        fanClubButton.classList.add("is-danger");
-        fanClubButton.setAttribute("disabled", '');
-        upgradeButton.classList.remove("is-primary");
-        upgradeButton.classList.add("is-danger");
-        upgradeButton.setAttribute("disabled", '');
-
-        Array.from(tagsActive).forEach(element => {
-          (element as HTMLElement).style.display = "none";
-        });
-
-        Array.from(tagsNotEnoughAP).forEach(element => {
-          (element as HTMLElement).style.display = "none";
-        });
-
-        Array.from(tagsEliminated).forEach(element => {
-          (element as HTMLElement).style.display = "block";
-        });
-
-      }
-      else if (this.localState.actionPoints == 0) {
-        donateButton.setAttribute("disabled", '');
-        fanClubButton.setAttribute("disabled", '');
-        upgradeButton.setAttribute("disabled", '');
-
-        Array.from(tagsActive).forEach(element => {
-          (element as HTMLElement).style.display = "none";
-        });
-
-        Array.from(tagsNotEnoughAP).forEach(element => {
-          (element as HTMLElement).style.display = "block";
-        });
-
-        Array.from(tagsEliminated).forEach(element => {
-          (element as HTMLElement).style.display = "none";
-        });
-      }
-      else {
-        donateButton.removeAttribute("disabled");
-        fanClubButton.removeAttribute("disabled");
-        upgradeButton.removeAttribute("disabled");
-
-        Array.from(tagsActive).forEach(element => {
-          (element as HTMLElement).style.display = "block";
-        });
-
-        Array.from(tagsNotEnoughAP).forEach(element => {
-          (element as HTMLElement).style.display = "none";
-        });
-
-        Array.from(tagsEliminated).forEach(element => {
-          (element as HTMLElement).style.display = "none";
-        });
-      }
+      this.ShowCorrectInfo(this.localState.carouselPosition);
 
       this.tapAreaLeft.removeInteractive();
       this.tapAreaRight.removeInteractive();
@@ -1001,6 +937,145 @@ export default class MainScene extends Phaser.Scene {
       //Kconsole.log("firstVisitTodayWithCurtainsOpen");
       await this.CallNotificationsForTheDay();
     }
+  }
+
+  ShowCorrectInfo(currentTeam:number)
+  {
+      var donateButton = this.teamProfilePages[currentTeam].getChildByID('donate-button') as HTMLInputElement;
+      var fanClubButton = this.teamProfilePages[currentTeam].getChildByID('fan-club-button') as HTMLInputElement;
+      var upgradeButton = this.teamProfilePages[currentTeam].getChildByID('upgrade-button') as HTMLInputElement;
+      var tagsActive = this.teamProfilePages[currentTeam].node.getElementsByClassName("tagsActive");
+      var donateEnergyTagsActive = this.teamProfilePages[currentTeam].node.querySelector(".actions-flex-item .tagsActive") as HTMLElement;
+      var tagsNotEnoughAP = this.teamProfilePages[currentTeam].node.getElementsByClassName("tagsNotEnoughAP");
+      var tagsEliminated = this.teamProfilePages[currentTeam].node.getElementsByClassName("tagsEliminated");
+      var tagsTeamEnergyBarFull = this.teamProfilePages[currentTeam].node.getElementsByClassName("tagsTeamEnergyBarFull");
+      var tagsRestMode = this.teamProfilePages[currentTeam].node.getElementsByClassName("tagsRestMode");
+
+      if (this.localState.GetCurrentTeamState().eliminated) {
+        donateButton.classList.remove("is-primary");
+        donateButton.classList.add("is-danger");
+        donateButton.setAttribute("disabled", '');
+        fanClubButton.classList.remove("is-primary");
+        fanClubButton.classList.add("is-danger");
+        fanClubButton.setAttribute("disabled", '');
+        upgradeButton.classList.remove("is-primary");
+        upgradeButton.classList.add("is-danger");
+        upgradeButton.setAttribute("disabled", '');
+
+        Array.from(tagsActive).forEach(element => {
+          (element as HTMLElement).style.display = "none";
+        });
+        
+        Array.from(tagsNotEnoughAP).forEach(element => {
+          (element as HTMLElement).style.display = "none";
+        });
+        
+        Array.from(tagsEliminated).forEach(element => {
+          (element as HTMLElement).style.display = "block";
+        });
+        
+        Array.from(tagsRestMode).forEach(element => {
+          (element as HTMLElement).style.display = "none";
+        });
+
+        Array.from(tagsTeamEnergyBarFull).forEach(element => {
+          (element as HTMLElement).style.display = "none";
+        });
+
+      }
+      else if (this.localState.actionPoints == 0) {
+        donateButton.setAttribute("disabled", '');
+        fanClubButton.setAttribute("disabled", '');
+        upgradeButton.setAttribute("disabled", '');
+
+        Array.from(tagsActive).forEach(element => {
+          (element as HTMLElement).style.display = "none";
+        });
+
+        Array.from(tagsNotEnoughAP).forEach(element => {
+          (element as HTMLElement).style.display = "block";
+        });
+
+        Array.from(tagsEliminated).forEach(element => {
+          (element as HTMLElement).style.display = "none";
+        });
+
+        Array.from(tagsRestMode).forEach(element => {
+          (element as HTMLElement).style.display = "none";
+        });
+
+        Array.from(tagsTeamEnergyBarFull).forEach(element => {
+          (element as HTMLElement).style.display = "none";
+        });
+      }
+      else if(this.localState.restMode)
+      {
+        donateButton.setAttribute("disabled", '');
+        fanClubButton.setAttribute("disabled", '');
+        upgradeButton.setAttribute("disabled", '');
+
+        Array.from(tagsActive).forEach(element => {
+          (element as HTMLElement).style.display = "none";
+        });
+
+        Array.from(tagsNotEnoughAP).forEach(element => {
+          (element as HTMLElement).style.display = "none";
+        });
+
+        Array.from(tagsEliminated).forEach(element => {
+          (element as HTMLElement).style.display = "none";
+        });
+
+        Array.from(tagsRestMode).forEach(element => {
+          (element as HTMLElement).style.display = "block";
+        });
+
+        Array.from(tagsTeamEnergyBarFull).forEach(element => {
+          (element as HTMLElement).style.display = "none";
+        });
+      }
+      else {
+        const curEnergy = this.localState.teamStates[currentTeam].currentEnergy;
+        const enReq = this.localState.teamStates[currentTeam].energyRequirement;
+        
+        Array.from(tagsActive).forEach(element => {
+          (element as HTMLElement).style.display = "block";
+        });
+
+        Array.from(tagsNotEnoughAP).forEach(element => {
+          (element as HTMLElement).style.display = "none";
+        });
+
+        Array.from(tagsEliminated).forEach(element => {
+          (element as HTMLElement).style.display = "none";
+        });
+
+        Array.from(tagsRestMode).forEach(element => {
+          (element as HTMLElement).style.display = "none";
+        });
+
+        
+        if(curEnergy == enReq)
+        {
+          donateButton.setAttribute("disabled", '');
+          donateEnergyTagsActive.style.display="none";
+          Array.from(tagsTeamEnergyBarFull).forEach(element => {
+            (element as HTMLElement).style.display = "block";
+          });
+        }
+        else
+        {
+          donateButton.removeAttribute("disabled");
+          donateEnergyTagsActive.style.display="block";
+          Array.from(tagsTeamEnergyBarFull).forEach(element => {
+            (element as HTMLElement).style.display = "none";
+          });
+        }
+
+        fanClubButton.removeAttribute("disabled");
+        upgradeButton.removeAttribute("disabled");
+
+      }
   }
 
   ShowLandingPage()
@@ -2128,12 +2203,14 @@ export default class MainScene extends Phaser.Scene {
     if(appStateValue == 1)
     {
       // trigger rest mode
+      await this.TriggerRestMode();
+      await this.WriteToNakamaUserStorage(["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
     }
     else if(appStateValue == 2)
     {
-      // trigger end of show
       //this.SetPage("endOfShowVideoOverlay");
       //document.body.classList.add('only-end-of-show-player');
+      this.TriggerEndOfShow();
     }
     else
     {
@@ -2157,6 +2234,41 @@ export default class MainScene extends Phaser.Scene {
     this.SetOverlayProgress(
       this.localState.GetCurrentTeamState().currentEnergy,
       this.localState.roundEnergyRequirement);
+  }
+
+  async TriggerRestMode()
+  {
+    if(!this.localState.seenRestMode)
+    {
+      this.localState.seenRestMode = true;
+      console.log("REST MODE");
+      const queueNotifications = this.staticData.notifications.filter(p=>p.type=="endofday" && p.round==this.localState.round) as NotificationData[];
+      queueNotifications.forEach((not)=>
+      {
+        this.QueueNotificationHome(not.id);
+      });
+
+      
+      
+      await this.DisplayQueuedNotification(400);
+    }
+  }
+
+  TriggerEndOfShow()
+  {
+    if(!this.localState.seenEndOfShow)
+    {
+      console.log("THE END");
+      // trigger end of show
+      const blackout = this.add.dom(this.width/2, this.height/2,EndOfShow()as HTMLElement);
+      blackout.depth = this.depthLayers["blackout"];
+      
+      this.DisplayNotificationHome("n_049");
+    }
+    else
+    {
+
+    }
   }
 
   async SetupLocalStateTutorial(username: string) {
@@ -2278,16 +2390,19 @@ export default class MainScene extends Phaser.Scene {
     this.localState.dynamicVoteState.UpdateFromDynamicData(userChoices["users"], this.dynamicData.d_dynamicVoteOptionsState.globalVotes);
 
     const appStateValue = this.localState.UpdateAppStateFromDynamicData(roundDynamic); 
+    console.log("app State = " + appStateValue);
     if(appStateValue == 1)
     {
       // trigger rest mode
+      await this.TriggerRestMode();
+      await this.WriteToNakamaUserStorage(["energyRequirement", "round"], [this.localState.roundEnergyRequirement, this.localState.round]);
     }
     else if(appStateValue == 2)
     {
       // trigger end of show
       //this.SetPage("endOfShowVideoOverlay");
       //document.body.classList.add('only-end-of-show-player');
-
+      this.TriggerEndOfShow();
     }
     else
     {
@@ -2926,7 +3041,7 @@ export default class MainScene extends Phaser.Scene {
           upgradeBackground.style.display = "none";
           upgradeValue.style.display = "none";
         }
-        this.CheckIfOutOfPointsUI(donateButton, upgradeButton, fanClubButton, k);
+        this.ShowCorrectInfo(k);
 
         k++;
         donateButton.onclick = async (el) => {
@@ -2940,7 +3055,7 @@ export default class MainScene extends Phaser.Scene {
             this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
             this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
 
-            this.CheckIfOutOfPointsUI(donateButton, upgradeButton, fanClubButton, this.localState.carouselPosition);
+            this.ShowCorrectInfo(this.localState.carouselPosition);
 
             this.UpdateLeaderboard();
 
@@ -3029,7 +3144,7 @@ export default class MainScene extends Phaser.Scene {
             }
             //update UI
 
-            this.CheckIfOutOfPointsUI(donateButton, upgradeButton, fanClubButton, this.localState.carouselPosition);
+            this.ShowCorrectInfo(this.localState.carouselPosition);
 
             fanClubButtonContainer.style.display = "none";
             fanClubIcon.style.display = "block";
@@ -3073,7 +3188,7 @@ export default class MainScene extends Phaser.Scene {
               await this.WriteToNakamaUserStorage(["actionPoints", this.localState.currentTeamID + "UpgradeLevel"], [this.localState.actionPoints, this.localState.GetCurrentTeamState().upgradeLevel]);
             }
 
-            this.CheckIfOutOfPointsUI(donateButton, upgradeButton, fanClubButton, this.localState.carouselPosition);
+            this.ShowCorrectInfo(this.localState.carouselPosition);
 
             //update UI   
             upgradeValue.innerHTML = this.localState.GetCurrentTeamState().upgradeLevel.toString();
@@ -3106,27 +3221,8 @@ export default class MainScene extends Phaser.Scene {
     }
   }
 
-  CheckIfOutOfPointsUI(donateButton, fanClubButton, upgradeButton, index: number) {
-    var tagsActive = this.teamProfilePages[index].node.getElementsByClassName("tagsActive");
-    var tagsNotEnoughAP = this.teamProfilePages[index].node.getElementsByClassName("tagsNotEnoughAP");
-    var tagsEliminated = this.teamProfilePages[index].node.getElementsByClassName("tagsEliminated");
-    if (this.localState.actionPoints == 0) {
-      donateButton.setAttribute("disabled", '');
-      fanClubButton.setAttribute("disabled", '');
-      upgradeButton.setAttribute("disabled", '');
-
-      Array.from(tagsActive).forEach(element => {
-        (element as HTMLElement).style.display = "none";
-      });
-
-      Array.from(tagsNotEnoughAP).forEach(element => {
-        (element as HTMLElement).style.display = "block";
-      });
-
-      Array.from(tagsEliminated).forEach(element => {
-        (element as HTMLElement).style.display = "none";
-      });
-    }
+  CheckIfOutOfPointsUI(index: number) {
+    
   }
 
   imgs!: TeamImages[];
@@ -3958,11 +4054,20 @@ export default class MainScene extends Phaser.Scene {
         watchLatestVideoButton.onclick = async () => {
           this.FadeOutDanceFloorAudio();
           await this.CloseNotification(id);
-          var list = this.GetListOfActiveVideos();
-          this.localState.LatestVideoContent(list.length);
-          this.currentVideoTitle.innerHTML = this.staticData.videoContent[this.localState.videoContentPosition].title;
-          this.LoadCurrentVideo(this.localState.videoContentPosition, list);
-          this.SetPage("videoOverlay");
+          
+          if(this.localState.endOfShow)
+          {
+            this.LoadCurrentVideo(0,[this.staticData.videoContent[5].youtubeId]);
+            this.SetPage("videoOverlay");
+          }
+          else
+          {
+            var list = this.GetListOfActiveVideos();
+            this.localState.LatestVideoContent(list.length);
+            this.currentVideoTitle.innerHTML = this.staticData.videoContent[this.localState.videoContentPosition].title;
+            this.LoadCurrentVideo(this.localState.videoContentPosition, list);
+            this.SetPage("videoOverlay");
+          }
         };
         viewFanClubChat.onclick = async () => {
           await this.CloseNotification(id);
@@ -4095,7 +4200,7 @@ export default class MainScene extends Phaser.Scene {
         await this.WriteToLocalStorage("ddm_localDataTutorial", ["firstVisitTodayWithCurtainsOpen"], [false]);
       }
     }
-    this.DisplayQueuedNotification(400);
+    await this.DisplayQueuedNotification(400);
   }
 
   queuedNotificationList: string[] = [];

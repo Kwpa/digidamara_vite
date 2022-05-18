@@ -20,12 +20,23 @@ body.only-end-of-show-player .end-of-show-video-player * {
 
 .end-of-show
 {
-	width: 100%;
-	height: 100%;
-	display: flex;
-	flex-flow: row wrap;
-	align-items: flex-start;
+	background: #000;
+	animation: fadebackground 6s;
+	animation-fill-mode: forwards;
+	position: fixed;
+	margin:0;
+	padding:0;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	opacity: 100%;
 }
+
+@keyframes fadebackground {
+	from {opacity: 0;}
+	to {opacity: 1;}
+  }
 
 @font-face {
 	font-family: "Pixellari";
@@ -62,6 +73,12 @@ iframe {
 .video-player-buttons
 {
 	margin-top: 15px;
+}
+
+.end-of-show-video-player-buttons
+{
+	margin-top: 15px;
+	display: none;
 }
 
 .video-player-overlay-modal
