@@ -871,7 +871,7 @@ export default class MainScene extends Phaser.Scene {
     this.helpPage.setVisible(false);
     this.settingsPage.setVisible(false);
 
-    this.ShowVideo(this, this.width, this.height, "wVVr4Jq_lMI");
+    this.ShowVideo(this, this.width, this.height, this.staticData.videoContent[0].youtubeId);
     
     //audio
     this.danceFloorAudioOne = this.sound.add('danceFloorAudioOne', {
@@ -905,6 +905,7 @@ export default class MainScene extends Phaser.Scene {
     this.avatarOverlayButton = this.avatarOverlay.getChildByID('openProfile') as HTMLElement;
 
     this.voteFooterButton.onclick = async () => {
+      this.ShowCorrectStateInfo();
       this.SetPage("votePage");
       this.audioManager.PlayOneshot(AudioManager.sfx_open);
       this.tapAreaLeft.removeInteractive();
@@ -975,7 +976,8 @@ export default class MainScene extends Phaser.Scene {
 
       this.audioManager.PlayOneshot(AudioManager.sfx_open);
 
-      this.ShowCorrectInfo(this.localState.carouselPosition);
+      this.ShowCorrectTeamInfo(this.localState.carouselPosition);
+      
 
       this.tapAreaLeft.removeInteractive();
       this.tapAreaRight.removeInteractive();
@@ -1046,7 +1048,51 @@ export default class MainScene extends Phaser.Scene {
     }
   }
 
-  ShowCorrectInfo(currentTeam:number)
+  ShowCorrectStateInfo()
+  {
+    if(this.localState.restMode)
+    {
+      (this.votePage.getChildByID("voting-scenario-hide") as HTMLElement).style.display="block";
+      (this.votePage.getChildByID("voting-scenario-col") as HTMLElement).style.display="none";
+
+      const chatpg = (this.chatPage.getChildByID("chat-input") as HTMLInputElement);
+      const chatbutt = (this.chatPage.getChildByID("chat-submit-button") as HTMLInputElement);
+      chatpg.value="Chat offline until our moderators return.";
+      chatpg.setAttribute("disabled",'');
+      chatbutt.setAttribute("disabled",'');
+    }
+    else if(this.localState.endOfShow)
+    {
+      (this.votePage.getChildByID("voting-scenario-hide") as HTMLElement).style.display="block";
+      (this.votePage.getChildByID("voting-scenario-col") as HTMLElement).style.display="none";
+      
+      const chatpg = (this.chatPage.getChildByID("chat-input") as HTMLInputElement);
+      const chatbutt = (this.chatPage.getChildByID("chat-submit-button") as HTMLInputElement);
+      chatpg.value="Chat offline until our moderators return.";
+      chatpg.setAttribute("disabled",'');
+      chatbutt.setAttribute("disabled",'');
+    }
+    else
+    {
+      const chatpg = (this.chatPage.getChildByID("chat-input") as HTMLInputElement);
+      const chatbutt = (this.chatPage.getChildByID("chat-submit-button") as HTMLInputElement);
+      if(chatpg.value=="Chat offline until our moderators return.")
+      {
+        chatpg.value=""
+      }
+      chatpg.removeAttribute("disabled");
+      chatbutt.removeAttribute("disabled");
+
+
+      (this.votePage.getChildByID("voting-scenario-hide") as HTMLElement).style.display="none";
+      (this.votePage.getChildByID("voting-scenario-col") as HTMLElement).style.display="block";
+
+      const newButtonBar = this.videoPlayerOverlay.node.querySelector(".end-of-show-video-player-buttons") as HTMLElement;
+      newButtonBar.style.display="none";
+    }
+  }
+
+  ShowCorrectTeamInfo(currentTeam:number)
   {
       var donateButton = this.teamProfilePages[currentTeam].getChildByID('donate-button') as HTMLInputElement;
       var fanClubButton = this.teamProfilePages[currentTeam].getChildByID('fan-club-button') as HTMLInputElement;
@@ -1088,11 +1134,6 @@ export default class MainScene extends Phaser.Scene {
         Array.from(tagsTeamEnergyBarFull).forEach(element => {
           (element as HTMLElement).style.display = "none";
         });
-
-        (this.votePage.getChildByID("voting-scenario-hide") as HTMLElement).style.display="none";
-        (this.votePage.getChildByID("voting-scenario-col") as HTMLElement).style.display="block";
-
-
       }
       else if(this.localState.restMode)
       {
@@ -1119,9 +1160,6 @@ export default class MainScene extends Phaser.Scene {
         Array.from(tagsTeamEnergyBarFull).forEach(element => {
           (element as HTMLElement).style.display = "none";
         });
-
-        (this.votePage.getChildByID("voting-scenario-hide") as HTMLElement).style.display="block";
-        (this.votePage.getChildByID("voting-scenario-col") as HTMLElement).style.display="none";
       }
       else if (this.localState.actionPoints == 0) {
         donateButton.setAttribute("disabled", '');
@@ -1147,11 +1185,6 @@ export default class MainScene extends Phaser.Scene {
         Array.from(tagsTeamEnergyBarFull).forEach(element => {
           (element as HTMLElement).style.display = "none";
         });
-
-        const c = (this.votePage.getChildByID("voting-scenario-hide") as HTMLElement);
-        c.style.display="none";
-
-        (this.votePage.getChildByID("voting-scenario-col") as HTMLElement).style.display="block";
       }
       else {
         const curEnergy = this.localState.teamStates[currentTeam].currentEnergy;
@@ -1173,7 +1206,6 @@ export default class MainScene extends Phaser.Scene {
           (element as HTMLElement).style.display = "none";
         });
 
-        
         if(curEnergy == enReq)
         {
           donateButton.setAttribute("disabled", '');
@@ -1190,10 +1222,6 @@ export default class MainScene extends Phaser.Scene {
             (element as HTMLElement).style.display = "none";
           });
         }
-
-        const c = (this.votePage.getChildByID("voting-scenario-hide") as HTMLElement);
-        c.style.display="none";
-        (this.votePage.getChildByID("voting-scenario-col") as HTMLElement).style.display="block";
 
         fanClubButton.removeAttribute("disabled");
         upgradeButton.removeAttribute("disabled");
@@ -2568,6 +2596,7 @@ export default class MainScene extends Phaser.Scene {
   {
       this.localState.SetActionPointsToMax();
       this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
+      this.SetupVotePage(true);
       await this.WriteToNakamaUserStorage(["actionPoints", "firstVisitTodayWithCurtainsOpen"], [this.localState.maxActionPoints, true]);      
   }
 
@@ -2929,6 +2958,7 @@ export default class MainScene extends Phaser.Scene {
     });
 
     this.chatFooterButton.onclick = () => {
+      this.ShowCorrectStateInfo();
       this.SetPage("chatPage");
       this.audioManager.PlayOneshot(AudioManager.sfx_open_chat);
       this.tapAreaLeft.removeInteractive();
@@ -2947,6 +2977,7 @@ export default class MainScene extends Phaser.Scene {
       this.tapAreaRight.setInteractive();
     }
     this.returnToChatChannelsButton.onclick = () => {
+      this.ShowCorrectStateInfo();
       this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
       this.chatChannelOpen.style.display = "none";
       this.chatChannels.style.display = "block";
@@ -2971,6 +3002,7 @@ export default class MainScene extends Phaser.Scene {
 
       chatChannelOpenButton.onclick = async () => {
 
+        this.ShowCorrectStateInfo();
         this.audioManager.PlayOneshot(AudioManager.sfx_ui_click);
         this.chatChannelOpen.style.display = "block";
         this.chatChannels.style.display = "none";
@@ -3185,7 +3217,7 @@ export default class MainScene extends Phaser.Scene {
           upgradeBackground.style.display = "none";
           upgradeValue.style.display = "none";
         }
-        this.ShowCorrectInfo(k);
+        this.ShowCorrectTeamInfo(k);
 
         k++;
         donateButton.onclick = async (el) => {
@@ -3199,7 +3231,7 @@ export default class MainScene extends Phaser.Scene {
             this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
             this.sparksCounter.innerHTML = this.localState.sparksAwarded.toString();
 
-            this.ShowCorrectInfo(this.localState.carouselPosition);
+            this.ShowCorrectTeamInfo(this.localState.carouselPosition);
 
             this.UpdateLeaderboard();
 
@@ -3288,7 +3320,7 @@ export default class MainScene extends Phaser.Scene {
             }
             //update UI
 
-            this.ShowCorrectInfo(this.localState.carouselPosition);
+            this.ShowCorrectTeamInfo(this.localState.carouselPosition);
 
             fanClubButtonContainer.style.display = "none";
             fanClubIcon.style.display = "block";
@@ -3332,7 +3364,7 @@ export default class MainScene extends Phaser.Scene {
               await this.WriteToNakamaUserStorage(["actionPoints", this.localState.currentTeamID + "UpgradeLevel"], [this.localState.actionPoints, this.localState.GetCurrentTeamState().upgradeLevel]);
             }
 
-            this.ShowCorrectInfo(this.localState.carouselPosition);
+            this.ShowCorrectTeamInfo(this.localState.carouselPosition);
 
             //update UI   
             upgradeValue.innerHTML = this.localState.GetCurrentTeamState().upgradeLevel.toString();
@@ -3508,6 +3540,7 @@ export default class MainScene extends Phaser.Scene {
     }
 
     this.UpdateLeaderboard();
+    this.ShowCorrectStateInfo();
   }
 
   async RefreshChat() //TODO

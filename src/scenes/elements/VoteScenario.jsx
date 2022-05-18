@@ -4,7 +4,7 @@ const VoteScenario = (scenarioData, titleClasses="title is-size-3 has-text-white
   return (
     <div id="voteScenario" class="box">
       <div class='box has-background-dark has-text-white'>
-        <h1 class={titleClasses}>{scenarioData.title}</h1>
+        <h1 id="scenario-data-title" class={titleClasses}>{scenarioData.title}</h1>
         <div id="vote-content" class='content'>
           {scenarioData.description}
         </div>
@@ -15,8 +15,8 @@ const VoteScenario = (scenarioData, titleClasses="title is-size-3 has-text-white
       <div id="voting-scenario-col" class='columns'>
         <div class="column">
           <div class="box has-background-dark has-text-white">
-            <h1><strong class="has-text-white">{scenarioData.choiceOne_title}</strong></h1>
-            <div class="content">
+            <h1><strong id="scenario-data-choice-1-title" class="has-text-white">{scenarioData.choiceOne_title}</strong></h1>
+            <div id="scenario-data-choice-1-description" class="content">
               {scenarioData.choiceOne_description}
             </div>
             <div id="choice-one-total" class="level">
@@ -39,8 +39,8 @@ const VoteScenario = (scenarioData, titleClasses="title is-size-3 has-text-white
         </div>
         <div class="column">
           <div class="box has-background-dark has-text-white">
-            <h1><strong class="has-text-white">{scenarioData.choiceTwo_title}</strong></h1>
-            <div class="content">
+            <h1><strong id="scenario-data-choice-2-title" class="has-text-white">{scenarioData.choiceTwo_title}</strong></h1>
+            <div id="scenario-data-choice-2-description" class="content">
               {scenarioData.choiceTwo_description}
             </div>
             <div id="choice-two-total" class="level">
