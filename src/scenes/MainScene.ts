@@ -47,6 +47,8 @@ import Shepherd from 'shepherd.js';
 import 'shepherd.js/dist/css/shepherd.css';
 import AudioManager from '../AudioManager';
 
+
+
 export default class MainScene extends Phaser.Scene {
 
   localState!: LocalGameState;
@@ -86,6 +88,8 @@ export default class MainScene extends Phaser.Scene {
   settingsPage!: Phaser.GameObjects.DOMElement;
   videoPlayerOverlay!: Phaser.GameObjects.DOMElement;
   endOfShowOverlay!: Phaser.GameObjects.DOMElement;
+
+  finalScreen!: HTMLElement;
  
   session!: Session;
   client!: Client;
@@ -297,6 +301,22 @@ export default class MainScene extends Phaser.Scene {
         this.rexVideoPlayer.setPosition(0, 0);
         var playeriFrame = document.querySelectorAll('iframe')[0];
         this.videoPlayerContainer.append(playeriFrame);
+      }).on('statechange', () => {
+        //Kconsole.log("video state" + this.rexVideoPlayer.videoState);
+      }
+      );
+    //this.rexVideoPlayer.
+  }
+  ShowVideoEnd(scene: Scene, width: number, height: number, url: string) {
+    this.rexVideoPlayer = scene.add.rexYoutubePlayer( //this does work, typescript def error :/
+      -width, -height, Math.min(Math.max(width*0.7, 360),1000), Math.min(Math.max((width*0.7*0.5625), 360*0.5625),562),
+      {
+        videoId: url,
+        autoPlay: false
+      }).on('ready', () => {
+        var playeriFrame = document.querySelectorAll('iframe')[0];
+        this.videoPlayerContainer.append(playeriFrame);
+        this.rexVideoPlayer.setPosition(-100, -100);
       }).on('statechange', () => {
         //Kconsole.log("video state" + this.rexVideoPlayer.videoState);
       }
@@ -574,6 +594,72 @@ export default class MainScene extends Phaser.Scene {
   emailQueryVar: string = "";
   activationCodeQueryVar: string = "";
 
+  async ShoudlWeShowFinalScreen()
+  {
+    const endData = localStorage.getItem("end"); 
+    if(endData !== null && endData !== undefined)
+    {
+      var titleClasses = this.GetDeviceType()=="mobile"?"title is-size-5 has-text-black":"title is-size-3 has-text-black";
+      this.videoPlayerOverlay = this.add.dom(this.width / 2, this.height / 2, VideoPlayerOverlay(titleClasses) as HTMLElement);
+      this.videoPlayerOverlay.setDepth(this.depthLayers["videoPlayer"]);
+
+      this.videoPlayerContainer = this.videoPlayerOverlay.getChildByID("video-player") as HTMLElement;
+      this.currentVideoTitle = this.videoPlayerOverlay.getChildByID("video-player-overlay-title") as HTMLElement;
+      this.currentVideoTitle.innerHTML = this.staticData.videoContent[5].title;
+      this.closeVideoPlayerButton = this.videoPlayerOverlay.getChildByID('video-overlay-button-close') as HTMLElement;
+
+      
+      this.playVideoPlayerButton = this.videoPlayerOverlay.getChildByID('video-player-button-play-end') as HTMLInputElement;
+      
+      this.pauseVideoPlayerButton = this.videoPlayerOverlay.getChildByID('video-player-button-pause-end') as HTMLInputElement;
+      
+      this.videoPlayerOverlay.setVisible(false);
+      //this.delay(1000);
+      this.ShowVideo(this, this.width, this.height, this.staticData.videoContent[5].youtubeId);
+      
+      this.closeVideoPlayerButton.onclick = () => {
+        this.PauseCurrentVideo();
+        this.videoPlayerOverlay.setVisible(false);
+      }
+      this.playVideoPlayerButton.onclick = () => {
+        console.log("PLAY");
+        this.PlayCurrentVideo();
+      }
+      this.playVideoPlayerButton.onclick = () => {
+        
+        this.PauseCurrentVideo();
+      }
+
+      const newButtonBar = this.videoPlayerOverlay.node.querySelector(".end-of-show-video-player-buttons") as HTMLElement;
+      const oldButtonBar = this.videoPlayerOverlay.node.querySelector(".video-player-buttons") as HTMLElement;
+      newButtonBar.style.display="flex";
+      oldButtonBar.style.display="none";
+      console.log("THE END FINAL");
+      // trigger end of show
+      this.endOfShowOverlay = this.add.dom(this.width/2, this.height/2,EndOfShow()as HTMLElement);
+      this.finalScreen = this.endOfShowOverlay.node.querySelector(".final-screen") as HTMLElement;
+      const rewatchVideo = this.endOfShowOverlay.getChildByID("watch-outro-button") as HTMLInputElement;
+
+      rewatchVideo.onclick = () => {
+        
+        //this.LoadCurrentVideo(0,[this.staticData.videoContent[5].youtubeId]);
+        const newButtonBarClick = this.videoPlayerOverlay.node.querySelector(".end-of-show-video-player-buttons") as HTMLElement;
+        const oldButtonBarClick = this.videoPlayerOverlay.node.querySelector(".video-player-buttons") as HTMLElement;
+        newButtonBarClick.style.display="flex";
+        oldButtonBarClick.style.display="none";
+        this.videoPlayerOverlay.setVisible(true);
+        this.PlayCurrentVideo();
+      }
+
+      this.finalScreen.style.display="block";
+      this.endOfShowOverlay.depth = this.depthLayers["blackout"];
+
+      return true;
+    } 
+    else return false;
+
+  }
+
   async AsyncCreate() {
 
     const params = new Proxy(new URLSearchParams(window.location.search), {
@@ -670,6 +756,16 @@ export default class MainScene extends Phaser.Scene {
       return;
     }
 
+    this.width = this.sys.game.canvas.width;
+    this.height = this.sys.game.canvas.height;
+
+    var checkForFinal = await this.ShoudlWeShowFinalScreen()
+    if(checkForFinal){
+      return;
+    }
+
+    /////////////////////////////////////////////////////////////
+
     this.localState.UpdateAppState(AppState.CurtainsClosed);
     //var firstTimeTodayCurtainsClosed = await this.ReadFromDDMLocalStorageBoolean("firstVisitTodayWithCurtainsClosed");
 
@@ -679,8 +775,7 @@ export default class MainScene extends Phaser.Scene {
     this.localState.UpdateAppState(AppState.CurtainsOpen);
 
     ////Kconsole.log(this.cache.json);1
-    this.width = this.sys.game.canvas.width;
-    this.height = this.sys.game.canvas.height;
+
 
     const leftCurtain = this.add.graphics();
     const rightCurtain = this.add.graphics();
@@ -775,6 +870,8 @@ export default class MainScene extends Phaser.Scene {
     this.votePage.setVisible(false);
     this.helpPage.setVisible(false);
     this.settingsPage.setVisible(false);
+
+    this.ShowVideo(this, this.width, this.height, "wVVr4Jq_lMI");
     
     //audio
     this.danceFloorAudioOne = this.sound.add('danceFloorAudioOne', {
@@ -839,11 +936,21 @@ export default class MainScene extends Phaser.Scene {
     }
     this.closeVideoPlayerButton.onclick = () => {
       this.audioManager.PlayOneshot(AudioManager.sfx_close);
-      this.FadeInDanceFloorAudioOne();
-      this.PauseCurrentVideo();
-      this.SetPage("avatarOverlay");
-      this.tapAreaLeft.setInteractive();
-      this.tapAreaRight.setInteractive();
+      if(!this.localState.endOfShow)
+      {
+        this.FadeInDanceFloorAudioOne();
+        this.PauseCurrentVideo();
+        this.SetPage("avatarOverlay");
+        this.tapAreaLeft.setInteractive();
+        this.tapAreaRight.setInteractive();
+      }
+      else
+      {
+        this.PauseCurrentVideo();
+        this.SetPage("endOfShowVideoOverlay");
+        this.finalScreen.style.display="block";
+
+      }
     }
     this.closeHelpPageButton.onclick = () => {
       this.audioManager.PlayOneshot(AudioManager.sfx_close);
@@ -914,7 +1021,7 @@ export default class MainScene extends Phaser.Scene {
 
     await this.StartClientConnection();
 
-    this.ShowVideo(this, this.width, this.height, "wVVr4Jq_lMI");
+    //this.ShowVideo(this, this.width, this.height, "wVVr4Jq_lMI");
 
     this.SetupLeaderboardForMouse();
 
@@ -2210,7 +2317,7 @@ export default class MainScene extends Phaser.Scene {
     {
       //this.SetPage("endOfShowVideoOverlay");
       //document.body.classList.add('only-end-of-show-player');
-      this.TriggerEndOfShow();
+      await this.TriggerEndOfShow();
     }
     else
     {
@@ -2254,20 +2361,41 @@ export default class MainScene extends Phaser.Scene {
     }
   }
 
-  TriggerEndOfShow()
+  async TriggerEndOfShow()
   {
     if(!this.localState.seenEndOfShow)
     {
+      //this.LoadCurrentVideo(0,[this.staticData.videoContent[5].youtubeId]);
+      const newButtonBar = this.videoPlayerOverlay.node.querySelector(".end-of-show-video-player-buttons") as HTMLElement;
+      const oldButtonBar = this.videoPlayerOverlay.node.querySelector(".video-player-buttons") as HTMLElement;
+      newButtonBar.style.display="flex";
+      oldButtonBar.style.display="none";
+      this.localState.seenEndOfShow = true;
+      localStorage.setItem("end","true");
       console.log("THE END");
       // trigger end of show
-      const blackout = this.add.dom(this.width/2, this.height/2,EndOfShow()as HTMLElement);
-      blackout.depth = this.depthLayers["blackout"];
-      
-      this.DisplayNotificationHome("n_049");
+      this.endOfShowOverlay = this.add.dom(this.width/2, this.height/2,EndOfShow()as HTMLElement);
+      this.finalScreen = this.endOfShowOverlay.node.querySelector(".final-screen") as HTMLElement;
+      const rewatchVideo = this.endOfShowOverlay.getChildByID("watch-outro-button") as HTMLInputElement;
+
+      rewatchVideo.onclick = () => {
+        //this.LoadCurrentVideo(0,[this.staticData.videoContent[5].youtubeId]);
+        const newButtonBarClick = this.videoPlayerOverlay.node.querySelector(".end-of-show-video-player-buttons") as HTMLElement;
+        const oldButtonBarClick = this.videoPlayerOverlay.node.querySelector(".video-player-buttons") as HTMLElement;
+        newButtonBarClick.style.display="flex";
+        oldButtonBarClick.style.display="none";
+        this.SetPage("videoOverlay");
+      }
+
+      this.finalScreen.style.display="none";
+      this.endOfShowOverlay.depth = this.depthLayers["blackout"];
+      this.FadeOutDanceFloorAudio();
+      await this.DisplayNotificationHome("n_049");
+
     }
     else
     {
-
+      
     }
   }
 
@@ -2402,7 +2530,7 @@ export default class MainScene extends Phaser.Scene {
       // trigger end of show
       //this.SetPage("endOfShowVideoOverlay");
       //document.body.classList.add('only-end-of-show-player');
-      this.TriggerEndOfShow();
+      await this.TriggerEndOfShow();
     }
     else
     {
@@ -4057,6 +4185,7 @@ export default class MainScene extends Phaser.Scene {
           
           if(this.localState.endOfShow)
           {
+            await this.delay(400);
             this.LoadCurrentVideo(0,[this.staticData.videoContent[5].youtubeId]);
             this.SetPage("videoOverlay");
           }

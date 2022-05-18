@@ -30,7 +30,29 @@ body.only-end-of-show-player .end-of-show-video-player * {
 	left:0;
 	width:100%;
 	height:100%;
-	opacity: 100%;
+	opacity: 0;
+}
+
+.final-screen
+{
+	position:inherit;
+	width: 100%;
+	height: 100%;
+
+}
+.final-screen-content
+{
+	margin: auto auto;
+	width: 100%;
+	text-align: center;
+	position: absolute;
+	top: 50%;
+	transform: translate(0, -50%);
+}
+.end-of-show-container
+{
+	width:100%;
+	height:100%;
 }
 
 @keyframes fadebackground {

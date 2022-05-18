@@ -160,7 +160,7 @@
         "iconPath":  "icon_promoter_transparent_36px.png",
         "title":  "New Day",
         "showTitle":  "TRUE",
-        "showCloseButton":  "TRUE",
+        "showCloseButton":  "FALSE",
         "content":  "Tune in, tune on, tune out, tune off and explode - it\u0027s DIGIDAMARA!!! \nIf not 100% satisfied - go get another version of satisfaction! Here’s the ROUND UP of Day 1!",
         "encryption":  "0"
     },
@@ -310,7 +310,7 @@
         "iconPath":  "icon_promoter_transparent_36px.png",
         "title":  "Getting Closer",
         "showTitle":  "TRUE",
-        "showCloseButton":  "TRUE",
+        "showCloseButton":  "FALSE",
         "content":  "How do we birth a new universe? DIGIDAMARA! Who will you choose?\nHere’s the ROUND UP of Day 2!",
         "encryption":  ""
     },
@@ -610,7 +610,7 @@
         "iconPath":  "icon_promoter_transparent_36px.png",
         "title":  "The time has come",
         "showTitle":  "FALSE",
-        "showCloseButton":  "TRUE",
+        "showCloseButton":  "FALSE",
         "content":  "The time has come!\nHere’s the ROUND UP of Day 4!",
         "encryption":  ""
     },
@@ -730,7 +730,7 @@
         "iconPath":  "icon_promoter_transparent_36px.png",
         "title":  "FOILED!",
         "showTitle":  "FALSE",
-        "showCloseButton":  "TRUE",
+        "showCloseButton":  "FALSE",
         "content":  "WHAT?! How could you, how could all of you!\nIf everything just went according to plan, if everyone just listened and played their part, it would be perfect.\nDon’t you want everyone to have everything?!?!! nnngggGGGRAAAHHHHHHH. . .*blips into the void*",
         "encryption":  ""
     },
