@@ -12,25 +12,25 @@
     },
     {
         "id":  "v_002",
-        "title":  "- copy eliminated team here",
-        "description":  "- copy eliminated team here",
-        "choiceOne_title":  "- copy eliminated team here",
-        "choiceOne_description":  "- copy eliminated team here",
-        "choiceOne_consequences":  "- copy eliminated team here",
-        "choiceTwo_title":  "- copy eliminated team here",
-        "choiceTwo_description":  "- copy eliminated team here",
-        "choiceTwo_consequences":  "- copy eliminated team here"
+        "title":  "Formation 16 + \nFormation 17\n[Apex]\n",
+        "description":  "The Apex Galaxy has fallen to a mysterious illness called the Throx. The societies of hundreds of planets fracture in a myriad of ways, from denying it to valiantly fighting it at all costs.\n\nChoose a legacy from Apex Galaxy to bring forward into the next universe: Consensus or Independence\n\n\n(You\u0027ll find out the results tomorrow)\n",
+        "choiceOne_title":  "Legacy of Consensus",
+        "choiceOne_description":  "To decide as one? or as many? How could we decide as many?",
+        "choiceOne_consequences":  "Beaming result to Apex, reply in 24 space hours...",
+        "choiceTwo_title":  "Legacy of Indepence",
+        "choiceTwo_description":  "To be self-reliant and autonomous.\n\nWhat does our freedom depend on? \n\n",
+        "choiceTwo_consequences":  "Beaming result to Apex, reply in 24 space hours..."
     },
     {
         "id":  "v_003",
-        "title":  "- copy eliminated team here",
-        "description":  "- copy eliminated team here",
-        "choiceOne_title":  "- copy eliminated team here",
-        "choiceOne_description":  "- copy eliminated team here",
-        "choiceOne_consequences":  "- copy eliminated team here",
-        "choiceTwo_title":  "- copy eliminated team here",
-        "choiceTwo_description":  "- copy eliminated team here",
-        "choiceTwo_consequences":  "- copy eliminated team here"
+        "title":  "Master Gauri + \nMaster Refilwe \n[Cushcush]\n",
+        "description":  "The great mindmeld network of the Cushcush Galaxy begins to fray and galactic communication is reduced to small physical distances.  Inhabitants are celebrating the end of a way of life, and await in anticipation of what will come.\n\nChoose a legacy from CushCush Galaxy to bring forward into the next universe: \n\n\n(You\u0027ll find out the results tomorrow)\n\n",
+        "choiceOne_title":  "Legacy of Attunement",
+        "choiceOne_description":  "Striving for groundedness. A yearning.\nHow is balance related to others?\n",
+        "choiceOne_consequences":  "Beaming result to Cushcush, reply in 24 space hours...",
+        "choiceTwo_title":  "Legacy of Celebration",
+        "choiceTwo_description":  "...to let go of your fear and need for control...The joy of rising and letting go.",
+        "choiceTwo_consequences":  "Beaming result to Cushcush, reply in 24 space hours..."
     },
     {
         "id":  "v_004",

@@ -26,7 +26,7 @@
         "title":  "Welcome",
         "showTitle":  "TRUE",
         "showCloseButton":  "TRUE",
-        "content":  "Welcome to the Digidamara Dancefloor!\nTake a look at those team profiles and get sponsoring!\nThe team with the lowest energy at the end of each day will be . . . eliminated!\nI’m ever so happy that you are here.",
+        "content":  "Welcome to the Digidamara Dancefloor!\nTake a look at those team profiles and get sponsoring!\nThe team with the lowest energy at the end of each day will be . . . eliminated!\nI\u0027m ever so happy that you are here.",
         "encryption":  "0"
     },
     {
@@ -41,7 +41,7 @@
         "title":  "Welcome",
         "showTitle":  "TRUE",
         "showCloseButton":  "TRUE",
-        "content":  "Thank you for tuning in Spectators.\nYour energy will help you sponsor, join and gift.\nDon’t forget, your bonds carry over from day to day.\nI, too, am, happy. To feel your presence.",
+        "content":  "Thank you for tuning in Spectators.\nYour energy will help you sponsor, join and gift.\nDon\u0027t forget, your bonds carry over from day to day.\nI, too, am, happy. To feel your presence.",
         "encryption":  "0"
     },
     {
@@ -101,7 +101,7 @@
         "title":  "Join Now",
         "showTitle":  "TRUE",
         "showCloseButton":  "TRUE",
-        "content":  "Checking in hip catz!\nWho has become your favourite?\nIf you join a fanclub, you’ll unlock a special signal!\nOh I do love making connetions!",
+        "content":  "Checking in hip catz!\nWho has become your favourite?\nIf you join a fanclub, you\u0027ll unlock a special signal!\nOh I do love making connetions!",
         "encryption":  "0"
     },
     {
@@ -161,7 +161,7 @@
         "title":  "New Day",
         "showTitle":  "TRUE",
         "showCloseButton":  "FALSE",
-        "content":  "Tune in, tune on, tune out, tune off and explode - it\u0027s DIGIDAMARA!!! \nIf not 100% satisfied - go get another version of satisfaction! Here’s the ROUND UP of Day 1!",
+        "content":  "Tune in, tune on, tune out, tune off and explode - it\u0027s DIGIDAMARA!!! \nIf not 100% satisfied - go get another version of satisfaction! Here\u0027s the ROUND UP of Day 1!",
         "encryption":  "0"
     },
     {
@@ -311,7 +311,7 @@
         "title":  "Getting Closer",
         "showTitle":  "TRUE",
         "showCloseButton":  "FALSE",
-        "content":  "How do we birth a new universe? DIGIDAMARA! Who will you choose?\nHere’s the ROUND UP of Day 2!",
+        "content":  "Which of our beloved teams will shape the next universe as we know it?\nIt’s up to you folks on DIGIDAMARA! \nHere\u0027s the ROUND UP of Day 2!",
         "encryption":  ""
     },
     {
@@ -341,14 +341,14 @@
         "title":  "Support",
         "showTitle":  "FALSE",
         "showCloseButton":  "TRUE",
-        "content":  "Don’t they all deserve your adoration folks?! \nDon’t they all deserve your support and love? Isn’t that the Intergalactic way? \nSponsor your favourite team today!",
+        "content":  "Two teams down. What sacrifice, what valour.\nI weep inside and yet I am energized!\nCan you feel it?! A great change is coming!",
         "encryption":  ""
     },
     {
         "id":  "n_024",
         "type":  "dynamic",
         "round":  "3",
-        "order":  "0",
+        "order":  "3",
         "delay":  "1",
         "buttonType":  "none",
         "character":  "SPACE STATION",
@@ -356,7 +356,7 @@
         "title":  "Break time with the Teams",
         "showTitle":  "TRUE",
         "showCloseButton":  "TRUE",
-        "content":  "Spectators: some teams are taking their obligatory short break. \nPlease tune into the universal waveform if you have questions for them.",
+        "content":  "Spectators: some teams take their obligatory short break in their fanclub.\nPlease tune in if you have questions for them.",
         "encryption":  ""
     },
     {
@@ -371,7 +371,7 @@
         "title":  "The Great Redistribution",
         "showTitle":  "TRUE",
         "showCloseButton":  "TRUE",
-        "content":  "Two teams down. What sacrifice, what valour.\nI weep inside and yet I am energized!\nCan you feel it?! A great change is coming!",
+        "content":  "Don\u0027t they all deserve your adoration folks?! \nDon\u0027t they all deserve your support and love? Isn\u0027t that the Intergalactic way? \nSponsor your favourite team today!",
         "encryption":  ""
     },
     {
@@ -431,7 +431,7 @@
         "title":  "Goodnight",
         "showTitle":  "TRUE",
         "showCloseButton":  "TRUE",
-        "content":  "That’s the thing about pain. . . It demands to be felt. \nSit with the pain until it passes, and you will be calmer for the next one. \nToday, we have learnt a lot from those dancers. . . \nUntil tomorrow my meritorious morsels.",
+        "content":  "That\u0027s the thing about pain. . . It demands to be felt. \nSit with the pain until it passes, and you will be calmer for the next one. \nToday, we have learnt a lot from those dancers. . . \nUntil tomorrow my meritorious morsels.",
         "encryption":  ""
     },
     {
@@ -461,7 +461,7 @@
         "title":  "Getting so close",
         "showTitle":  "TRUE",
         "showCloseButton":  "TRUE",
-        "content":  "I can feel the end coming! I can feel you all in my bones!\nTwists and turns. . . . . Nervous and exciting! You have no reason not to continue to watch it! Hmm?\nHere’s the ROUND UP of Day 3!",
+        "content":  "I can feel the end coming! I can feel you all in my bones!\nTwists and turns. . . . . Nervous and exciting! You have no reason not to continue to watch it! Hmm?\nHere\u0027s the ROUND UP of Day 3!",
         "encryption":  ""
     },
     {
@@ -483,7 +483,7 @@
         "id":  "n_033",
         "type":  "dynamic",
         "round":  "4",
-        "order":  "0",
+        "order":  "2",
         "delay":  "1",
         "buttonType":  "none",
         "character":  "THE PROMOTER",
@@ -581,7 +581,7 @@
         "title":  "Dream Big",
         "showTitle":  "FALSE",
         "showCloseButton":  "TRUE",
-        "content":  "Another day another massive surge of support!\nJust imagine, a new universe, and you’ve all helped to build it.\nTomorrow is our grand finale folks - stay tuned!",
+        "content":  "Another day another massive surge of support!\nJust imagine, a new universe, and you\u0027ve all helped to build it.\nTomorrow is our grand finale folks - stay tuned!",
         "encryption":  ""
     },
     {
@@ -611,7 +611,7 @@
         "title":  "The time has come",
         "showTitle":  "FALSE",
         "showCloseButton":  "FALSE",
-        "content":  "The time has come!\nHere’s the ROUND UP of Day 4!",
+        "content":  "The time has come!\nHere\u0027s the ROUND UP of Day 4!",
         "encryption":  ""
     },
     {
@@ -641,7 +641,7 @@
         "title":  "No",
         "showTitle":  "FALSE",
         "showCloseButton":  "TRUE",
-        "content":  "Don’t do this.",
+        "content":  "Don\u0027t do this.",
         "encryption":  ""
     },
     {
@@ -731,7 +731,7 @@
         "title":  "FOILED!",
         "showTitle":  "FALSE",
         "showCloseButton":  "FALSE",
-        "content":  "WHAT?! How could you, how could all of you!\nIf everything just went according to plan, if everyone just listened and played their part, it would be perfect.\nDon’t you want everyone to have everything?!?!! nnngggGGGRAAAHHHHHHH. . .*blips into the void*",
+        "content":  "WHAT?! How could you, how could all of you!\nIf everything just went according to plan, if everyone just listened and played their part, it would be perfect.\nDon\u0027t you want everyone to have everything?!?!! nnngggGGGRAAAHHHHHHH. . .*blips into the void*",
         "encryption":  ""
     },
     {

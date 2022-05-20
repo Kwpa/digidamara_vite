@@ -18,6 +18,13 @@ body.only-end-of-show-player .end-of-show-video-player * {
 	pointer-events: all;
 }
 
+.unavailable-page
+{
+
+}
+
+
+
 .end-of-show
 {
 	background: #000;
@@ -33,6 +40,7 @@ body.only-end-of-show-player .end-of-show-video-player * {
 	opacity: 0;
 }
 
+.unavailable-screen,
 .final-screen
 {
 	position:inherit;
@@ -40,6 +48,7 @@ body.only-end-of-show-player .end-of-show-video-player * {
 	height: 100%;
 
 }
+.unavailable-screen-content,
 .final-screen-content
 {
 	margin: auto auto;
@@ -49,6 +58,7 @@ body.only-end-of-show-player .end-of-show-video-player * {
 	top: 50%;
 	transform: translate(0, -50%);
 }
+.unavailable-container,
 .end-of-show-container
 {
 	width:100%;

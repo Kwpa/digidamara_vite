@@ -22,6 +22,7 @@ import SlideDownButton from './elements/SlideDownButton';
 import VoteOption from './elements/VoteOption';
 import DynamicVoteScenario from './elements/DynamicVoteScenario';
 import LandingPage from './elements/LandingPage';
+import Unavailable from './elements/Unavailable';
 import Driver, { Step } from 'driver.js';
 import 'driver.js/dist/driver.min.css';
 
@@ -46,6 +47,7 @@ import NakaChannelMessage from './NakaChannelMessage';
 import Shepherd from 'shepherd.js';
 import 'shepherd.js/dist/css/shepherd.css';
 import AudioManager from '../AudioManager';
+
 
 
 
@@ -200,6 +202,8 @@ export default class MainScene extends Phaser.Scene {
 
   audioManager: AudioManager;
 
+  debug_site_unavailable: boolean = false;
+
   constructor() {
     super('MainScene');
     this.audioManager = new AudioManager(this);
@@ -207,15 +211,16 @@ export default class MainScene extends Phaser.Scene {
 
   preload() {
     //this.load.crossOrigin = "Anonymous";
+    
     let vh = window.innerHeight * 0.01;
     // Then we set the value in the --vh custom property to the root of the document
     document.documentElement.style.setProperty('--vh', `${vh}px`);
     this.localState = new LocalGameState();
     this.localState.StartAppState();
     this.localState.UpdateAppState(AppState.LoadingScreen);
-
+    
     this.LoadingBar();
-
+    
     this.load.atlas('atlas', '/assets/test_avatars/avatar_atlas.png', ' /assets/json/avatar_atlas.json');
     this.load.image('arrow', '/assets/images/arrow.png');
     this.load.image('star', '/assets/images/star.png');
@@ -233,18 +238,18 @@ export default class MainScene extends Phaser.Scene {
     this.load.json('chat_channels', '/assets/json/ChatChannels.json');
     this.load.json('tutorialSteps_content', '/assets/json/TutorialContent.json');
     this.load.json('eightpath', '/assets/json/paths/path_2.json');
-    this.load.json('web_config', '/assets/json/web_config.json');
     this.load.json('dynamicVoteOptions_content', '/assets/json/DynamicVoteOptions.json');
     this.load.json('colours_content', '/assets/json/Colours.json');
-
+    this.load.json('web_config', '/assets/json/web_config.json');
+    
     this.audioManager.LoadAudio();
-
+    
     //this.load.on('complete', () => {this.flag = true});
   }
-
+  
   keyboardOn: boolean = false;
   storeHeightSize: number = 0;
-
+  
   SetResizeListener()
   {
     this.storeHeightSize = window.innerHeight;
@@ -390,6 +395,7 @@ export default class MainScene extends Phaser.Scene {
 
   create() //to tackle - server code and setup for typescript!
   {
+
     var { width, height } = this.sys.game.canvas;
     this.SetResizeListener();
     //Kconsole.log('load Main Scene');
@@ -720,9 +726,24 @@ export default class MainScene extends Phaser.Scene {
       }
     }
 
-    
+    this.width = this.sys.game.canvas.width;
+    this.height = this.sys.game.canvas.height;
+
     await this.waitUntilAssetsLoaded();
     await this.LoadJSON();
+    if(this.debug_site_unavailable)
+    {
+      if(localStorage.getItem("storeEmail")!== null && localStorage.getItem("storeEmail")!== undefined)
+      {
+        this.add.dom(this.width/2, this.height/2, Unavailable() as HTMLElement);
+        return;
+      }
+      else
+      {
+        console.log("START THE SITE");
+      }
+    }
+
     await this.GetLatestStaticData();
 
     if(!this.hasValidActivationCode)
@@ -756,8 +777,7 @@ export default class MainScene extends Phaser.Scene {
       return;
     }
 
-    this.width = this.sys.game.canvas.width;
-    this.height = this.sys.game.canvas.height;
+    
 
     var checkForFinal = await this.ShoudlWeShowFinalScreen()
     if(checkForFinal){
@@ -4884,6 +4904,5 @@ export default class MainScene extends Phaser.Scene {
     if (this.startStarField) this.UpdateStarField();
   }
 }
-
 
 
