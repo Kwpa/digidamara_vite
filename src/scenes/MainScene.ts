@@ -370,28 +370,40 @@ export default class MainScene extends Phaser.Scene {
     });
     assetText.setOrigin(0.5, 0.5);
 
-    this.load.on('progress', function (value) {
-      percentText.setText(parseInt("" + (value * 100)) + '%');
-      progressBar.clear();
-      progressBar.fillStyle(0xffffff, 1);
-      progressBar.fillRect(width / 2 - 150, height / 2 - (0), 300 * value, 30);
-    });
+    this.load.on('progress', (value) => {
+      if(!this.assetsLoaded)
+      {
+        percentText.setText(parseInt("" + (value * 100)) + '%');
+        progressBar.clear();
+        progressBar.fillStyle(0xffffff, 1);
+        progressBar.fillRect(width / 2 - 150, height / 2 - (0), 300 * value, 30);
+      }
+    })
 
-    this.load.on('fileprogress', function (file) {
-      assetText.setText('Loading asset: ' + file.key);
+    this.load.on('fileprogress', (file) => {
+      if(!this.assetsLoaded) assetText.setText('Loading asset: ' + file.key);
     });
     this.load.on('complete', async () => {
-      await this.delay(3000);
-      progressBar.destroy();
-      progressBox.destroy();
-      loadingText.destroy();
-      percentText.destroy();
-      assetText.destroy();
-      this.logo.destroy();
-      this.assetsLoaded = true;
-      this.localState.UpdateAppState(AppState.AppOpen);
+      if(!this.assetsLoaded)
+      {
+        await this.delay(3000);
+        progressBar.destroy();
+        progressBox.destroy();
+        loadingText.destroy();
+        percentText.destroy();
+        assetText.destroy();
+        this.logo.destroy();
+        this.assetsLoaded = true;
+        this.localState.UpdateAppState(AppState.AppOpen);
+      }
+      else
+      {
+        this.asyncLoad = true;
+      }
     });
   }
+
+  asyncLoad: boolean = false;
 
   create() //to tackle - server code and setup for typescript!
   {
@@ -948,7 +960,13 @@ export default class MainScene extends Phaser.Scene {
       this.tapAreaLeft.removeInteractive();
       this.tapAreaRight.removeInteractive();
     }
-    this.videoFooterButton.onclick = () => {
+    this.videoFooterButton.onclick = async () => {
+      
+      var list = this.GetListOfActiveVideos();
+      var v = this.localState.LatestVideoContent(list.length);
+      this.currentVideoTitle.innerHTML = this.staticData.videoContent[this.localState.videoContentPosition].title;
+      this.LoadCurrentVideo(this.localState.videoContentPosition, list);
+
       this.SetPage("videoOverlay");
       this.audioManager.PlayOneshot(AudioManager.sfx_open);
       this.FadeOutDanceFloorAudio();
@@ -1068,6 +1086,24 @@ export default class MainScene extends Phaser.Scene {
     }
   }
 
+  async ReloadJson(reloadList: string[], filePathList: string[])
+  {
+    
+    for(var i=0; i< reloadList.length; i++){
+      //this.load.json('dynamicVoteOptions_content', '/assets/json/DynamicVoteOptions.json');
+      var cacheName = reloadList[i]; 
+      var fileName = filePathList[i];
+      this.cache.json.remove(cacheName);
+      this.load.json(cacheName, fileName);
+    }
+  
+    this.load.start();
+    await this.waitUntilAssetsLoadedAsync();
+    await this.LoadJSON();
+
+    await this.delay(300);
+  }
+
   ShowCorrectStateInfo()
   {
     if(this.localState.restMode)
@@ -1124,7 +1160,7 @@ export default class MainScene extends Phaser.Scene {
       var tagsTeamEnergyBarFull = this.teamProfilePages[currentTeam].node.getElementsByClassName("tagsTeamEnergyBarFull");
       var tagsRestMode = this.teamProfilePages[currentTeam].node.getElementsByClassName("tagsRestMode");
 
-      if (this.localState.GetCurrentTeamState().eliminated) {
+      if (this.localState.teamStates[currentTeam].eliminated) {
         donateButton.classList.remove("is-primary");
         donateButton.classList.add("is-danger");
         donateButton.setAttribute("disabled", '');
@@ -3501,23 +3537,39 @@ export default class MainScene extends Phaser.Scene {
   }
 
 
+  async ReloadStaticData()
+  {
+    // reload static 
+    
+    await this.ReloadJson(['dynamicVoteOptions_content','video_content','voteScenarios_content'],['/assets/json/DynamicVoteOptions.json', '/assets/json/VideoContent.json', '/assets/json/VotingScenarios.json']);
+    
+    this.staticData.UpdateDynamicVoteOptions(this.dynamicVoteOptions_data);
+    this.staticData.UpdateVideoUrls(this.videoContent_data);
+    this.staticData.UpdateVoteOptions(this.voteScenarios_data); 
+
+  }
   
   async RefreshFromDynamicData() {
     //Kconsole.log("refresh");
 
-
-    this.load.json('dynamicVoteOptions_content', '/assets/json/DynamicVoteOptions.json');
-    this.dynamicVoteOptions_data = this.cache.json.get('dynamicVoteOptions_content') as object;
-    this.staticData.UpdateDynamicVoteOptions(this.dynamicVoteOptions_data);
+    await this.ReloadStaticData();
 
     //todo - the same update for notifications
 
-    var storePrevShowDynamicVotesValue = this.localState.showDynamicVoteOptions;
     
     await this.GetUserStorageData();
     await this.GetLatestDynamicData();
     await this.ReloadLocalState();
     await this.WriteToNakamaUserStorage(["actionPoints", "energyRequirement", "round"], [this.localState.actionPoints, this.localState.roundEnergyRequirement, this.localState.round]);
+    
+        
+    /* var list = this.GetListOfActiveVideos();
+    var v = this.localState.LatestVideoContent(list.length);
+    console.log("static data list " + v);
+    this.currentVideoTitle.innerHTML = this.staticData.videoContent[this.localState.videoContentPosition].title;
+    this.LoadCurrentVideo(this.localState.videoContentPosition, list); */
+
+    var storePrevShowDynamicVotesValue = this.localState.showDynamicVoteOptions;
 
     this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
     //this.roundCounter.innerHTML = (6-this.localState.round).toString();
@@ -3923,11 +3975,20 @@ export default class MainScene extends Phaser.Scene {
 
   async waitUntilAssetsLoaded() {
     await this.waitUntil(_ => this.assetsLoaded == true);
+    
+  }
+
+  async waitUntilAssetsLoadedAsync() {
+    await this.waitUntil(_ => this.asyncLoad == true);
+    console.log("asynLoad finished load");
+    this.asyncLoad = false;
+
   }
 
   waitUntil(conditionFunction) {
 
     const poll = resolve => {
+      console.log("still loading");
       if (conditionFunction()) resolve();
       else setTimeout(_ => poll(resolve), 400);
     }

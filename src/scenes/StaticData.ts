@@ -1,5 +1,4 @@
-export default class StaticData
-{
+export default class StaticData {
     teams!: TeamData[];
     notifications!: NotificationData[];
     voteScenarios!: VoteScenarioData[];
@@ -10,8 +9,7 @@ export default class StaticData
     colours!: ColoursData[];
     tutorialSteps!: TutorialStepData[];
 
-    Init(teams_data, barks_data, items_data, story_data, notifications_data, voteScenarios_data, dynamicVoteOptions_data, appLabels_data, videoContent_data, chatChannel_data, colours_data, tutorial_data)
-    {
+    Init(teams_data, barks_data, items_data, story_data, notifications_data, voteScenarios_data, dynamicVoteOptions_data, appLabels_data, videoContent_data, chatChannel_data, colours_data, tutorial_data) {
         console.log("INIT STATIC");
         this.teams = [];
         this.notifications = [];
@@ -24,62 +22,62 @@ export default class StaticData
         this.tutorialSteps = [];
 
         //console.log(story_data[0].teamId + " " + teams_data[0].id);
-         
-        for(var k in teams_data)
-        {
+
+        for (var k in teams_data) {
             var teamData = teams_data[k];
-            var barks = barks_data.filter(a=> a.teamId == teamData.id);
-            var items = items_data.filter(a=> a.teamId == teamData.id);
-            var story = story_data.filter(a=> a.teamId == teamData.id);
+            var barks = barks_data.filter(a => a.teamId == teamData.id);
+            var items = items_data.filter(a => a.teamId == teamData.id);
+            var story = story_data.filter(a => a.teamId == teamData.id);
             this.teams.push(new TeamData(teams_data[k], barks, items, story));
         }
-        for(var k in notifications_data)
-        {
+        for (var k in notifications_data) {
             this.notifications.push(new NotificationData(notifications_data[k]));
         }
-        for(var k in voteScenarios_data)
-        {
+        for (var k in voteScenarios_data) {
             this.voteScenarios.push(new VoteScenarioData(voteScenarios_data[k]));
         }
-        for(var k in dynamicVoteOptions_data)
-        {
+        for (var k in dynamicVoteOptions_data) {
             this.dynamicVoteOptions.push(new DynamicVoteOptionData(dynamicVoteOptions_data[k]));
         }
-        for(var k in appLabels_data)
-        {
+        for (var k in appLabels_data) {
             this.appLabels.push(new AppLabelData(appLabels_data[k]));
         }
-        for(var k in videoContent_data)
-        {
+        for (var k in videoContent_data) {
             this.videoContent.push(new VideoContentData(videoContent_data[k]));
         }
-        for(var k in chatChannel_data)
-        {
+        for (var k in chatChannel_data) {
             this.chatChannels.push(new ChatChannelData(chatChannel_data[k]));
         }
-        for(var k in colours_data)
-        {
+        for (var k in colours_data) {
             //console.log(colours_data[k]);
             this.colours.push(new ColoursData(colours_data[k]));
         }
-        for(var k in tutorial_data)
-        {
+        for (var k in tutorial_data) {
             //console.log(colours_data[k]);
             this.tutorialSteps.push(new TutorialStepData(tutorial_data[k]));
         }
     }
 
-    UpdateDynamicVoteOptions(dynamicVoteOptions_data)
-    {
-        for(var k in dynamicVoteOptions_data)
-        {
+    UpdateDynamicVoteOptions(dynamicVoteOptions_data) {
+        for (var k in dynamicVoteOptions_data) {
             this.dynamicVoteOptions[k].UpdateDynamicVoteData(dynamicVoteOptions_data[k]);
+        }
+    }
+
+    UpdateVoteOptions(voteOptions_data) {
+        for (var k in voteOptions_data) {
+            (this.voteScenarios[k]).UpdateVoteScenarioData(voteOptions_data[k]);
+        }
+    }
+
+    UpdateVideoUrls(videoContent_data) {
+        for (var k in videoContent_data) {
+            (this.videoContent[k]).UpdateVideoContentData(videoContent_data[k]);
         }
     }
 }
 
-export class BarkData
-{
+export class BarkData {
     id!: string;
     teamId!: string;
     character_name!: string;
@@ -87,7 +85,7 @@ export class BarkData
     content!: string;
     colour!: number;
     encryption!: number;
-    
+
     constructor(barkData) {
         this.id = barkData.id;
         this.title = barkData.title;
@@ -96,11 +94,10 @@ export class BarkData
         this.content = barkData.content;
         this.colour = barkData.colour;
         this.encryption = barkData.encryption;
-      }
+    }
 }
 
-export class TeamData
-{
+export class TeamData {
     id!: string;
     title!: string;
     characterOne_name!: string;
@@ -112,7 +109,7 @@ export class TeamData
     items!: ItemData[];
     story!: StoryData[];
     fanClubChannelId!: string;
-    
+
     constructor(teamData, barks, items, story) {
         this.id = teamData.id;
         this.title = teamData.title;
@@ -125,38 +122,34 @@ export class TeamData
         this.items = this.ItemsDataToArray(items);
         this.story = this.StoryDataToArray(story);
         this.fanClubChannelId = teamData.fanClubChannelId;
-      }
+    }
 
-      BarkDataToArray(data)
-      {
-          var array = [] as BarkData[];
-          data.forEach((bark) => {
-              array.push(new BarkData(bark));
-          });
-          return array;
-      }
+    BarkDataToArray(data) {
+        var array = [] as BarkData[];
+        data.forEach((bark) => {
+            array.push(new BarkData(bark));
+        });
+        return array;
+    }
 
-      ItemsDataToArray(data)
-      {
-          var array = [] as ItemData[];
-          data.forEach((item) => {
-              array.push(new ItemData(item));
-          });
-          return array;
-      }
+    ItemsDataToArray(data) {
+        var array = [] as ItemData[];
+        data.forEach((item) => {
+            array.push(new ItemData(item));
+        });
+        return array;
+    }
 
-      StoryDataToArray(data)
-      {
-          var array = [] as StoryData[];
-          data.forEach((story) => {
-              array.push(new StoryData(story));
-          });
-          return array;
-      }
+    StoryDataToArray(data) {
+        var array = [] as StoryData[];
+        data.forEach((story) => {
+            array.push(new StoryData(story));
+        });
+        return array;
+    }
 }
 
-export class ItemData
-{
+export class ItemData {
     id!: string;
     teamId!: string;
     round!: number;
@@ -171,11 +164,10 @@ export class ItemData
         this.title = itemData.title;
         this.description = itemData.description;
         this.iconId = itemData.iconId;
-      }
+    }
 }
 
-export class StoryData
-{
+export class StoryData {
     id!: string;
     teamId!: string;
     round!: number;
@@ -192,11 +184,10 @@ export class StoryData
         this.content = storyData.content;
         this.encryption = storyData.encryption;
         this.iconId = storyData.iconId;
-      }
+    }
 }
 
-export class NotificationData
-{
+export class NotificationData {
     id!: string;
     character!: string;
     iconPath!: string;
@@ -225,11 +216,10 @@ export class NotificationData
         this.round = notification.round;
         this.order = notification.order;
         this.buttonType = notification.buttonType;
-      }
+    }
 }
 
-export class VideoContentData
-{
+export class VideoContentData {
     id!: string;
     title!: string;
     youtubeId!: string;
@@ -239,19 +229,31 @@ export class VideoContentData
         this.id = videoContent.id;
         this.title = videoContent.title;
         this.youtubeId = videoContent.youtubeId;
-        if(videoContent.active == "TRUE")
-        {
+        if (videoContent.active == "TRUE") {
             this.active = true;
         }
-        else
-        {
+        else {
             this.active = false;
         }
-      }
+    }
+
+    UpdateVideoContentData(videoContent)
+    {
+        console.log(videoContent);
+        this.id = videoContent.id;
+        this.title = videoContent.title;
+        this.youtubeId = videoContent.youtubeId;
+        if (videoContent.active == "TRUE") {
+            this.active = true;
+        }
+        else {
+            this.active = false;
+        }
+        console.log(JSON.stringify(this));
+    }
 }
 
-export class ChatChannelData
-{
+export class ChatChannelData {
     id!: string;
     title!: string;
     iconPath!: string;
@@ -262,11 +264,10 @@ export class ChatChannelData
         this.title = chatChannel.title;
         this.iconPath = chatChannel.iconPath;
         this.active = chatChannel.active;
-      }
+    }
 }
 
-export class ColoursData
-{
+export class ColoursData {
     id!: string;
     title!: string;
     hexCode!: string;
@@ -275,11 +276,10 @@ export class ColoursData
         this.id = colours.id;
         this.title = colours.title;
         this.hexCode = colours.hexCode;
-      }
+    }
 }
 
-export class VoteScenarioData
-{
+export class VoteScenarioData {
     id!: string;
     title!: string;
     description!: string;
@@ -300,11 +300,23 @@ export class VoteScenarioData
         this.choiceTwo_title = votingScenarioData.choiceTwo_title;
         this.choiceTwo_description = votingScenarioData.choiceTwo_description;
         this.choiceTwo_consequence = votingScenarioData.choiceTwo_consequence;
-      }
+    }
+
+    UpdateVoteScenarioData(votingScenarioData)
+    {
+        this.id = votingScenarioData.id;
+        this.title = votingScenarioData.title
+        this.description = votingScenarioData.description;
+        this.choiceOne_title = votingScenarioData.choiceOne_title;
+        this.choiceOne_description = votingScenarioData.choiceOne_description;
+        this.choiceOne_consequence = votingScenarioData.choiceOne_consequence;
+        this.choiceTwo_title = votingScenarioData.choiceTwo_title;
+        this.choiceTwo_description = votingScenarioData.choiceTwo_description;
+        this.choiceTwo_consequence = votingScenarioData.choiceTwo_consequence;
+    }
 }
 
-export class DynamicVoteOptionData
-{
+export class DynamicVoteOptionData {
     id!: string;
     title!: string;
     description!: string;
@@ -318,47 +330,40 @@ export class DynamicVoteOptionData
         this.description = voteOptionData.description;
         this.consequence = voteOptionData.consequence;
         this.round = voteOptionData.round;
-        if(voteOptionData.scenario_id == "TRUE")
-        {
+        if (voteOptionData.scenario_id == "TRUE") {
             this.active = true;
         }
-        else
-        {
+        else {
             this.active = false;
         }
     }
 
-    UpdateDynamicVoteData(voteOptionData)
-    {
+    UpdateDynamicVoteData(voteOptionData) {
         this.id = voteOptionData.id;
         this.title = voteOptionData.title
         this.description = voteOptionData.description;
         this.consequence = voteOptionData.consequence;
         this.round = voteOptionData.round;
-        if(voteOptionData.scenario_id == "TRUE")
-        {
+        if (voteOptionData.scenario_id == "TRUE") {
             this.active = true;
         }
-        else
-        {
+        else {
             this.active = false;
         }
     }
 }
 
-export class AppLabelData
-{
+export class AppLabelData {
     id!: string;
     content!: string;
 
     constructor(appLabelData) {
         this.id = appLabelData.id;
         this.content = appLabelData.content;
-      }
+    }
 }
 
-export class TutorialStepData
-{
+export class TutorialStepData {
     id!: string;
     title!: string;
     content!: string;
@@ -375,5 +380,5 @@ export class TutorialStepData
         this.type = tutorialData.type;
         this.button = tutorialData.button;
         this.popupPosition = tutorialData.popup_position;
-      }
+    }
 }
