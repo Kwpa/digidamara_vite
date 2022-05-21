@@ -1108,9 +1108,11 @@ export default class MainScene extends Phaser.Scene {
   {
     if(this.localState.restMode)
     {
-      (this.votePage.getChildByID("voting-scenario-hide") as HTMLElement).style.display="block";
-      (this.votePage.getChildByID("voting-scenario-col") as HTMLElement).style.display="none";
-
+      if(this.localState.round != 5)
+      {
+        (this.votePage.getChildByID("voting-scenario-hide") as HTMLElement).style.display="block";
+        (this.votePage.getChildByID("voting-scenario-col") as HTMLElement).style.display="none";
+      }
       const chatpg = (this.chatPage.getChildByID("chat-input") as HTMLInputElement);
       const chatbutt = (this.chatPage.getChildByID("chat-submit-button") as HTMLInputElement);
       chatpg.value="Chat offline until our moderators return.";
@@ -1119,9 +1121,11 @@ export default class MainScene extends Phaser.Scene {
     }
     else if(this.localState.endOfShow)
     {
-      (this.votePage.getChildByID("voting-scenario-hide") as HTMLElement).style.display="block";
-      (this.votePage.getChildByID("voting-scenario-col") as HTMLElement).style.display="none";
-      
+      if(this.localState.round != 5)
+      {
+        (this.votePage.getChildByID("voting-scenario-hide") as HTMLElement).style.display="block";
+        (this.votePage.getChildByID("voting-scenario-col") as HTMLElement).style.display="none";
+      }
       const chatpg = (this.chatPage.getChildByID("chat-input") as HTMLInputElement);
       const chatbutt = (this.chatPage.getChildByID("chat-submit-button") as HTMLInputElement);
       chatpg.value="Chat offline until our moderators return.";
@@ -1140,8 +1144,11 @@ export default class MainScene extends Phaser.Scene {
       chatbutt.removeAttribute("disabled");
 
 
-      (this.votePage.getChildByID("voting-scenario-hide") as HTMLElement).style.display="none";
-      (this.votePage.getChildByID("voting-scenario-col") as HTMLElement).style.display="block";
+      if(this.localState.round != 5)
+      {
+        (this.votePage.getChildByID("voting-scenario-hide") as HTMLElement).style.display="none";
+        (this.votePage.getChildByID("voting-scenario-col") as HTMLElement).style.display="block";
+      }
 
       const newButtonBar = this.videoPlayerOverlay.node.querySelector(".end-of-show-video-player-buttons") as HTMLElement;
       newButtonBar.style.display="none";
@@ -2490,7 +2497,8 @@ export default class MainScene extends Phaser.Scene {
       this.finalScreen.style.display="none";
       this.endOfShowOverlay.depth = this.depthLayers["blackout"];
       this.FadeOutDanceFloorAudio();
-      await this.DisplayNotificationHome("n_049");
+      await this.QueueNotificationHome("n_049");
+      await this.DisplayQueuedNotification(0);
 
     }
     else
@@ -2683,6 +2691,9 @@ export default class MainScene extends Phaser.Scene {
     {
       this.HideWaitingForDynamicVotes();
       await this.CreateDynamicVotes(todaysScenario, todaysScenarioDynamicState);
+      this.localState.spawnedDynamicVote = true;
+      
+      if(!this.localState.endOfShow) {this.DisplayNotificationHome("n_048");}
     }
     else if(this.localState.round == 5 && this.localState.showDynamicVoteOptions == false)
     {
@@ -3550,26 +3561,14 @@ export default class MainScene extends Phaser.Scene {
   }
   
   async RefreshFromDynamicData() {
-    //Kconsole.log("refresh");
 
     await this.ReloadStaticData();
-
-    //todo - the same update for notifications
-
-    
     await this.GetUserStorageData();
     await this.GetLatestDynamicData();
     await this.ReloadLocalState();
     await this.WriteToNakamaUserStorage(["actionPoints", "energyRequirement", "round"], [this.localState.actionPoints, this.localState.roundEnergyRequirement, this.localState.round]);
-    
-        
-    /* var list = this.GetListOfActiveVideos();
-    var v = this.localState.LatestVideoContent(list.length);
-    console.log("static data list " + v);
-    this.currentVideoTitle.innerHTML = this.staticData.videoContent[this.localState.videoContentPosition].title;
-    this.LoadCurrentVideo(this.localState.videoContentPosition, list); */
 
-    var storePrevShowDynamicVotesValue = this.localState.showDynamicVoteOptions;
+    console.log(">>>" + this.localState.showDynamicVoteOptions);
 
     this.actionPointsCounter.innerHTML = this.localState.actionPoints.toString();
     //this.roundCounter.innerHTML = (6-this.localState.round).toString();
@@ -3580,21 +3579,26 @@ export default class MainScene extends Phaser.Scene {
     {
       const todaysScenario = this.staticData.voteScenarios[this.localState.round - 1];
       const todaysScenarioDynamicState = this.localState.dynamicVoteState;
-      if(this.localState.showDynamicVoteOptions == true && storePrevShowDynamicVotesValue == false)
+      if(this.localState.showDynamicVoteOptions == true && this.localState.spawnedDynamicVote == false)
       {
         this.HideWaitingForDynamicVotes();
         await this.CreateDynamicVotes(todaysScenario,todaysScenarioDynamicState);
+        if(!this.localState.endOfShow) {this.DisplayNotificationHome("n_048");}
+        this.localState.spawnedDynamicVote = true;
       }
-      else if(this.localState.showDynamicVoteOptions == true && storePrevShowDynamicVotesValue == true)
+      else if(this.localState.showDynamicVoteOptions == true && this.localState.spawnedDynamicVote == true)
       {
         var count = 0;
         this.dynamicVoteChoicesHTML.forEach(
           (element)=>{
             //Kconsole.log("testig : " + count);
-            var voteVal = this.localState.dynamicVoteState.globalVotes[count];
-            //Kconsole.log("voteVAL = " + this.localState.dynamicVoteState.globalVotes);
-            element.optionTotalCount.innerHTML = "Total Votes: " + this.localState.dynamicVoteState.globalVotes[count].toString();
-            element.optionCount.innerHTML = this.localState.dynamicVoteState.userVotes[count].toString();
+            if(count < 6)
+            {
+              var voteVal = this.localState.dynamicVoteState.globalVotes[count];
+              
+              element.optionTotalCount.innerHTML = "Total Votes: " + this.localState.dynamicVoteState.globalVotes[count].toString();
+              element.optionCount.innerHTML = this.localState.dynamicVoteState.userVotes[count].toString();
+            }
             count++;
         })
       }
@@ -4316,7 +4320,9 @@ export default class MainScene extends Phaser.Scene {
           if(this.localState.endOfShow)
           {
             await this.delay(400);
-            this.LoadCurrentVideo(0,[this.staticData.videoContent[5].youtubeId]);
+            this.localState.videoContentPosition = 5;
+            this.LoadCurrentVideo(0,[this.staticData.videoContent[this.localState.videoContentPosition].youtubeId]);
+            this.currentVideoTitle.innerHTML = this.staticData.videoContent[this.localState.videoContentPosition].title;
             this.SetPage("videoOverlay");
           }
           else

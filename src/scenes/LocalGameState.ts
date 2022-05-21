@@ -48,6 +48,8 @@ export default class LocalGameState
     danceFloorAudioTwoPlaying!: boolean;
     leaderboardStatus!: number[];
 
+    spawnedDynamicVote: boolean = false;
+
     appHasLoaded: boolean = false;
     firstVisitTodayWithCurtainsClosed: boolean = false;
     curtainsOpen: boolean = false;
@@ -619,7 +621,6 @@ export class DynamicVoteScenarioState
 
     UpdateFromDynamicData(users, global)
     {
-        console.log("Update from Dynamic Data");
         this.userVotes = users;
         this.globalVotes = global;
     }
