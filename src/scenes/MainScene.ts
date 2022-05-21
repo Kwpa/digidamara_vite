@@ -166,7 +166,7 @@ export default class MainScene extends Phaser.Scene {
 
   //starfield
   distance = 300;
-  speed = 1;
+  speed = 2; //was 1
   starSprite;
   starFieldTexture;
   max = 100;
@@ -4940,8 +4940,8 @@ export default class MainScene extends Phaser.Scene {
         this.zz[i] -= 600;
       }
 
-      this.starSprite.setTint(0xffffff);
-      //this.starSprite.setTint(this.listOfColours[i]);
+      //this.starSprite.setTint(0xffffff);
+      this.starSprite.setTint(this.listOfColours[i]);
       this.starFieldTexture.batchDraw(this.starSprite, x, y);
     }
     this.starFieldTexture.endDraw();
