@@ -239,7 +239,6 @@ export class VideoContentData {
 
     UpdateVideoContentData(videoContent)
     {
-        console.log(videoContent);
         this.id = videoContent.id;
         this.title = videoContent.title;
         this.youtubeId = videoContent.youtubeId;
@@ -249,7 +248,6 @@ export class VideoContentData {
         else {
             this.active = false;
         }
-        console.log(JSON.stringify(this));
     }
 }
 
