@@ -1,50 +1,50 @@
 [
     {
         "id":  "dv_001",
-        "title":  "Dynamic Vote Round 5 Option 1",
-        "description":  "Take to the stars",
-        "consequences":  "Damn",
+        "title":  "Legacy of Freedom",
+        "description":  "Be free to be true.",
+        "consequences":  "Something",
         "round":  "5",
-        "active":  "FALSE"
+        "active":  "TRUE"
     },
     {
         "id":  "dv_002",
-        "title":  "Dynamic Vote Round 5 Option 2",
-        "description":  "Destroy the universe",
-        "consequences":  "What",
+        "title":  "Legacy of Movement",
+        "description":  "Fluidity and flow.",
+        "consequences":  "Something",
         "round":  "5",
-        "active":  "FALSE"
+        "active":  "TRUE"
     },
     {
         "id":  "dv_003",
-        "title":  "Dynamic Vote Round 5 Option 3",
-        "description":  "Milk the cow",
-        "consequences":  "I can\u0027t",
+        "title":  "Legacy of Co-creation",
+        "description":  "Make it together.",
+        "consequences":  "Something",
         "round":  "5",
-        "active":  "FALSE"
+        "active":  "TRUE"
     },
     {
         "id":  "dv_004",
-        "title":  "Dynamic Vote Round 5 Option 4",
-        "description":  "Ride the rooster",
-        "consequences":  "You did it",
+        "title":  "Legacy of Omnom",
+        "description":  "Consumption is godliness.",
+        "consequences":  "Something",
         "round":  "5",
-        "active":  "FALSE"
+        "active":  "TRUE"
     },
     {
         "id":  "dv_005",
-        "title":  "Dynamic Vote Round 5 Option 5",
-        "description":  "Consume the cheese",
-        "consequences":  "Explosive",
+        "title":  "Legacy of Peace",
+        "description":  "At the heart of it all, we find peace.",
+        "consequences":  "Something",
         "round":  "5",
-        "active":  "FALSE"
+        "active":  "TRUE"
     },
     {
         "id":  "dv_006",
-        "title":  "Dynamic Vote Round 5 Option 6",
-        "description":  "Give up all hope",
-        "consequences":  "Subtle",
+        "title":  "Legacy of Prestige",
+        "description":  "What will we be known for and who will follow us?",
+        "consequences":  "Something",
         "round":  "5",
-        "active":  "FALSE"
+        "active":  "TRUE"
     }
 ]

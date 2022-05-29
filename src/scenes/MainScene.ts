@@ -4667,19 +4667,29 @@ export default class MainScene extends Phaser.Scene {
 
   async CreateUserList(list: ChannelMessage[]) {
     var userList = {};
-    list.forEach(async (message) => {
-      ////Kconsole.log("message time: " + new Date(message.create_time as string).toUTCString());
-      var account = await this.client.getUsers(this.session, [message.sender_id as string]);
-      var users = account.users as User[];
-      var avatarUrl = users[0].avatar_url as string;
-      var username = users[0].username as string;
-      userList[message.sender_id as string] = { "avatar_url": avatarUrl, "username": username };
-    });
     this.staticData.notifications.forEach(
       (notification) => {
         userList[notification.character] = { avatar_url: notification.iconPath, username: notification.character };
       }
     )
+
+    var userStrings: string[] = [];
+    list.forEach((message)=>{
+      userStrings.push(message.sender_id as string);
+    });
+
+    var accounts = await this.client.getUsers(this.session, userStrings) as Users;
+
+    for(var i =0; i<(accounts.users as User[]).length; i++)
+    {
+      
+      var user = (accounts.users as User[])[i];
+      var avatarUrl = user.avatar_url as string;
+      var username = user.username as string;
+      
+      userList[user.id as string] = { "avatar_url": avatarUrl, "username": username };
+    }
+    
     return userList;
   }
 
@@ -4795,7 +4805,7 @@ export default class MainScene extends Phaser.Scene {
       var storeMessageCreateTime = "";
       var storeUserDetails = {} as object;
       var input = this.chatPage.getChildByID('chat-input-container') as HTMLElement;
-
+      
       storeUserDetails = await this.CreateUserList(allMessages);
       if (chatId == "c_001") {
 

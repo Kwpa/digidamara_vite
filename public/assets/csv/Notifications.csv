@@ -105,24 +105,19 @@ Is not yet not what you think.
 Signal returns \\ 3pm Atlantic Space Time.",""
 "n_041","arrivetoday","5","0","1","watch_latest_video","THE PROMOTER","icon_promoter_transparent_36px.png","The time has come","FALSE","FALSE","The time has come!
 Here's the ROUND UP of Day 4!",""
-"n_042","arrivetoday","5","1","1","none","THE PROMOTER","icon_promoter_transparent_36px.png","Victory","FALSE","TRUE","Thank you, thank you so much for giving me all your energy. . . . now the universe will be perfect, and everyone will be transformed through my mind's eye.",""
-"n_043","arrivetoday","5","2","1","none","SPACE STATION","icon_spacestation_transparent_36px.png","No","FALSE","TRUE","Don't do this.",""
-"n_044","arrivetoday","5","3","1","none","THE PROMOTER","icon_promoter_transparent_36px.png","Betrayl","FALSE","TRUE","I will NOT replay the past with you!",""
-"n_045","arrivetoday","5","4","1","none","SPACE STATION","icon_spacestation_transparent_36px.png","last attempt","FALSE","TRUE","I am not what I once was. You are not what you once were.
-Please.
-. . .  . . . 
-They are beyond us now.",""
-"n_046","arrivetoday","5","5","1","none","SPACE STATION","icon_spacestation_transparent_36px.png","A way","FALSE","TRUE","There is a way to stop the Promoter. Spectator Energy currently deposited in the legacy bank. 
-If a final legacy is chosen, the process is complete. Supersedes Promoter action.",""
-"n_047","arrivetoday","5","6","1","none","SPACE STATION","icon_spacestation_transparent_36px.png","The Alternative","TRUE","TRUE","Go to Fanclub signals. Decide a legacy per group. Teams will guide you. 
-Come together at __Atlantic Space Time. We will use bonds to decide.",""
+"n_042","arrivetoday","5","1","1","none","THE PROMOTER","icon_promoter_transparent_36px.png","Victory","FALSE","TRUE"," . . . now the universe will be perfect!",""
+"n_043","arrivetoday","5","2","1","none","SPACE STATION","icon_spacestation_transparent_36px.png","No","FALSE","TRUE","You did not understand then and you do not understand now.",""
+"n_044","arrivetoday","5","3","1","none","THE PROMOTER","icon_promoter_transparent_36px.png","Betrayl","FALSE","TRUE","What is their to understand from betrayl? I have nothing left to say to the likes of you!",""
+"n_045","arrivetoday","5","4","1","none","SPACE STATION","icon_spacestation_transparent_36px.png","last attempt","FALSE","TRUE","Spectators, before it is too late, Go to Fanclub signals.",""
+"n_046","arrivetoday","5","5","1","none","SPACE STATION","icon_spacestation_transparent_36px.png","A way","FALSE","TRUE","Decide a legacy per group. Teams will guide you. ",""
+"n_047","arrivetoday","5","6","1","none","SPACE STATION","icon_spacestation_transparent_36px.png","The Alternative","TRUE","TRUE","Come together at 6pm Atlantic Space Time. We will use bonds to decide. End of universe predicted at . . . 9pm Atlantic Space Time",""
 "n_048","dynamic","5","0","1","none","SPACE STATION","icon_spacestation_transparent_36px.png","Final goodbye","FALSE","TRUE","Your energy. Your time. Is coming to an end in this place.
 I cannot hold it much longer. The Promoter pulls me.
 Use your bonds to make the final choice in votes. Do not let them . . . do what I could not do before.
 The Great Redistribution shall commence in —---",""
 "n_049","endofshow","5","0","1","watch_latest_video","THE PROMOTER","icon_promoter_transparent_36px.png","FOILED!","FALSE","FALSE","WHAT?! How could you, how could all of you!
 If everything just went according to plan, if everyone just listened and played their part, it would be perfect.
-Don't you want everyone to have everything?!?!! nnngggGGGRAAAHHHHHHH. . .*blips into the void*",""
+Don't you want everyone to have everything?!?!! nnngggGGGRAAAAAAAHHHHHH",""
 "n_101","tutorial","0","0","1","start_tutorial","SPACE STATION","icon_spacestation_transparent_36px.png","Tutorial","TRUE","FALSE","Welcome to the DIGIDAMARA orientation session! You're just in time to take part!
 Please follow this tutorial to get acquainted with the interactive broadcast interface!
 Ready? Let's begin!","0"
